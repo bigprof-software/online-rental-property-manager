@@ -1,0 +1,19 @@
+<!-- Edit this file to change the layout of each record in the table view -->
+<!-- To disable clicking of a field, remove the <%%SELECT%%> and <%%ENDSELECT%%> formatters around it-->
+
+<!-- If you wish to hide the table view header that contains the column titles, -->
+<!-- add the following to the applications_leases_init() hook (in hooks/applications_leases.php file) -->
+<!--     $options->ShowTableHeader = 0;     -->
+
+		<td id="applications_leases-tenants-<%%VALUE(id)%%>" class="applications_leases-tenants"><%%SELECT%%><%%VALUE(tenants)%%><%%ENDSELECT%%></td>
+		<td id="applications_leases-status-<%%VALUE(id)%%>" class="applications_leases-status"><%%SELECT%%><%%VALUE(status)%%><%%ENDSELECT%%></td>
+		<td id="applications_leases-property-<%%VALUE(id)%%>" class="applications_leases-property"><%%SELECT%%><%%VALUE(property)%%><%%ENDSELECT%%></td>
+		<td id="applications_leases-unit-<%%VALUE(id)%%>" class="applications_leases-unit"><%%SELECT%%><%%VALUE(unit)%%><%%ENDSELECT%%></td>
+		<td id="applications_leases-type-<%%VALUE(id)%%>" class="applications_leases-type"><%%SELECT%%><%%VALUE(type)%%><%%ENDSELECT%%></td>
+		<td id="applications_leases-total_number_of_occupants-<%%VALUE(id)%%>" class="applications_leases-total_number_of_occupants text-center"><%%SELECT%%><%%VALUE(total_number_of_occupants)%%><%%ENDSELECT%%></td>
+		<td id="applications_leases-start_date-<%%VALUE(id)%%>" class="applications_leases-start_date"><%%SELECT%%><%%VALUE(start_date)%%><%%ENDSELECT%%></td>
+		<td id="applications_leases-end_date-<%%VALUE(id)%%>" class="applications_leases-end_date"><%%SELECT%%><%%VALUE(end_date)%%><%%ENDSELECT%%></td>
+		<td id="applications_leases-rent-<%%VALUE(id)%%>" class="applications_leases-rent text-right"><%%SELECT%%><%%VALUE(rent)%%><%%ENDSELECT%%></td>
+		<td id="applications_leases-security_deposit-<%%VALUE(id)%%>" class="applications_leases-security_deposit text-right"><%%SELECT%%><%%VALUE(security_deposit)%%><%%ENDSELECT%%></td>
+		<td id="applications_leases-emergency_contact-<%%VALUE(id)%%>" class="applications_leases-emergency_contact"><%%SELECT%%><%%VALUE(emergency_contact)%%><%%ENDSELECT%%></td>
+		<td id="applications_leases-agreement-<%%VALUE(id)%%>" class="applications_leases-agreement text-center"><%%SELECT%%><%%VALUE(agreement)%%><%%ENDSELECT%%></td>

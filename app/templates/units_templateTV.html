@@ -1,0 +1,19 @@
+<!-- Edit this file to change the layout of each record in the table view -->
+<!-- To disable clicking of a field, remove the <%%SELECT%%> and <%%ENDSELECT%%> formatters around it-->
+
+<!-- If you wish to hide the table view header that contains the column titles, -->
+<!-- add the following to the units_init() hook (in hooks/units.php file) -->
+<!--     $options->ShowTableHeader = 0;     -->
+
+		<td id="units-property-<%%VALUE(id)%%>" class="units-property"><%%SELECT%%><%%VALUE(property)%%><%%ENDSELECT%%></td>
+		<td id="units-unit_number-<%%VALUE(id)%%>" class="units-unit_number"><%%SELECT%%><%%VALUE(unit_number)%%><%%ENDSELECT%%></td>
+		<td id="units-photo-<%%VALUE(id)%%>" class="units-photo"><a href="<%%TRANSLATION(ImageFolder)%%><%%VALUE(photo)%%>" data-lightbox="units-photo"><img src="thumbnail.php?i=<%%VALUE(photo)%%>&t=units&f=photo&v=tv" class="img-thumbnail"></a></td>
+		<td id="units-status-<%%VALUE(id)%%>" class="units-status"><%%SELECT%%><%%VALUE(status)%%><%%ENDSELECT%%></td>
+		<td id="units-size-<%%VALUE(id)%%>" class="units-size text-center"><%%SELECT%%><%%VALUE(size)%%><%%ENDSELECT%%></td>
+		<td id="units-street-<%%VALUE(id)%%>" class="units-street"><%%SELECT%%><%%VALUE(street)%%><%%ENDSELECT%%></td>
+		<td id="units-city-<%%VALUE(id)%%>" class="units-city"><%%SELECT%%><%%VALUE(city)%%><%%ENDSELECT%%></td>
+		<td id="units-state-<%%VALUE(id)%%>" class="units-state text-center"><%%SELECT%%><%%VALUE(state)%%><%%ENDSELECT%%></td>
+		<td id="units-rooms-<%%VALUE(id)%%>" class="units-rooms text-center"><%%SELECT%%><%%VALUE(rooms)%%><%%ENDSELECT%%></td>
+		<td id="units-bathroom-<%%VALUE(id)%%>" class="units-bathroom text-center"><%%SELECT%%><%%VALUE(bathroom)%%><%%ENDSELECT%%></td>
+		<td id="units-features-<%%VALUE(id)%%>" class="units-features"><%%SELECT%%><%%VALUE(features)%%><%%ENDSELECT%%></td>
+		<td id="units-rental_amount-<%%VALUE(id)%%>" class="units-rental_amount text-right"><%%SELECT%%><%%VALUE(rental_amount)%%><%%ENDSELECT%%></td>

@@ -1,0 +1,19 @@
+<!-- Edit this file to change the layout of each record in the table view -->
+<!-- To disable clicking of a field, remove the <%%SELECT%%> and <%%ENDSELECT%%> formatters around it-->
+
+<!-- If you wish to hide the table view header that contains the column titles, -->
+<!-- add the following to the rental_owners_init() hook (in hooks/rental_owners.php file) -->
+<!--     $options->ShowTableHeader = 0;     -->
+
+		<td id="rental_owners-first_name-<%%VALUE(id)%%>" class="rental_owners-first_name"><%%SELECT%%><%%VALUE(first_name)%%><%%ENDSELECT%%></td>
+		<td id="rental_owners-last_name-<%%VALUE(id)%%>" class="rental_owners-last_name"><%%SELECT%%><%%VALUE(last_name)%%><%%ENDSELECT%%></td>
+		<td id="rental_owners-company_name-<%%VALUE(id)%%>" class="rental_owners-company_name"><%%SELECT%%><%%VALUE(company_name)%%><%%ENDSELECT%%></td>
+		<td id="rental_owners-primary_email-<%%VALUE(id)%%>" class="rental_owners-primary_email"><a href="mailto:<%%VALUE(primary_email)%%>" title="<%%VALUE(primary_email)%%>" class="btn btn-default"><i class="glyphicon glyphicon-envelope text-info"></i></a></td>
+		<td id="rental_owners-alternate_email-<%%VALUE(id)%%>" class="rental_owners-alternate_email"><a href="mailto:<%%VALUE(alternate_email)%%>" title="<%%VALUE(alternate_email)%%>" class="btn btn-default"><i class="glyphicon glyphicon-envelope text-info"></i></a></td>
+		<td id="rental_owners-phone-<%%VALUE(id)%%>" class="rental_owners-phone"><%%SELECT%%><%%VALUE(phone)%%><%%ENDSELECT%%></td>
+		<td id="rental_owners-country-<%%VALUE(id)%%>" class="rental_owners-country"><%%SELECT%%><%%VALUE(country)%%><%%ENDSELECT%%></td>
+		<td id="rental_owners-street-<%%VALUE(id)%%>" class="rental_owners-street"><%%SELECT%%><%%VALUE(street)%%><%%ENDSELECT%%></td>
+		<td id="rental_owners-city-<%%VALUE(id)%%>" class="rental_owners-city"><%%SELECT%%><%%VALUE(city)%%><%%ENDSELECT%%></td>
+		<td id="rental_owners-state-<%%VALUE(id)%%>" class="rental_owners-state"><%%SELECT%%><%%VALUE(state)%%><%%ENDSELECT%%></td>
+		<td id="rental_owners-zip-<%%VALUE(id)%%>" class="rental_owners-zip text-right"><%%SELECT%%><%%VALUE(zip)%%><%%ENDSELECT%%></td>
+		<td id="rental_owners-comments-<%%VALUE(id)%%>" class="rental_owners-comments"><%%SELECT%%><%%VALUE(comments)%%><%%ENDSELECT%%></td>

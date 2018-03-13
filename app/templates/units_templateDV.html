@@ -1,0 +1,329 @@
+<!-- Edit this file to change the layout of the detail view form -->
+
+<a name="detail-view"></a>
+<div class="panel-heading"><h3 class="panel-title"><strong><%%DETAIL_VIEW_TITLE%%></strong></h3></div>
+
+<div class="panel-body" id="units_dv_container">
+	<!-- child links -->
+	<div class="row">
+		<div class="col-xs-12">
+			<a class="hidden-xs btn btn-default btn-lg pull-right hidden hspacer-sm" href="applications_leases_view.php?filterer_unit=<%%URLVALUE(id)%%>&<%%EMBEDDED%%>" id="applications_leases_link"><i class="glyphicon glyphicon-list-alt"></i> Applications/Leases</a>
+			<a class="visible-xs btn btn-default btn-lg btn-block hidden vspacer-sm" href="applications_leases_view.php?filterer_unit=<%%URLVALUE(id)%%>&<%%EMBEDDED%%>" id="xs_applications_leases_link"><i class="glyphicon glyphicon-list-alt"></i> Applications/Leases</a>
+			<input type="hidden" id="applications_leases_hclink" value="applications_leases_view.php?filterer_unit=<%%URLVALUE(id)%%>&<%%EMBEDDED%%>">
+			<div class="clearfix"></div>
+		</div>
+	</div>
+	<hr>
+
+	<div class="row">
+		<!-- form inputs -->
+		<div class="col-md-8 col-lg-10" id="units_dv_form">
+			<fieldset class="form-horizontal">
+
+				<div class="form-group">
+					<label for="id" class="control-label col-lg-3">ID</label>
+					<div class="col-lg-9">
+						<div class="form-control-static" id="id"><%%VALUE(id)%%></div>
+					</div>
+				</div>
+
+				<div class="form-group">
+					<label for="property" class="control-label col-lg-3" data-parent_link="view_parent_modal">Property</label>
+					<div class="col-lg-9">
+						<div class="row form-control-static"><div class="col-xs-11"><%%COMBO(property)%%><%%PLINK(property)%%><%%ADDNEW(properties)%%></div><div class="col-xs-1"><span id="propertyLoading"></span></div></div>
+					</div>
+				</div>
+
+				<div class="form-group">
+					<label for="unit_number" class="control-label col-lg-3">Unit</label>
+					<div class="col-lg-9">
+						<input maxlength="40" type="text" class="form-control" name="unit_number" id="unit_number" value="<%%VALUE(unit_number)%%>">
+					</div>
+				</div>
+
+				<div class="form-group">
+					<label class="control-label col-lg-3">Photo <i class="glyphicon glyphicon-info-sign text-info" data-toggle="collapse" data-target="#photo-description"></i></label>
+					<div class="col-lg-9">
+						<span class="help-block collapse" id="photo-description"><div class="alert alert-info">Maximum file size allowed: 1000 KB.<br />Allowed file types: jpg, jpeg, gif, png</div></span>
+
+						<div class="form-control-static"><div class="pull-left">
+
+						<a href="<%%TRANSLATION(ImageFolder)%%><%%VALUE(photo)%%>" data-lightbox="units_dv"><img src="thumbnail.php?i=<%%VALUE(photo)%%>&t=units&f=photo&v=dv" class="img-thumbnail" id="photo-image"></a>
+</div>
+
+												<div class="pull-right" style="overflow-x: hidden;">
+							<div class="hidden-md hidden-lg vspacer-lg"></div>
+							<%%UPLOADFILE(photo)%%>
+							<%%REMOVEFILE(photo)%%>
+						</div>
+						<div class="clearfix"></div>
+					</div>
+
+					</div>
+				</div>
+
+				<div class="form-group">
+					<label for="status" class="control-label col-lg-3">Status<span class="text-danger"><%%TRANSLATION(*)%%></span></label>
+					<div class="col-lg-9">
+						<%%COMBO(status)%%>
+					</div>
+				</div>
+
+				<div class="form-group">
+					<label for="size" class="control-label col-lg-3">Area (sq. feet)</label>
+					<div class="col-lg-9">
+						<input maxlength="40" type="text" class="form-control" name="size" id="size" value="<%%VALUE(size)%%>">
+					</div>
+				</div>
+
+				<div class="form-group">
+					<label for="country" class="control-label col-lg-3">Country</label>
+					<div class="col-lg-9">
+						<div class="form-control-static" id="country"></div>
+					</div>
+				</div>
+
+				<div class="form-group">
+					<label for="street" class="control-label col-lg-3">Street</label>
+					<div class="col-lg-9">
+						<div class="form-control-static" id="street"></div>
+					</div>
+				</div>
+
+				<div class="form-group">
+					<label for="city" class="control-label col-lg-3">City</label>
+					<div class="col-lg-9">
+						<div class="form-control-static" id="city"></div>
+					</div>
+				</div>
+
+				<div class="form-group">
+					<label for="state" class="control-label col-lg-3">State</label>
+					<div class="col-lg-9">
+						<div class="form-control-static" id="state"></div>
+					</div>
+				</div>
+
+				<div class="form-group">
+					<label for="postal_code" class="control-label col-lg-3">Postal code</label>
+					<div class="col-lg-9">
+						<div class="form-control-static" id="postal_code"></div>
+					</div>
+				</div>
+
+				<div class="form-group">
+					<label for="rooms" class="control-label col-lg-3">Rooms</label>
+					<div class="col-lg-9">
+						<input maxlength="40" type="text" class="form-control" name="rooms" id="rooms" value="<%%VALUE(rooms)%%>">
+					</div>
+				</div>
+
+				<div class="form-group">
+					<label for="bathroom" class="control-label col-lg-3">Bathroom</label>
+					<div class="col-lg-9">
+						<input maxlength="15" type="text" class="form-control" name="bathroom" id="bathroom" value="<%%VALUE(bathroom)%%>">
+					</div>
+				</div>
+
+				<div class="form-group">
+					<label for="features" class="control-label col-lg-3">Features</label>
+					<div class="col-lg-9">
+						<%%COMBO(features)%%>
+					</div>
+				</div>
+
+				<div class="form-group">
+					<label for="rental_amount" class="control-label col-lg-3">Rental amount</label>
+					<div class="col-lg-9">
+						<input maxlength="9" type="text" class="form-control" name="rental_amount" id="rental_amount" value="<%%VALUE(rental_amount)%%>">
+					</div>
+				</div>
+
+				<div class="form-group">
+					<label for="description" class="control-label col-lg-3">Description</label>
+					<div class="col-lg-9">
+						<%%HTMLAREA(description)%%>
+					</div>
+				</div>
+
+			</fieldset>
+		</div>
+
+		<!-- DV action buttons -->
+		<div class="col-md-4 col-lg-2" id="units_dv_action_buttons">
+			<div class="btn-toolbar">
+				<div class="btn-group-vertical btn-group-lg" style="width: 100%;">
+					<%%UPDATE_BUTTON%%>
+				</div><p></p>
+				<div class="btn-group-vertical btn-group-lg" style="width: 100%;">
+					<%%DESELECT_BUTTON%%>
+					<%%DVPRINT_BUTTON%%>
+					<%%DELETE_BUTTON%%>
+				</div><p></p>
+				<div class="btn-group-vertical btn-group-lg" style="width: 100%;">
+					<%%INSERT_BUTTON%%>
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+	<!-- child records -->
+	<hr>
+	<div class="row">
+		<div class="col-lg-10 col-lg-offset-1">
+			<div id="units-children" class="children-tabs"></div>
+		</div>
+	</div>
+
+</div><!-- /div class="panel-body" -->
+	<script src="nicEdit.js"></script>
+	<script>
+		$j(function() {
+			var add_new_mode = (!$j('input[name=SelectedID]').val());
+			var embedded_mode = ($j('input[name=Embedded]').val() == 1);
+
+			/* auto-close embedded page? */
+			var autoclose_mode = ($j('input[name=AutoClose]').val() == 1);
+			var record_added_ok = (location.search.split('record-added-ok=').length == 2);
+			var record_updated_ok = (location.search.split('record-updated-ok=').length == 2);
+			if((record_added_ok || record_updated_ok) && embedded_mode && autoclose_mode){
+				setTimeout(function(){
+					window.parent.jQuery('.modal').modal('hide');
+				}, 2000);
+			}
+
+			bkLib.onDomLoaded(function(){
+				if($j('textarea#description').length) new nicEditor({ fullPanel : true }).panelInstance('description');
+
+				$j('.nicEdit-panelContain').parent().width('90%');
+				$j('.nicEdit-panelContain').parent().next().width('88%');
+				$j('.nicEdit-main').width('99%');
+			});
+			$j('select, input[type=text], textarea').not(':disabled').eq(0).focus();
+			$j('form').eq(0).change(function(){
+				if($j(this).data('already_changed')) return;
+				if($j('#deselect').length) $j('#deselect').removeClass('btn-default').addClass('btn-warning').get(0).lastChild.data = " <%%TRANSLATION(Cancel)%%>";
+				$j(this).data('already_changed', true);
+			});
+
+			$j('a[href="<%%TRANSLATION(ImageFolder)%%>"]').click(function(){ return false; });
+
+			if(embedded_mode){
+				/* hide links to children tables in embedded mode */
+				$j('.detail_view a[id$=_link]').remove();
+
+				/* append embedded mode to all links */
+				var append_embedded = function(){
+					$j('a[href]:not([href^=#]):not([href^=javascript]):not([href$="Embedded=1"]):not([href*="link.php?t="]):not([href^="mailto:"])').each(
+						function(){
+							$j(this).attr('href', $j(this).attr('href') + '&Embedded=1');
+						}
+					);
+				}
+				setTimeout(append_embedded, 500);
+				setTimeout(append_embedded, 1500);
+				setTimeout(append_embedded, 2500);
+				setTimeout(append_embedded, 3500);
+			}
+
+			/* when no record is selected ('add new' mode) */
+			if(add_new_mode){
+				/* hide links to children tables */
+				$j('.detail_view a[id$=_link]').remove();
+			}else{
+				post(
+					'parent-children.php', {
+						ParentTable: 'units',
+						SelectedID: '<%%VALUE(id)%%>',
+						Operation: 'show-children'
+					},
+					'units-children'
+				);
+			}
+
+			if(!embedded_mode){
+				/* add a horizontal spacer to [add new parent] buttons that don't have a spacered element before them */
+				$j('.add_new_parent').prev(':not(.hspacer-md)').next().addClass('hspacer-md');
+
+				$j('.add_new_parent').click(function(){
+					var pt = $j(this).attr('id').replace(/_add_new$/, '');
+					modal_window({
+						url: pt + '_view.php?addNew_x=1&Embedded=1',
+						close: function(){
+							var field_id = $j('#' + pt + '_add_new').prevAll('input:hidden').eq(0).attr('id');
+							$j('#' + field_id + '-container').select2('focus').select2('focus');
+						},
+						size: 'full',
+						title: $j(this).attr('title')
+					});
+				});
+			}
+
+			/* find and hide parent links if field label has data 'parent_link' set to 'view_parent_hidden' */
+			$j('label[data-parent_link=view_parent_hidden]').each(function(){
+				$j(this).parents('.form-group').find('.view_parent').hide();
+			});
+
+			$j('form').on('click', '.view_parent', function(){
+				var pt = $j(this).attr('id').replace(/_view_parent$/, '');
+				if($j(this).prevAll('input:hidden').length){
+					var parent_id = $j(this).prevAll('input:hidden').eq(0).val();
+				}else{
+					var parent_id = $j(this).prevAll().children('input:hidden').eq(0).val();
+				}
+
+				/* handle radio lookups */
+				if($j(this).prevAll('[type=radio]').length){
+					parent_id = $j(this).prevAll('[type=radio]').eq(0).val();
+				}
+
+				if(parent_id != '{empty_value}'){
+					var parent_link = $j(this).parents('.form-group').children('label').data('parent_link');
+					switch(parent_link){
+						case 'view_parent_hidden':
+							break;
+						case 'view_parent_modal':
+							modal_window({
+								url: pt + '_view.php?Embedded=1&SelectedID=' + encodeURIComponent(parent_id),
+								close: function(){
+									var field_id = $j('#' + pt + '_view_parent').prevAll('input:hidden').eq(0).attr('id');
+									$j('#' + field_id + '-container').select2('focus').select2('focus');
+								},
+								size: 'full',
+								title: $j(this).attr('title')
+							});
+							break;
+						case 'view_parent_same_window':
+							window.location = pt + '_view.php?Embedded=' + (embedded_mode ? '1' : '') + '&SelectedID=' + encodeURIComponent(parent_id);
+							break;
+						case 'view_parent_new_window':
+							window.open(pt + '_view.php?SelectedID=' + encodeURIComponent(parent_id));
+							break;
+					}
+
+				}
+			});
+
+
+			/* load admin tools for admin user */
+			if(!add_new_mode){
+				$j('body').append('<div id="admin-tools-appendix"></div>');
+				$j('#admin-tools-appendix').load(
+					'ajax_admin_tools.php?table=units&id=<%%URLVALUE(id)%%>',
+					function(resp){
+						if(!resp.length) return;
+						$j.ajax('ajax_admin_tools.php?action=get_admin_tools_js&table=units&id=<%%URLVALUE(id)%%>');
+					}
+				);
+			}
+
+			/* warn user if 'add new' clicked while unsaved changes exist */
+			$j('#addNew').click(function(){
+				if($j('#deselect.btn-warning').length){
+					return confirm('<%%TRANSLATION(discard changes confirm)%%>');
+				}
+			});
+
+		});
+	</script>

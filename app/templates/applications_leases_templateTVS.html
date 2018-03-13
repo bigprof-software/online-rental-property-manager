@@ -1,0 +1,19 @@
+<!-- Edit this file to change the layout of each record in the table view -->
+<!-- To disable clicking of a field, remove the  and  formatters around it-->
+
+<!-- If you wish to hide the table view header that contains the column titles, -->
+<!-- add the following to the applications_leases_init() hook (in hooks/applications_leases.php file) -->
+<!--     $options->ShowTableHeader = 0;     -->
+
+		<td id="applications_leases-tenants-<%%VALUE(id)%%>" class="applications_leases-tenants"><%%VALUE(tenants)%%></td>
+		<td id="applications_leases-status-<%%VALUE(id)%%>" class="applications_leases-status"><%%VALUE(status)%%></td>
+		<td id="applications_leases-property-<%%VALUE(id)%%>" class="applications_leases-property"><%%VALUE(property)%%></td>
+		<td id="applications_leases-unit-<%%VALUE(id)%%>" class="applications_leases-unit"><%%VALUE(unit)%%></td>
+		<td id="applications_leases-type-<%%VALUE(id)%%>" class="applications_leases-type"><%%VALUE(type)%%></td>
+		<td id="applications_leases-total_number_of_occupants-<%%VALUE(id)%%>" class="applications_leases-total_number_of_occupants text-center"><%%VALUE(total_number_of_occupants)%%></td>
+		<td id="applications_leases-start_date-<%%VALUE(id)%%>" class="applications_leases-start_date"><%%VALUE(start_date)%%></td>
+		<td id="applications_leases-end_date-<%%VALUE(id)%%>" class="applications_leases-end_date"><%%VALUE(end_date)%%></td>
+		<td id="applications_leases-rent-<%%VALUE(id)%%>" class="applications_leases-rent text-right"><%%VALUE(rent)%%></td>
+		<td id="applications_leases-security_deposit-<%%VALUE(id)%%>" class="applications_leases-security_deposit text-right"><%%VALUE(security_deposit)%%></td>
+		<td id="applications_leases-emergency_contact-<%%VALUE(id)%%>" class="applications_leases-emergency_contact"><%%VALUE(emergency_contact)%%></td>
+		<td id="applications_leases-agreement-<%%VALUE(id)%%>" class="applications_leases-agreement text-center"><%%VALUE(agreement)%%></td>

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0" xml:base="http://bigprof.com/appgini"  xmlns:dc="http://purl.org/dc/elements/1.1/">
+<channel>
+ <title>BigProf AppGini - Add Ons</title>
+ <link>http://bigprof.com/appgini/taxonomy/term/6/0</link>
+ <description>AppGini add-ons allow you to extend the functionality of your generated application by adding specialized reports, charts, views ... We&#039;re developing an expanding list of add-ons to help you greatly enhance your web database applications.</description>
+ <language>en</language>
+</channel>
+</rss>

@@ -1,0 +1,18 @@
+<!-- Edit this file to change the layout of each record in the table view -->
+<!-- To disable clicking of a field, remove the <%%SELECT%%> and <%%ENDSELECT%%> formatters around it-->
+
+<!-- If you wish to hide the table view header that contains the column titles, -->
+<!-- add the following to the properties_init() hook (in hooks/properties.php file) -->
+<!--     $options->ShowTableHeader = 0;     -->
+
+		<td id="properties-property_name-<%%VALUE(id)%%>" class="properties-property_name"><%%SELECT%%><%%VALUE(property_name)%%><%%ENDSELECT%%></td>
+		<td id="properties-type-<%%VALUE(id)%%>" class="properties-type"><%%SELECT%%><%%VALUE(type)%%><%%ENDSELECT%%></td>
+		<td id="properties-number_of_units-<%%VALUE(id)%%>" class="properties-number_of_units text-center"><%%SELECT%%><%%VALUE(number_of_units)%%><%%ENDSELECT%%></td>
+		<td id="properties-photo-<%%VALUE(id)%%>" class="properties-photo"><a href="<%%TRANSLATION(ImageFolder)%%><%%VALUE(photo)%%>" data-lightbox="properties-photo"><img src="thumbnail.php?i=<%%VALUE(photo)%%>&t=properties&f=photo&v=tv" class="img-thumbnail"></a></td>
+		<td id="properties-owner-<%%VALUE(id)%%>" class="properties-owner"><%%SELECT%%><%%VALUE(owner)%%><%%ENDSELECT%%></td>
+		<td id="properties-operating_account-<%%VALUE(id)%%>" class="properties-operating_account"><%%SELECT%%><%%VALUE(operating_account)%%><%%ENDSELECT%%></td>
+		<td id="properties-property_reserve-<%%VALUE(id)%%>" class="properties-property_reserve text-right"><%%SELECT%%><%%VALUE(property_reserve)%%><%%ENDSELECT%%></td>
+		<td id="properties-street-<%%VALUE(id)%%>" class="properties-street"><%%SELECT%%><%%VALUE(street)%%><%%ENDSELECT%%></td>
+		<td id="properties-City-<%%VALUE(id)%%>" class="properties-City"><%%SELECT%%><%%VALUE(City)%%><%%ENDSELECT%%></td>
+		<td id="properties-State-<%%VALUE(id)%%>" class="properties-State text-center"><%%SELECT%%><%%VALUE(State)%%><%%ENDSELECT%%></td>
+		<td id="properties-ZIP-<%%VALUE(id)%%>" class="properties-ZIP text-right"><%%SELECT%%><%%VALUE(ZIP)%%><%%ENDSELECT%%></td>

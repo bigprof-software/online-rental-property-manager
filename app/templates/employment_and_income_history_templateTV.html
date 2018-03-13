@@ -1,0 +1,14 @@
+<!-- Edit this file to change the layout of each record in the table view -->
+<!-- To disable clicking of a field, remove the <%%SELECT%%> and <%%ENDSELECT%%> formatters around it-->
+
+<!-- If you wish to hide the table view header that contains the column titles, -->
+<!-- add the following to the employment_and_income_history_init() hook (in hooks/employment_and_income_history.php file) -->
+<!--     $options->ShowTableHeader = 0;     -->
+
+		<td id="employment_and_income_history-employer_name-<%%VALUE(id)%%>" class="employment_and_income_history-employer_name"><%%SELECT%%><%%VALUE(employer_name)%%><%%ENDSELECT%%></td>
+		<td id="employment_and_income_history-city-<%%VALUE(id)%%>" class="employment_and_income_history-city"><%%SELECT%%><%%VALUE(city)%%><%%ENDSELECT%%></td>
+		<td id="employment_and_income_history-employer_phone-<%%VALUE(id)%%>" class="employment_and_income_history-employer_phone"><%%SELECT%%><%%VALUE(employer_phone)%%><%%ENDSELECT%%></td>
+		<td id="employment_and_income_history-employed_from-<%%VALUE(id)%%>" class="employment_and_income_history-employed_from"><%%SELECT%%><%%VALUE(employed_from)%%><%%ENDSELECT%%></td>
+		<td id="employment_and_income_history-employed_till-<%%VALUE(id)%%>" class="employment_and_income_history-employed_till"><%%SELECT%%><%%VALUE(employed_till)%%><%%ENDSELECT%%></td>
+		<td id="employment_and_income_history-occupation-<%%VALUE(id)%%>" class="employment_and_income_history-occupation text-center"><%%SELECT%%><%%VALUE(occupation)%%><%%ENDSELECT%%></td>
+		<td id="employment_and_income_history-notes-<%%VALUE(id)%%>" class="employment_and_income_history-notes"><%%SELECT%%><%%VALUE(notes)%%><%%ENDSELECT%%></td>

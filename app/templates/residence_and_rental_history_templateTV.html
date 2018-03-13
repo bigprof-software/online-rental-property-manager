@@ -1,0 +1,14 @@
+<!-- Edit this file to change the layout of each record in the table view -->
+<!-- To disable clicking of a field, remove the <%%SELECT%%> and <%%ENDSELECT%%> formatters around it-->
+
+<!-- If you wish to hide the table view header that contains the column titles, -->
+<!-- add the following to the residence_and_rental_history_init() hook (in hooks/residence_and_rental_history.php file) -->
+<!--     $options->ShowTableHeader = 0;     -->
+
+		<td id="residence_and_rental_history-address-<%%VALUE(id)%%>" class="residence_and_rental_history-address"><%%SELECT%%><%%VALUE(address)%%><%%ENDSELECT%%></td>
+		<td id="residence_and_rental_history-landlord_or_manager_name-<%%VALUE(id)%%>" class="residence_and_rental_history-landlord_or_manager_name"><%%SELECT%%><%%VALUE(landlord_or_manager_name)%%><%%ENDSELECT%%></td>
+		<td id="residence_and_rental_history-landlord_or_manager_phone-<%%VALUE(id)%%>" class="residence_and_rental_history-landlord_or_manager_phone"><%%SELECT%%><%%VALUE(landlord_or_manager_phone)%%><%%ENDSELECT%%></td>
+		<td id="residence_and_rental_history-monthly_rent-<%%VALUE(id)%%>" class="residence_and_rental_history-monthly_rent text-right"><%%SELECT%%><%%VALUE(monthly_rent)%%><%%ENDSELECT%%></td>
+		<td id="residence_and_rental_history-duration_of_residency_from-<%%VALUE(id)%%>" class="residence_and_rental_history-duration_of_residency_from"><%%SELECT%%><%%VALUE(duration_of_residency_from)%%><%%ENDSELECT%%></td>
+		<td id="residence_and_rental_history-to-<%%VALUE(id)%%>" class="residence_and_rental_history-to"><%%SELECT%%><%%VALUE(to)%%><%%ENDSELECT%%></td>
+		<td id="residence_and_rental_history-reason_for_leaving-<%%VALUE(id)%%>" class="residence_and_rental_history-reason_for_leaving"><%%SELECT%%><%%VALUE(reason_for_leaving)%%><%%ENDSELECT%%></td>

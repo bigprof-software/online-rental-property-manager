@@ -1,0 +1,18 @@
+<!-- Edit this file to change the layout of each record in the table view -->
+<!-- To disable clicking of a field, remove the  and  formatters around it-->
+
+<!-- If you wish to hide the table view header that contains the column titles, -->
+<!-- add the following to the properties_init() hook (in hooks/properties.php file) -->
+<!--     $options->ShowTableHeader = 0;     -->
+
+		<td id="properties-property_name-<%%VALUE(id)%%>" class="properties-property_name"><%%VALUE(property_name)%%></td>
+		<td id="properties-type-<%%VALUE(id)%%>" class="properties-type"><%%VALUE(type)%%></td>
+		<td id="properties-number_of_units-<%%VALUE(id)%%>" class="properties-number_of_units text-center"><%%VALUE(number_of_units)%%></td>
+		<td id="properties-photo-<%%VALUE(id)%%>" class="properties-photo"><a href="<%%TRANSLATION(ImageFolder)%%><%%VALUE(photo)%%>" data-lightbox="properties-photo"><img src="thumbnail.php?i=<%%VALUE(photo)%%>&t=properties&f=photo&v=tv" class="img-thumbnail"></a></td>
+		<td id="properties-owner-<%%VALUE(id)%%>" class="properties-owner"><%%VALUE(owner)%%></td>
+		<td id="properties-operating_account-<%%VALUE(id)%%>" class="properties-operating_account"><%%VALUE(operating_account)%%></td>
+		<td id="properties-property_reserve-<%%VALUE(id)%%>" class="properties-property_reserve text-right"><%%VALUE(property_reserve)%%></td>
+		<td id="properties-street-<%%VALUE(id)%%>" class="properties-street"><%%VALUE(street)%%></td>
+		<td id="properties-City-<%%VALUE(id)%%>" class="properties-City"><%%VALUE(City)%%></td>
+		<td id="properties-State-<%%VALUE(id)%%>" class="properties-State text-center"><%%VALUE(State)%%></td>
+		<td id="properties-ZIP-<%%VALUE(id)%%>" class="properties-ZIP text-right"><%%VALUE(ZIP)%%></td>

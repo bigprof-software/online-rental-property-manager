@@ -1,0 +1,126 @@
+<!-- Edit this file to change the layout of the detail view print preview page -->
+
+
+<div class="panel-heading"><h3 class="panel-title">
+	<strong><%%DETAIL_VIEW_TITLE%%></strong>
+	<div class="hidden-print pull-right">
+		<div class="btn-group">
+			<button type="button" id="print" onclick="window.print();" title="<%%TRANSLATION(Print)%%>" class="btn btn-primary"><i class="glyphicon glyphicon-print"></i> <%%TRANSLATION(Print)%%></button>
+			<button type="submit" id="back" title="<%%TRANSLATION(Cancel Printing)%%>" class="btn btn-default"><i class="glyphicon glyphicon-remove-circle"></i> <%%TRANSLATION(Cancel Printing)%%></button>
+		</div>
+	</div>
+	<div class="clearfix"></div>
+</h3></div>
+
+<div class="panel-body">
+	<fieldset class="form-horizontal">
+		<div class="form-group" style="border-bottom: dotted 1px #DDD;">
+			<label class="col-xs-3 control-label">ID</label>
+			<div class="col-xs-9">
+				<div class="form-control-static"><%%VALUE(id)%%></div>
+			</div>
+		</div>
+		<div class="form-group" style="border-bottom: dotted 1px #DDD;">
+			<label class="col-xs-3 control-label">Applicant/ Tenant</label>
+			<div class="col-xs-9">
+				<div class="form-control-static"><span id="tenants<%%RND1%%>"><%%COMBOTEXT(tenants)%%></span></div>
+			</div>
+		</div>
+		<div class="form-group" style="border-bottom: dotted 1px #DDD;">
+			<label class="col-xs-3 control-label">Application status</label>
+			<div class="col-xs-9">
+				<div class="form-control-static"><%%COMBOTEXT(status)%%></div>
+			</div>
+		</div>
+		<div class="form-group" style="border-bottom: dotted 1px #DDD;">
+			<label class="col-xs-3 control-label">Property</label>
+			<div class="col-xs-9">
+				<div class="form-control-static"><span id="property<%%RND1%%>"><%%COMBOTEXT(property)%%></span></div>
+			</div>
+		</div>
+		<div class="form-group" style="border-bottom: dotted 1px #DDD;">
+			<label class="col-xs-3 control-label">Unit applied for</label>
+			<div class="col-xs-9">
+				<div class="form-control-static"><span id="unit<%%RND1%%>"><%%COMBOTEXT(unit)%%></span></div>
+			</div>
+		</div>
+		<div class="form-group" style="border-bottom: dotted 1px #DDD;">
+			<label class="col-xs-3 control-label">Lease type</label>
+			<div class="col-xs-9">
+				<div class="form-control-static"><%%COMBOTEXT(type)%%></div>
+			</div>
+		</div>
+		<div class="form-group" style="border-bottom: dotted 1px #DDD;">
+			<label class="col-xs-3 control-label">Total number of occupants</label>
+			<div class="col-xs-9">
+				<div class="form-control-static"><%%VALUE(total_number_of_occupants)%%></div>
+			</div>
+		</div>
+		<div class="form-group" style="border-bottom: dotted 1px #DDD;">
+			<label class="col-xs-3 control-label">Lease period from</label>
+			<div class="col-xs-9">
+				<div class="form-control-static"><%%COMBOTEXT(start_date)%%></div>
+			</div>
+		</div>
+		<div class="form-group" style="border-bottom: dotted 1px #DDD;">
+			<label class="col-xs-3 control-label">to</label>
+			<div class="col-xs-9">
+				<div class="form-control-static"><%%COMBOTEXT(end_date)%%></div>
+			</div>
+		</div>
+		<div class="form-group" style="border-bottom: dotted 1px #DDD;">
+			<label class="col-xs-3 control-label">Recurring charges frequency</label>
+			<div class="col-xs-9">
+				<div class="form-control-static"><%%COMBOTEXT(recurring_charges_frequency)%%></div>
+			</div>
+		</div>
+		<div class="form-group" style="border-bottom: dotted 1px #DDD;">
+			<label class="col-xs-3 control-label">Next due date</label>
+			<div class="col-xs-9">
+				<div class="form-control-static"><%%COMBOTEXT(next_due_date)%%></div>
+			</div>
+		</div>
+		<div class="form-group" style="border-bottom: dotted 1px #DDD;">
+			<label class="col-xs-3 control-label">Rental amount</label>
+			<div class="col-xs-9">
+				<div class="form-control-static"><%%VALUE(rent)%%></div>
+			</div>
+		</div>
+		<div class="form-group" style="border-bottom: dotted 1px #DDD;">
+			<label class="col-xs-3 control-label">Security deposit</label>
+			<div class="col-xs-9">
+				<div class="form-control-static"><%%VALUE(security_deposit)%%></div>
+			</div>
+		</div>
+		<div class="form-group" style="border-bottom: dotted 1px #DDD;">
+			<label class="col-xs-3 control-label">Security deposit date</label>
+			<div class="col-xs-9">
+				<div class="form-control-static"><%%COMBOTEXT(security_deposit_date)%%></div>
+			</div>
+		</div>
+		<div class="form-group" style="border-bottom: dotted 1px #DDD;">
+			<label class="col-xs-3 control-label">Emergency contact</label>
+			<div class="col-xs-9">
+				<div class="form-control-static"><%%VALUE(emergency_contact)%%></div>
+			</div>
+		</div>
+		<div class="form-group" style="border-bottom: dotted 1px #DDD;">
+			<label class="col-xs-3 control-label">Co signer details</label>
+			<div class="col-xs-9">
+				<div class="form-control-static"><%%VALUE(co_signer_details)%%></div>
+			</div>
+		</div>
+		<div class="form-group" style="border-bottom: dotted 1px #DDD;">
+			<label class="col-xs-3 control-label">Notes</label>
+			<div class="col-xs-9">
+				<div class="form-control-static"><%%VALUE(notes)%%></div>
+			</div>
+		</div>
+		<div class="form-group" style="border-bottom: dotted 1px #DDD;">
+			<label class="col-xs-3 control-label">Applicant agrees</label>
+			<div class="col-xs-9">
+				<div class="form-control-static"><input type="checkbox" name="agreement" id="agreement" value="1" <%%CHECKED(agreement)%%> readonly></div>
+			</div>
+		</div>
+	</fieldset>
+</div>

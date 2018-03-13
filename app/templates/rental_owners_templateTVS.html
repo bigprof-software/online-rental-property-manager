@@ -1,0 +1,19 @@
+<!-- Edit this file to change the layout of each record in the table view -->
+<!-- To disable clicking of a field, remove the  and  formatters around it-->
+
+<!-- If you wish to hide the table view header that contains the column titles, -->
+<!-- add the following to the rental_owners_init() hook (in hooks/rental_owners.php file) -->
+<!--     $options->ShowTableHeader = 0;     -->
+
+		<td id="rental_owners-first_name-<%%VALUE(id)%%>" class="rental_owners-first_name"><%%VALUE(first_name)%%></td>
+		<td id="rental_owners-last_name-<%%VALUE(id)%%>" class="rental_owners-last_name"><%%VALUE(last_name)%%></td>
+		<td id="rental_owners-company_name-<%%VALUE(id)%%>" class="rental_owners-company_name"><%%VALUE(company_name)%%></td>
+		<td id="rental_owners-primary_email-<%%VALUE(id)%%>" class="rental_owners-primary_email"><a href="mailto:<%%VALUE(primary_email)%%>" title="<%%VALUE(primary_email)%%>" class="btn btn-default"><i class="glyphicon glyphicon-envelope text-info"></i></a></td>
+		<td id="rental_owners-alternate_email-<%%VALUE(id)%%>" class="rental_owners-alternate_email"><a href="mailto:<%%VALUE(alternate_email)%%>" title="<%%VALUE(alternate_email)%%>" class="btn btn-default"><i class="glyphicon glyphicon-envelope text-info"></i></a></td>
+		<td id="rental_owners-phone-<%%VALUE(id)%%>" class="rental_owners-phone"><%%VALUE(phone)%%></td>
+		<td id="rental_owners-country-<%%VALUE(id)%%>" class="rental_owners-country"><%%VALUE(country)%%></td>
+		<td id="rental_owners-street-<%%VALUE(id)%%>" class="rental_owners-street"><%%VALUE(street)%%></td>
+		<td id="rental_owners-city-<%%VALUE(id)%%>" class="rental_owners-city"><%%VALUE(city)%%></td>
+		<td id="rental_owners-state-<%%VALUE(id)%%>" class="rental_owners-state"><%%VALUE(state)%%></td>
+		<td id="rental_owners-zip-<%%VALUE(id)%%>" class="rental_owners-zip text-right"><%%VALUE(zip)%%></td>
+		<td id="rental_owners-comments-<%%VALUE(id)%%>" class="rental_owners-comments"><%%VALUE(comments)%%></td>

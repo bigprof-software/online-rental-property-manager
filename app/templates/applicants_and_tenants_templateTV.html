@@ -1,0 +1,18 @@
+<!-- Edit this file to change the layout of each record in the table view -->
+<!-- To disable clicking of a field, remove the <%%SELECT%%> and <%%ENDSELECT%%> formatters around it-->
+
+<!-- If you wish to hide the table view header that contains the column titles, -->
+<!-- add the following to the applicants_and_tenants_init() hook (in hooks/applicants_and_tenants.php file) -->
+<!--     $options->ShowTableHeader = 0;     -->
+
+		<td id="applicants_and_tenants-last_name-<%%VALUE(id)%%>" class="applicants_and_tenants-last_name"><%%SELECT%%><%%VALUE(last_name)%%><%%ENDSELECT%%></td>
+		<td id="applicants_and_tenants-first_name-<%%VALUE(id)%%>" class="applicants_and_tenants-first_name"><%%SELECT%%><%%VALUE(first_name)%%><%%ENDSELECT%%></td>
+		<td id="applicants_and_tenants-email-<%%VALUE(id)%%>" class="applicants_and_tenants-email"><a href="mailto:<%%VALUE(email)%%>" title="<%%VALUE(email)%%>" class="btn btn-default"><i class="glyphicon glyphicon-envelope text-info"></i></a></td>
+		<td id="applicants_and_tenants-phone-<%%VALUE(id)%%>" class="applicants_and_tenants-phone"><%%SELECT%%><%%VALUE(phone)%%><%%ENDSELECT%%></td>
+		<td id="applicants_and_tenants-birth_date-<%%VALUE(id)%%>" class="applicants_and_tenants-birth_date"><%%SELECT%%><%%VALUE(birth_date)%%><%%ENDSELECT%%></td>
+		<td id="applicants_and_tenants-driver_license_number-<%%VALUE(id)%%>" class="applicants_and_tenants-driver_license_number text-center"><%%SELECT%%><%%VALUE(driver_license_number)%%><%%ENDSELECT%%></td>
+		<td id="applicants_and_tenants-monthly_gross_pay-<%%VALUE(id)%%>" class="applicants_and_tenants-monthly_gross_pay text-right"><%%SELECT%%><%%VALUE(monthly_gross_pay)%%><%%ENDSELECT%%></td>
+		<td id="applicants_and_tenants-additional_income-<%%VALUE(id)%%>" class="applicants_and_tenants-additional_income text-right"><%%SELECT%%><%%VALUE(additional_income)%%><%%ENDSELECT%%></td>
+		<td id="applicants_and_tenants-assets-<%%VALUE(id)%%>" class="applicants_and_tenants-assets text-right"><%%SELECT%%><%%VALUE(assets)%%><%%ENDSELECT%%></td>
+		<td id="applicants_and_tenants-status-<%%VALUE(id)%%>" class="applicants_and_tenants-status text-center"><%%SELECT%%><%%VALUE(status)%%><%%ENDSELECT%%></td>
+		<td id="applicants_and_tenants-notes-<%%VALUE(id)%%>" class="applicants_and_tenants-notes"><%%SELECT%%><%%VALUE(notes)%%><%%ENDSELECT%%></td>
