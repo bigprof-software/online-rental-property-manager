@@ -1,22 +1,22 @@
 # Online Rental Property Manager (ORPM)
 
-Easy and lean invoicing for small businesses, consultants and freelancers, created using [AppGini](https://bigprof.com/appgini/).
+Online rental property manager (ORPM) allows you to manage your rental properties, units, 
+applications, leases and tenants. Add all details related to the tenants, i.e. references, 
+rental history, employment history and income overview. ORPM was created using 
+[AppGini](https://bigprof.com/appgini/). So you can easily customize it to add/remove 
+details or any extra functionality to fit your own requirements. 
+ORPM is a responsive web-based application that you can access from your PC, tablet, 
+mobile or any other device. 
 
-### [⇩ Download the latest release](https://github.com/bigprof-software/online-rental-property-manager)
+### [⇩ Download the latest release](https://github.com/bigprof/online-rental-property-manager/archive/4.2.zip)
 
 ##### [_Changelog_](https://github.com/bigprof-software/online-rental-property-manager/releases)
 
 ## Features
 
-* Easily define your billable items, whether products or services.
-* View customers activity and the full invoices history of each client.
-* Check which customers ordered which items.
-* Multiple customizable templates for invoices.
-* Apply discounts and taxes.
-* Show invoice total in digits and letters.
-* Price history for items to keep log of price changes and apply the correct price to invoices based on their issue date.
+* [TODO]
 
-This application was created using AppGini, and therefore it shares the features of any AppGini application as well, including:
+This application was created using [AppGini](https://bigprof.com/appgini/), and therefore it shares the features of any AppGini application as well, including:
 
 * Responsive Bootstrap apps that work beautifully on any device.
 * Support for multiple users and user groups, with easy-to-configure per-table permissions.
