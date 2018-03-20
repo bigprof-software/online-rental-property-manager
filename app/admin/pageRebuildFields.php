@@ -4,8 +4,28 @@
 	$GLOBALS['page_title'] = $Translation['view or rebuild fields'];
 	include("{$currDir}/incHeader.php");
 
+	/*
+		$schema: [ tablename => [ fieldname => [ appgini => '...', 'db' => '...'], ... ], ... ]
+	*/
+
 	/* application schema as created in AppGini */
 	$schema = array(   
+		'applicants_and_tenants' => array(   
+			'id' => array('appgini' => 'INT unsigned not null primary key auto_increment '),
+			'last_name' => array('appgini' => 'VARCHAR(15) '),
+			'first_name' => array('appgini' => 'VARCHAR(15) '),
+			'email' => array('appgini' => 'VARCHAR(80) '),
+			'phone' => array('appgini' => 'VARCHAR(15) '),
+			'birth_date' => array('appgini' => 'DATE '),
+			'driver_license_number' => array('appgini' => 'VARCHAR(15) '),
+			'driver_license_state' => array('appgini' => 'VARCHAR(15) '),
+			'requested_lease_term' => array('appgini' => 'VARCHAR(15) '),
+			'monthly_gross_pay' => array('appgini' => 'DECIMAL(8,2) '),
+			'additional_income' => array('appgini' => 'DECIMAL(8,2) '),
+			'assets' => array('appgini' => 'DECIMAL(8,2) '),
+			'status' => array('appgini' => 'VARCHAR(40) not null default \'Applicant\' '),
+			'notes' => array('appgini' => 'TEXT ')
+		),
 		'applications_leases' => array(   
 			'id' => array('appgini' => 'INT unsigned not null primary key auto_increment '),
 			'tenants' => array('appgini' => 'INT unsigned '),
@@ -55,21 +75,21 @@
 			'reference_name' => array('appgini' => 'VARCHAR(15) '),
 			'phone' => array('appgini' => 'VARCHAR(15) ')
 		),
-		'applicants_and_tenants' => array(   
+		'rental_owners' => array(   
 			'id' => array('appgini' => 'INT unsigned not null primary key auto_increment '),
-			'last_name' => array('appgini' => 'VARCHAR(15) '),
-			'first_name' => array('appgini' => 'VARCHAR(15) '),
-			'email' => array('appgini' => 'VARCHAR(80) '),
-			'phone' => array('appgini' => 'VARCHAR(15) '),
-			'birth_date' => array('appgini' => 'DATE '),
-			'driver_license_number' => array('appgini' => 'VARCHAR(15) '),
-			'driver_license_state' => array('appgini' => 'VARCHAR(15) '),
-			'requested_lease_term' => array('appgini' => 'VARCHAR(15) '),
-			'monthly_gross_pay' => array('appgini' => 'DECIMAL(8,2) '),
-			'additional_income' => array('appgini' => 'DECIMAL(8,2) '),
-			'assets' => array('appgini' => 'DECIMAL(8,2) '),
-			'status' => array('appgini' => 'VARCHAR(40) not null default \'Applicant\' '),
-			'notes' => array('appgini' => 'TEXT ')
+			'first_name' => array('appgini' => 'VARCHAR(40) '),
+			'last_name' => array('appgini' => 'VARCHAR(40) '),
+			'company_name' => array('appgini' => 'VARCHAR(40) '),
+			'date_of_birth' => array('appgini' => 'DATE '),
+			'primary_email' => array('appgini' => 'VARCHAR(40) '),
+			'alternate_email' => array('appgini' => 'VARCHAR(40) '),
+			'phone' => array('appgini' => 'VARCHAR(40) '),
+			'country' => array('appgini' => 'VARCHAR(40) '),
+			'street' => array('appgini' => 'VARCHAR(40) '),
+			'city' => array('appgini' => 'VARCHAR(40) '),
+			'state' => array('appgini' => 'VARCHAR(40) '),
+			'zip' => array('appgini' => 'DECIMAL(15,0) '),
+			'comments' => array('appgini' => 'TEXT ')
 		),
 		'properties' => array(   
 			'id' => array('appgini' => 'INT unsigned not null primary key auto_increment '),
@@ -86,6 +106,12 @@
 			'City' => array('appgini' => 'VARCHAR(40) '),
 			'State' => array('appgini' => 'VARCHAR(40) '),
 			'ZIP' => array('appgini' => 'DECIMAL(15,0) ')
+		),
+		'property_photos' => array(   
+			'id' => array('appgini' => 'INT unsigned not null primary key auto_increment '),
+			'property' => array('appgini' => 'INT unsigned '),
+			'photo' => array('appgini' => 'VARCHAR(40) '),
+			'description' => array('appgini' => 'TEXT ')
 		),
 		'units' => array(   
 			'id' => array('appgini' => 'INT unsigned not null primary key auto_increment '),
@@ -107,21 +133,11 @@
 			'deposit_amount' => array('appgini' => 'DECIMAL(6,2) '),
 			'description' => array('appgini' => 'TEXT ')
 		),
-		'rental_owners' => array(   
+		'unit_photos' => array(   
 			'id' => array('appgini' => 'INT unsigned not null primary key auto_increment '),
-			'first_name' => array('appgini' => 'VARCHAR(40) '),
-			'last_name' => array('appgini' => 'VARCHAR(40) '),
-			'company_name' => array('appgini' => 'VARCHAR(40) '),
-			'date_of_birth' => array('appgini' => 'DATE '),
-			'primary_email' => array('appgini' => 'VARCHAR(40) '),
-			'alternate_email' => array('appgini' => 'VARCHAR(40) '),
-			'phone' => array('appgini' => 'VARCHAR(40) '),
-			'country' => array('appgini' => 'VARCHAR(40) '),
-			'street' => array('appgini' => 'VARCHAR(40) '),
-			'city' => array('appgini' => 'VARCHAR(40) '),
-			'state' => array('appgini' => 'VARCHAR(40) '),
-			'zip' => array('appgini' => 'DECIMAL(15,0) '),
-			'comments' => array('appgini' => 'TEXT ')
+			'unit' => array('appgini' => 'INT unsigned '),
+			'photo' => array('appgini' => 'VARCHAR(40) '),
+			'description' => array('appgini' => 'TEXT ')
 		)
 	);
 
@@ -150,28 +166,52 @@
 		return $def;
 	}
 
-	/* process requested fixes */
-	$fix_table = (isset($_GET['t']) ? $_GET['t'] : false);
-	$fix_field = (isset($_GET['f']) ? $_GET['f'] : false);
+	/**
+	 *  @brief creates/fixes given field according to given schema
+	 *  @return integer: 0 = error, 1 = field updated, 2 = field created
+	 */
+	function fix_field($fix_table, $fix_field, $schema, &$qry){
+		if(!isset($schema[$fix_table][$fix_field])) return 0;
 
-	if($fix_table && $fix_field && isset($schema[$fix_table][$fix_field])){
+		$def = $schema[$fix_table][$fix_field];
 		$field_added = $field_updated = false;
+		$eo['silentErrors'] = true;
 
 		// field exists?
 		$res = sql("show columns from `{$fix_table}` like '{$fix_field}'", $eo);
 		if($row = db_fetch_assoc($res)){
 			// modify field
-			$qry = "alter table `{$fix_table}` modify `{$fix_field}` {$schema[$fix_table][$fix_field]['appgini']}";
+			$qry = "alter table `{$fix_table}` modify `{$fix_field}` {$def['appgini']}";
 			sql($qry, $eo);
-			$field_updated = true;
-		}else{
-			// create field
-			$qry = "alter table `{$fix_table}` add column `{$fix_field}` {$schema[$fix_table][$fix_field]['appgini']}";
-			sql($qry, $eo);
-			$field_added = true;
+
+			// remove unique from db if necessary
+			if($row['Key'] == 'UNI' && !stripos($def['appgini'], ' unique')){
+				// retrieve unique index name
+				$res_unique = sql("show index from `{$fix_table}` where Column_name='{$fix_field}' and Non_unique=0", $eo);
+				if($row_unique = db_fetch_assoc($res_unique)){
+					$qry_unique = "drop index `{$row_unique['Key_name']}` on `{$fix_table}`";
+					sql($qry_unique, $eo);
+					$qry .= ";\n{$qry_unique}";
+				}
+			}
+
+			return 1;
 		}
+
+		// create field
+		$qry = "alter table `{$fix_table}` add column `{$fix_field}` {$schema[$fix_table][$fix_field]['appgini']}";
+		sql($qry, $eo);
+		return 2;
 	}
 
+	/* process requested fixes */
+	$fix_table = (isset($_GET['t']) ? $_GET['t'] : false);
+	$fix_field = (isset($_GET['f']) ? $_GET['f'] : false);
+	$fix_all = (isset($_GET['all']) ? true : false);
+
+	if($fix_field && $fix_table) $fix_status = fix_field($fix_table, $fix_field, $schema, $qry);
+
+	/* retrieve actual db schema */
 	foreach($table_captions as $tn => $tc){
 		$eo['silentErrors'] = true;
 		$res = sql("show columns from `{$tn}`", $eo);
@@ -195,17 +235,30 @@
 			}
 		}
 	}
+
+	/* handle fix_all request */
+	if($fix_all){
+		foreach($schema as $tn => $fields){
+			foreach($fields as $fn => $fd){
+				if(prepare_def($fd['appgini']) == prepare_def($fd['db'])) continue;
+				fix_field($tn, $fn, $schema, $qry);
+			}
+		}
+
+		redirect('admin/pageRebuildFields.php');
+		exit;
+	}
 ?>
 
-<?php if($field_added || $field_updated){ ?>
+<?php if($fix_status == 1 || $fix_status == 2){ ?>
 	<div class="alert alert-info alert-dismissable">
 		<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
 		<i class="glyphicon glyphicon-info-sign"></i>
 		<?php 
-			$originalValues =  array ('<ACTION>','<FIELD>' , '<TABLE>' , '<QUERY>' );
-			$action = ($field_added ? 'create' : 'update');
-			$replaceValues = array ( $action , $fix_field , $fix_table , $qry );
-			echo  str_replace ( $originalValues , $replaceValues , $Translation['create or update table']  );
+			$originalValues = array('<ACTION>', '<FIELD>', '<TABLE>', '<QUERY>');
+			$action = ($fix_status == 2 ? 'create' : 'update');
+			$replaceValues = array($action, $fix_field, $fix_table, $qry);
+			echo str_replace($originalValues, $replaceValues, $Translation['create or update table']);
 		?>
 	</div>
 <?php } ?>
@@ -225,7 +278,7 @@
 		<th><?php echo $Translation['field'] ; ?></th>
 		<th><?php echo $Translation['AppGini definition'] ; ?></th>
 		<th><?php echo $Translation['database definition'] ; ?></th>
-		<th></th>
+		<th id="fix_all"></th>
 	</tr></thead>
 
 	<tbody>
@@ -259,39 +312,45 @@
 </style>
 
 <script>
-	jQuery(function(){
-		jQuery('[data-toggle="tooltip"]').tooltip();
+	$j(function(){
+		$j('[data-toggle="tooltip"]').tooltip();
 
-		jQuery('#show_deviations_only').click(function(){
-			jQuery(this).addClass('hidden');
-			jQuery('#show_all_fields').removeClass('hidden');
-			jQuery('.field_ok').hide();
+		$j('#show_deviations_only').click(function(){
+			$j(this).addClass('hidden');
+			$j('#show_all_fields').removeClass('hidden');
+			$j('.field_ok').hide();
 		});
 
-		jQuery('#show_all_fields').click(function(){
-			jQuery(this).addClass('hidden');
-			jQuery('#show_deviations_only').removeClass('hidden');
-			jQuery('.field_ok').show();
+		$j('#show_all_fields').click(function(){
+			$j(this).addClass('hidden');
+			$j('#show_deviations_only').removeClass('hidden');
+			$j('.field_ok').show();
 		});
 
-		jQuery('.btn_update').click(function(){
+		$j('.btn_update, #fix_all').click(function(){
 			return confirm("<?php echo $Translation['field update warning'] ; ?>");
 		});
 
-		var count_updates = jQuery('.btn_update').length;
-		var count_creates = jQuery('.btn_create').length;
+		var count_updates = $j('.btn_update').length;
+		var count_creates = $j('.btn_create').length;
 		if(!count_creates && !count_updates){
-			jQuery('.summary').addClass('alert-success').html("<?php echo $Translation['no deviations found'] ; ?>");
+			$j('.summary').addClass('alert-success').html("<?php echo $Translation['no deviations found'] ; ?>");
 		}else{
 			var fieldsCount = "<?php echo $Translation['error fields']; ?>";
 			fieldsCount = fieldsCount.replace(/<CREATENUM>/, count_creates ).replace(/<UPDATENUM>/, count_updates);
 
 
-			jQuery('.summary')
+			$j('.summary')
 				.addClass('alert-warning')
 				.html(
-					fieldsCount
+					fieldsCount + 
+					'<br><br>' + 
+					'<a href="pageBackupRestore.php" class="alert-link">' +
+						'<b><?php echo addslashes($Translation['backup before fix']); ?></b>' +
+					'</a>'
 				);
+
+			$j('<a href="pageRebuildFields.php?all=1" class="btn btn-danger btn-block"><i class="glyphicon glyphicon-cog"></i> <?php echo addslashes($Translation['fix all']); ?></a>').appendTo('#fix_all');
 		}
 	});
 </script>

@@ -304,3 +304,8 @@
 	$Translation['record has no owner'] = 'This record has no assigned owner. You can assign an owner from the admin area.';
 	$Translation['admin-only info'] = 'The above info is displayed because you are currently signed in as the super admin. Other users won\'t see this.';
 	$Translation['discard changes confirm'] = 'Discard changes to this record?';
+
+	/* Added in AppGini 5.70 */
+	$Translation['hide/show columns'] = 'Hide/Show columns';
+	$Translation['next column'] = 'Next column';
+	$Translation['previous column'] = 'Previous column';

@@ -1,18 +1,16 @@
 <!-- Edit this file to change the layout of the detail view form -->
 
-<script src="resources/datepicker/js/datepicker.packed.js"></script>
-<link href="resources/datepicker/css/datepicker.css" rel="stylesheet">
-
 <a name="detail-view"></a>
 <div class="panel-heading"><h3 class="panel-title"><strong><%%DETAIL_VIEW_TITLE%%></strong></h3></div>
 
 <div class="panel-body" id="residence_and_rental_history_dv_container">
 	<!-- child links -->
-	<div class="row">
+	<div class="row vspacer-md">
 		<div class="col-xs-12">
 			<div class="clearfix"></div>
 		</div>
 	</div>
+	<hr class="hidden-xs hidden-sm">
 
 	<div class="row">
 		<!-- form inputs -->
@@ -20,6 +18,7 @@
 			<fieldset class="form-horizontal">
 
 				<div class="form-group">
+					<hr class="hidden-md hidden-lg">
 					<label for="id" class="control-label col-lg-3">ID</label>
 					<div class="col-lg-9">
 						<div class="form-control-static" id="id"><%%VALUE(id)%%></div>
@@ -27,13 +26,15 @@
 				</div>
 
 				<div class="form-group">
+					<hr class="hidden-md hidden-lg">
 					<label for="tenant" class="control-label col-lg-3" data-parent_link="view_parent_modal">Tenant</label>
 					<div class="col-lg-9">
-						<div class="row form-control-static"><div class="col-xs-11"><%%COMBO(tenant)%%><%%PLINK(tenant)%%><%%ADDNEW(applicants_and_tenants)%%></div></div>
+						<div class="form-control-static" style="white-space: nowrap; overflow-x: hidden;"><%%COMBO(tenant)%%><%%PLINK(tenant)%%><%%ADDNEW(applicants_and_tenants)%%></div>
 					</div>
 				</div>
 
 				<div class="form-group">
+					<hr class="hidden-md hidden-lg">
 					<label for="address" class="control-label col-lg-3">Address</label>
 					<div class="col-lg-9">
 						<input maxlength="40" type="text" class="form-control" name="address" id="address" value="<%%VALUE(address)%%>">
@@ -41,6 +42,7 @@
 				</div>
 
 				<div class="form-group">
+					<hr class="hidden-md hidden-lg">
 					<label for="landlord_or_manager_name" class="control-label col-lg-3">Landlord/manager name</label>
 					<div class="col-lg-9">
 						<input maxlength="15" type="text" class="form-control" name="landlord_or_manager_name" id="landlord_or_manager_name" value="<%%VALUE(landlord_or_manager_name)%%>">
@@ -48,6 +50,7 @@
 				</div>
 
 				<div class="form-group">
+					<hr class="hidden-md hidden-lg">
 					<label for="landlord_or_manager_phone" class="control-label col-lg-3">Landlord/manager phone</label>
 					<div class="col-lg-9">
 						<input maxlength="15" type="text" class="form-control" name="landlord_or_manager_phone" id="landlord_or_manager_phone" value="<%%VALUE(landlord_or_manager_phone)%%>">
@@ -55,6 +58,7 @@
 				</div>
 
 				<div class="form-group">
+					<hr class="hidden-md hidden-lg">
 					<label for="monthly_rent" class="control-label col-lg-3">Monthly rent</label>
 					<div class="col-lg-9">
 						<input maxlength="9" type="text" class="form-control" name="monthly_rent" id="monthly_rent" value="<%%VALUE(monthly_rent)%%>">
@@ -62,6 +66,7 @@
 				</div>
 
 				<div class="form-group">
+					<hr class="hidden-md hidden-lg">
 					<label for="duration_of_residency_from" class="control-label col-lg-3">Duration of residency from</label>
 					<div class="col-lg-9">
 						<%%COMBO(duration_of_residency_from)%%>
@@ -69,6 +74,7 @@
 				</div>
 
 				<div class="form-group">
+					<hr class="hidden-md hidden-lg">
 					<label for="to" class="control-label col-lg-3">to</label>
 					<div class="col-lg-9">
 						<%%COMBO(to)%%>
@@ -76,6 +82,7 @@
 				</div>
 
 				<div class="form-group">
+					<hr class="hidden-md hidden-lg">
 					<label for="reason_for_leaving" class="control-label col-lg-3">Reason for leaving</label>
 					<div class="col-lg-9">
 						<input maxlength="40" type="text" class="form-control" name="reason_for_leaving" id="reason_for_leaving" value="<%%VALUE(reason_for_leaving)%%>">
@@ -83,6 +90,7 @@
 				</div>
 
 				<div class="form-group">
+					<hr class="hidden-md hidden-lg">
 					<label for="notes" class="control-label col-lg-3">Notes</label>
 					<div class="col-lg-9">
 						<%%HTMLAREA(notes)%%>
@@ -93,6 +101,7 @@
 		</div>
 
 		<!-- DV action buttons -->
+		<hr class="hidden-md hidden-lg">
 		<div class="col-md-4 col-lg-2" id="residence_and_rental_history_dv_action_buttons">
 			<div class="btn-toolbar">
 				<div class="btn-group-vertical btn-group-lg" style="width: 100%;">
@@ -123,19 +132,23 @@
 			var record_added_ok = (location.search.split('record-added-ok=').length == 2);
 			var record_updated_ok = (location.search.split('record-updated-ok=').length == 2);
 			if((record_added_ok || record_updated_ok) && embedded_mode && autoclose_mode){
-				setTimeout(function(){
-					window.parent.jQuery('.modal').modal('hide');
-				}, 2000);
+				setTimeout(AppGini.closeParentModal, 2000);
 			}
 
 			bkLib.onDomLoaded(function(){
 				if($j('textarea#notes').length) new nicEditor({ fullPanel : true }).panelInstance('notes');
 
-				$j('.nicEdit-panelContain').parent().width('90%');
-				$j('.nicEdit-panelContain').parent().next().width('88%');
+				$j('.nicEdit-panelContain').parent().width('100%');
+				$j('.nicEdit-panelContain').parent().next().width('98%');
 				$j('.nicEdit-main').width('99%');
 			});
-			$j('select, input[type=text], textarea').not(':disabled').eq(0).focus();
+			/* enable DV action buttons to float on scrolling down the form */
+			enable_dvab_floating();
+
+			if(!(embedded_mode && AppGini.mobileDevice())){
+				$j('select, input[type=text], textarea').not(':disabled').eq(0).focus();
+			}
+
 			$j('form').eq(0).change(function(){
 				if($j(this).data('already_changed')) return;
 				if($j('#deselect').length) $j('#deselect').removeClass('btn-default').addClass('btn-warning').get(0).lastChild.data = " <%%TRANSLATION(Cancel)%%>";
@@ -181,7 +194,7 @@
 					parent_id = $j(this).prevAll('[type=radio]').eq(0).val();
 				}
 
-				if(parent_id != '{empty_value}'){
+				if(parent_id != '{empty_value}' && parent_id != undefined && parent_id != ''){
 					var parent_link = $j(this).parents('.form-group').children('label').data('parent_link');
 					switch(parent_link){
 						case 'view_parent_hidden':

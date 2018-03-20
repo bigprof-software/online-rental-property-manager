@@ -25,7 +25,7 @@
         * For any reuse or distribution, you must make clear to others the license terms of this work.
         * Any of these conditions can be waived if you get permission from the copyright holder.
 */
-var datePickerController;(function(){datePicker.languageinfo=navigator.language?navigator.language:navigator.userLanguage;datePicker.languageinfo=datePicker.languageinfo?datePicker.languageinfo.toLowerCase().replace(/-[a-z]+$/,""):"en";var scriptFiles=document.getElementsByTagName("head")[0].getElementsByTagName("script");var loc=scriptFiles[scriptFiles.length-1].src.substr(0,scriptFiles[scriptFiles.length-1].src.lastIndexOf("/"))+"/resources/datepicker/js/lang/"+datePicker.languageinfo+".js";var script=document.createElement("script");script.type="text/javascript";script.src=loc;script.setAttribute("charset","utf-8");
+var datePickerController;(function(){datePicker.languageinfo=navigator.language?navigator.language:navigator.userLanguage;datePicker.languageinfo=datePicker.languageinfo?datePicker.languageinfo.toLowerCase().replace(/-[a-z]+$/,""):"en";var scriptFiles=document.getElementsByTagName("head")[0].getElementsByTagName("script");var loc=scriptFiles[scriptFiles.length-1].src.substr(0,scriptFiles[scriptFiles.length-1].src.lastIndexOf("/"))+"/lang/"+datePicker.languageinfo+".js";var script=document.createElement("script");script.type="text/javascript";script.src=loc;script.setAttribute("charset","utf-8");
 /*@cc_on
 /*@if(@_win32)
         var bases = document.getElementsByTagName('base');

@@ -109,13 +109,33 @@ jQuery(function(){
 		return ( c_width > e_width );
 	};
 
+	var fix_lookup_width = function(field){
+		var s2 = $j('div.select2-container[id=s2id_' + field + '-container]');
+		if(!s2.length) return;
+
+		var s2new_width = 0, s2view_width = 0, s2parent_width = 0;
+
+		var s2new = s2.parent().find('.add_new_parent:visible');
+		var s2view = s2.parent().find('.view_parent:visible');
+		if(s2new.length) s2new_width = s2new.outerWidth(true);
+		if(s2view.length) s2view_width = s2view.outerWidth(true);
+		s2parent_width = s2.parent().innerWidth();
+
+		// console.log({ s2new_width: s2new_width, s2view_width: s2view_width, s2parent_width: s2parent_width });
+
+		s2.css({ width: '100%', 'max-width': (s2parent_width - s2new_width - s2view_width - 1) + 'px' });
+	}
+
 	$j(window).resize(function(){
 		var window_width = $j(window).width();
 		var max_width = $j('body').width() * 0.5;
 
-		if($j('fieldset .col-xs-11').length) max_width = $j('fieldset .col-xs-11').width() - select2_max_width_decrement();
-		$j('.select2-container:not(.option_list)').css({ 'max-width' : max_width + 'px', 'width': '100%' });
-		fix_table_responsive_width();
+		$j('.select2-container:not(.option_list)').each(function(){
+			var field = $j(this).attr('id').replace(/^s2id_/, '').replace(/-container$/, '');
+			fix_lookup_width(field);
+		});
+
+		//fix_table_responsive_width();
 
 		var full_img_factor = 0.9; /* xs */
 		if(window_width >= 992) full_img_factor = 0.6; /* md, lg */
@@ -124,7 +144,7 @@ jQuery(function(){
 		$j('.detail_view .img-responsive').css({'max-width' : parseInt($j('.detail_view').width() * full_img_factor) + 'px'});
 
 		/* remove labels from truncated buttons, leaving only glyphicons */
-		$j('.btn:truncated').each(function(){
+		$j('.btn.truncate:truncated').each(function(){
 			// hide text
 			var label = $j(this).html();
 			var mlabel = label.replace(/.*(<i.*?><\/i>).*/, '$1');
@@ -209,6 +229,16 @@ jQuery(function(){
 
 	/* remove empty email links from TV, TVP */
 	$j('a[href="mailto:"]').remove();
+
+	/* Disable action buttons when form is submitted to avoid user re-submission on slow connections */
+	$j('form').eq(0).submit(function(){
+		setTimeout(function(){
+			$j('#insert, #update, #delete, #deselect').prop('disabled', true);
+		}, 200); // delay purpose is to allow submitting the button values first then disable them.
+	});
+
+	/* fix links inside alerts */
+	$j('.alert a').addClass('alert-link');
 });
 
 /* show/hide TV action buttons based on whether records are selected or not */
@@ -237,11 +267,20 @@ function fix_table_responsive_width(){
 	}
 }
 
+function applicants_and_tenants_validateData(){
+	$j('.has-error').removeClass('has-error');
+	/* Field status can't be empty */
+	if(!$j('[name=status]:checked').length){ modal_window({ message: '<div class="alert alert-danger"><?php echo addslashes($Translation['field not null']); ?></div>', title: "<?php echo addslashes($Translation['error:']); ?> Status", close: function(){ $j('[name=status]').focus().parents('.form-group').addClass('has-error'); } }); return false; };
+	return true;
+}
 function applications_leases_validateData(){
 	$j('.has-error').removeClass('has-error');
-	if(!$j('[name=status]:checked').length){ modal_window({ message: '<div class="alert alert-danger"><?php echo addslashes($Translation['field not null']); ?></div>', title: "<?php echo addslashes($Translation['error:']); ?> Application status", close: function(){ $j('[name=status]').focus(); $j('[name=status]').parents('.form-group').addClass('has-error'); } }); return false; };
-	if(!$j('[name=type]:checked').length){ modal_window({ message: '<div class="alert alert-danger"><?php echo addslashes($Translation['field not null']); ?></div>', title: "<?php echo addslashes($Translation['error:']); ?> Lease type", close: function(){ $j('[name=type]').focus(); $j('[name=type]').parents('.form-group').addClass('has-error'); } }); return false; };
-	if($j('#recurring_charges_frequency').val() == ''){ modal_window({ message: '<div class="alert alert-danger"><?php echo addslashes($Translation['field not null']); ?></div>', title: "<?php echo addslashes($Translation['error:']); ?> Recurring charges frequency", close: function(){ $j('[name=recurring_charges_frequency]').focus(); $j('[name=recurring_charges_frequency]').parents('.form-group').addClass('has-error'); } }); return false; };
+	/* Field status can't be empty */
+	if(!$j('[name=status]:checked').length){ modal_window({ message: '<div class="alert alert-danger"><?php echo addslashes($Translation['field not null']); ?></div>', title: "<?php echo addslashes($Translation['error:']); ?> Application status", close: function(){ $j('[name=status]').focus().parents('.form-group').addClass('has-error'); } }); return false; };
+	/* Field type can't be empty */
+	if(!$j('[name=type]:checked').length){ modal_window({ message: '<div class="alert alert-danger"><?php echo addslashes($Translation['field not null']); ?></div>', title: "<?php echo addslashes($Translation['error:']); ?> Lease type", close: function(){ $j('[name=type]').focus().parents('.form-group').addClass('has-error'); } }); return false; };
+	/* Field recurring_charges_frequency can't be empty */
+	if($j('#recurring_charges_frequency').val() == ''){ modal_window({ message: '<div class="alert alert-danger"><?php echo addslashes($Translation['field not null']); ?></div>', title: "<?php echo addslashes($Translation['error:']); ?> Recurring charges frequency", close: function(){ $j('[name=recurring_charges_frequency]').focus().parents('.form-group').addClass('has-error'); } }); return false; };
 	return true;
 }
 function residence_and_rental_history_validateData(){
@@ -256,23 +295,29 @@ function references_validateData(){
 	$j('.has-error').removeClass('has-error');
 	return true;
 }
-function applicants_and_tenants_validateData(){
+function rental_owners_validateData(){
 	$j('.has-error').removeClass('has-error');
-	if(!$j('[name=status]:checked').length){ modal_window({ message: '<div class="alert alert-danger"><?php echo addslashes($Translation['field not null']); ?></div>', title: "<?php echo addslashes($Translation['error:']); ?> Status", close: function(){ $j('[name=status]').focus(); $j('[name=status]').parents('.form-group').addClass('has-error'); } }); return false; };
 	return true;
 }
 function properties_validateData(){
 	$j('.has-error').removeClass('has-error');
-	if($j('#property_name').val() == ''){ modal_window({ message: '<div class="alert alert-danger"><?php echo addslashes($Translation['field not null']); ?></div>', title: "<?php echo addslashes($Translation['error:']); ?> Property Name", close: function(){ $j('[name=property_name]').focus(); $j('[name=property_name]').parents('.form-group').addClass('has-error'); } }); return false; };
-	if(!$j('[name=type]:checked').length){ modal_window({ message: '<div class="alert alert-danger"><?php echo addslashes($Translation['field not null']); ?></div>', title: "<?php echo addslashes($Translation['error:']); ?> Type", close: function(){ $j('[name=type]').focus(); $j('[name=type]').parents('.form-group').addClass('has-error'); } }); return false; };
+	/* Field property_name can't be empty */
+	if($j('#property_name').val() == ''){ modal_window({ message: '<div class="alert alert-danger"><?php echo addslashes($Translation['field not null']); ?></div>', title: "<?php echo addslashes($Translation['error:']); ?> Property Name", close: function(){ $j('[name=property_name]').focus().parents('.form-group').addClass('has-error'); } }); return false; };
+	/* Field type can't be empty */
+	if(!$j('[name=type]:checked').length){ modal_window({ message: '<div class="alert alert-danger"><?php echo addslashes($Translation['field not null']); ?></div>', title: "<?php echo addslashes($Translation['error:']); ?> Type", close: function(){ $j('[name=type]').focus().parents('.form-group').addClass('has-error'); } }); return false; };
+	return true;
+}
+function property_photos_validateData(){
+	$j('.has-error').removeClass('has-error');
 	return true;
 }
 function units_validateData(){
 	$j('.has-error').removeClass('has-error');
-	if(!$j('[name=status]:checked').length){ modal_window({ message: '<div class="alert alert-danger"><?php echo addslashes($Translation['field not null']); ?></div>', title: "<?php echo addslashes($Translation['error:']); ?> Status", close: function(){ $j('[name=status]').focus(); $j('[name=status]').parents('.form-group').addClass('has-error'); } }); return false; };
+	/* Field status can't be empty */
+	if(!$j('[name=status]:checked').length){ modal_window({ message: '<div class="alert alert-danger"><?php echo addslashes($Translation['field not null']); ?></div>', title: "<?php echo addslashes($Translation['error:']); ?> Status", close: function(){ $j('[name=status]').focus().parents('.form-group').addClass('has-error'); } }); return false; };
 	return true;
 }
-function rental_owners_validateData(){
+function unit_photos_validateData(){
 	$j('.has-error').removeClass('has-error');
 	return true;
 }
@@ -383,7 +428,7 @@ function loadScript(jsUrl, cssUrl, callback){
  * options object. The following members can be provided:
  *    url: iframe url to load
  *    message: instead of a url to open, you could pass a message. HTML tags allowed.
- *    id: id attribute of modal window
+ *    id: id attribute of modal window. auto-generated if not provided
  *    title: optional modal window title
  *    size: 'default', 'full'
  *    close: optional function to execute on closing the modal
@@ -396,81 +441,7 @@ function loadScript(jsUrl, cssUrl, callback){
  *          causes_closing: boolean, default is true.
  */
 function modal_window(options){
-	var id = options.id;
-	var url = options.url;
-	var title = options.title;
-	var footer = options.footer;
-	var message = options.message;
-
-	if(typeof(id) == 'undefined') id = random_string(20);
-	if(typeof(footer) == 'undefined') footer = [];
-
-	if(jQuery('#' + id).length){
-		/* modal exists -- remove it first */
-		jQuery('#' + id).remove();
-	}
-
-	/* prepare footer buttons, if any */
-	var footer_buttons = '';
-	for(i = 0; i < footer.length; i++){
-		if(typeof(footer[i].causes_closing) == 'undefined'){ footer[i].causes_closing = true; }
-		if(typeof(footer[i].bs_class) == 'undefined'){ footer[i].bs_class = 'default'; }
-		footer[i].id = id + '_footer_button_' + random_string(10);
-
-		footer_buttons += '<button type="button" class="btn btn-' + footer[i].bs_class + '" ' +
-				(footer[i].causes_closing ? 'data-dismiss="modal" ' : '') +
-				'id="' + footer[i].id + '" ' +
-				'>' + footer[i].label + '</button>';
-	}
-
-	jQuery('body').append(
-		'<div class="modal fade" id="' + id + '" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">' +
-			'<div class="modal-dialog">' +
-				'<div class="modal-content">' +
-					( title != undefined ?
-						'<div class="modal-header">' +
-							'<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>' +
-							'<h3 class="modal-title" id="myModalLabel">' + title + '</h3>' +
-						'</div>'
-						: ''
-					) +
-					'<div class="modal-body" style="-webkit-overflow-scrolling:touch !important; overflow-y: auto;">' +
-						( url != undefined ?
-							'<iframe width="100%" height="100%" sandbox="allow-modals allow-forms allow-scripts allow-same-origin allow-popups" src="' + url + '"></iframe>'
-							: message
-						) +
-					'</div>' +
-					( footer != undefined ?
-						'<div class="modal-footer">' + footer_buttons + '</div>'
-						: ''
-					) +
-				'</div>' +
-			'</div>' +
-		'</div>'
-	);
-
-	for(i = 0; i < footer.length; i++){
-		if(typeof(footer[i].click) == 'function'){
-			jQuery('#' + footer[i].id).click(footer[i].click);
-		}
-	}
-
-	jQuery('#' + id).modal();
-
-	if(typeof(options.close) == 'function'){
-		jQuery('#' + id).on('hidden.bs.modal', options.close);
-	}
-
-	if(typeof(options.size) == 'undefined') options.size = 'default';
-
-	if(options.size == 'full'){
-		jQuery(window).resize(function(){
-			jQuery('#' + id + ' .modal-dialog').width(jQuery(window).width() * 0.95);
-			jQuery('#' + id + ' .modal-body').height(jQuery(window).height() * 0.7);
-		}).trigger('resize');
-	}
-
-	return id;
+	return jQuery('body').agModal(options).agModal('show').attr('id');
 }
 
 function random_string(string_length){
@@ -483,6 +454,9 @@ function random_string(string_length){
 	return text;
 }
 
+/**
+ *  @return array of IDs (PK values) of selected records in TV (records that the user checked)
+ */
 function get_selected_records_ids(){
 	return jQuery('.record_selector:checked').map(function(){ return jQuery(this).val() }).get();
 }
@@ -585,7 +559,7 @@ function mass_delete(t, ids){
 											.toggleClass('btn-warning btn-default')
 											.html('<?php echo addslashes($Translation['ok']); ?>');
 									}else{
-										setTimeout(function(){ jQuery('#' + progress_window).modal('hide'); }, 500);
+										setTimeout(function(){ jQuery('#' + progress_window).agModal('hide'); }, 500);
 									}
 								}
 							}
@@ -812,27 +786,27 @@ function enforce_uniqueness(table, field){
 
 /* persist expanded/collapsed chidren in DVP */
 function persist_expanded_child(id){
-	var expand_these = Cookies.getJSON('real_estate.dvp_expand');
+	var expand_these = Cookies.getJSON('rental_property_manager.dvp_expand');
 	if(expand_these == undefined) expand_these = [];
 
 	if($j('[id=' + id + ']').hasClass('active')){
 		if(expand_these.indexOf(id) < 0){
 			// expanded button and not persisting in cookie? save it!
 			expand_these.push(id);
-			Cookies.set('real_estate.dvp_expand', expand_these, { expires: 30 });
+			Cookies.set('rental_property_manager.dvp_expand', expand_these, { expires: 30 });
 		}
 	}else{
 		if(expand_these.indexOf(id) >= 0){
 			// collapsed button and persisting in cookie? remove it!
 			expand_these.splice(expand_these.indexOf(id), 1);
-			Cookies.set('real_estate.dvp_expand', expand_these, { expires: 30 });
+			Cookies.set('rental_property_manager.dvp_expand', expand_these, { expires: 30 });
 		}
 	}
 }
 
 /* apply expanded/collapsed status to children in DVP */
 function apply_persisting_children(){
-	var expand_these = Cookies.getJSON('real_estate.dvp_expand');
+	var expand_these = Cookies.getJSON('rental_property_manager.dvp_expand');
 	if(expand_these == undefined) return;
 
 	expand_these.each(function(id){
@@ -843,3 +817,460 @@ function apply_persisting_children(){
 function select2_max_width_decrement(){
 	return ($j('div.container').eq(0).hasClass('theme-compact') ? 99 : 109);
 }
+
+/**
+ *  @brief AppGini.TVScroll().more() to scroll one column more. 
+ *         AppGini.TVScroll().less() to scroll one column less.
+ */
+AppGini.TVScroll = function(){
+
+	/**
+	 *  @brief Calculates the width of the first n columns of the TV table
+	 *  
+	 *  @param [in] n how many columns to calculate the width for
+	 *  @return Return total width of given n columns, or 0 if n < 1 or invalid
+	 */
+	var _TVColsWidth = function(n){
+		if(isNaN(n)) return 0;
+		if(n < 1) return 0;
+
+		var tw = 0, cc;
+		for(var i = 0; i < n; i++){
+			cc = $j('.table_view .table th:visible').eq(i);
+			if(!cc.length) break;
+			tw += cc.outerWidth();
+		}
+
+		return tw;
+	};
+
+	/**
+	 *  @brief show/hide tv-scroll buttons based on whether TV is horizontally scrollable or not
+	 *  @details should be called once on document load before hiding TV columns (by calling less())
+	 */
+	var toggle_tv_scroll_tools = function(){
+		var tr = $j('.table_view .table-responsive'),
+			vpw = tr.width(), // viewport width
+			tfw = tr.find('.table').width(); // full width of the table
+
+		if(vpw >= tfw) $j('.tv-scroll').parents('.btn-group').hide();
+		else $j('.tv-scroll').parents('.btn-group').show();
+	}
+
+	/**
+	 *  @brief Prepares variables for use by less & more
+	 */
+	var _TVScrollSetup = function(){
+		if(AppGini._TVColsScrolled === undefined) AppGini._TVColsScrolled = 0;
+		AppGini._TVColsCount = $j('.table_view .table th:visible').length;
+
+		/* type of scrolling, https://github.com/othree/jquery.rtl-scroll-type */
+		/*
+			How to interpret AppGini._ScrollType?
+			{LTR | RTL}:{scrollLeft val for left position}:{scrollLeft val for right position}:{initial scrollLeft val}
+		*/
+		if(AppGini._ScrollType === undefined){
+			/* all browsers behave the same on LTR */
+			AppGini._ScrollType = 'LTR:0:100:0';
+
+			if($j('.container').hasClass('theme-rtl')){
+				var definer = $j('<div dir="rtl" style="font-size: 14px; width: 4px; height: 1px; position: absolute; top: -1000px; overflow: scroll">ABCD</div>').appendTo('body')[0];
+
+				AppGini._ScrollType = 'RTL:100:0:0'; // IE
+				if(definer.scrollLeft > 0){
+					AppGini._ScrollType = 'RTL:0:100:70'; // WebKit
+				}else{
+					definer.scrollLeft = 1;
+					if(definer.scrollLeft === 0) AppGini._ScrollType = 'RTL:-100:0:0'; // Firefox/Opera
+				}
+			}
+
+			/* show/hide #tv-scroll buttons based on TV scroll state */
+			$j(window).resize(toggle_tv_scroll_tools);
+			toggle_tv_scroll_tools();
+		}  
+	};
+
+	/**
+	 *  @brief Resets all scrolling and setup values.
+	 *  @details Useful after hiding/showing columns to re-setup TV scrolling
+	 */
+	var reset = function(){
+		if(AppGini._ScrollType === undefined) return; // nothing to reset!
+		AppGini._TVColsScrolled = undefined;
+
+		var tr = $j('.table_view .table-responsive');
+		switch(AppGini._ScrollType){
+			case 'RTL:100:0:0':
+			case 'RTL:0:100:0':
+			case 'RTL:-100:0:0':
+				tr.scrollLeft(0);
+				break;
+			case 'RTL:0:100:70':
+				var vpw = tr.width(), // viewport width
+					tfw = tr.find('.table').width(); // full width of the table
+				tr.scrollLeft(tfw - vpw + 10);
+				break;
+		}
+
+		_TVScrollSetup();
+	};
+
+	var _TVScroll = function(){
+		var scroll = 0,
+			tr = $j('.table_view .table-responsive'),
+			cw = _TVColsWidth(AppGini._TVColsScrolled); // width of columns to scroll to
+
+		switch(AppGini._ScrollType){
+			case 'RTL:100:0:0':
+			case 'LTR:0:100:0':
+				scroll = cw - 1;
+				break;
+			case 'RTL:-100:0:0':
+				scroll = -1 * cw + 1;
+				break;
+			case 'RTL:0:100:70':
+				var vpw = tr.width(), // viewport width
+					tfw = tr.find('.table').width(); // full width of the table
+				scroll = tfw - vpw - cw + 1;
+				break;
+		}
+
+		tr.scrollLeft(scroll);
+	};
+
+	/**
+	 *  @brief Scroll the TV table 1 column more
+	 */
+	var more = function(){
+		if(AppGini._TVColsScrolled >= AppGini._TVColsCount) return;
+		AppGini._TVColsScrolled++;
+		_TVScroll();
+	};
+
+	/**
+	 *  @brief Scroll the TV table 1 column less
+	 */
+	var less = function(){
+		if(AppGini._TVColsScrolled <= 0) return;
+		AppGini._TVColsScrolled--;
+		_TVScroll();
+	};
+
+	_TVScrollSetup();
+
+	return { more: more, less: less, reset: reset };
+
+};
+
+(function($j){
+	/*
+		apply a modal or an in-page modal to an element,
+		or access modal methods/events if it's already 'modal'ed
+
+		Expected usage:
+		1. $j('any_selector').agModal({ new modal options .. })
+		2. $j('#modal_id').agModal('command')
+		3. $j('#modal_id').on('event.bs.modal', event_handler)
+
+		case 1: the selector doesn't matter ... the modal will be created and attached
+				to the body element .. to retrieve the modal id if not specified in options:
+				var modal_id = $j('any_selector').agModal({ new modal options .. }).attr('id');
+
+		case 2: the selector must be the modal element .. if it's a standard BS modal,
+				command will be passed as is to .modal() and the return value returned.
+				if it's an in-page modal, command will be emulated and the modal element
+				returned.
+
+		case 3: Bootstrap modal events.
+	*/
+	$j.fn.agModal = function(options){
+		var theModal = this,
+		open = function(){
+			return theModal.trigger('show.bs.modal').removeClass('hide').trigger('shown.bs.modal');
+		},
+		close = function(){
+			return theModal.trigger('hide.bs.modal').addClass('hide').trigger('hidden.bs.modal');
+		};
+
+		if(typeof(options) == 'string'){
+			if(theModal.hasClass('modal')) return theModal.modal(options);
+			if(!theModal.hasClass('inpage-modal')) return theModal;
+
+			/* emulate .modal(command) for the in-page modal */
+			switch(options){
+				case 'show':
+					open();
+					break;
+				case 'hide':
+					close();
+					break;
+			}
+
+			return theModal;
+		}
+
+		var op = $j.extend({
+			/* default options */
+			id: random_string(20),
+			footer: [],
+			extras: {},
+			size: 'default',
+			forceIPM: false
+		}, options);
+
+		if(op.url == undefined && op.message == undefined){
+			console.error('Missing message/url in call to AppGini.modal().');
+			return theModal;
+		}
+
+		var iOS = /(iPad|iPhone|iPod)/g.test(navigator.userAgent), /* true for iOS devices */
+		auto_id = (options.id === undefined), /* true if modal id is auto-generated */
+
+		_resize = function(id){
+			var mod = $j('#' + id);
+			if(!mod.length) return;
+
+			var ipm = (mod.hasClass('inpage-modal') ? '.inpage-modal-' : '.modal-');
+
+			var wh = $j(window).height(),
+				mtm = mod.find(ipm + 'dialog').css('margin-top'),
+				mhfoh = mod.find(ipm + 'header').outerHeight() + mod.find(ipm + 'footer').outerHeight();
+
+			mod.find(ipm + 'dialog').css({
+				margin: mtm,
+				width: 'calc(100% - 2 * ' + mtm + ')'
+			});
+
+			mod.find(ipm + 'body').css({
+				height: 'calc(' + wh + 'px - ' + mhfoh + 'px - 2 * ' + mtm + ' - 6px)'
+			});
+		},
+
+		_bsModal = function(){
+			/* build the html of footer buttons into footer_buttons variable */
+			var footer_buttons = '';
+			for(i = 0; i < op.footer.length; i++){
+				if(typeof(op.footer[i].label) != 'string') continue;
+
+				op.footer[i] = $j.extend(
+					/* defaults */
+					{
+						causes_closing: true,
+						bs_class: 'default'
+					},
+					op.footer[i],
+					/* enforce the following values */
+					{ id: op.id + '_footer_button_' + random_string(10) }
+				);
+
+				footer_buttons += '<button ' +
+						'type="button" ' +
+						'class="btn btn-' + op.footer[i].bs_class + '" ' +
+						(op.footer[i].causes_closing ? 'data-dismiss="modal" ' : '') +
+						'id="' + op.footer[i].id + '" ' +
+						'>' + op.footer[i].label +
+					'</button>';
+			}
+
+			var mod = $j(
+				'<div class="modal fade" tabindex="-1" role="dialog" id="' + op.id + '">' +
+					'<div class="modal-dialog" role="document">' +
+						'<div class="modal-content">' +
+							( op.title != undefined ?
+								'<div class="modal-header">' +
+									'<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>' +
+									'<h4 class="modal-title" style="width: 90%;">' + op.title + '</h4>' +
+								'</div>'
+								: ''
+							) +
+							'<div class="modal-body">' +
+								( op.url != undefined ?
+									'<iframe ' +
+										'width="100%" height="100%" ' +
+										'style="display: block; overflow: scroll !important; -webkit-overflow-scrolling: touch !important;" ' +
+										'sandbox="allow-modals allow-forms allow-scripts allow-same-origin allow-popups" ' +
+										'src="' + op.url + '">' +
+									'</iframe>'
+									: op.message
+								) +
+							'</div>' +
+							'<div class="modal-footer">' + footer_buttons + '</div>' +
+						'</div>' +
+					'</div>' + 
+				'</div>'
+			);
+
+			if(op.url != undefined){
+				mod.find('.modal-body').css('padding', '0');
+			}
+
+			return mod;
+		},
+
+		_ipModal = function(){
+			/* prepare footer buttons, if any */
+			var footer_buttons = '', closer_class = '';
+			for(i = 0; i < op.footer.length; i++){
+				if(typeof(op.footer[i].label) != 'string') continue;
+
+				if(op.footer[i].causes_closing !== false){ op.footer[i].causes_closing = true; }
+				op.footer[i].bs_class = op.footer[i].bs_class || 'default';
+				op.footer[i].id = op.id + '_footer_button_' + random_string(10);           
+
+				closer_class = (op.footer[i].causes_closing ? ' closes-inpage-modal' : '');
+
+				footer_buttons += '<button type="button" ' +
+						'class="hspacer-lg vspacer-lg btn btn-' + op.footer[i].bs_class + closer_class + '" ' +
+						'id="' + op.footer[i].id + '" ' +
+						'>' + op.footer[i].label + '</button>';
+			}
+
+			var imc = $j(
+				'<div id="' + op.id + '" ' +
+					'class="inpage-modal hide ' + $j('.container').eq(0).attr('class') + '" ' + 
+					'style="' +
+						'padding-left: 0; padding-right: 0;' +
+						'width: 100% !important;' +
+					'">' +
+					'<div ' +
+						'class="inpage-modal-dialog" ' +
+						'style="' +
+							'box-shadow: 0 0 61px 15px #666;' +
+							'margin: 10px !important;' +
+							'border: solid 1px;' +
+							'border-radius: 5px;' +
+						'">' +
+						'<div class="inpage-modal-content">' +
+							( op.title != undefined ?
+								'<div class="inpage-modal-header" style="border-bottom: solid 1px;">' +
+									'<div class="row" style="margin: 0;">' + 
+										'<div class="col-xs-10 col-sm-11 inpage-modal-title">' +
+											'<div class="h4">' + op.title + '</div>' +
+										'</div>' +
+										'<div class="col-xs-2 col-sm-1 closes-inpage-modal text-center inpage-modal-dismiss" style="cursor: pointer;">' +
+											'<h4 class="glyphicon glyphicon-remove"></h4>' +
+										'</div>' +
+									'</div>' +
+								'</div>'
+								: ''
+							) +
+
+							( footer_buttons.length ?
+								'<div class="inpage-modal-footer text-right flip" style="border-bottom: solid 1px;">' + footer_buttons + '</div>'
+								: ''
+							) +
+
+							'<div class="inpage-modal-body">' +
+								( op.url != undefined ?
+									'<iframe ' +
+										'width="100%" height="100%" ' +
+										'style="display: block; overflow: scroll !important; -webkit-overflow-scrolling: touch !important;" ' +
+										'sandbox="allow-modals allow-forms allow-scripts allow-same-origin allow-popups" ' +
+										'src="' + op.url + '">' +
+									'</iframe>'
+									: op.message
+								) +
+							'</div>' +
+						'</div>' +
+					'</div>' +
+				'</div>'
+			);
+
+			/* hover effect for dismiss button + close modal if a closer clicked */
+			imc.on('mouseover', '.inpage-modal-dismiss', function(){
+				$j(this).addClass('text-danger bg-danger');
+			}).on('mouseout', '.inpage-modal-dismiss', function(){
+				$j(this).removeClass('text-danger bg-danger');
+			}).on('click', '.closes-inpage-modal', close);
+
+			imc.find('.inpage-modal-title').css({
+				overflow: 'auto',
+				'white-space': 'nowrap'
+			});
+
+			return imc;
+		};
+
+		/* if modal exists, remove it first */
+		$j('#' + op.id).remove();
+
+		theModal = ((iOS || op.forceIPM) && op.size == 'full' ? _ipModal() : _bsModal());
+
+		theModal.appendTo('body');
+
+		/* bind footer buttons click handlers */
+		for(i = 0; i < op.footer.length; i++){
+			if(typeof(op.footer[i].click) == 'function'){
+				$j('#' + op.footer[i].id).click(op.footer[i].click);
+			}
+		}
+
+		theModal
+		.on('show.bs.modal', function(){
+			if(op.size != 'full') return;
+
+			/* hide main page to avoid all scrolling/panning hell on touch screens! */
+			$j('.container').eq(0).hide();
+		})
+		.on('shown.bs.modal', function(){
+			if(op.size != 'full') return;
+
+			var id = op.id, rsz = _resize;
+			rsz(id);
+			$j(window).resize(function(){ rsz(id); });
+		})
+		//.agModal('show')
+		.on('hidden.bs.modal', function(){
+			/* display main page again */
+			if(op.size == 'full') $j('.container').eq(0).show();
+
+			if(typeof(op.close) == 'function'){
+				op.close();
+			}
+
+			if(!auto_id) return;
+
+			/* if id is automatic, remove modal after 1 minute from DOM */
+			var id = op.id;
+			var auto_remove = setInterval(function(){
+				if($j('#' + id).is(':visible')) return; // don't remove if visible
+				$j('#' + id).remove();
+				clearInterval(auto_remove);
+			}, 60000);
+		});
+
+		return theModal;
+	};
+})(jQuery);
+
+/**
+ *  @brief Used in pages loaded inside modals (e.g. those with Embedded=1) to close the containing modal.
+ */
+AppGini.closeParentModal = function(){
+	var pm = window.parent.jQuery(".modal:visible");
+	if(!pm.length){
+		pm = window.parent.jQuery(".inpage-modal:visible");
+	}
+
+	if(pm.length) pm.agModal('hide');
+	return;
+}
+
+/**
+ *  @return boolean indicating whether a modal is currently open or not
+ */
+AppGini.modalOpen = function(){
+	return jQuery('.modal-dialog:visible').length > 0 || jQuery('.inpage-modal-dialog:visible').length > 0;
+};
+
+
+/**
+ *  @return true for mobile devices, false otherwise
+ *  @details https://stackoverflow.com/a/11381730/1945185
+ */
+AppGini.mobileDevice = function(){
+	var check = false;
+	(function(a){if(/(android|bb\d+|meego).+mobile|avantgo|bada\/|blackberry|blazer|compal|elaine|fennec|hiptop|iemobile|ip(hone|od)|iris|kindle|lge |maemo|midp|mmp|mobile.+firefox|netfront|opera m(ob|in)i|palm( os)?|phone|p(ixi|re)\/|plucker|pocket|psp|series(4|6)0|symbian|treo|up\.(browser|link)|vodafone|wap|windows ce|xda|xiino/i.test(a)||/1207|6310|6590|3gso|4thp|50[1-6]i|770s|802s|a wa|abac|ac(er|oo|s\-)|ai(ko|rn)|al(av|ca|co)|amoi|an(ex|ny|yw)|aptu|ar(ch|go)|as(te|us)|attw|au(di|\-m|r |s )|avan|be(ck|ll|nq)|bi(lb|rd)|bl(ac|az)|br(e|v)w|bumb|bw\-(n|u)|c55\/|capi|ccwa|cdm\-|cell|chtm|cldc|cmd\-|co(mp|nd)|craw|da(it|ll|ng)|dbte|dc\-s|devi|dica|dmob|do(c|p)o|ds(12|\-d)|el(49|ai)|em(l2|ul)|er(ic|k0)|esl8|ez([4-7]0|os|wa|ze)|fetc|fly(\-|_)|g1 u|g560|gene|gf\-5|g\-mo|go(\.w|od)|gr(ad|un)|haie|hcit|hd\-(m|p|t)|hei\-|hi(pt|ta)|hp( i|ip)|hs\-c|ht(c(\-| |_|a|g|p|s|t)|tp)|hu(aw|tc)|i\-(20|go|ma)|i230|iac( |\-|\/)|ibro|idea|ig01|ikom|im1k|inno|ipaq|iris|ja(t|v)a|jbro|jemu|jigs|kddi|keji|kgt( |\/)|klon|kpt |kwc\-|kyo(c|k)|le(no|xi)|lg( g|\/(k|l|u)|50|54|\-[a-w])|libw|lynx|m1\-w|m3ga|m50\/|ma(te|ui|xo)|mc(01|21|ca)|m\-cr|me(rc|ri)|mi(o8|oa|ts)|mmef|mo(01|02|bi|de|do|t(\-| |o|v)|zz)|mt(50|p1|v )|mwbp|mywa|n10[0-2]|n20[2-3]|n30(0|2)|n50(0|2|5)|n7(0(0|1)|10)|ne((c|m)\-|on|tf|wf|wg|wt)|nok(6|i)|nzph|o2im|op(ti|wv)|oran|owg1|p800|pan(a|d|t)|pdxg|pg(13|\-([1-8]|c))|phil|pire|pl(ay|uc)|pn\-2|po(ck|rt|se)|prox|psio|pt\-g|qa\-a|qc(07|12|21|32|60|\-[2-7]|i\-)|qtek|r380|r600|raks|rim9|ro(ve|zo)|s55\/|sa(ge|ma|mm|ms|ny|va)|sc(01|h\-|oo|p\-)|sdk\/|se(c(\-|0|1)|47|mc|nd|ri)|sgh\-|shar|sie(\-|m)|sk\-0|sl(45|id)|sm(al|ar|b3|it|t5)|so(ft|ny)|sp(01|h\-|v\-|v )|sy(01|mb)|t2(18|50)|t6(00|10|18)|ta(gt|lk)|tcl\-|tdg\-|tel(i|m)|tim\-|t\-mo|to(pl|sh)|ts(70|m\-|m3|m5)|tx\-9|up(\.b|g1|si)|utst|v400|v750|veri|vi(rg|te)|vk(40|5[0-3]|\-v)|vm40|voda|vulc|vx(52|53|60|61|70|80|81|83|85|98)|w3c(\-| )|webc|whit|wi(g |nc|nw)|wmlb|wonu|x700|yas\-|your|zeto|zte\-/i.test(a.substr(0,4))) check = true;})(navigator.userAgent||navigator.vendor||window.opera);
+	return check;
+};

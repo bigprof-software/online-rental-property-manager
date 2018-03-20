@@ -1,10 +1,14 @@
 <?php header('Content-type: text/css'); ?>
 
 @media (min-width: 768px){ .container{ width: 90% !important; } }
+@media (max-width: 767px){ .detail_view{ padding: 0; } }
 @media print{
 	a[href]:after{ content: "" !important; }
 	.container{ width: 98% !important; }
 }
+
+.rtl{ direction: rtl !important; }
+.ltr{ direction: ltr !important; }
 
 .navbar-brand{ text-transform: capitalize; }
 
@@ -41,7 +45,7 @@ div.datePicker{ font-size: 1.3em; }
 .text-bold{ font-weight: bold; }
 .text-italic{ font-style: italic; }
 
-.form-control, .help-block .alert{ width: 90% !important; }
+/* .form-control, .help-block .alert{ width: 90% !important; } */
 .input-group .form-control{ width: 100% !important; }
 .form-inline .form-control{ width: auto !important; }
 .panel .btn{ overflow: hidden; }
@@ -51,11 +55,30 @@ div.datePicker{ font-size: 1.3em; }
 
 .navbar ul.dropdown-menu{ max-height: 400px; overflow-y: auto; }
 
-.date_combo { padding-right: 0 !important; }
-.date_combo select { width: 100% !important; padding-left: 0; padding-right: 0; }
+.date_combo { padding-right: 0.5em; }
+/* .date_combo select { width: 100% !important; padding-left: 0; padding-right: 0; } */
 
 img[src="blank.gif"] { max-height: 10px !important; }
 
+/* fix for scrolling wide tables horizontally on iOS, https://stackoverflow.com/a/39073181/1945185 */
+.table-responsive .table {
+	max-width: none;
+	-webkit-overflow-scrolling: touch !important;
+}
+
+.applicants_and_tenants-last_name{ white-space: normal !important; max-width: 100px !important; min-width: 100px !important; overflow: hidden;  }
+.applicants_and_tenants-first_name{ white-space: normal !important; max-width: 100px !important; min-width: 100px !important; overflow: hidden;  }
+.applicants_and_tenants-email{ white-space: normal !important; max-width: 100px !important; min-width: 100px !important; overflow: hidden; word-break: break-all; }
+.applicants_and_tenants-phone{ white-space: normal !important; max-width: 100px !important; min-width: 100px !important; overflow: hidden;  }
+.applicants_and_tenants-birth_date{ white-space: normal !important; max-width: 100px !important; min-width: 100px !important; overflow: hidden;  }
+.applicants_and_tenants-driver_license_number{ white-space: normal !important; max-width: 100px !important; min-width: 100px !important; overflow: hidden;  }
+.applicants_and_tenants-driver_license_state{ white-space: normal !important; max-width: 100px !important; min-width: 100px !important; overflow: hidden;  }
+.applicants_and_tenants-requested_lease_term{ white-space: normal !important; max-width: 100px !important; min-width: 100px !important; overflow: hidden;  }
+.applicants_and_tenants-monthly_gross_pay{ white-space: normal !important; max-width: 80px !important; min-width: 80px !important; overflow: hidden;  }
+.applicants_and_tenants-additional_income{ white-space: normal !important; max-width: 80px !important; min-width: 80px !important; overflow: hidden;  }
+.applicants_and_tenants-assets{ white-space: normal !important; max-width: 80px !important; min-width: 80px !important; overflow: hidden;  }
+.applicants_and_tenants-status{ white-space: normal !important; max-width: 100px !important; min-width: 100px !important; overflow: hidden;  }
+.applicants_and_tenants-notes{ white-space: normal !important; max-width: 100px !important; min-width: 100px !important; overflow: hidden;  }
 .applications_leases-tenants{ white-space: normal !important; max-width: 60px !important; min-width: 60px !important; overflow: hidden;  }
 .applications_leases-status{ white-space: normal !important; max-width: 50px !important; min-width: 50px !important; overflow: hidden;  }
 .applications_leases-property{ white-space: normal !important; max-width: 80px !important; min-width: 80px !important; overflow: hidden;  }
@@ -88,19 +111,6 @@ img[src="blank.gif"] { max-height: 10px !important; }
 .employment_and_income_history-notes{ white-space: normal !important; max-width: 50px !important; min-width: 50px !important; overflow: hidden;  }
 .references-reference_name{ white-space: normal !important; max-width: 160px !important; min-width: 160px !important; overflow: hidden;  }
 .references-phone{ white-space: normal !important; max-width: 160px !important; min-width: 160px !important; overflow: hidden;  }
-.applicants_and_tenants-last_name{ white-space: normal !important; max-width: 100px !important; min-width: 100px !important; overflow: hidden;  }
-.applicants_and_tenants-first_name{ white-space: normal !important; max-width: 100px !important; min-width: 100px !important; overflow: hidden;  }
-.applicants_and_tenants-email{ white-space: normal !important; max-width: 100px !important; min-width: 100px !important; overflow: hidden; word-break: break-all; }
-.applicants_and_tenants-phone{ white-space: normal !important; max-width: 100px !important; min-width: 100px !important; overflow: hidden;  }
-.applicants_and_tenants-birth_date{ white-space: normal !important; max-width: 100px !important; min-width: 100px !important; overflow: hidden;  }
-.applicants_and_tenants-driver_license_number{ white-space: normal !important; max-width: 100px !important; min-width: 100px !important; overflow: hidden;  }
-.applicants_and_tenants-driver_license_state{ white-space: normal !important; max-width: 100px !important; min-width: 100px !important; overflow: hidden;  }
-.applicants_and_tenants-requested_lease_term{ white-space: normal !important; max-width: 100px !important; min-width: 100px !important; overflow: hidden;  }
-.applicants_and_tenants-monthly_gross_pay{ white-space: normal !important; max-width: 80px !important; min-width: 80px !important; overflow: hidden;  }
-.applicants_and_tenants-additional_income{ white-space: normal !important; max-width: 80px !important; min-width: 80px !important; overflow: hidden;  }
-.applicants_and_tenants-assets{ white-space: normal !important; max-width: 80px !important; min-width: 80px !important; overflow: hidden;  }
-.applicants_and_tenants-status{ white-space: normal !important; max-width: 100px !important; min-width: 100px !important; overflow: hidden;  }
-.applicants_and_tenants-notes{ white-space: normal !important; max-width: 100px !important; min-width: 100px !important; overflow: hidden;  }
 .properties-property_name{ white-space: normal !important; max-width: 50px !important; min-width: 50px !important; overflow: hidden;  }
 .properties-type{ white-space: normal !important; max-width: 80px !important; min-width: 80px !important; overflow: hidden;  }
 .properties-number_of_units{ white-space: normal !important; max-width: 50px !important; min-width: 50px !important; overflow: hidden;  }
@@ -145,6 +155,19 @@ img[src="blank.gif"] { max-height: 10px !important; }
 
 .no-caption .field-caption-tv{  display: none; }
 .no-caption dd{ margin-left: 0; margin-right: 0; }
+
+.nav-tabs a img{ margin: 0 0.25em; }
+
+/* rotation classes */
+.rotate90{ -ms-transform: rotate(90deg); -webkit-transform: rotate(90deg); transform: rotate(90deg); }
+.rotate180{ -ms-transform: rotate(180deg); -webkit-transform: rotate(180deg); transform: rotate(180deg); }
+.rotate270{ -ms-transform: rotate(270deg); -webkit-transform: rotate(270deg); transform: rotate(270deg); }
+
+/* compacting mobile borders for DV */
+.detail_view .form-group hr { margin: 0 0 0.5em 0; border-top-style: dashed; }
+
+/* tv tools button widths */
+.tv-tools .btn { width: 5em; }
 
 /* compact theme styles */
 .container.theme-compact{ font-size: 0.857em; }

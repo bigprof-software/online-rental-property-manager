@@ -5,9 +5,6 @@
 	~~~~~~ LIST OF FUNCTIONS ~~~~~~
 		getTableList() -- returns an associative array (tableName => tableData, tableData is array(tableCaption, tableDescription, tableIcon)) of tables accessible by current user
 		get_table_groups() -- returns an associative array (table_group => tables_array)
-		getLoggedMemberID() -- returns memberID of logged member. If no login, returns anonymous memberID
-		getLoggedGroupID() -- returns groupID of logged member, or anonymous groupID
-		logOutMember() -- destroys session and logs member out.
 		logInMember() -- checks POST login. If not valid, redirects to index.php, else returns TRUE
 		getTablePermissions($tn) -- returns an array of permissions allowed for logged member to given table (allowAccess, allowInsert, allowView, allowEdit, allowDelete) -- allowAccess is set to true if any access level is allowed
 		get_sql_fields($tn) -- returns the SELECT part of the table view query
@@ -20,7 +17,6 @@
 		parseCode(code) -- calculates and returns special values to be inserted in automatic fields.
 		addFilter(i, filterAnd, filterField, filterOperator, filterValue) -- enforce a filter over data
 		clearFilters() -- clear all filters
-		getMemberInfo() -- returns an array containing the currently signed-in member's info
 		loadView($view, $data) -- passes $data to templates/{$view}.php and returns the output
 		loadTable($table, $data) -- loads table template, passing $data to it
 		filterDropdownBy($filterable, $filterers, $parentFilterers, $parentPKField, $parentCaption, $parentTable, &$filterableCombo) -- applies cascading drop-downs for a lookup field, returns js code to be inserted into the page
@@ -39,6 +35,7 @@
 		getUploadDir($dir) -- if dir is empty, returns upload dir configured in defaultLang.php, else returns $dir.
 		PrepareUploadedFile($FieldName, $MaxSize, $FileTypes='jpg|jpeg|gif|png', $NoRename=false, $dir="") -- validates and moves uploaded file for given $FieldName into the given $dir (or the default one if empty)
 		get_home_links($homeLinks, $default_classes, $tgroup) -- process $homeLinks array and return custom links for homepage. Applies $default_classes to links if links have classes defined, and filters links by $tgroup (using '*' matches all table_group values)
+		quick_search_html($search_term, $label, $separate_dv = true) -- returns HTML code for the quick search box.
 	~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	*/
 
@@ -46,15 +43,18 @@
 
 	function getTableList($skip_authentication = false){
 		$arrAccessTables = array();
-		$arrTables = array(   
-			'applications_leases' => array('Applications/Leases', 'This is the application form filled by an applicant to apply for leasing a unit. The application might be changed to a lease when approved.', 'resources/table_icons/curriculum_vitae.png', 'None'),
-			'residence_and_rental_history' => array('Residence and rental history', 'Records of the tenant residence and rental history.', 'resources/table_icons/document_comment_above.png', 'None'),
-			'employment_and_income_history' => array('Employment and income history', 'Records of the employment and income history of the tenant.', 'resources/table_icons/cash_stack.png', 'None'),
-			'references' => array('References', 'List of references for each tenant.', 'resources/table_icons/application_from_storage.png', 'None'),
-			'applicants_and_tenants' => array('Applicants and tenants', 'List of applicants/tenants and their current status. Each tenant might have an application or a lease.', 'resources/table_icons/account_balances.png', 'None'),
-			'properties' => array('Properties', 'Listing of all properties. Each property has an owner and consists of one or more rental units.', 'resources/table_icons/application_home.png', 'None'),
-			'units' => array('Units', 'Listing of all units, its details and current status.', 'resources/table_icons/change_password.png', 'None'),
-			'rental_owners' => array('Rental owners', 'Listing of owners of rental properties, and all the properties owned by each.', 'resources/table_icons/administrator.png', 'None')
+		$arrTables = array(
+			/* 'table_name' => ['table caption', 'homepage description', 'icon', 'table group name'] */   
+			'applicants_and_tenants' => array('Applicants and tenants', 'List of applicants/tenants and their current status. Each tenant might have an application or a lease.', 'resources/table_icons/account_balances.png', 'Leases'),
+			'applications_leases' => array('Applications/Leases', 'This is the application form filled by an applicant to apply for leasing a unit. The application might be changed to a lease when approved.', 'resources/table_icons/curriculum_vitae.png', 'Leases'),
+			'residence_and_rental_history' => array('Residence and rental history', 'Records of the tenant residence and rental history.', 'resources/table_icons/document_comment_above.png', 'Leases'),
+			'employment_and_income_history' => array('Employment and income history', 'Records of the employment and income history of the tenant.', 'resources/table_icons/cash_stack.png', 'Leases'),
+			'references' => array('References', 'List of references for each tenant.', 'resources/table_icons/application_from_storage.png', 'Leases'),
+			'rental_owners' => array('Landlords', 'Listing of landlords/owners of rental properties, and all the properties owned by each.', 'resources/table_icons/administrator.png', 'Assets/Setup'),
+			'properties' => array('Properties', 'Listing of all properties. Each property has an owner and consists of one or more rental units.', 'resources/table_icons/application_home.png', 'Assets/Setup'),
+			'property_photos' => array('Property photos', '', 'resources/table_icons/camera_link.png', 'Assets/Setup'),
+			'units' => array('Units', 'Listing of all units, its details and current status.', 'resources/table_icons/change_password.png', 'Assets/Setup'),
+			'unit_photos' => array('Unit photos', '', 'resources/table_icons/camera_link.png', 'Assets/Setup')
 		);
 		if($skip_authentication || getLoggedAdmin()) return $arrTables;
 
@@ -74,7 +74,7 @@
 
 	function get_table_groups($skip_authentication = false){
 		$tables = getTableList($skip_authentication);
-		$all_groups = array('None');
+		$all_groups = array('Leases', 'Assets/Setup');
 
 		$groups = array();
 		foreach($all_groups as $grp){
@@ -141,14 +141,16 @@
 
 	function get_sql_fields($table_name){
 		$sql_fields = array(   
+			'applicants_and_tenants' => "`applicants_and_tenants`.`id` as 'id', `applicants_and_tenants`.`last_name` as 'last_name', `applicants_and_tenants`.`first_name` as 'first_name', `applicants_and_tenants`.`email` as 'email', CONCAT_WS('-', LEFT(`applicants_and_tenants`.`phone`,3), MID(`applicants_and_tenants`.`phone`,4,3), RIGHT(`applicants_and_tenants`.`phone`,4)) as 'phone', if(`applicants_and_tenants`.`birth_date`,date_format(`applicants_and_tenants`.`birth_date`,'%m/%d/%Y'),'') as 'birth_date', `applicants_and_tenants`.`driver_license_number` as 'driver_license_number', `applicants_and_tenants`.`driver_license_state` as 'driver_license_state', `applicants_and_tenants`.`requested_lease_term` as 'requested_lease_term', CONCAT('$', FORMAT(`applicants_and_tenants`.`monthly_gross_pay`, 2)) as 'monthly_gross_pay', CONCAT('$', FORMAT(`applicants_and_tenants`.`additional_income`, 2)) as 'additional_income', CONCAT('$', FORMAT(`applicants_and_tenants`.`assets`, 2)) as 'assets', `applicants_and_tenants`.`status` as 'status', `applicants_and_tenants`.`notes` as 'notes'",
 			'applications_leases' => "`applications_leases`.`id` as 'id', IF(    CHAR_LENGTH(`applicants_and_tenants1`.`first_name`) || CHAR_LENGTH(`applicants_and_tenants1`.`last_name`), CONCAT_WS('',   `applicants_and_tenants1`.`first_name`, ' ', `applicants_and_tenants1`.`last_name`), '') as 'tenants', `applications_leases`.`status` as 'status', IF(    CHAR_LENGTH(`properties1`.`property_name`), CONCAT_WS('',   `properties1`.`property_name`), '') as 'property', IF(    CHAR_LENGTH(`units1`.`unit_number`), CONCAT_WS('',   `units1`.`unit_number`), '') as 'unit', `applications_leases`.`type` as 'type', `applications_leases`.`total_number_of_occupants` as 'total_number_of_occupants', if(`applications_leases`.`start_date`,date_format(`applications_leases`.`start_date`,'%m/%d/%Y'),'') as 'start_date', if(`applications_leases`.`end_date`,date_format(`applications_leases`.`end_date`,'%m/%d/%Y'),'') as 'end_date', `applications_leases`.`recurring_charges_frequency` as 'recurring_charges_frequency', if(`applications_leases`.`next_due_date`,date_format(`applications_leases`.`next_due_date`,'%m/%d/%Y'),'') as 'next_due_date', CONCAT('$', FORMAT(`applications_leases`.`rent`, 2)) as 'rent', CONCAT('$', FORMAT(`applications_leases`.`security_deposit`, 2)) as 'security_deposit', if(`applications_leases`.`security_deposit_date`,date_format(`applications_leases`.`security_deposit_date`,'%m/%d/%Y'),'') as 'security_deposit_date', `applications_leases`.`emergency_contact` as 'emergency_contact', `applications_leases`.`co_signer_details` as 'co_signer_details', `applications_leases`.`notes` as 'notes', `applications_leases`.`agreement` as 'agreement'",
 			'residence_and_rental_history' => "`residence_and_rental_history`.`id` as 'id', IF(    CHAR_LENGTH(`applicants_and_tenants1`.`first_name`) || CHAR_LENGTH(`applicants_and_tenants1`.`last_name`), CONCAT_WS('',   `applicants_and_tenants1`.`first_name`, ' ', `applicants_and_tenants1`.`last_name`), '') as 'tenant', `residence_and_rental_history`.`address` as 'address', `residence_and_rental_history`.`landlord_or_manager_name` as 'landlord_or_manager_name', `residence_and_rental_history`.`landlord_or_manager_phone` as 'landlord_or_manager_phone', CONCAT('$', FORMAT(`residence_and_rental_history`.`monthly_rent`, 2)) as 'monthly_rent', if(`residence_and_rental_history`.`duration_of_residency_from`,date_format(`residence_and_rental_history`.`duration_of_residency_from`,'%m/%d/%Y'),'') as 'duration_of_residency_from', if(`residence_and_rental_history`.`to`,date_format(`residence_and_rental_history`.`to`,'%m/%d/%Y'),'') as 'to', `residence_and_rental_history`.`reason_for_leaving` as 'reason_for_leaving', `residence_and_rental_history`.`notes` as 'notes'",
 			'employment_and_income_history' => "`employment_and_income_history`.`id` as 'id', IF(    CHAR_LENGTH(`applicants_and_tenants1`.`first_name`) || CHAR_LENGTH(`applicants_and_tenants1`.`last_name`), CONCAT_WS('',   `applicants_and_tenants1`.`first_name`, ' ', `applicants_and_tenants1`.`last_name`), '') as 'tenant', `employment_and_income_history`.`employer_name` as 'employer_name', `employment_and_income_history`.`city` as 'city', CONCAT_WS('-', LEFT(`employment_and_income_history`.`employer_phone`,3), MID(`employment_and_income_history`.`employer_phone`,4,3), RIGHT(`employment_and_income_history`.`employer_phone`,4)) as 'employer_phone', if(`employment_and_income_history`.`employed_from`,date_format(`employment_and_income_history`.`employed_from`,'%m/%d/%Y'),'') as 'employed_from', if(`employment_and_income_history`.`employed_till`,date_format(`employment_and_income_history`.`employed_till`,'%m/%d/%Y'),'') as 'employed_till', `employment_and_income_history`.`occupation` as 'occupation', `employment_and_income_history`.`notes` as 'notes'",
 			'references' => "`references`.`id` as 'id', IF(    CHAR_LENGTH(`applicants_and_tenants1`.`first_name`) || CHAR_LENGTH(`applicants_and_tenants1`.`last_name`), CONCAT_WS('',   `applicants_and_tenants1`.`first_name`, ' ', `applicants_and_tenants1`.`last_name`), '') as 'tenant', `references`.`reference_name` as 'reference_name', CONCAT_WS('-', LEFT(`references`.`phone`,3), MID(`references`.`phone`,4,3), RIGHT(`references`.`phone`,4)) as 'phone'",
-			'applicants_and_tenants' => "`applicants_and_tenants`.`id` as 'id', `applicants_and_tenants`.`last_name` as 'last_name', `applicants_and_tenants`.`first_name` as 'first_name', `applicants_and_tenants`.`email` as 'email', CONCAT_WS('-', LEFT(`applicants_and_tenants`.`phone`,3), MID(`applicants_and_tenants`.`phone`,4,3), RIGHT(`applicants_and_tenants`.`phone`,4)) as 'phone', if(`applicants_and_tenants`.`birth_date`,date_format(`applicants_and_tenants`.`birth_date`,'%m/%d/%Y'),'') as 'birth_date', `applicants_and_tenants`.`driver_license_number` as 'driver_license_number', `applicants_and_tenants`.`driver_license_state` as 'driver_license_state', `applicants_and_tenants`.`requested_lease_term` as 'requested_lease_term', CONCAT('$', FORMAT(`applicants_and_tenants`.`monthly_gross_pay`, 2)) as 'monthly_gross_pay', CONCAT('$', FORMAT(`applicants_and_tenants`.`additional_income`, 2)) as 'additional_income', CONCAT('$', FORMAT(`applicants_and_tenants`.`assets`, 2)) as 'assets', `applicants_and_tenants`.`status` as 'status', `applicants_and_tenants`.`notes` as 'notes'",
+			'rental_owners' => "`rental_owners`.`id` as 'id', `rental_owners`.`first_name` as 'first_name', `rental_owners`.`last_name` as 'last_name', `rental_owners`.`company_name` as 'company_name', if(`rental_owners`.`date_of_birth`,date_format(`rental_owners`.`date_of_birth`,'%m/%d/%Y'),'') as 'date_of_birth', `rental_owners`.`primary_email` as 'primary_email', `rental_owners`.`alternate_email` as 'alternate_email', CONCAT_WS('-', LEFT(`rental_owners`.`phone`,3), MID(`rental_owners`.`phone`,4,3), RIGHT(`rental_owners`.`phone`,4)) as 'phone', `rental_owners`.`country` as 'country', `rental_owners`.`street` as 'street', `rental_owners`.`city` as 'city', `rental_owners`.`state` as 'state', `rental_owners`.`zip` as 'zip', `rental_owners`.`comments` as 'comments'",
 			'properties' => "`properties`.`id` as 'id', `properties`.`property_name` as 'property_name', `properties`.`type` as 'type', `properties`.`number_of_units` as 'number_of_units', `properties`.`photo` as 'photo', IF(    CHAR_LENGTH(`rental_owners1`.`first_name`) || CHAR_LENGTH(`rental_owners1`.`last_name`), CONCAT_WS('',   `rental_owners1`.`first_name`, ' ', `rental_owners1`.`last_name`), '') as 'owner', `properties`.`operating_account` as 'operating_account', CONCAT('$', FORMAT(`properties`.`property_reserve`, 2)) as 'property_reserve', `properties`.`lease_term` as 'lease_term', `properties`.`country` as 'country', `properties`.`street` as 'street', `properties`.`City` as 'City', `properties`.`State` as 'State', `properties`.`ZIP` as 'ZIP'",
+			'property_photos' => "`property_photos`.`id` as 'id', IF(    CHAR_LENGTH(`properties1`.`id`) || CHAR_LENGTH(`properties1`.`property_name`), CONCAT_WS('',   `properties1`.`id`, ' / ', `properties1`.`property_name`), '') as 'property', `property_photos`.`photo` as 'photo', `property_photos`.`description` as 'description'",
 			'units' => "`units`.`id` as 'id', IF(    CHAR_LENGTH(`properties1`.`property_name`), CONCAT_WS('',   `properties1`.`property_name`), '') as 'property', `units`.`unit_number` as 'unit_number', `units`.`photo` as 'photo', `units`.`status` as 'status', `units`.`size` as 'size', IF(    CHAR_LENGTH(`properties1`.`country`), CONCAT_WS('',   `properties1`.`country`), '') as 'country', IF(    CHAR_LENGTH(`properties1`.`street`), CONCAT_WS('',   `properties1`.`street`), '') as 'street', IF(    CHAR_LENGTH(`properties1`.`City`), CONCAT_WS('',   `properties1`.`City`), '') as 'city', IF(    CHAR_LENGTH(`properties1`.`State`), CONCAT_WS('',   `properties1`.`State`), '') as 'state', IF(    CHAR_LENGTH(`properties1`.`ZIP`), CONCAT_WS('',   `properties1`.`ZIP`), '') as 'postal_code', `units`.`rooms` as 'rooms', `units`.`bathroom` as 'bathroom', `units`.`features` as 'features', FORMAT(`units`.`market_rent`, 0) as 'market_rent', CONCAT('$', FORMAT(`units`.`rental_amount`, 2)) as 'rental_amount', CONCAT('$', FORMAT(`units`.`deposit_amount`, 2)) as 'deposit_amount', `units`.`description` as 'description'",
-			'rental_owners' => "`rental_owners`.`id` as 'id', `rental_owners`.`first_name` as 'first_name', `rental_owners`.`last_name` as 'last_name', `rental_owners`.`company_name` as 'company_name', if(`rental_owners`.`date_of_birth`,date_format(`rental_owners`.`date_of_birth`,'%m/%d/%Y'),'') as 'date_of_birth', `rental_owners`.`primary_email` as 'primary_email', `rental_owners`.`alternate_email` as 'alternate_email', CONCAT_WS('-', LEFT(`rental_owners`.`phone`,3), MID(`rental_owners`.`phone`,4,3), RIGHT(`rental_owners`.`phone`,4)) as 'phone', `rental_owners`.`country` as 'country', `rental_owners`.`street` as 'street', `rental_owners`.`city` as 'city', `rental_owners`.`state` as 'state', `rental_owners`.`zip` as 'zip', `rental_owners`.`comments` as 'comments'"
+			'unit_photos' => "`unit_photos`.`id` as 'id', IF(    CHAR_LENGTH(`properties1`.`property_name`) || CHAR_LENGTH(`units1`.`unit_number`), CONCAT_WS('',   `properties1`.`property_name`, ' / ', ' / ', `units1`.`unit_number`), '') as 'unit', `unit_photos`.`photo` as 'photo', `unit_photos`.`description` as 'description'"
 		);
 
 		if(isset($sql_fields[$table_name])){
@@ -162,25 +164,29 @@
 
 	function get_sql_from($table_name, $skip_permissions = false){
 		$sql_from = array(   
+			'applicants_and_tenants' => "`applicants_and_tenants` ",
 			'applications_leases' => "`applications_leases` LEFT JOIN `applicants_and_tenants` as applicants_and_tenants1 ON `applicants_and_tenants1`.`id`=`applications_leases`.`tenants` LEFT JOIN `properties` as properties1 ON `properties1`.`id`=`applications_leases`.`property` LEFT JOIN `units` as units1 ON `units1`.`id`=`applications_leases`.`unit` ",
 			'residence_and_rental_history' => "`residence_and_rental_history` LEFT JOIN `applicants_and_tenants` as applicants_and_tenants1 ON `applicants_and_tenants1`.`id`=`residence_and_rental_history`.`tenant` ",
 			'employment_and_income_history' => "`employment_and_income_history` LEFT JOIN `applicants_and_tenants` as applicants_and_tenants1 ON `applicants_and_tenants1`.`id`=`employment_and_income_history`.`tenant` ",
 			'references' => "`references` LEFT JOIN `applicants_and_tenants` as applicants_and_tenants1 ON `applicants_and_tenants1`.`id`=`references`.`tenant` ",
-			'applicants_and_tenants' => "`applicants_and_tenants` ",
+			'rental_owners' => "`rental_owners` ",
 			'properties' => "`properties` LEFT JOIN `rental_owners` as rental_owners1 ON `rental_owners1`.`id`=`properties`.`owner` ",
+			'property_photos' => "`property_photos` LEFT JOIN `properties` as properties1 ON `properties1`.`id`=`property_photos`.`property` ",
 			'units' => "`units` LEFT JOIN `properties` as properties1 ON `properties1`.`id`=`units`.`property` ",
-			'rental_owners' => "`rental_owners` "
+			'unit_photos' => "`unit_photos` LEFT JOIN `units` as units1 ON `units1`.`id`=`unit_photos`.`unit` LEFT JOIN `properties` as properties1 ON `properties1`.`id`=`units1`.`property` "
 		);
 
 		$pkey = array(   
+			'applicants_and_tenants' => 'id',
 			'applications_leases' => 'id',
 			'residence_and_rental_history' => 'id',
 			'employment_and_income_history' => 'id',
 			'references' => 'id',
-			'applicants_and_tenants' => 'id',
+			'rental_owners' => 'id',
 			'properties' => 'id',
+			'property_photos' => 'id',
 			'units' => 'id',
-			'rental_owners' => 'id'
+			'unit_photos' => 'id'
 		);
 
 		if(isset($sql_from[$table_name])){
@@ -228,6 +234,22 @@
 	function get_defaults($table){
 		/* array of tables and their fields, with default values (or empty), excluding automatic values */
 		$defaults = array(
+			'applicants_and_tenants' => array(
+				'id' => '',
+				'last_name' => '',
+				'first_name' => '',
+				'email' => '',
+				'phone' => '',
+				'birth_date' => '',
+				'driver_license_number' => '',
+				'driver_license_state' => '',
+				'requested_lease_term' => '',
+				'monthly_gross_pay' => '',
+				'additional_income' => '',
+				'assets' => '',
+				'status' => 'Applicant',
+				'notes' => ''
+			),
 			'applications_leases' => array(
 				'id' => '',
 				'tenants' => '',
@@ -277,21 +299,21 @@
 				'reference_name' => '',
 				'phone' => ''
 			),
-			'applicants_and_tenants' => array(
+			'rental_owners' => array(
 				'id' => '',
-				'last_name' => '',
 				'first_name' => '',
-				'email' => '',
+				'last_name' => '',
+				'company_name' => '',
+				'date_of_birth' => '',
+				'primary_email' => '',
+				'alternate_email' => '',
 				'phone' => '',
-				'birth_date' => '',
-				'driver_license_number' => '',
-				'driver_license_state' => '',
-				'requested_lease_term' => '',
-				'monthly_gross_pay' => '',
-				'additional_income' => '',
-				'assets' => '',
-				'status' => 'Applicant',
-				'notes' => ''
+				'country' => '',
+				'street' => '',
+				'city' => '',
+				'state' => '',
+				'zip' => '',
+				'comments' => ''
 			),
 			'properties' => array(
 				'id' => '',
@@ -308,6 +330,12 @@
 				'City' => '',
 				'State' => '',
 				'ZIP' => ''
+			),
+			'property_photos' => array(
+				'id' => '',
+				'property' => '',
+				'photo' => '',
+				'description' => ''
 			),
 			'units' => array(
 				'id' => '',
@@ -329,71 +357,15 @@
 				'deposit_amount' => '',
 				'description' => ''
 			),
-			'rental_owners' => array(
+			'unit_photos' => array(
 				'id' => '',
-				'first_name' => '',
-				'last_name' => '',
-				'company_name' => '',
-				'date_of_birth' => '',
-				'primary_email' => '',
-				'alternate_email' => '',
-				'phone' => '',
-				'country' => '',
-				'street' => '',
-				'city' => '',
-				'state' => '',
-				'zip' => '',
-				'comments' => ''
+				'unit' => '',
+				'photo' => '',
+				'description' => ''
 			)
 		);
 
 		return isset($defaults[$table]) ? $defaults[$table] : array();
-	}
-
-	#########################################################
-
-	function getLoggedGroupID(){
-		if($_SESSION['memberGroupID']!=''){
-			return $_SESSION['memberGroupID'];
-		}else{
-			if(!setAnonymousAccess()) return false;
-			return getLoggedGroupID();
-		}
-	}
-
-	#########################################################
-
-	function getLoggedMemberID(){
-		if($_SESSION['memberID']!=''){
-			return strtolower($_SESSION['memberID']);
-		}else{
-			if(!setAnonymousAccess()) return false;
-			return getLoggedMemberID();
-		}
-	}
-
-	#########################################################
-
-	function setAnonymousAccess(){
-		$adminConfig = config('adminConfig');
-		$anon_group_safe = addslashes($adminConfig['anonymousGroup']);
-		$anon_user_safe = strtolower(addslashes($adminConfig['anonymousMember']));
-
-		$eo = array('silentErrors' => true);
-
-		$res = sql("select groupID from membership_groups where name='{$anon_group_safe}'", $eo);
-		if(!$res){ return false; }
-		$row = db_fetch_array($res); $anonGroupID = $row[0];
-
-		$_SESSION['memberGroupID'] = ($anonGroupID ? $anonGroupID : 0);
-
-		$res = sql("select lcase(memberID) from membership_users where lcase(memberID)='{$anon_user_safe}' and groupID='{$anonGroupID}'", $eo);
-		if(!$res){ return false; }
-		$row = db_fetch_array($res); $anonMemberID = $row[0];
-
-		$_SESSION['memberID'] = ($anonMemberID ? $anonMemberID : 0);
-
-		return true;
 	}
 
 	#########################################################
@@ -409,9 +381,9 @@
 					$_SESSION['memberID']=$username;
 					$_SESSION['memberGroupID']=sqlValue("select groupID from membership_users where lcase(memberID)='$username'");
 					if($_POST['rememberMe']==1){
-						@setcookie('real_estate_rememberMe', md5($username.$password), time()+86400*30);
+						@setcookie('rental_property_manager_rememberMe', md5($username.$password), time()+86400*30);
 					}else{
-						@setcookie('real_estate_rememberMe', '', time()-86400*30);
+						@setcookie('rental_property_manager_rememberMe', '', time()-86400*30);
 					}
 
 					// hook: login_ok
@@ -440,20 +412,13 @@
 			if(!headers_sent()) header('HTTP/1.0 403 Forbidden');
 			redirect("index.php?loginFailed=1");
 			exit;
-		}elseif((!$_SESSION['memberID'] || $_SESSION['memberID']==$adminConfig['anonymousMember']) && $_COOKIE['real_estate_rememberMe']!=''){
-			$chk=makeSafe($_COOKIE['real_estate_rememberMe']);
+		}elseif((!$_SESSION['memberID'] || $_SESSION['memberID']==$adminConfig['anonymousMember']) && $_COOKIE['rental_property_manager_rememberMe']!=''){
+			$chk=makeSafe($_COOKIE['rental_property_manager_rememberMe']);
 			if($username=sqlValue("select memberID from membership_users where convert(md5(concat(memberID, passMD5)), char)='$chk' and isBanned=0")){
 				$_SESSION['memberID']=$username;
 				$_SESSION['memberGroupID']=sqlValue("select groupID from membership_users where lcase(memberID)='$username'");
 			}
 		}
-	}
-
-	#########################################################
-
-	function logOutMember(){
-		logOutUser();
-		redirect("index.php?signIn=1");
 	}
 
 	#########################################################
@@ -475,7 +440,7 @@
 					<span class="icon-bar"></span>
 				</button>
 				<!-- application title is obtained from the name besides the yellow database icon in AppGini, use underscores for spaces -->
-				<a class="navbar-brand" href="<?php echo PREPEND_PATH; ?>index.php"><i class="glyphicon glyphicon-home"></i> real estate</a>
+				<a class="navbar-brand" href="<?php echo PREPEND_PATH; ?>index.php"><i class="glyphicon glyphicon-home"></i> rental property manager</a>
 			</div>
 			<div class="collapse navbar-collapse">
 				<ul class="nav navbar-nav">
@@ -678,51 +643,6 @@
 		for($i=1; $i<=80; $i++){
 			addFilter($i, '', 0, '', '');
 		}
-	}
-
-	#########################################################
-
-	function getMemberInfo($memberID = ''){
-		static $member_info = array();
-
-		if(!$memberID){
-			$memberID = getLoggedMemberID();
-		}
-
-		// return cached results, if present
-		if(isset($member_info[$memberID])) return $member_info[$memberID];
-
-		$adminConfig = config('adminConfig');
-		$mi = array();
-
-		if($memberID){
-			$res = sql("select * from membership_users where memberID='" . makeSafe($memberID) . "'", $eo);
-			if($row = db_fetch_assoc($res)){
-				$mi = array(
-					'username' => $memberID,
-					'groupID' => $row['groupID'],
-					'group' => sqlValue("select name from membership_groups where groupID='{$row['groupID']}'"),
-					'admin' => ($adminConfig['adminUsername'] == $memberID ? true : false),
-					'email' => $row['email'],
-					'custom' => array(
-						$row['custom1'], 
-						$row['custom2'], 
-						$row['custom3'], 
-						$row['custom4']
-					),
-					'banned' => ($row['isBanned'] ? true : false),
-					'approved' => ($row['isApproved'] ? true : false),
-					'signupDate' => @date('n/j/Y', @strtotime($row['signupDate'])),
-					'comments' => $row['comments'],
-					'IP' => $_SERVER['REMOTE_ADDR']
-				);
-
-				// cache results
-				$member_info[$memberID] = $mi;
-			}
-		}
-
-		return $mi;
 	}
 
 	#########################################################
@@ -1165,7 +1085,7 @@
 		if(is_array($arrTables)){
 			foreach($arrTables as $tn => $tc){
 				/* ---- list of tables where hide link in nav menu is set ---- */
-				$tChkHL = array_search($tn, array('residence_and_rental_history','employment_and_income_history','references'));
+				$tChkHL = array_search($tn, array('residence_and_rental_history','employment_and_income_history','references','property_photos','unit_photos'));
 
 				/* ---- list of tables where filter first is set ---- */
 				$tChkFF = array_search($tn, array());
@@ -1342,6 +1262,34 @@ EOT;
 		$html = ob_get_contents();
 		ob_end_clean();
 
+		return $html;
+	}
+
+	#########################################################
+
+	function quick_search_html($search_term, $label, $separate_dv = true){
+		global $Translation;
+
+		$safe_search = html_attr($search_term);
+		$safe_label = html_attr($label);
+		$safe_clear_label = html_attr($Translation['Reset Filters']);
+
+		if($separate_dv){
+			$reset_selection = "document.myform.SelectedID.value = '';";
+		}else{
+			$reset_selection = "document.myform.writeAttribute('novalidate', 'novalidate');";
+		}
+		$reset_selection .= ' document.myform.NoDV.value=1; return true;';
+
+		$html = <<<EOT
+		<div class="input-group" id="quick-search">
+			<input type="text" id="SearchString" name="SearchString" value="{$safe_search}" class="form-control" placeholder="{$safe_label}">
+			<span class="input-group-btn">
+				<button name="Search_x" value="1" id="Search" type="submit" onClick="{$reset_selection}" class="btn btn-default" title="{$safe_label}"><i class="glyphicon glyphicon-search"></i></button>
+				<button name="ClearQuickSearch" value="1" id="ClearQuickSearch" type="submit" onClick="\$j('#SearchString').val(''); {$reset_selection}" class="btn btn-default" title="{$safe_clear_label}"><i class="glyphicon glyphicon-remove-circle"></i></button>
+			</span>
+		</div>
+EOT;
 		return $html;
 	}
 

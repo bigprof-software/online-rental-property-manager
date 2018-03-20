@@ -1,14 +1,11 @@
 <!-- Edit this file to change the layout of the detail view form -->
 
-<script src="resources/datepicker/js/datepicker.packed.js"></script>
-<link href="resources/datepicker/css/datepicker.css" rel="stylesheet">
-
 <a name="detail-view"></a>
 <div class="panel-heading"><h3 class="panel-title"><strong><%%DETAIL_VIEW_TITLE%%></strong></h3></div>
 
 <div class="panel-body" id="rental_owners_dv_container">
 	<!-- child links -->
-	<div class="row">
+	<div class="row vspacer-md">
 		<div class="col-xs-12">
 			<a class="hidden-xs btn btn-default btn-lg pull-right hidden hspacer-sm" href="properties_view.php?filterer_owner=<%%URLVALUE(id)%%>&<%%EMBEDDED%%>" id="properties_link"><i class="glyphicon glyphicon-list-alt"></i> Properties</a>
 			<a class="visible-xs btn btn-default btn-lg btn-block hidden vspacer-sm" href="properties_view.php?filterer_owner=<%%URLVALUE(id)%%>&<%%EMBEDDED%%>" id="xs_properties_link"><i class="glyphicon glyphicon-list-alt"></i> Properties</a>
@@ -16,7 +13,7 @@
 			<div class="clearfix"></div>
 		</div>
 	</div>
-	<hr>
+	<hr class="hidden-xs hidden-sm">
 
 	<div class="row">
 		<!-- form inputs -->
@@ -24,6 +21,7 @@
 			<fieldset class="form-horizontal">
 
 				<div class="form-group">
+					<hr class="hidden-md hidden-lg">
 					<label for="id" class="control-label col-lg-3">ID</label>
 					<div class="col-lg-9">
 						<div class="form-control-static" id="id"><%%VALUE(id)%%></div>
@@ -31,6 +29,7 @@
 				</div>
 
 				<div class="form-group">
+					<hr class="hidden-md hidden-lg">
 					<label for="first_name" class="control-label col-lg-3">First name</label>
 					<div class="col-lg-9">
 						<input maxlength="40" type="text" class="form-control" name="first_name" id="first_name" value="<%%VALUE(first_name)%%>">
@@ -38,6 +37,7 @@
 				</div>
 
 				<div class="form-group">
+					<hr class="hidden-md hidden-lg">
 					<label for="last_name" class="control-label col-lg-3">Last name</label>
 					<div class="col-lg-9">
 						<input maxlength="40" type="text" class="form-control" name="last_name" id="last_name" value="<%%VALUE(last_name)%%>">
@@ -45,6 +45,7 @@
 				</div>
 
 				<div class="form-group">
+					<hr class="hidden-md hidden-lg">
 					<label for="company_name" class="control-label col-lg-3">Company name</label>
 					<div class="col-lg-9">
 						<input maxlength="40" type="text" class="form-control" name="company_name" id="company_name" value="<%%VALUE(company_name)%%>">
@@ -52,6 +53,7 @@
 				</div>
 
 				<div class="form-group">
+					<hr class="hidden-md hidden-lg">
 					<label for="date_of_birth" class="control-label col-lg-3">Date of birth</label>
 					<div class="col-lg-9">
 						<%%COMBO(date_of_birth)%%>
@@ -59,6 +61,7 @@
 				</div>
 
 				<div class="form-group">
+					<hr class="hidden-md hidden-lg">
 					<label for="primary_email" class="control-label col-lg-3">Primary email</label>
 					<div class="col-lg-9">
 						
@@ -71,6 +74,7 @@
 				</div>
 
 				<div class="form-group">
+					<hr class="hidden-md hidden-lg">
 					<label for="alternate_email" class="control-label col-lg-3">Alternate email</label>
 					<div class="col-lg-9">
 						
@@ -83,6 +87,7 @@
 				</div>
 
 				<div class="form-group">
+					<hr class="hidden-md hidden-lg">
 					<label for="phone" class="control-label col-lg-3">Phone</label>
 					<div class="col-lg-9">
 						<input maxlength="40" type="text" class="form-control" name="phone" id="phone" value="<%%VALUE(phone)%%>">
@@ -90,6 +95,7 @@
 				</div>
 
 				<div class="form-group">
+					<hr class="hidden-md hidden-lg">
 					<label for="country" class="control-label col-lg-3">Country</label>
 					<div class="col-lg-9">
 						<%%COMBO(country)%%>
@@ -97,6 +103,7 @@
 				</div>
 
 				<div class="form-group">
+					<hr class="hidden-md hidden-lg">
 					<label for="street" class="control-label col-lg-3">Street</label>
 					<div class="col-lg-9">
 						<input maxlength="40" type="text" class="form-control" name="street" id="street" value="<%%VALUE(street)%%>">
@@ -104,6 +111,7 @@
 				</div>
 
 				<div class="form-group">
+					<hr class="hidden-md hidden-lg">
 					<label for="city" class="control-label col-lg-3">City</label>
 					<div class="col-lg-9">
 						<input maxlength="40" type="text" class="form-control" name="city" id="city" value="<%%VALUE(city)%%>">
@@ -111,6 +119,7 @@
 				</div>
 
 				<div class="form-group">
+					<hr class="hidden-md hidden-lg">
 					<label for="state" class="control-label col-lg-3">State</label>
 					<div class="col-lg-9">
 						<%%COMBO(state)%%>
@@ -118,6 +127,7 @@
 				</div>
 
 				<div class="form-group">
+					<hr class="hidden-md hidden-lg">
 					<label for="zip" class="control-label col-lg-3">Zip</label>
 					<div class="col-lg-9">
 						<input maxlength="15" type="text" class="form-control" name="zip" id="zip" value="<%%VALUE(zip)%%>">
@@ -125,6 +135,7 @@
 				</div>
 
 				<div class="form-group">
+					<hr class="hidden-md hidden-lg">
 					<label for="comments" class="control-label col-lg-3">Comments</label>
 					<div class="col-lg-9">
 						<%%HTMLAREA(comments)%%>
@@ -135,6 +146,7 @@
 		</div>
 
 		<!-- DV action buttons -->
+		<hr class="hidden-md hidden-lg">
 		<div class="col-md-4 col-lg-2" id="rental_owners_dv_action_buttons">
 			<div class="btn-toolbar">
 				<div class="btn-group-vertical btn-group-lg" style="width: 100%;">
@@ -173,19 +185,23 @@
 			var record_added_ok = (location.search.split('record-added-ok=').length == 2);
 			var record_updated_ok = (location.search.split('record-updated-ok=').length == 2);
 			if((record_added_ok || record_updated_ok) && embedded_mode && autoclose_mode){
-				setTimeout(function(){
-					window.parent.jQuery('.modal').modal('hide');
-				}, 2000);
+				setTimeout(AppGini.closeParentModal, 2000);
 			}
 
 			bkLib.onDomLoaded(function(){
 				if($j('textarea#comments').length) new nicEditor({ fullPanel : true }).panelInstance('comments');
 
-				$j('.nicEdit-panelContain').parent().width('90%');
-				$j('.nicEdit-panelContain').parent().next().width('88%');
+				$j('.nicEdit-panelContain').parent().width('100%');
+				$j('.nicEdit-panelContain').parent().next().width('98%');
 				$j('.nicEdit-main').width('99%');
 			});
-			$j('select, input[type=text], textarea').not(':disabled').eq(0).focus();
+			/* enable DV action buttons to float on scrolling down the form */
+			enable_dvab_floating();
+
+			if(!(embedded_mode && AppGini.mobileDevice())){
+				$j('select, input[type=text], textarea').not(':disabled').eq(0).focus();
+			}
+
 			$j('form').eq(0).change(function(){
 				if($j(this).data('already_changed')) return;
 				if($j('#deselect').length) $j('#deselect').removeClass('btn-default').addClass('btn-warning').get(0).lastChild.data = " <%%TRANSLATION(Cancel)%%>";
@@ -200,7 +216,7 @@
 
 				/* append embedded mode to all links */
 				var append_embedded = function(){
-					$j('a[href]:not([href^=#]):not([href^=javascript]):not([href$="Embedded=1"]):not([href*="link.php?t="]):not([href^="mailto:"])').each(
+					$j('a[href]:not([href^="#"]):not([href^="javascript"]):not([href$="Embedded=1"]):not([href*="link.php?t="]):not([href^="mailto:"])').each(
 						function(){
 							$j(this).attr('href', $j(this).attr('href') + '&Embedded=1');
 						}
@@ -263,7 +279,7 @@
 					parent_id = $j(this).prevAll('[type=radio]').eq(0).val();
 				}
 
-				if(parent_id != '{empty_value}'){
+				if(parent_id != '{empty_value}' && parent_id != undefined && parent_id != ''){
 					var parent_link = $j(this).parents('.form-group').children('label').data('parent_link');
 					switch(parent_link){
 						case 'view_parent_hidden':

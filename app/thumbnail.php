@@ -11,7 +11,13 @@
 		'properties' => array(
 			'photo' => $Translation['ImageFolder']
 		),
+		'property_photos' => array(
+			'photo' => $Translation['ImageFolder']
+		),
 		'units' => array(
+			'photo' => $Translation['ImageFolder']
+		),
+		'unit_photos' => array(
 			'photo' => $Translation['ImageFolder']
 		)
 	);

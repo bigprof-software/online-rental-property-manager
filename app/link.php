@@ -10,7 +10,15 @@
 			'photo' => $Translation['ImageFolder'],
 			'primary key' => 'id'
 		),
+		'property_photos' => array(
+			'photo' => $Translation['ImageFolder'],
+			'primary key' => 'id'
+		),
 		'units' => array(
+			'photo' => $Translation['ImageFolder'],
+			'primary key' => 'id'
+		),
+		'unit_photos' => array(
 			'photo' => $Translation['ImageFolder'],
 			'primary key' => 'id'
 		)

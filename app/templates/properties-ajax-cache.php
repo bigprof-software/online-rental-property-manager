@@ -4,7 +4,7 @@
 
 		/* data for selected record, or defaults if none is selected */
 		var data = {
-			owner: { id: '<?php echo $rdata['owner']; ?>', value: '<?php echo $rdata['owner']; ?>', text: '<?php echo $jdata['owner']; ?>' }
+			owner: <?php echo json_encode(array('id' => $rdata['owner'], 'value' => $rdata['owner'], 'text' => $jdata['owner'])); ?>
 		};
 
 		/* initialize or continue using AppGini.cache for the current table */

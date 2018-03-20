@@ -99,7 +99,7 @@
 			<div class="clearfix"></div>
 
 			<style>
-				#admin-tools-menu-button{ display: inline-block !important; }
+				#admin-tools-menu-button{ display: inline-block !important; margin: 0 1em; }
 				#admin-tools-menu{ padding: 1em 2em; }
 				#admin-tools-menu .dl-horizontal dd, #admin-tools-menu .dl-horizontal dt{ padding: 1em 0; }
 			</style>
@@ -149,7 +149,7 @@
 				/* function to update record info after 'change owner' dialog is gone */
 				var update_username = function(){
 					/* wait till any modals disappear */
-					if($j('.modal-dialog:visible').length) return setTimeout(update_username, 900);
+					if(AppGini.modalOpen()) return setTimeout(update_username, 900);
 
 					$j.ajax({
 						url: 'ajax_admin_tools.php',

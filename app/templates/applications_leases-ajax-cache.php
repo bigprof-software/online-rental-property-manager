@@ -4,9 +4,9 @@
 
 		/* data for selected record, or defaults if none is selected */
 		var data = {
-			tenants: { id: '<?php echo $rdata['tenants']; ?>', value: '<?php echo $rdata['tenants']; ?>', text: '<?php echo $jdata['tenants']; ?>' },
-			property: { id: '<?php echo $rdata['property']; ?>', value: '<?php echo $rdata['property']; ?>', text: '<?php echo $jdata['property']; ?>' },
-			unit: { id: '<?php echo $rdata['unit']; ?>', value: '<?php echo $rdata['unit']; ?>', text: '<?php echo $jdata['unit']; ?>' }
+			tenants: <?php echo json_encode(array('id' => $rdata['tenants'], 'value' => $rdata['tenants'], 'text' => $jdata['tenants'])); ?>,
+			property: <?php echo json_encode(array('id' => $rdata['property'], 'value' => $rdata['property'], 'text' => $jdata['property'])); ?>,
+			unit: <?php echo json_encode(array('id' => $rdata['unit'], 'value' => $rdata['unit'], 'text' => $jdata['unit'])); ?>
 		};
 
 		/* initialize or continue using AppGini.cache for the current table */

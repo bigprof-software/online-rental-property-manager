@@ -1,5 +1,5 @@
 <?php
-	$app_name = 'real estate';
+	$app_name = 'rental property manager';
 	$currDir = dirname(__FILE__);
 	include("{$currDir}/defaultLang.php");
 	include("{$currDir}/language.php");

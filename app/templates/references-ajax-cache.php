@@ -4,7 +4,7 @@
 
 		/* data for selected record, or defaults if none is selected */
 		var data = {
-			tenant: { id: '<?php echo $rdata['tenant']; ?>', value: '<?php echo $rdata['tenant']; ?>', text: '<?php echo $jdata['tenant']; ?>' }
+			tenant: <?php echo json_encode(array('id' => $rdata['tenant'], 'value' => $rdata['tenant'], 'text' => $jdata['tenant'])); ?>
 		};
 
 		/* initialize or continue using AppGini.cache for the current table */

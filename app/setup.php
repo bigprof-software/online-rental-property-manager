@@ -1,5 +1,6 @@
 <?php
 	/* initial preps and includes */
+	define('APPGINI_SETUP', true); /* needed in included files to tell that this is the setup script */
 	error_reporting(E_ERROR | E_WARNING | E_PARSE);
 	if(function_exists('set_magic_quotes_runtime')) @set_magic_quotes_runtime(0);
 	$curr_dir = dirname(__FILE__);
@@ -56,7 +57,7 @@
 
 	/* include page header, unless we're testing db connection (ajax) */
 	if(session_id()){ @session_write_close(); }
-	@session_name('real_estate');
+	@session_name('rental_property_manager');
 	@session_start();
 	$_REQUEST['Embedded'] = 1; /* to prevent displaying the navigation bar */
 	$x = new StdClass;
@@ -264,7 +265,7 @@
 			if(!@is_writable("{$curr_dir}/images")){
 				$checks[] = array(
 					'class' => 'warning',
-					'message' => 'WARNING: <dfn><abbr title="' . dirname(__FILE__) . '/images">images</abbr></dfn> folder is not writeable. This will prevent file uploads from working correctly. Please set that folder as writeable (for example, <code>chmod 777</code> in linux.)'
+					'message' => '<div style="text-direction: ltr; text-align: left;">WARNING: <dfn><abbr title="' . dirname(__FILE__) . '/images">images</abbr></dfn> folder is not writeable. This will prevent file uploads from working correctly. Please set that folder as writeable.<br><br>For example, you might need to <code>chmod 777</code> using FTP, or if this is a linux system and you have shell access, better try using <code>chown -R www-data:www-data ' . dirname(__FILE__) . '</code>, replacing <i>www-data</i> with the actual username running the server process if necessary.</div>'
 				);
 			}
 

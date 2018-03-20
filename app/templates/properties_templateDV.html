@@ -5,16 +5,21 @@
 
 <div class="panel-body" id="properties_dv_container">
 	<!-- child links -->
-	<div class="row">
+	<div class="row vspacer-md">
 		<div class="col-xs-12">
+			<a class="hidden-xs btn btn-default btn-lg pull-right hidden hspacer-sm" href="applications_leases_view.php?filterer_property=<%%URLVALUE(id)%%>&<%%EMBEDDED%%>" id="applications_leases_link"><i class="glyphicon glyphicon-list-alt"></i> Applications/Leases</a>
+			<a class="visible-xs btn btn-default btn-lg btn-block hidden vspacer-sm" href="applications_leases_view.php?filterer_property=<%%URLVALUE(id)%%>&<%%EMBEDDED%%>" id="xs_applications_leases_link"><i class="glyphicon glyphicon-list-alt"></i> Applications/Leases</a>
 			<input type="hidden" id="applications_leases_hclink" value="applications_leases_view.php?filterer_property=<%%URLVALUE(id)%%>&<%%EMBEDDED%%>">
+			<a class="hidden-xs btn btn-default btn-lg pull-right hidden hspacer-sm" href="property_photos_view.php?filterer_property=<%%URLVALUE(id)%%>&<%%EMBEDDED%%>" id="property_photos_link"><i class="glyphicon glyphicon-list-alt"></i> Property photos</a>
+			<a class="visible-xs btn btn-default btn-lg btn-block hidden vspacer-sm" href="property_photos_view.php?filterer_property=<%%URLVALUE(id)%%>&<%%EMBEDDED%%>" id="xs_property_photos_link"><i class="glyphicon glyphicon-list-alt"></i> Property photos</a>
+			<input type="hidden" id="property_photos_hclink" value="property_photos_view.php?filterer_property=<%%URLVALUE(id)%%>&<%%EMBEDDED%%>">
 			<a class="hidden-xs btn btn-default btn-lg pull-right hidden hspacer-sm" href="units_view.php?filterer_property=<%%URLVALUE(id)%%>&<%%EMBEDDED%%>" id="units_link"><i class="glyphicon glyphicon-list-alt"></i> Units</a>
 			<a class="visible-xs btn btn-default btn-lg btn-block hidden vspacer-sm" href="units_view.php?filterer_property=<%%URLVALUE(id)%%>&<%%EMBEDDED%%>" id="xs_units_link"><i class="glyphicon glyphicon-list-alt"></i> Units</a>
 			<input type="hidden" id="units_hclink" value="units_view.php?filterer_property=<%%URLVALUE(id)%%>&<%%EMBEDDED%%>">
 			<div class="clearfix"></div>
 		</div>
 	</div>
-	<hr>
+	<hr class="hidden-xs hidden-sm">
 
 	<div class="row">
 		<!-- form inputs -->
@@ -22,6 +27,7 @@
 			<fieldset class="form-horizontal">
 
 				<div class="form-group">
+					<hr class="hidden-md hidden-lg">
 					<label for="id" class="control-label col-lg-3">ID</label>
 					<div class="col-lg-9">
 						<div class="form-control-static" id="id"><%%VALUE(id)%%></div>
@@ -29,6 +35,7 @@
 				</div>
 
 				<div class="form-group">
+					<hr class="hidden-md hidden-lg">
 					<label for="property_name" class="control-label col-lg-3">Property Name<span class="text-danger"><%%TRANSLATION(*)%%></span></label>
 					<div class="col-lg-9">
 						<input maxlength="" type="text" class="form-control" name="property_name" id="property_name" value="<%%VALUE(property_name)%%>" required>
@@ -36,6 +43,7 @@
 				</div>
 
 				<div class="form-group">
+					<hr class="hidden-md hidden-lg">
 					<label for="type" class="control-label col-lg-3">Type<span class="text-danger"><%%TRANSLATION(*)%%></span></label>
 					<div class="col-lg-9">
 						<%%COMBO(type)%%>
@@ -43,6 +51,7 @@
 				</div>
 
 				<div class="form-group">
+					<hr class="hidden-md hidden-lg">
 					<label for="number_of_units" class="control-label col-lg-3">Number of units</label>
 					<div class="col-lg-9">
 						<input maxlength="15" type="text" class="form-control" name="number_of_units" id="number_of_units" value="<%%VALUE(number_of_units)%%>">
@@ -50,9 +59,10 @@
 				</div>
 
 				<div class="form-group">
-					<label class="control-label col-lg-3">Photo <i class="glyphicon glyphicon-info-sign text-info" data-toggle="collapse" data-target="#photo-description"></i></label>
+					<hr class="hidden-md hidden-lg">
+					<label class="control-label col-lg-3">Cover photo <i class="glyphicon glyphicon-info-sign text-info" data-toggle="collapse" data-target="#photo-description"></i></label>
 					<div class="col-lg-9">
-						<span class="help-block collapse" id="photo-description"><div class="alert alert-info">Maximum file size allowed: 1000 KB.<br />Allowed file types: jpg, jpeg, gif, png</div></span>
+						<span class="help-block collapse" id="photo-description"><div class="alert alert-info">Maximum file size allowed: 2000 KB.<br>Allowed file types: jpg, jpeg, gif, png</div></span>
 
 						<div class="form-control-static"><div class="pull-left">
 
@@ -71,13 +81,15 @@
 				</div>
 
 				<div class="form-group">
+					<hr class="hidden-md hidden-lg">
 					<label for="owner" class="control-label col-lg-3" data-parent_link="view_parent_modal">Owner</label>
 					<div class="col-lg-9">
-						<div class="row form-control-static"><div class="col-xs-11"><%%COMBO(owner)%%><%%PLINK(owner)%%><%%ADDNEW(rental_owners)%%></div></div>
+						<div class="form-control-static" style="white-space: nowrap; overflow-x: hidden;"><%%COMBO(owner)%%><%%PLINK(owner)%%><%%ADDNEW(rental_owners)%%></div>
 					</div>
 				</div>
 
 				<div class="form-group">
+					<hr class="hidden-md hidden-lg">
 					<label for="country" class="control-label col-lg-3">Country</label>
 					<div class="col-lg-9">
 						<%%COMBO(country)%%>
@@ -85,6 +97,7 @@
 				</div>
 
 				<div class="form-group">
+					<hr class="hidden-md hidden-lg">
 					<label for="street" class="control-label col-lg-3">Street</label>
 					<div class="col-lg-9">
 						<input maxlength="40" type="text" class="form-control" name="street" id="street" value="<%%VALUE(street)%%>">
@@ -92,6 +105,7 @@
 				</div>
 
 				<div class="form-group">
+					<hr class="hidden-md hidden-lg">
 					<label for="City" class="control-label col-lg-3">City</label>
 					<div class="col-lg-9">
 						<input maxlength="40" type="text" class="form-control" name="City" id="City" value="<%%VALUE(City)%%>">
@@ -99,6 +113,7 @@
 				</div>
 
 				<div class="form-group">
+					<hr class="hidden-md hidden-lg">
 					<label for="State" class="control-label col-lg-3">State</label>
 					<div class="col-lg-9">
 						<%%COMBO(State)%%>
@@ -106,6 +121,7 @@
 				</div>
 
 				<div class="form-group">
+					<hr class="hidden-md hidden-lg">
 					<label for="ZIP" class="control-label col-lg-3">ZIP</label>
 					<div class="col-lg-9">
 						<input maxlength="15" type="text" class="form-control" name="ZIP" id="ZIP" value="<%%VALUE(ZIP)%%>">
@@ -116,6 +132,7 @@
 		</div>
 
 		<!-- DV action buttons -->
+		<hr class="hidden-md hidden-lg">
 		<div class="col-md-4 col-lg-2" id="properties_dv_action_buttons">
 			<div class="btn-toolbar">
 				<div class="btn-group-vertical btn-group-lg" style="width: 100%;">
@@ -153,12 +170,16 @@
 			var record_added_ok = (location.search.split('record-added-ok=').length == 2);
 			var record_updated_ok = (location.search.split('record-updated-ok=').length == 2);
 			if((record_added_ok || record_updated_ok) && embedded_mode && autoclose_mode){
-				setTimeout(function(){
-					window.parent.jQuery('.modal').modal('hide');
-				}, 2000);
+				setTimeout(AppGini.closeParentModal, 2000);
 			}
 
-			$j('select, input[type=text], textarea').not(':disabled').eq(0).focus();
+			/* enable DV action buttons to float on scrolling down the form */
+			enable_dvab_floating();
+
+			if(!(embedded_mode && AppGini.mobileDevice())){
+				$j('select, input[type=text], textarea').not(':disabled').eq(0).focus();
+			}
+
 			$j('form').eq(0).change(function(){
 				if($j(this).data('already_changed')) return;
 				if($j('#deselect').length) $j('#deselect').removeClass('btn-default').addClass('btn-warning').get(0).lastChild.data = " <%%TRANSLATION(Cancel)%%>";
@@ -173,7 +194,7 @@
 
 				/* append embedded mode to all links */
 				var append_embedded = function(){
-					$j('a[href]:not([href^=#]):not([href^=javascript]):not([href$="Embedded=1"]):not([href*="link.php?t="]):not([href^="mailto:"])').each(
+					$j('a[href]:not([href^="#"]):not([href^="javascript"]):not([href$="Embedded=1"]):not([href*="link.php?t="]):not([href^="mailto:"])').each(
 						function(){
 							$j(this).attr('href', $j(this).attr('href') + '&Embedded=1');
 						}
@@ -236,7 +257,7 @@
 					parent_id = $j(this).prevAll('[type=radio]').eq(0).val();
 				}
 
-				if(parent_id != '{empty_value}'){
+				if(parent_id != '{empty_value}' && parent_id != undefined && parent_id != ''){
 					var parent_link = $j(this).parents('.form-group').children('label').data('parent_link');
 					switch(parent_link){
 						case 'view_parent_hidden':

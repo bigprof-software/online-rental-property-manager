@@ -48,10 +48,11 @@
 	@ini_set('session.serialize_handler', 'php');
 	@ini_set('session.use_cookies', '1');
 	@ini_set('session.use_only_cookies', '1');
-	@header('Cache-Control: no-cache, no-store, must-revalidate'); // HTTP 1.1.
-	@header('Pragma: no-cache'); // HTTP 1.0.
-	@header('Expires: 0'); // Proxies.
-	@session_name('real_estate');
+	@ini_set('session.cookie_httponly', '1');
+	@ini_set('session.use_strict_mode', '1');
+	@session_cache_expire(2);
+	@session_cache_limiter($_SERVER['REQUEST_METHOD'] == 'POST' ? 'private' : 'nocache');
+	@session_name('rental_property_manager');
 	session_start();
 
 
@@ -62,10 +63,9 @@
 	########################################################################
 
 	// do we have an admin log out request?
-	if($_GET['signOut']==1){
+	if(isset($_GET['signOut'])){
 		logOutUser();
-		?><META HTTP-EQUIV="Refresh" CONTENT="0;url=../index.php"><?php
-		exit;
+		redirect('../index.php?signIn=1');
 	}
 
 	// is there a logged user?

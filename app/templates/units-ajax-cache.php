@@ -4,12 +4,12 @@
 
 		/* data for selected record, or defaults if none is selected */
 		var data = {
-			property: { id: '<?php echo $rdata['property']; ?>', value: '<?php echo $rdata['property']; ?>', text: '<?php echo $jdata['property']; ?>' },
-			country: '<?php echo $jdata['country']; ?>',
-			street: '<?php echo $jdata['street']; ?>',
-			city: '<?php echo $jdata['city']; ?>',
-			state: '<?php echo $jdata['state']; ?>',
-			postal_code: '<?php echo $jdata['postal_code']; ?>'
+			property: <?php echo json_encode(array('id' => $rdata['property'], 'value' => $rdata['property'], 'text' => $jdata['property'])); ?>,
+			country: <?php echo json_encode($jdata['country']); ?>,
+			street: <?php echo json_encode($jdata['street']); ?>,
+			city: <?php echo json_encode($jdata['city']); ?>,
+			state: <?php echo json_encode($jdata['state']); ?>,
+			postal_code: <?php echo json_encode($jdata['postal_code']); ?>
 		};
 
 		/* initialize or continue using AppGini.cache for the current table */

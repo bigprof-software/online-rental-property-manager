@@ -1036,15 +1036,6 @@ class CI_Input {
 		return $str;
 	}
 
-	/* callback function added for use in _html_entity_decode */
-	function _chr($m){
-		return chr($m[1]);
-	}
-
-	/* callback function added for use in _html_entity_decode */
-	function _chrhexdec($m){
-		return chr(hexdec($m[1]));
-	}
 	// --------------------------------------------------------------------
 
 	/**
@@ -1073,4 +1064,15 @@ class CI_Input {
 
 	// --------------------------------------------------------------------
 
+}
+
+
+/* callback function added for use in _html_entity_decode */
+function _chr($m){
+	return chr($m[1]);
+}
+
+/* callback function added for use in _html_entity_decode */
+function _chrhexdec($m){
+	return chr(hexdec($m[1]));
 }

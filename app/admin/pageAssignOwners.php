@@ -94,7 +94,7 @@
 
 	// show status of previous assignments
 	if($status!=''){
-		echo"<div class=\"alert alert-danger\">$status</div>";
+		echo "<div class=\"alert alert-info\">$status</div>";
 	}
 
 	// compose groups drop-down

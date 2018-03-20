@@ -472,4 +472,22 @@
 	$Translation['configure mail settings'] = 'Configure mail settings';
 	$Translation['display debugging info'] = 'Display debugging info';
 	$Translation['debugging info hint'] = 'Debugging info is useful if you are having trouble sending emails through the configured SMTP server';
-	
+
+	/* Added in AppGini 5.70 */
+	$Translation['create backup file'] = 'Create Backup File';
+	$Translation['database backups'] = 'Database backups';
+	$Translation['no backups found'] = 'No backups found. You can create a new backup by clicking the "Create Backup File" button.';
+	$Translation['available backups'] = 'Available backups';
+	$Translation['restore backup'] = 'Restore';
+	$Translation['delete backup'] = 'Delete';
+	$Translation['backup restored'] = 'Backup restored successfully.';
+	$Translation['backup deleted'] = 'Backup deleted successfully.';
+	$Translation['restore error'] = 'An error occured while restoring backup.';
+	$Translation['backup delete error'] = 'An error occured while deleting backup.';
+	$Translation['confirm delete backup'] = 'Are you sure you want to delete this backup file?';
+	$Translation['confirm restore'] = 'Restoring your database from a backup file would OVERWRITE all existing data AND users/passwords, reverting all to the state when the backup was taken.\n\nDuring the restore process, maintenance mode will be enabled to prevent users from modifying the database, and will be disabled once the restore is finished.\n\nAre you sure you want to continue?';
+	$Translation['confirm backup'] = 'During the backup process, maintenance mode will be enabled to prevent users from modifying the database, and will be disabled once the backup is finished.\n\nAre you sure you want to continue?';
+	$Translation['cant create backup folder'] = 'Error: Can\'t create or write to admin/backups folder. Please check your folder permissions and ownership or contact your server administrator for help.';
+	$Translation['fix all'] = 'FIX ALL FIELDS';
+	$Translation['backup before fix'] = 'It\'s highly recommended that you create a database backup first before attempting to make any fixes here.';
+	$Translation['about backups'] = 'Backups are performed using mysqldump commandline tool. If no backups are being created, it could be due to the web server not having permission to run mysqldump.';

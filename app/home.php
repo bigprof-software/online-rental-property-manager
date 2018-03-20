@@ -40,7 +40,7 @@
 
 <?php
 	/* accessible tables */
-	$arrTables = getTableList();
+	$arrTables = get_tables_info();
 	if(is_array($arrTables) && count($arrTables)){
 		/* how many table groups do we have? */
 		$groups = get_table_groups();
@@ -62,9 +62,17 @@
 			/* is the current table filter-first? */
 			$tChkFF = array_search($tn, array());
 			/* hide current table in homepage? */
-			$tChkHL = array_search($tn, array('residence_and_rental_history','employment_and_income_history','references'));
+			$tChkHL = array_search($tn, array('residence_and_rental_history','employment_and_income_history','references','property_photos','unit_photos'));
 			/* allow homepage 'add new' for current table? */
-			$tChkAHAN = array_search($tn, array());
+			$tChkAHAN = array_search($tn, array('applicants_and_tenants','applications_leases','rental_owners','properties','units'));
+
+			/* homepageShowCount for current table? */
+			$count_badge = '';
+			if($tc['homepageShowCount']){
+				$sql_from = get_sql_from($tn);
+				$count_records = ($sql_from ? sqlValue("select count(1) from " . $sql_from) : 0);
+				$count_badge = '<span class="badge hspacer-lg text-bold">' . number_format($count_records) . '</span>';
+			}
 
 			$t_perm = getTablePermissions($tn);
 			$can_insert = $t_perm['insert'];
@@ -101,15 +109,15 @@
 									<?php if($can_insert && $tChkAHAN !== false && $tChkAHAN !== null){ ?>
 
 										<div class="btn-group" style="width: 100%;">
-										   <a style="width: 85%;" class="btn btn-lg <?php echo (!$i ? $block_classes['first']['link'] : $block_classes['other']['link']); ?>" title="<?php echo preg_replace("/&amp;(#[0-9]+|[a-z]+);/i", "&$1;", html_attr(strip_tags($tc[1]))); ?>" href="<?php echo $tn; ?>_view.php<?php echo $searchFirst; ?>"><?php echo ($tc[2] ? '<img src="' . $tc[2] . '">' : '');?><strong><?php echo $tc[0]; ?></strong></a>
+										   <a style="width: 85%;" class="btn btn-lg <?php echo (!$i ? $block_classes['first']['link'] : $block_classes['other']['link']); ?>" title="<?php echo preg_replace("/&amp;(#[0-9]+|[a-z]+);/i", "&$1;", html_attr(strip_tags($tc['Description']))); ?>" href="<?php echo $tn; ?>_view.php<?php echo $searchFirst; ?>"><?php echo ($tc['tableIcon'] ? '<img src="' . $tc['tableIcon'] . '">' : '');?><strong class="table-caption"><?php echo $tc['Caption']; ?></strong><?php echo $count_badge; ?></a>
 										   <a id="<?php echo $tn; ?>_add_new" style="width: 15%;" class="btn btn-add-new btn-lg <?php echo (!$i ? $block_classes['first']['link'] : $block_classes['other']['link']); ?>" title="<?php echo html_attr($Translation['Add New']); ?>" href="<?php echo $tn; ?>_view.php?addNew_x=1"><i style="vertical-align: bottom;" class="glyphicon glyphicon-plus"></i></a>
 										</div>
 									<?php }else{ ?>
 
-										<a class="btn btn-block btn-lg <?php echo (!$i ? $block_classes['first']['link'] : $block_classes['other']['link']); ?>" title="<?php echo preg_replace("/&amp;(#[0-9]+|[a-z]+);/i", "&$1;", html_attr(strip_tags($tc[1]))); ?>" href="<?php echo $tn; ?>_view.php<?php echo $searchFirst; ?>"><?php echo ($tc[2] ? '<img src="' . $tc[2] . '">' : '');?><strong><?php echo $tc[0]; ?></strong></a>
+										<a class="btn btn-block btn-lg <?php echo (!$i ? $block_classes['first']['link'] : $block_classes['other']['link']); ?>" title="<?php echo preg_replace("/&amp;(#[0-9]+|[a-z]+);/i", "&$1;", html_attr(strip_tags($tc['Description']))); ?>" href="<?php echo $tn; ?>_view.php<?php echo $searchFirst; ?>"><?php echo ($tc['tableIcon'] ? '<img src="' . $tc['tableIcon'] . '">' : '');?><strong class="table-caption"><?php echo $tc['Caption']; ?></strong><?php echo $count_badge; ?></a>
 									<?php } ?>
 
-									<div class="panel-body-description"><?php echo $tc[1]; ?></div>
+									<div class="panel-body-description"><?php echo $tc['Description']; ?></div>
 								</div>
 							</div>
 						</div>
@@ -166,7 +174,7 @@
 			modal_window({
 				url: tn + '_view.php?addNew_x=1&Embedded=1',
 				size: 'full',
-				title: $j(this).prev().text() + ": <?php echo html_attr($Translation['Add New']); ?>" 
+				title: $j(this).prev().children('.table-caption').text() + ": <?php echo html_attr($Translation['Add New']); ?>" 
 			});
 			return false;
 		});

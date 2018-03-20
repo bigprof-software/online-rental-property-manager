@@ -1,0 +1,10 @@
+<!-- Edit this file to change the layout of each record in the table view -->
+<!-- To disable clicking of a field, remove the  and  formatters around it-->
+
+<!-- If you wish to hide the table view header that contains the column titles, -->
+<!-- add the following to the unit_photos_init() hook (in hooks/unit_photos.php file) -->
+<!--     $options->ShowTableHeader = 0;     -->
+
+		<td id="unit_photos-unit-<%%VALUE(id)%%>" class="unit_photos-unit"><%%VALUE(unit)%%></td>
+		<td id="unit_photos-photo-<%%VALUE(id)%%>" class="unit_photos-photo"><a href="<%%TRANSLATION(ImageFolder)%%><%%VALUE(photo)%%>" data-lightbox="unit_photos-photo"><img src="thumbnail.php?i=<%%VALUE(photo)%%>&t=unit_photos&f=photo&v=tv" class="img-thumbnail"></a></td>
+		<td id="unit_photos-description-<%%VALUE(id)%%>" class="unit_photos-description"><%%VALUE(description)%%></td>

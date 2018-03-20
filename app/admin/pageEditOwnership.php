@@ -9,7 +9,6 @@
 		// validate data
 		$recID = intval($_REQUEST['recID']);
 		$memberID = makeSafe(strtolower($_REQUEST['memberID']));
-		$groupID = intval($_REQUEST['groupID']);
 		###############################
 
 		/* for ajax requests coming from the users' area, get the recID */
@@ -20,20 +19,15 @@
 			if(!in_array($tableName, array_keys(getTableList()))) die($Translation["invalid table"]);
 
 			if(!$pkValue) die($Translation["invalid primary key"]);
+		}
 
-			$recID = sqlValue("select recID from membership_userrecords where tableName='{$tableName}' and pkValue='" . makeSafe($pkValue) . "'");
-			if(!$recID) die($Translation["record not found"]);
-
-			/* determine groupID if not provided */
-			if(!$groupID){
-				$groupID = sqlValue("select groupID from membership_users where memberID='{$memberID}'");
-				if(!$groupID) die($Translation["invalid username"]);
-			}
+		if($recID){
+			$tableName = sqlValue("select tableName from membership_userrecords where recID='{$recID}'");
+			$pkValue = sqlValue("select pkValue from membership_userrecords where recID='{$recID}'");
 		}
 
 		// update ownership
-		$upQry = "UPDATE `membership_userrecords` set memberID='{$memberID}', groupID='{$groupID}' WHERE recID='{$recID}'";
-		sql($upQry, $eo);
+		set_record_owner($tableName, $pkValue, $memberID);
 
 		if(is_ajax()){
 			echo 'OK';

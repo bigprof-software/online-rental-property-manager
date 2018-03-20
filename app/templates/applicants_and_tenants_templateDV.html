@@ -1,14 +1,11 @@
 <!-- Edit this file to change the layout of the detail view form -->
 
-<script src="resources/datepicker/js/datepicker.packed.js"></script>
-<link href="resources/datepicker/css/datepicker.css" rel="stylesheet">
-
 <a name="detail-view"></a>
 <div class="panel-heading"><h3 class="panel-title"><strong><%%DETAIL_VIEW_TITLE%%></strong></h3></div>
 
 <div class="panel-body" id="applicants_and_tenants_dv_container">
 	<!-- child links -->
-	<div class="row">
+	<div class="row vspacer-md">
 		<div class="col-xs-12">
 			<a class="hidden-xs btn btn-default btn-lg pull-right hidden hspacer-sm" href="applications_leases_view.php?filterer_tenants=<%%URLVALUE(id)%%>&<%%EMBEDDED%%>" id="applications_leases_link"><i class="glyphicon glyphicon-list-alt"></i> Applications/Leases</a>
 			<a class="visible-xs btn btn-default btn-lg btn-block hidden vspacer-sm" href="applications_leases_view.php?filterer_tenants=<%%URLVALUE(id)%%>&<%%EMBEDDED%%>" id="xs_applications_leases_link"><i class="glyphicon glyphicon-list-alt"></i> Applications/Leases</a>
@@ -25,7 +22,7 @@
 			<div class="clearfix"></div>
 		</div>
 	</div>
-	<hr>
+	<hr class="hidden-xs hidden-sm">
 
 	<div class="row">
 		<!-- form inputs -->
@@ -33,6 +30,7 @@
 			<fieldset class="form-horizontal">
 
 				<div class="form-group">
+					<hr class="hidden-md hidden-lg">
 					<label for="id" class="control-label col-lg-3">ID</label>
 					<div class="col-lg-9">
 						<div class="form-control-static" id="id"><%%VALUE(id)%%></div>
@@ -40,6 +38,7 @@
 				</div>
 
 				<div class="form-group">
+					<hr class="hidden-md hidden-lg">
 					<label for="last_name" class="control-label col-lg-3">Last name</label>
 					<div class="col-lg-9">
 						<input maxlength="15" type="text" class="form-control" name="last_name" id="last_name" value="<%%VALUE(last_name)%%>">
@@ -47,6 +46,7 @@
 				</div>
 
 				<div class="form-group">
+					<hr class="hidden-md hidden-lg">
 					<label for="first_name" class="control-label col-lg-3">First name</label>
 					<div class="col-lg-9">
 						<input maxlength="15" type="text" class="form-control" name="first_name" id="first_name" value="<%%VALUE(first_name)%%>">
@@ -54,6 +54,7 @@
 				</div>
 
 				<div class="form-group">
+					<hr class="hidden-md hidden-lg">
 					<label for="email" class="control-label col-lg-3">Email</label>
 					<div class="col-lg-9">
 						
@@ -66,6 +67,7 @@
 				</div>
 
 				<div class="form-group">
+					<hr class="hidden-md hidden-lg">
 					<label for="phone" class="control-label col-lg-3">Phone</label>
 					<div class="col-lg-9">
 						<input maxlength="15" type="text" class="form-control" name="phone" id="phone" value="<%%VALUE(phone)%%>">
@@ -73,6 +75,7 @@
 				</div>
 
 				<div class="form-group">
+					<hr class="hidden-md hidden-lg">
 					<label for="birth_date" class="control-label col-lg-3">Birth date</label>
 					<div class="col-lg-9">
 						<%%COMBO(birth_date)%%>
@@ -80,6 +83,7 @@
 				</div>
 
 				<div class="form-group">
+					<hr class="hidden-md hidden-lg">
 					<label for="driver_license_number" class="control-label col-lg-3">Driver license number</label>
 					<div class="col-lg-9">
 						<input maxlength="15" type="text" class="form-control" name="driver_license_number" id="driver_license_number" value="<%%VALUE(driver_license_number)%%>">
@@ -87,6 +91,7 @@
 				</div>
 
 				<div class="form-group">
+					<hr class="hidden-md hidden-lg">
 					<label for="monthly_gross_pay" class="control-label col-lg-3">Monthly gross pay</label>
 					<div class="col-lg-9">
 						<input maxlength="11" type="text" class="form-control" name="monthly_gross_pay" id="monthly_gross_pay" value="<%%VALUE(monthly_gross_pay)%%>">
@@ -94,6 +99,7 @@
 				</div>
 
 				<div class="form-group">
+					<hr class="hidden-md hidden-lg">
 					<label for="additional_income" class="control-label col-lg-3">Additional income</label>
 					<div class="col-lg-9">
 						<input maxlength="11" type="text" class="form-control" name="additional_income" id="additional_income" value="<%%VALUE(additional_income)%%>">
@@ -101,6 +107,7 @@
 				</div>
 
 				<div class="form-group">
+					<hr class="hidden-md hidden-lg">
 					<label for="assets" class="control-label col-lg-3">Assets</label>
 					<div class="col-lg-9">
 						<input maxlength="11" type="text" class="form-control" name="assets" id="assets" value="<%%VALUE(assets)%%>">
@@ -108,6 +115,7 @@
 				</div>
 
 				<div class="form-group">
+					<hr class="hidden-md hidden-lg">
 					<label for="status" class="control-label col-lg-3">Status<span class="text-danger"><%%TRANSLATION(*)%%></span></label>
 					<div class="col-lg-9">
 						<%%COMBO(status)%%>
@@ -118,6 +126,7 @@
 		</div>
 
 		<!-- DV action buttons -->
+		<hr class="hidden-md hidden-lg">
 		<div class="col-md-4 col-lg-2" id="applicants_and_tenants_dv_action_buttons">
 			<div class="btn-toolbar">
 				<div class="btn-group-vertical btn-group-lg" style="width: 100%;">
@@ -155,12 +164,16 @@
 			var record_added_ok = (location.search.split('record-added-ok=').length == 2);
 			var record_updated_ok = (location.search.split('record-updated-ok=').length == 2);
 			if((record_added_ok || record_updated_ok) && embedded_mode && autoclose_mode){
-				setTimeout(function(){
-					window.parent.jQuery('.modal').modal('hide');
-				}, 2000);
+				setTimeout(AppGini.closeParentModal, 2000);
 			}
 
-			$j('select, input[type=text], textarea').not(':disabled').eq(0).focus();
+			/* enable DV action buttons to float on scrolling down the form */
+			enable_dvab_floating();
+
+			if(!(embedded_mode && AppGini.mobileDevice())){
+				$j('select, input[type=text], textarea').not(':disabled').eq(0).focus();
+			}
+
 			$j('form').eq(0).change(function(){
 				if($j(this).data('already_changed')) return;
 				if($j('#deselect').length) $j('#deselect').removeClass('btn-default').addClass('btn-warning').get(0).lastChild.data = " <%%TRANSLATION(Cancel)%%>";
@@ -175,7 +188,7 @@
 
 				/* append embedded mode to all links */
 				var append_embedded = function(){
-					$j('a[href]:not([href^=#]):not([href^=javascript]):not([href$="Embedded=1"]):not([href*="link.php?t="]):not([href^="mailto:"])').each(
+					$j('a[href]:not([href^="#"]):not([href^="javascript"]):not([href$="Embedded=1"]):not([href*="link.php?t="]):not([href^="mailto:"])').each(
 						function(){
 							$j(this).attr('href', $j(this).attr('href') + '&Embedded=1');
 						}
@@ -238,7 +251,7 @@
 					parent_id = $j(this).prevAll('[type=radio]').eq(0).val();
 				}
 
-				if(parent_id != '{empty_value}'){
+				if(parent_id != '{empty_value}' && parent_id != undefined && parent_id != ''){
 					var parent_link = $j(this).parents('.form-group').children('label').data('parent_link');
 					switch(parent_link){
 						case 'view_parent_hidden':

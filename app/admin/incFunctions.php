@@ -41,22 +41,129 @@
 		Request($var) -- class for providing sanitized values of given request variable (->sql, ->attr, ->html, ->url, and ->raw)
 		Notification() -- class for providing a standardized html notifications functionality
 		sendmail($mail) -- sends an email using PHPMailer as specified in the assoc array $mail( ['to', 'name', 'subject', 'message', 'debug'] ) and returns true on success or an error message on failure
+		safe_html($str) -- sanitize HTML strings, and apply nl2br() to non-HTML ones
+		get_tables_info($skip_authentication = false) -- retrieves table properties as a 2D assoc array ['table_name' => ['prop1' => 'val', ..], ..]
+		getLoggedMemberID() -- returns memberID of logged member. If no login, returns anonymous memberID
+		getLoggedGroupID() -- returns groupID of logged member, or anonymous groupID
+		getMemberInfo() -- returns an array containing the currently signed-in member's info
+		get_group_id($user = '') -- returns groupID of given user, or current one if empty
+		prepare_sql_set($set_array, $glue = ', ') -- Prepares data for a SET or WHERE clause, to be used in an INSERT/UPDATE query
+		insert($tn, $set_array) -- Inserts a record specified by $set_array to the given table $tn
+		update($tn, $set_array, $where_array) -- Updates a record identified by $where_array to date specified by $set_array in the given table $tn
+		set_record_owner($tn, $pk, $user) -- Set/update the owner of given record
 	~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	*/
 	########################################################################
+	function get_tables_info($skip_authentication = false){
+		static $all_tables = array(), $accessible_tables = array();
 
+		/* return cached results, if found */
+		if(($skip_authentication || getLoggedAdmin()) && count($all_tables)) return $all_tables;
+		if(!$skip_authentication && count($accessible_tables)) return $accessible_tables;
+
+		/* table groups */
+		$tg = array(
+			'Leases',
+			'Assets/Setup'
+		);
+
+		$all_tables = array(
+			/* ['table_name' => [table props assoc array] */   
+				'applicants_and_tenants' => array(
+					'Caption' => 'Applicants and tenants',
+					'Description' => 'List of applicants/tenants and their current status. Each tenant might have an application or a lease.',
+					'tableIcon' => 'resources/table_icons/account_balances.png',
+					'group' => $tg[0],
+					'homepageShowCount' => 1
+				),
+				'applications_leases' => array(
+					'Caption' => 'Applications/Leases',
+					'Description' => 'This is the application form filled by an applicant to apply for leasing a unit. The application might be changed to a lease when approved.',
+					'tableIcon' => 'resources/table_icons/curriculum_vitae.png',
+					'group' => $tg[0],
+					'homepageShowCount' => 1
+				),
+				'residence_and_rental_history' => array(
+					'Caption' => 'Residence and rental history',
+					'Description' => 'Records of the tenant residence and rental history.',
+					'tableIcon' => 'resources/table_icons/document_comment_above.png',
+					'group' => $tg[0],
+					'homepageShowCount' => 1
+				),
+				'employment_and_income_history' => array(
+					'Caption' => 'Employment and income history',
+					'Description' => 'Records of the employment and income history of the tenant.',
+					'tableIcon' => 'resources/table_icons/cash_stack.png',
+					'group' => $tg[0],
+					'homepageShowCount' => 1
+				),
+				'references' => array(
+					'Caption' => 'References',
+					'Description' => 'List of references for each tenant.',
+					'tableIcon' => 'resources/table_icons/application_from_storage.png',
+					'group' => $tg[0],
+					'homepageShowCount' => 1
+				),
+				'rental_owners' => array(
+					'Caption' => 'Landlords',
+					'Description' => 'Listing of landlords/owners of rental properties, and all the properties owned by each.',
+					'tableIcon' => 'resources/table_icons/administrator.png',
+					'group' => $tg[1],
+					'homepageShowCount' => 1
+				),
+				'properties' => array(
+					'Caption' => 'Properties',
+					'Description' => 'Listing of all properties. Each property has an owner and consists of one or more rental units.',
+					'tableIcon' => 'resources/table_icons/application_home.png',
+					'group' => $tg[1],
+					'homepageShowCount' => 1
+				),
+				'property_photos' => array(
+					'Caption' => 'Property photos',
+					'Description' => '',
+					'tableIcon' => 'resources/table_icons/camera_link.png',
+					'group' => $tg[1],
+					'homepageShowCount' => 0
+				),
+				'units' => array(
+					'Caption' => 'Units',
+					'Description' => 'Listing of all units, its details and current status.',
+					'tableIcon' => 'resources/table_icons/change_password.png',
+					'group' => $tg[1],
+					'homepageShowCount' => 1
+				),
+				'unit_photos' => array(
+					'Caption' => 'Unit photos',
+					'Description' => '',
+					'tableIcon' => 'resources/table_icons/camera_link.png',
+					'group' => $tg[1],
+					'homepageShowCount' => 1
+				)
+		);
+
+		if($skip_authentication || getLoggedAdmin()) return $all_tables;
+
+		foreach($all_tables as $tn => $ti){
+			$arrPerm = getTablePermissions($tn);
+			if($arrPerm[0]) $accessible_tables[$tn] = $ti;
+		}
+
+		return $accessible_tables;
+	}
 	#########################################################
 	if(!function_exists('getTableList')){
 		function getTableList($skip_authentication = false){
 			$arrTables = array(   
+				'applicants_and_tenants' => 'Applicants and tenants',
 				'applications_leases' => 'Applications/Leases',
 				'residence_and_rental_history' => 'Residence and rental history',
 				'employment_and_income_history' => 'Employment and income history',
 				'references' => 'References',
-				'applicants_and_tenants' => 'Applicants and tenants',
+				'rental_owners' => 'Landlords',
 				'properties' => 'Properties',
+				'property_photos' => 'Property photos',
 				'units' => 'Units',
-				'rental_owners' => 'Rental owners'
+				'unit_photos' => 'Unit photos'
 			);
 
 			return $arrTables;
@@ -65,12 +172,20 @@
 	########################################################################
 	function getThumbnailSpecs($tableName, $fieldName, $view){
 		if($tableName=='properties' && $fieldName=='photo' && $view=='tv')
-			return array('width'=>50, 'height'=>50, 'identifier'=>'_tv');
+			return array('width'=>250, 'height'=>250, 'identifier'=>'_tv');
 		elseif($tableName=='properties' && $fieldName=='photo' && $view=='dv')
 			return array('width'=>250, 'height'=>250, 'identifier'=>'_dv');
+		elseif($tableName=='property_photos' && $fieldName=='photo' && $view=='tv')
+			return array('width'=>100, 'height'=>100, 'identifier'=>'_tv');
+		elseif($tableName=='property_photos' && $fieldName=='photo' && $view=='dv')
+			return array('width'=>250, 'height'=>250, 'identifier'=>'_dv');
 		elseif($tableName=='units' && $fieldName=='photo' && $view=='tv')
-			return array('width'=>50, 'height'=>50, 'identifier'=>'_tv');
+			return array('width'=>250, 'height'=>250, 'identifier'=>'_tv');
 		elseif($tableName=='units' && $fieldName=='photo' && $view=='dv')
+			return array('width'=>250, 'height'=>250, 'identifier'=>'_dv');
+		elseif($tableName=='unit_photos' && $fieldName=='photo' && $view=='tv')
+			return array('width'=>100, 'height'=>100, 'identifier'=>'_tv');
+		elseif($tableName=='unit_photos' && $fieldName=='photo' && $view=='dv')
 			return array('width'=>250, 'height'=>250, 'identifier'=>'_dv');
 		return FALSE;
 	}
@@ -184,7 +299,25 @@
 	function makeSafe($string, $is_gpc = true){
 		if($is_gpc) $string = (get_magic_quotes_gpc() ? stripslashes($string) : $string);
 		if(!db_link()){ sql("select 1+1", $eo); }
-		return db_escape($string);
+
+		// prevent double escaping
+		$na = explode(',', "\x00,\n,\r,',\",\x1a");
+		$escaped = true;
+		$nosc = true; // no special chars exist
+		foreach($na as $ns){
+			$dan = substr_count($string, $ns);
+			$esdan = substr_count($string, "\\{$ns}");
+			if($dan != $esdan) $escaped = false;
+			if($dan) $nosc = false;
+		}
+		if($nosc){
+			// find unescaped \
+			$dan = substr_count($string, '\\');
+			$esdan = substr_count($string, '\\\\');
+			if($dan != $esdan * 2) $escaped = false;
+		}
+
+		return ($escaped ? $string : db_escape($string));
 	}
 	########################################################################
 	function checkPermissionVal($pvn){
@@ -258,7 +391,7 @@
 					$errorNum = db_errno($db_link);
 					$errorMsg = htmlspecialchars(db_error($db_link));
 
-					if(getLoggedAdmin()) $errorMsg .= "<pre>{$Translation['query:']}\n" . htmlspecialchars($statment) . "</pre><i class=\"text-right\">{$Translation['admin-only info']}</i>";
+					if(getLoggedAdmin()) $errorMsg .= "<pre class=\"ltr\">{$Translation['query:']}\n" . htmlspecialchars($statment) . "</pre><i class=\"text-right\">{$Translation['admin-only info']}</i>";
 
 					echo Notification::placeholder();
 					echo Notification::show(array(
@@ -321,14 +454,14 @@
 	########################################################################
 	function logOutUser(){
 		// destroys current session
-		$_SESSION = array();
 		if(isset($_COOKIE[session_name()])){
-			setcookie(session_name(), '', time()-42000, '/');
+			setcookie(session_name(), '', time() - 42000, '/');
 		}
-		if(isset($_COOKIE['real_estate_rememberMe'])){
-			setcookie('real_estate_rememberMe', '', time()-42000);
+		if(isset($_COOKIE[session_name() . '_rememberMe'])){
+			setcookie(session_name() . '_rememberMe', '', time() - 42000);
 		}
 		session_destroy();
+		$_SESSION = array();
 	}
 	########################################################################
 	function getPKFieldName($tn){
@@ -372,12 +505,12 @@
 		echo "<div class=\"alert alert-danger\">{$msg}</div>";
 	}
 	########################################################################
-	function redirect($URL, $absolute=FALSE){
-		$fullURL = ($absolute ? $URL : application_url($URL));
-		if(!headers_sent()) header("Location: $fullURL");
+	function redirect($url, $absolute = false){
+		$fullURL = ($absolute ? $url : application_url($url));
+		if(!headers_sent()) header("Location: {$fullURL}");
 
-		echo "<META HTTP-EQUIV=\"Refresh\" CONTENT=\"0;url=$fullURL\">";
-		echo "<br><br><a href=\"$fullURL\">Click here</a> if you aren't automatically redirected.";
+		echo "<META HTTP-EQUIV=\"Refresh\" CONTENT=\"0;url={$fullURL}\">";
+		echo "<br><br><a href=\"{$fullURL}\">Click here</a> if you aren't automatically redirected.";
 		exit;
 	}
 	########################################################################
@@ -887,6 +1020,7 @@
 	}
 	#########################################################
 	function html_attr($str){
+		if(version_compare(PHP_VERSION, '5.2.3') >= 0) return htmlspecialchars($str, ENT_QUOTES, datalist_db_encoding, false);
 		return htmlspecialchars($str, ENT_QUOTES, datalist_db_encoding);
 	}
 	#########################################################
@@ -1112,4 +1246,186 @@
 
 		return true;
 	}
+	#########################################################
+	function safe_html($str){
+		/* if $str has no HTML tags, apply nl2br */
+		if($str == strip_tags($str)) return nl2br($str);
 
+		$hc = new CI_Input();
+		$hc->charset = datalist_db_encoding;
+
+		return $hc->xss_clean($str);
+	}
+	#########################################################
+	function getLoggedGroupID(){
+		if($_SESSION['memberGroupID']!=''){
+			return $_SESSION['memberGroupID'];
+		}else{
+			if(!setAnonymousAccess()) return false;
+			return getLoggedGroupID();
+		}
+	}
+	#########################################################
+	function getLoggedMemberID(){
+		if($_SESSION['memberID']!=''){
+			return strtolower($_SESSION['memberID']);
+		}else{
+			if(!setAnonymousAccess()) return false;
+			return getLoggedMemberID();
+		}
+	}
+	#########################################################
+	function setAnonymousAccess(){
+		$adminConfig = config('adminConfig');
+		$anon_group_safe = addslashes($adminConfig['anonymousGroup']);
+		$anon_user_safe = strtolower(addslashes($adminConfig['anonymousMember']));
+
+		$eo = array('silentErrors' => true);
+
+		$res = sql("select groupID from membership_groups where name='{$anon_group_safe}'", $eo);
+		if(!$res){ return false; }
+		$row = db_fetch_array($res); $anonGroupID = $row[0];
+
+		$_SESSION['memberGroupID'] = ($anonGroupID ? $anonGroupID : 0);
+
+		$res = sql("select lcase(memberID) from membership_users where lcase(memberID)='{$anon_user_safe}' and groupID='{$anonGroupID}'", $eo);
+		if(!$res){ return false; }
+		$row = db_fetch_array($res); $anonMemberID = $row[0];
+
+		$_SESSION['memberID'] = ($anonMemberID ? $anonMemberID : 0);
+
+		return true;
+	}
+	#########################################################
+	function getMemberInfo($memberID = ''){
+		static $member_info = array();
+
+		if(!$memberID){
+			$memberID = getLoggedMemberID();
+		}
+
+		// return cached results, if present
+		if(isset($member_info[$memberID])) return $member_info[$memberID];
+
+		$adminConfig = config('adminConfig');
+		$mi = array();
+
+		if($memberID){
+			$res = sql("select * from membership_users where memberID='" . makeSafe($memberID) . "'", $eo);
+			if($row = db_fetch_assoc($res)){
+				$mi = array(
+					'username' => $memberID,
+					'groupID' => $row['groupID'],
+					'group' => sqlValue("select name from membership_groups where groupID='{$row['groupID']}'"),
+					'admin' => ($adminConfig['adminUsername'] == $memberID ? true : false),
+					'email' => $row['email'],
+					'custom' => array(
+						$row['custom1'], 
+						$row['custom2'], 
+						$row['custom3'], 
+						$row['custom4']
+					),
+					'banned' => ($row['isBanned'] ? true : false),
+					'approved' => ($row['isApproved'] ? true : false),
+					'signupDate' => @date('n/j/Y', @strtotime($row['signupDate'])),
+					'comments' => $row['comments'],
+					'IP' => $_SERVER['REMOTE_ADDR']
+				);
+
+				// cache results
+				$member_info[$memberID] = $mi;
+			}
+		}
+
+		return $mi;
+	}
+	#########################################################
+	function get_group_id($user = ''){
+		$mi = getMemberInfo($user);
+		return $mi['groupID'];
+	}
+	#########################################################
+	/**
+	 *  @brief Prepares data for a SET or WHERE clause, to be used in an INSERT/UPDATE query
+	 *  
+	 *  @param [in] $set_array Assoc array of field names => values
+	 *  @param [in] $glue optional glue. Set to ' AND ' or ' OR ' if preparing a WHERE clause
+	 *  @return SET string
+	 */
+	function prepare_sql_set($set_array, $glue = ', '){
+		$fnvs = array();
+		foreach($set_array as $fn => $fv){
+			if($fv === null){ $fnvs[] = "{$fn}=NULL"; continue; }
+
+			$sfv = makeSafe($fv);
+			$fnvs[] = "{$fn}='{$sfv}'";
+		}
+		return implode($glue, $fnvs);
+	}
+	#########################################################
+	/**
+	 *  @brief Inserts a record to the database
+	 *  
+	 *  @param [in] $tn table name where the record would be inserted
+	 *  @param [in] $set_array Assoc array of field names => values to be inserted
+	 *  @return boolean indicating success/failure
+	 */
+	function insert($tn, $set_array){
+		$set = prepare_sql_set($set_array);
+		if(!count($set)) return false;
+
+		return sql("INSERT INTO `{$tn}` SET {$set}", $eo);
+	}
+	#########################################################
+	/**
+	 *  @brief Updates a record in the database
+	 *  
+	 *  @param [in] $tn table name where the record would be inserted
+	 *  @param [in] $set_array Assoc array of field names => values to be inserted
+	 *  @param [in] $where_array Assoc array of field names => values used to build the WHERE clause
+	 *  @return boolean indicating success/failure
+	 */
+	function update($tn, $set_array, $where_array){
+		$set = prepare_sql_set($set_array);
+		if(!count($set)) return false;
+
+		$where = prepare_sql_set($where_array, ' AND ');
+		if(!$where) $where = '1=1';
+
+		return sql("UPDATE `{$tn}` SET {$set} WHERE {$where}", $eo);
+	}
+	#########################################################
+	/**
+	 *  @brief Set/update the owner of given record
+	 *  
+	 *  @param [in] $tn name of table
+	 *  @param [in] $pk primary key value
+	 *  @param [in] $user username to set as owner
+	 *  @return boolean indicating success/failure
+	 */
+	function set_record_owner($tn, $pk, $user){
+		$fields = array(
+			'memberID' => strtolower($user),
+			'dateUpdated' => time(),
+			'groupID' => get_group_id($user)
+		);
+
+		$where_array = array('tableName' => $tn, 'pkValue' => $pk);
+		$where = prepare_sql_set($where_array, ' AND ');
+		if(!$where) return false;
+
+		/* do we have an ownership record? */
+		$existing_owner = sqlValue("select LCASE(memberID) from membership_userrecords where {$where}");
+		if($existing_owner == $user) return true; // owner already set to $user
+
+		/* update owner */
+		if($existing_owner){
+			$res = update('membership_userrecords', $fields, $where_array);
+			return ($res ? true : false);
+		}
+
+		/* add new ownership record */
+		$fields = array_merge($fields, $where_array, array('dateAdded' => time()));
+		$res = insert('membership_userrecords', $fields);
+		return ($res ? true : false);
+	}

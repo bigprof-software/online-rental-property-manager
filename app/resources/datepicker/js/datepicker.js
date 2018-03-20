@@ -34,7 +34,7 @@ datePicker.languageinfo = datePicker.languageinfo ? datePicker.languageinfo.toLo
 
 // Load the appropriate language file
 var scriptFiles = document.getElementsByTagName('head')[0].getElementsByTagName('script');
-var loc = scriptFiles[scriptFiles.length - 1].src.substr(0, scriptFiles[scriptFiles.length - 1].src.lastIndexOf("/")) + "/resources/datepicker/js/lang/" + datePicker.languageinfo + ".js";
+var loc = scriptFiles[scriptFiles.length - 1].src.substr(0, scriptFiles[scriptFiles.length - 1].src.lastIndexOf("/")) + "/lang/" + datePicker.languageinfo + ".js";
 
 var script  = document.createElement('script');
 script.type = "text/javascript";

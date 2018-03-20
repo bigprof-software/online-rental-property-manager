@@ -87,22 +87,22 @@ class DateCombo{
 		if($read_only_date == datalist_date_separator.datalist_date_separator) $read_only_date = '';
 		//$read_only_date = '<p class="form-control-static">' . $read_only_date . '</p>';
 
-		$editable_date = '<div class="row">';
+		$editable_date = '<table style="width: 100%;"><tr>';
 		for($i = 0; $i < 3; $i++){
 			switch($df[$i]){
 				case 'd':
-					$editable_date .= '<div class="col-xs-3 date_combo">' . $d . '</div>';
+					$editable_date .= '<td style="width: 25%;" class="date_combo">' . $d . '</td>';
 					break;
 				case 'm':
-					$editable_date .= '<div class="col-xs-4 date_combo">' . $m . '</div>';
+					$editable_date .= '<td style="width: calc(50% - 4em);" class="date_combo">' . $m . '</td>';
 					break;
 				case 'y':
-					$editable_date .= '<div class="col-xs-3 date_combo">' . $y . '</div>';
+					$editable_date .= '<td style="width: 25%;" class="date_combo">' . $y . '</td>';
 					break;
 			}
-			if($i == 2) $editable_date .= '<div class="col-xs-2"><button class="btn btn-default" id="fd-but-' . $this->NamePrefix . '"><i class="glyphicon glyphicon-th"></i></button></div>'; 
+			if($i == 2) $editable_date .= '<td style="width: 4em;"><button class="btn btn-default btn-block" id="fd-but-' . $this->NamePrefix . '"><i class="glyphicon glyphicon-th"></i></button></td>'; 
 		}
-		$editable_date .= '</div>';
+		$editable_date .= '</tr></table>';
 
 		return ($readOnly ? $read_only_date : $editable_date);
 	}

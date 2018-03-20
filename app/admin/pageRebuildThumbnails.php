@@ -9,7 +9,13 @@
 		'properties' => array(
 			'photo' => '../images/'
 		),
+		'property_photos' => array(
+			'photo' => '../images/'
+		),
 		'units' => array(
+			'photo' => '../images/'
+		),
+		'unit_photos' => array(
 			'photo' => '../images/'
 		)
 	);

@@ -37,8 +37,8 @@
 	register_shutdown_function('cancel_all_buffers');
 
 	/* user has access to table? */
-	$table_accessible = get_sql_from($table->raw);
-	if(!$table_accessible) exit();
+	$table_perms = getTablePermissions($table->raw);
+	if(!$table_perms[0]) exit();
 
 	/* PK field name */
 	$pk = getPKFieldName($table->raw);
