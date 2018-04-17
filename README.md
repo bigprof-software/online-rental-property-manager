@@ -1,6 +1,6 @@
 # Online Rental Property Manager (ORPM)
 
-![](https://s3.amazonaws.com/appgini-desktop/images/orpm/properties-detail-view-showing-child-table-units.png =300x)
+![](https://cdn.bigprof.com/appgini-open-source-apps/orpm-properties-detail-view-showing-child-table-units-thumb.png)
 
 Online rental property manager (ORPM) allows you to manage your rental properties, units, 
 applications, leases and tenants. Add all details related to the tenants, i.e. references, 
