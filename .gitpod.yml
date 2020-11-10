@@ -3,3 +3,8 @@ tasks:
     command: php -S 0.0.0.0:8080
 image:
   file: .gitpod.Dockerfile
+ports:
+  - port: 8080
+    onOpen: open-preview
+  - port: 3306
+    onOpen: ignore
