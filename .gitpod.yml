@@ -1,0 +1,9 @@
+tasks:
+  - init: mysql -e "create database orpm; create user orpm identified by 'orpm'; grant all on orpm.* to orpm;"
+    command: php -S 0.0.0.0:8080
+image: gitpod/workspace-mysql
+ports:
+  - port: 8080
+    onOpen: open-preview
+  - port: 3306
+    onOpen: ignore
