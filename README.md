@@ -1,4 +1,4 @@
-[![Gitpod Ready-to-Code](https://img.shields.io/badge/Gitpod-Ready--to--Code-blue?logo=gitpod)](https://gitpod.io/#https://github.com/bigprof-software/online-rental-property-manager) 
+[![Gitpod Ready-to-Code](https://img.shields.io/badge/Gitpod-Ready--to--Code-blue?logo=gitpod)](https://gitpod.io/#https://github.com/rml1997/online-rental-property-manager) 
 
 # Online Rental Property Manager (ORPM)
 
@@ -35,6 +35,23 @@ This application was created using [AppGini](https://bigprof.com/appgini/), and 
 ## Installation
 
 This is a PHP/MySQL web application that you run from a browser. You can install it either locally on your own PC, or to a web/intranet server.
+
+### 0. Trying it out using Gitpod
+
+#### System requirements
+
+This application will run itself within the Gitpod IDE. This will allow you to try the application out and develop it for your needs.
+All you will need is a web browser. Do not use this in production!!!
+
+#### Installation steps
+
+1. Click the Gitpod button at the top of this page
+
+2. Set up a Gitpod account associated with your github account
+
+3. A database has been preconfigured using .gitpod.yml so the database, username and password are all 'orpm'
+
+4. Once the application finishes loading, you should see the setup wizard in the right hand pane.
 
 ### 1. Installing to a PC
 
