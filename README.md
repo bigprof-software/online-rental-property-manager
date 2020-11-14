@@ -12,7 +12,7 @@ details or any extra functionality to fit your own requirements.
 ORPM is a responsive web-based application that you can access from your PC, tablet, 
 mobile or any other device. 
 
-### [⇩ Download the latest release](https://github.com/bigprof-software/online-rental-property-manager/archive/5.0.zip)
+### [⇩ Download the latest release](https://github.com/bigprof-software/online-rental-property-manager/releases/latest)
 
 ##### [_Changelog_](https://github.com/bigprof-software/online-rental-property-manager/releases)
 
