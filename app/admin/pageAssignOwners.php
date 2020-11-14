@@ -7,52 +7,55 @@
 
 	// get a list of tables
 	$arrTables = getTableList();
-	$arrTablesNoOwners = array();
+	$arrTablesNoOwners = [];
 
 	// get a list of tables with records that have no owners
-	foreach($arrTables as $tn => $tc){
+	foreach($arrTables as $tn => $tc) {
 		$countOwned = sqlValue("select count(1) from membership_userrecords where tableName='{$tn}'");
 		$countAll = sqlValue("select count(1) from `{$tn}`");
 
-		if($countAll > $countOwned){
+		if($countAll > $countOwned) {
 			$arrTablesNoOwners[$tn] = ($countAll - $countOwned);
 		}
 	}
 
 	// process ownership request
-	if(count($_POST)){
+	if(count($_POST)) {
+		// csrf check
+		if(!csrf_token(true)) die($Translation['invalid security token']);
+
 		ignore_user_abort();
-		foreach($arrTablesNoOwners as $tn => $tc){
+		foreach($arrTablesNoOwners as $tn => $tc) {
 			$groupID = intval($_POST["ownerGroup_$tn"]);
 			$memberID = makeSafe(strtolower($_POST["ownerMember_$tn"]));
 			$pkf = getPKFieldName($tn);
 
-			if($groupID){
+			if($groupID) {
 				$insertBegin = "insert ignore into membership_userrecords (tableName, pkValue, groupID, memberID, dateAdded, dateUpdated) values ";
 				$ts = time();
 				$assigned = 0;
 				$tempStatus = '';
 
 				$res = sql("select `$tn`.`$pkf` from `$tn`", $eo);
-				while($row = db_fetch_row($res)){
+				while($row = db_fetch_row($res)) {
 					$pkValue = makeSafe($row[0], false);
 					$insert .= "('$tn', '$pkValue', '$groupID', ".($memberID ? "'$memberID'" : "NULL").", $ts, $ts),";
-					if(strlen($insert) > 50000){
+					if(strlen($insert) > 50000) {
 						sql($insertBegin . substr($insert, 0, -1), $eo);
 						$assigned += @db_affected_rows(db_link());
 						$insert = '';
 					}
 				}
-				if($insert != ''){
+				if($insert != '') {
 					sql($insertBegin . substr($insert, 0, -1), $eo);
 					$assigned += @db_affected_rows(db_link());
 					$insert = '';
 				}
 
-				if ($memberID){
+				if ($memberID) {
 					$tempStatus = $Translation["assigned table records to group and member"];
 					$tempStatus = str_replace ( "<MEMBERID>" , $memberID , $tempStatus );
-				}else{
+				} else {
 					$tempStatus = $Translation["assigned table records to group"];   
 				}
 
@@ -68,11 +71,11 @@
 
 		// refresh the list of tables with records that have no owners
 		unset($arrTablesNoOwners);
-		foreach($arrTables as $tn=>$tc){
+		foreach($arrTables as $tn=>$tc) {
 			$countOwned=sqlValue("select count(1) from membership_userrecords where tableName='$tn'");
 			$countAll=sqlValue("select count(1) from `$tn`");
 
-			if($countAll>$countOwned){
+			if($countAll>$countOwned) {
 				$arrTablesNoOwners[$tn]=($countAll-$countOwned);
 			}
 		}
@@ -86,21 +89,21 @@
 <?php
 
 	// if all records of all tables have owners, no need to continue
-	if(!is_array($arrTablesNoOwners)){
+	if(!is_array($arrTablesNoOwners)) {
 		echo "<div class=\"alert alert-success\"><i class=\"glyphicon glyphicon-ok\"></i> {$Translation['records ownership done']}</div>";
 		include("$currDir/incFooter.php");
 		exit;
 	}
 
 	// show status of previous assignments
-	if($status!=''){
+	if($status!='') {
 		echo "<div class=\"alert alert-info\">$status</div>";
 	}
 
 	// compose groups drop-down
 	$htmlGroups="<option value=\"0\">--- {$Translation['select group']} ---</option>";
 	$res=sql("select groupID, name from membership_groups order by name", $eo);
-	while($row=db_fetch_row($res)){
+	while($row=db_fetch_row($res)) {
 		$htmlGroups.="<option value=\"$row[0]\">$row[1]</option>";
 	}
 	$htmlGroups.="</select>";
@@ -110,33 +113,33 @@
 	var members=new Array();
 	<?php
 		$res=sql("select groupID, lcase(memberID) from membership_users order by groupID, memberID", $eo);
-		while($row=db_fetch_row($res)){
+		while($row=db_fetch_row($res)) {
 			$members[$row[0]].="'".$row[1]."',";
 		}
 
-		foreach($members as $groupID=>$members){
+		foreach($members as $groupID=>$members) {
 			echo "\n\tmembers[$groupID]=[".substr($members, 0, -1)."];";
 		}
 	?>
 
-	function populateMembers(memberSelect, groupSelect){
+	function populateMembers(memberSelect, groupSelect) {
 		var m=document.getElementsByName(memberSelect)[0];
 		var g=document.getElementsByName(groupSelect)[0];
 
-		if(m.options.length>0){
+		if(m.options.length>0) {
 			var mc=m.options.length;
-			for(var i=0; i<mc; i++){
+			for(var i=0; i<mc; i++) {
 				m.options[0]=null;
 			}
 		}
 
 		var gval=g.options[g.selectedIndex].value;
 
-		if(gval==0 || members[gval] == undefined){
+		if(gval==0 || members[gval] == undefined) {
 			return 0;
 		}
 
-		for(var j=0; j<members[gval].length; j++){
+		for(var j=0; j<members[gval].length; j++) {
 			m.options[j]=new Option(members[gval][j], members[gval][j], false, false);
 		}
 
@@ -145,6 +148,8 @@
 	</script>
 
 <form method="post" action="pageAssignOwners.php">
+	<?php echo csrf_token(); ?>
+
 	<p>
 		<?php echo  $Translation['data ownership'] ; ?>
 	</p>
@@ -159,7 +164,7 @@
 
 		<tbody>
 <?php
-	foreach($arrTablesNoOwners as $tn=>$countNoOwners){
+	foreach($arrTablesNoOwners as $tn=>$countNoOwners) {
 		?>
 		<tr>
 			<td><?php echo $arrTables[$tn]; ?></td>

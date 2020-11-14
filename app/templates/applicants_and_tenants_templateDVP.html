@@ -14,67 +14,78 @@
 
 <div class="panel-body">
 	<fieldset class="form-horizontal">
-		<div class="form-group" style="border-bottom: dotted 1px #DDD;">
+		<!-- Field: ID -->
+		<div class="form-group applicants_and_tenants-id" style="border-bottom: dotted 1px #DDD;">
 			<label class="col-xs-3 control-label">ID</label>
 			<div class="col-xs-9">
 				<div class="form-control-static"><%%VALUE(id)%%></div>
 			</div>
 		</div>
-		<div class="form-group" style="border-bottom: dotted 1px #DDD;">
+		<!-- Field: Last name -->
+		<div class="form-group applicants_and_tenants-last_name" style="border-bottom: dotted 1px #DDD;">
 			<label class="col-xs-3 control-label">Last name</label>
 			<div class="col-xs-9">
 				<div class="form-control-static"><%%VALUE(last_name)%%></div>
 			</div>
 		</div>
-		<div class="form-group" style="border-bottom: dotted 1px #DDD;">
+		<!-- Field: First name -->
+		<div class="form-group applicants_and_tenants-first_name" style="border-bottom: dotted 1px #DDD;">
 			<label class="col-xs-3 control-label">First name</label>
 			<div class="col-xs-9">
 				<div class="form-control-static"><%%VALUE(first_name)%%></div>
 			</div>
 		</div>
-		<div class="form-group" style="border-bottom: dotted 1px #DDD;">
+		<!-- Field: Email -->
+		<div class="form-group applicants_and_tenants-email" style="border-bottom: dotted 1px #DDD;">
 			<label class="col-xs-3 control-label">Email</label>
 			<div class="col-xs-9">
 				<div class="form-control-static"><%%VALUE(email)%%></div>
 			</div>
 		</div>
-		<div class="form-group" style="border-bottom: dotted 1px #DDD;">
+		<!-- Field: Phone -->
+		<div class="form-group applicants_and_tenants-phone" style="border-bottom: dotted 1px #DDD;">
 			<label class="col-xs-3 control-label">Phone</label>
 			<div class="col-xs-9">
 				<div class="form-control-static"><%%VALUE(phone)%%></div>
 			</div>
 		</div>
-		<div class="form-group" style="border-bottom: dotted 1px #DDD;">
+		<!-- Field: Birth date -->
+		<div class="form-group applicants_and_tenants-birth_date" style="border-bottom: dotted 1px #DDD;">
 			<label class="col-xs-3 control-label">Birth date</label>
 			<div class="col-xs-9">
 				<div class="form-control-static"><%%COMBOTEXT(birth_date)%%></div>
 			</div>
 		</div>
-		<div class="form-group" style="border-bottom: dotted 1px #DDD;">
+		<!-- Field: Driver license number -->
+		<div class="form-group applicants_and_tenants-driver_license_number" style="border-bottom: dotted 1px #DDD;">
 			<label class="col-xs-3 control-label">Driver license number</label>
 			<div class="col-xs-9">
 				<div class="form-control-static"><%%VALUE(driver_license_number)%%></div>
 			</div>
 		</div>
-		<div class="form-group" style="border-bottom: dotted 1px #DDD;">
+		<!-- Field: Monthly gross pay -->
+		<div class="form-group applicants_and_tenants-monthly_gross_pay" style="border-bottom: dotted 1px #DDD;">
 			<label class="col-xs-3 control-label">Monthly gross pay</label>
 			<div class="col-xs-9">
 				<div class="form-control-static"><%%VALUE(monthly_gross_pay)%%></div>
 			</div>
 		</div>
-		<div class="form-group" style="border-bottom: dotted 1px #DDD;">
+		<!-- Field: Additional income -->
+		<div class="form-group applicants_and_tenants-additional_income" style="border-bottom: dotted 1px #DDD;">
 			<label class="col-xs-3 control-label">Additional income</label>
 			<div class="col-xs-9">
 				<div class="form-control-static"><%%VALUE(additional_income)%%></div>
 			</div>
 		</div>
-		<div class="form-group" style="border-bottom: dotted 1px #DDD;">
+		<!-- Field: Assets -->
+		<div class="form-group applicants_and_tenants-assets" style="border-bottom: dotted 1px #DDD;">
 			<label class="col-xs-3 control-label">Assets</label>
 			<div class="col-xs-9">
 				<div class="form-control-static"><%%VALUE(assets)%%></div>
 			</div>
 		</div>
-		<div class="form-group" style="border-bottom: dotted 1px #DDD;">
+		<!-- Field: Status -->
+		<div class="form-group applicants_and_tenants-status" style="border-bottom: dotted 1px #DDD;">
 			<label class="col-xs-3 control-label">Status</label>
 			<div class="col-xs-9">
 				<div class="form-control-static"><%%COMBOTEXT(status)%%></div>
@@ -88,7 +99,7 @@
 </div>
 
 <script>
-	$j(function(){
+	$j(function() {
 		/* prevent loading child records in multiple DVP */
 		if($j('[id=applicants_and_tenants-children]').length > 1) return;
 
@@ -104,7 +115,7 @@
 			apply_persisting_children
 		);
 
-		$j('form').on('click', '#children-tabs button[data-target]', function(){
+		$j('form').on('click', '#children-tabs button[data-target]', function() {
 			$j(this).toggleClass('active');
 			persist_expanded_child($j(this).attr('id'));
 		});

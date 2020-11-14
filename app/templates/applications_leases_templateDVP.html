@@ -14,109 +14,127 @@
 
 <div class="panel-body">
 	<fieldset class="form-horizontal">
-		<div class="form-group" style="border-bottom: dotted 1px #DDD;">
+		<!-- Field: ID -->
+		<div class="form-group applications_leases-id" style="border-bottom: dotted 1px #DDD;">
 			<label class="col-xs-3 control-label">ID</label>
 			<div class="col-xs-9">
 				<div class="form-control-static"><%%VALUE(id)%%></div>
 			</div>
 		</div>
-		<div class="form-group" style="border-bottom: dotted 1px #DDD;">
+		<!-- Field: Applicant/ Tenant -->
+		<div class="form-group applications_leases-tenants" style="border-bottom: dotted 1px #DDD;">
 			<label class="col-xs-3 control-label">Applicant/ Tenant</label>
 			<div class="col-xs-9">
 				<div class="form-control-static"><span id="tenants<%%RND1%%>"><%%COMBOTEXT(tenants)%%></span></div>
 			</div>
 		</div>
-		<div class="form-group" style="border-bottom: dotted 1px #DDD;">
+		<!-- Field: Application status -->
+		<div class="form-group applications_leases-status" style="border-bottom: dotted 1px #DDD;">
 			<label class="col-xs-3 control-label">Application status</label>
 			<div class="col-xs-9">
 				<div class="form-control-static"><%%COMBOTEXT(status)%%></div>
 			</div>
 		</div>
-		<div class="form-group" style="border-bottom: dotted 1px #DDD;">
+		<!-- Field: Property -->
+		<div class="form-group applications_leases-property" style="border-bottom: dotted 1px #DDD;">
 			<label class="col-xs-3 control-label">Property</label>
 			<div class="col-xs-9">
 				<div class="form-control-static"><span id="property<%%RND1%%>"><%%COMBOTEXT(property)%%></span></div>
 			</div>
 		</div>
-		<div class="form-group" style="border-bottom: dotted 1px #DDD;">
+		<!-- Field: Unit applied for -->
+		<div class="form-group applications_leases-unit" style="border-bottom: dotted 1px #DDD;">
 			<label class="col-xs-3 control-label">Unit applied for</label>
 			<div class="col-xs-9">
 				<div class="form-control-static"><span id="unit<%%RND1%%>"><%%COMBOTEXT(unit)%%></span></div>
 			</div>
 		</div>
-		<div class="form-group" style="border-bottom: dotted 1px #DDD;">
+		<!-- Field: Lease type -->
+		<div class="form-group applications_leases-type" style="border-bottom: dotted 1px #DDD;">
 			<label class="col-xs-3 control-label">Lease type</label>
 			<div class="col-xs-9">
 				<div class="form-control-static"><%%COMBOTEXT(type)%%></div>
 			</div>
 		</div>
-		<div class="form-group" style="border-bottom: dotted 1px #DDD;">
+		<!-- Field: Total number of occupants -->
+		<div class="form-group applications_leases-total_number_of_occupants" style="border-bottom: dotted 1px #DDD;">
 			<label class="col-xs-3 control-label">Total number of occupants</label>
 			<div class="col-xs-9">
 				<div class="form-control-static"><%%VALUE(total_number_of_occupants)%%></div>
 			</div>
 		</div>
-		<div class="form-group" style="border-bottom: dotted 1px #DDD;">
+		<!-- Field: Lease period from -->
+		<div class="form-group applications_leases-start_date" style="border-bottom: dotted 1px #DDD;">
 			<label class="col-xs-3 control-label">Lease period from</label>
 			<div class="col-xs-9">
 				<div class="form-control-static"><%%COMBOTEXT(start_date)%%></div>
 			</div>
 		</div>
-		<div class="form-group" style="border-bottom: dotted 1px #DDD;">
+		<!-- Field: to -->
+		<div class="form-group applications_leases-end_date" style="border-bottom: dotted 1px #DDD;">
 			<label class="col-xs-3 control-label">to</label>
 			<div class="col-xs-9">
 				<div class="form-control-static"><%%COMBOTEXT(end_date)%%></div>
 			</div>
 		</div>
-		<div class="form-group" style="border-bottom: dotted 1px #DDD;">
+		<!-- Field: Recurring charges frequency -->
+		<div class="form-group applications_leases-recurring_charges_frequency" style="border-bottom: dotted 1px #DDD;">
 			<label class="col-xs-3 control-label">Recurring charges frequency</label>
 			<div class="col-xs-9">
 				<div class="form-control-static"><%%COMBOTEXT(recurring_charges_frequency)%%></div>
 			</div>
 		</div>
-		<div class="form-group" style="border-bottom: dotted 1px #DDD;">
+		<!-- Field: Next due date -->
+		<div class="form-group applications_leases-next_due_date" style="border-bottom: dotted 1px #DDD;">
 			<label class="col-xs-3 control-label">Next due date</label>
 			<div class="col-xs-9">
 				<div class="form-control-static"><%%COMBOTEXT(next_due_date)%%></div>
 			</div>
 		</div>
-		<div class="form-group" style="border-bottom: dotted 1px #DDD;">
+		<!-- Field: Rental amount -->
+		<div class="form-group applications_leases-rent" style="border-bottom: dotted 1px #DDD;">
 			<label class="col-xs-3 control-label">Rental amount</label>
 			<div class="col-xs-9">
 				<div class="form-control-static"><%%VALUE(rent)%%></div>
 			</div>
 		</div>
-		<div class="form-group" style="border-bottom: dotted 1px #DDD;">
+		<!-- Field: Security deposit -->
+		<div class="form-group applications_leases-security_deposit" style="border-bottom: dotted 1px #DDD;">
 			<label class="col-xs-3 control-label">Security deposit</label>
 			<div class="col-xs-9">
 				<div class="form-control-static"><%%VALUE(security_deposit)%%></div>
 			</div>
 		</div>
-		<div class="form-group" style="border-bottom: dotted 1px #DDD;">
+		<!-- Field: Security deposit date -->
+		<div class="form-group applications_leases-security_deposit_date" style="border-bottom: dotted 1px #DDD;">
 			<label class="col-xs-3 control-label">Security deposit date</label>
 			<div class="col-xs-9">
 				<div class="form-control-static"><%%COMBOTEXT(security_deposit_date)%%></div>
 			</div>
 		</div>
-		<div class="form-group" style="border-bottom: dotted 1px #DDD;">
+		<!-- Field: Emergency contact -->
+		<div class="form-group applications_leases-emergency_contact" style="border-bottom: dotted 1px #DDD;">
 			<label class="col-xs-3 control-label">Emergency contact</label>
 			<div class="col-xs-9">
 				<div class="form-control-static"><%%VALUE(emergency_contact)%%></div>
 			</div>
 		</div>
-		<div class="form-group" style="border-bottom: dotted 1px #DDD;">
+		<!-- Field: Co signer details -->
+		<div class="form-group applications_leases-co_signer_details" style="border-bottom: dotted 1px #DDD;">
 			<label class="col-xs-3 control-label">Co signer details</label>
 			<div class="col-xs-9">
 				<div class="form-control-static"><%%VALUE(co_signer_details)%%></div>
 			</div>
 		</div>
-		<div class="form-group" style="border-bottom: dotted 1px #DDD;">
+		<!-- Field: Notes -->
+		<div class="form-group applications_leases-notes" style="border-bottom: dotted 1px #DDD;">
 			<label class="col-xs-3 control-label">Notes</label>
 			<div class="col-xs-9">
 				<div class="form-control-static"><%%VALUE(notes)%%></div>
 			</div>
 		</div>
-		<div class="form-group" style="border-bottom: dotted 1px #DDD;">
+		<!-- Field: Applicant agrees -->
+		<div class="form-group applications_leases-agreement" style="border-bottom: dotted 1px #DDD;">
 			<label class="col-xs-3 control-label">Applicant agrees</label>
 			<div class="col-xs-9">
 				<div class="form-control-static"><input type="checkbox" name="agreement" id="agreement" value="1" <%%CHECKED(agreement)%%> readonly></div>

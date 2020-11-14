@@ -11,14 +11,14 @@
 <?php
 
 	$recID = intval($_GET['recID']);
-	if(!$recID){
+	if(!$recID) {
 		// no record provided
 		include("{$currDir}/incFooter.php");
 	}
 
 	// fetch record data to fill in the form below
 	$res = sql("select * from membership_userrecords where recID='$recID'", $eo);
-	if(!($row = db_fetch_assoc($res))){
+	if(!($row = db_fetch_assoc($res))) {
 		echo Notification::show(array(
 			'message' => $Translation["record not found error"],
 			'class' => 'danger',
@@ -39,7 +39,7 @@
 	$pkField = getPKFieldName($tableName);
 
 	$res = sql("select * from `{$tableName}` where `{$pkField}`='" . makeSafe($pkValue, false) . "'", $eo);
-	if(!($row = db_fetch_assoc($res))){
+	if(!($row = db_fetch_assoc($res))) {
 		echo Notification::show(array(
 			'message' => $Translation["record not found error"],
 			'class' => 'danger',
@@ -63,14 +63,14 @@
 
 		<tbody>
 		<?php
-			foreach($row as $fn => $fv){
+			foreach($row as $fn => $fv) {
 				$op = html_attr($fv);
-				if(@is_file("{$currDir}/../{$Translation['ImageFolder']}{$fv}")){
+				if(@is_file("{$currDir}/../{$Translation['ImageFolder']}{$fv}")) {
 					$op = "<a href=\"../{$Translation['ImageFolder']}{$fv}\" target=\"_blank\">" . html_attr($fv) . "</a>";
 				}
 
 				$tr_class = $pk_icon = '';
-				if($fn == $pkField){
+				if($fn == $pkField) {
 					$tr_class = 'class="text-primary"';
 					$pk_icon = '<i class="glyphicon glyphicon-star"></i> ';
 				}
@@ -86,7 +86,7 @@
 	</table>
 
 	<script>
-		$j(function(){
+		$j(function() {
 			$j('nav').next('div').remove();
 		})
 	</script>

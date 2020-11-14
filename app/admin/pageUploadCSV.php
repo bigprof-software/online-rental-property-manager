@@ -15,7 +15,7 @@
 				$max_data_length, /* max length of csv data in read per batch in bytes */
 				$initial_ts; /* initial timestamp */
 
-		public function __construct($request = array()){
+		public function __construct($request = []) {
 			global $Translation;
 
 			$this->curr_dir = dirname(__FILE__);
@@ -34,20 +34,20 @@
 
 			/* process request to retrieve $this->request, and then execute the requested action */
 			$this->process_request($request);          
-			call_user_func_array(array($this, $this->request['action']), array());
+			call_user_func_array(array($this, $this->request['action']), []);
 		}
 
-		protected function debug($msg, $html = true){
+		protected function debug($msg, $html = true) {
 			if($GLOBALS['DEBUG_MODE'] && $html) return "<pre>DEBUG: {$msg}</pre>";
 			if($GLOBALS['DEBUG_MODE']) return " [DEBUG: {$msg}] ";
 			return '';
 		}
 
-		protected function elapsed(){
+		protected function elapsed() {
 			return number_format(microtime(true) - $this->initial_ts, 3);
 		}
 
-		protected function process_request($request){
+		protected function process_request($request) {
 			/* action must be a valid controller, else set to default (show_load_form) */
 			$controller = isset($request['action']) ? $request['action'] : false;
 			if(!in_array($controller, $this->controllers())) $request['action'] = 'show_load_form';
@@ -60,12 +60,12 @@
 		 *  
 		 *  @return array of public function names
 		 */
-		protected function controllers(){
+		protected function controllers() {
 			$csv = new ReflectionClass($this);
 			$methods = $csv->getMethods(ReflectionMethod::IS_PUBLIC);
 
-			$controllers = array();
-			foreach($methods as $mthd){
+			$controllers = [];
+			foreach($methods as $mthd) {
 				$controllers[] = $mthd->name;
 			}
 
@@ -75,7 +75,7 @@
 		/**
 		 * function to show form for uploading a CSV file or choosing one from the 'csv' folder
 		 */
-		public function show_load_form(){
+		public function show_load_form() {
 			/* get list of available CSV files */
 			$csv_files = $this->csv_files("{$this->curr_dir}/csv");
 
@@ -91,6 +91,12 @@
 					<input type="hidden" name="action" value="upload">
 					<?php echo csrf_token(); ?>
 					<div class="page-header"><h1><?php echo $this->lang['import CSV to database']; ?></h1></div>
+
+					<div class="alert alert-warning text-center"><?php echo str_replace(
+						['[a]', '[/a]'], 
+						['<a class="btn btn-alert btn-warning" href="../import-csv.php">', '</a>'], 
+						$this->lang['admin csv warning']
+					); ?></div>
 
 					<h4><?php echo $this->lang['import CSV to database page']; ?></h4>
 
@@ -119,8 +125,9 @@
 							<span id="csv_file_name"><?php echo $this->lang['no file chosen yet']; ?></span>
 							<input type="file" name="upload_csv" id="upload_csv" accept=".csv, text/csv">
 							<button type="submit" class="btn btn-success btn-lg hspacer-lg hidden" id="start_upload"><i class="glyphicon glyphicon-upload"></i> <?php echo $this->lang['start upload']; ?></button>
+							<div class="help-block"><?php echo $Translation['tip check csv for errors']; ?></div>
 
-							<?php if(count($csv_files)){ ?>
+							<?php if(count($csv_files)) { ?>
 								<hr>
 								<div class="panel panel-primary">
 									<div class="panel-heading">
@@ -128,7 +135,7 @@
 									</div>
 									<div class="panel-body hidden">
 										<div class="row" id="existing-csv-files">
-										   <?php foreach($csv_files as $csv_file){ ?>
+										   <?php foreach($csv_files as $csv_file) { ?>
 											  <div class="col-lg-2 col-md-3 col-sm-4 col-xs-6 csv-file">
 												  <button type="button" class="btn btn-link invisible delete-csv" data-csv="<?php echo html_attr($csv_file); ?>" title="<?php echo html_attr($this->lang['delete']); ?>"><i class="glyphicon glyphicon-trash text-danger"></i></button>
 												  <a href="<?php echo $this->curr_page; ?>?csv=<?php echo urlencode($csv_file); ?>&action=show_preview&table=">
@@ -145,26 +152,26 @@
 				</form>
 
 				<script>
-					$j(function(){
+					$j(function() {
 						/* function to highlight table drop-down as required */
-						var highlight_dropdown = function(){
+						var highlight_dropdown = function() {
 							$j('#table').focus().parent().addClass('has-error');
 							return false;
 						};
 
 						/* function to unhighlight table drop-down */
-						var unhighlight_dropdown = function(){
+						var unhighlight_dropdown = function() {
 							$j('#table').parent().removeClass('has-error');
 						};
 
 						/* function to update csv file links */
-						var update_csv_links = function(){
+						var update_csv_links = function() {
 							var table = $j('#table').val();
 							var csrf_token = $j('#csrf_token').val();
 
 							if(table.length) unhighlight_dropdown();
 
-							$j('.csv-file a').each(function(){
+							$j('.csv-file a').each(function() {
 								var href = $j(this).attr('href');
 								href = href.replace(/(action=show_preview).*$/, '$1');
 								href += '&csrf_token=' + csrf_token;
@@ -174,9 +181,9 @@
 						}
 
 						/* validate and display name of selected-for-upload CSV file */
-						$j('#upload_csv').change(function(){
+						$j('#upload_csv').change(function() {
 							var csv_file = $j(this).val();
-							if(!csv_file.match(/\.csv$/i)){
+							if(!csv_file.match(/\.csv$/i)) {
 								$j('#csv_file_name').html(
 									'<span class="text-danger bg-danger">' + 
 										'<i class="glyphicon glyphicon-remove"></i> ' +
@@ -195,7 +202,7 @@
 						});
 
 						/* toggle panel-body and panel-footer on clicking panel-title */
-						$j('.panel-heading').click(function(){
+						$j('.panel-heading').click(function() {
 							var panel = $j(this).parent();
 							panel.find('.panel-body').toggleClass('hidden');
 							panel.find('.panel-footer').toggleClass('hidden');
@@ -203,42 +210,42 @@
 
 						/* hover effect for existing csv files */
 						var highlighter = 'success';
-						$j('.row').on('mousemove', '.csv-file', function(){
+						$j('.row').on('mousemove', '.csv-file', function() {
 							$j('.csv-file').removeClass('text-' + highlighter + ' bg-' + highlighter);
 							$j('.delete-csv').addClass('invisible');
 							$j(this).addClass('text-' + highlighter + ' bg-' + highlighter);
 							$j(this).find('button').removeClass('invisible');
-						}).mouseout(function(){
+						}).mouseout(function() {
 							$j('.csv-file').removeClass('text-' + highlighter + ' bg-' + highlighter);
 							$j('.delete-csv').addClass('invisible');
 						});
 
 						/* on changing table, update csv file links */
-						$j('#table').change(function(){
+						$j('#table').change(function() {
 							update_csv_links();
 						});
 
 						/* on submitting csv, make sure a table is selected */
-						$j('#start_upload').click(function(){
+						$j('#start_upload').click(function() {
 							var table = $j('#table').val();
-							if(!table.length){
+							if(!table.length) {
 								return highlight_dropdown();
 							}
 						});
-						$j('#existing-csv-files').on('click', '.csv-file a', function(){
+						$j('#existing-csv-files').on('click', '.csv-file a', function() {
 							var table = $j('#table').val();
-							if(!table.length){
+							if(!table.length) {
 								return highlight_dropdown();
 							}
 						});
 
-						$j('#existing-csv-files').on('click', '.delete-csv', function(){
+						$j('#existing-csv-files').on('click', '.delete-csv', function() {
 							var del_btn = $j(this);
 							var csv = del_btn.data('csv');
 							var msg = '<?php echo html_attr($this->lang['sure delete csv']); ?>';
 							msg = msg.replace(/\[CSVFILE\]/, '"' + csv + '"');
 
-							var fail_delete = function(elm){
+							var fail_delete = function(elm) {
 								elm.popover({
 									placement: 'auto bottom',
 									title: '<?php echo html_attr($this->lang['errors occurred']); ?>',
@@ -246,24 +253,24 @@
 									trigger: 'manual',
 									container: 'body',
 									html: true
-								}).popover('show').on('shown.bs.popover', function(){
-									setTimeout(function(){
+								}).popover('show').on('shown.bs.popover', function() {
+									setTimeout(function() {
 										elm.popover('hide').popover('destroy');
 									}, 3000);
 								});
 							};
 
-							if(confirm(msg)){
+							if(confirm(msg)) {
 								var url = '<?php echo $this->curr_page; ?>?action=delete_csv&csv=' + encodeURIComponent(csv);
 								$j.ajax(url)
-									.done(function(data){
-										if(data.deleted){
+									.done(function(data) {
+										if(data.deleted) {
 										   del_btn.parent().remove();
-										}else{
+										} else {
 										   fail_delete(del_btn.parent());
 										}
 									})
-									.fail(function(){
+									.fail(function() {
 										fail_delete(del_btn.parent());
 									});
 							}
@@ -297,7 +304,7 @@
 			echo $this->footer();
 		}
 
-		public function delete_csv(){
+		public function delete_csv() {
 			$deleted = false;
 			@header('Content-type: application/json');
 
@@ -308,13 +315,13 @@
 			echo json_encode(array('deleted' => $deleted));
 		}
 
-		private function csv_files($dir){
-			$csv_files = array();
+		private function csv_files($dir) {
+			$csv_files = [];
 
 			if(!is_dir($dir)) @mkdir($dir);
 
 			$d = dir($dir);
-			while(false !== ($entry = $d->read())){
+			while(false !== ($entry = $d->read())) {
 				if(preg_match('/\.csv$/i', $entry)) $csv_files[] = urldecode($entry);
 			}
 			$d->close();
@@ -324,8 +331,8 @@
 		/**
 		  * function to handle csv file upload request by validating and saving into the csv folder
 		  */
-		public function upload(){
-			if(!csrf_token(true)){
+		public function upload() {
+			if(!csrf_token(true)) {
 				echo $this->header();
 				echo errorMsg("{$this->lang['csrf token expired or invalid']}<br>{$csv_file}{$this->error_back_link}" . $this->debug(__LINE__));
 				echo $this->footer();
@@ -337,7 +344,7 @@
 			$table = $this->get_table();
 			if(!$table) return;
 
-			if(!$csv_file || !is_readable($csv_file)){
+			if(!$csv_file || !is_readable($csv_file)) {
 				echo $this->header();
 				echo errorMsg("{$this->lang['csv file upload error']}<br>{$csv_file}{$this->error_back_link}" . $this->debug(__LINE__));
 				echo $this->footer();
@@ -352,7 +359,7 @@
 				<?php echo $this->lang['please wait and do not close']; ?>
 			</h2></div>
 			<script>
-				$j(function(){
+				$j(function() {
 					window.location = '<?php echo $this->curr_page; ?>?action=show_preview&csv=<?php echo urlencode(basename($csv_file)); ?>&table=<?php echo urlencode($table); ?>';
 				});
 			</script>
@@ -366,19 +373,19 @@
 		 *  @param [in] $options optional assoc array of options ('htmlpage' => bool, displaying errors as html page)
 		 *  @return csv filename if valid, false otherwise.
 		 */
-		protected function get_csv($options = array()){
+		protected function get_csv($options = []) {
 			$csv_ok = true;
 
 			$csv = $this->request['csv'];
 			if(!$csv) $csv_ok = false;
 
-			if($csv_ok){
+			if($csv_ok) {
 				$csv = basename($csv);
 				if(!is_readable("{$this->curr_dir}/csv/{$csv}")) $csv_ok = false;
 			}
 
-			if(!$csv_ok){
-				if(isset($options['htmlpage'])){
+			if(!$csv_ok) {
+				if(isset($options['htmlpage'])) {
 					echo $this->header();
 					echo errorMsg($this->lang['csv file upload error'] . $this->error_back_link . $this->debug(__LINE__));
 					echo $this->footer();
@@ -395,18 +402,18 @@
 		 *  @param [in] $silent (optional) boolean indicating no output to client if true, useful in ajax requests for example.
 		 *  @return table name, or false on error.
 		 */
-		protected function get_table($silent = false){
+		protected function get_table($silent = false) {
 			$table_ok = true;
 
 			$table = $this->request['table'];
 			if(!$table) $table_ok = false;
 
-			if($table_ok){
+			if($table_ok) {
 				$tables = getTableList();
 				if(!array_key_exists($table, $tables)) $table_ok = false;
 			}
 
-			if(!$table_ok){
+			if(!$table_ok) {
 				if($silent) return false;
 
 				echo $this->header();
@@ -418,11 +425,11 @@
 			return $table;
 		}
 
-		protected function table_fields($table){
-			$field_details = $fields = array();
+		protected function table_fields($table) {
+			$field_details = $fields = [];
 
 			$res = sql("show fields from `{$table}`", $eo);
-			while($row = db_fetch_assoc($res)){
+			while($row = db_fetch_assoc($res)) {
 				$fields[] = $row['Field'];
 				$field_details[] = $row;
 			}
@@ -433,7 +440,7 @@
 		/**
 		  * show js-driven preview of 1st 10 lines, with live csv options and column mapping options
 		  */
-		public function show_preview(){
+		public function show_preview() {
 
 			/* retrieve and validate table to import to */
 			$table = $this->get_table();
@@ -449,17 +456,17 @@
 			if(!$csv_fp) return;
 
 			/* get the first 50 lines of the csv */
-			$lines = array();
+			$lines = [];
 			$line_num = 0;
-			while(($line = fgets($csv_fp)) && $line_num < 50){
+			while(($line = fgets($csv_fp)) && $line_num < 50) {
 				if(!$line_num) $line = trim($this->no_bom($line), '"');
 				$lines[] = trim($line);
 				$line_num++;
 			}
 
 			$lines_json = @json_encode($lines);
-			if($lines_json === false && function_exists('json_last_error')){
-				if(json_last_error() == JSON_ERROR_UTF8){
+			if($lines_json === false && function_exists('json_last_error')) {
+				if(json_last_error() == JSON_ERROR_UTF8) {
 					$lines = $this->utf8ize($lines);
 					$lines_json = @json_encode($lines);
 				}
@@ -467,12 +474,12 @@
 
 			echo $this->header();
 
-			if($lines_json === false){
+			if($lines_json === false) {
 				$lines_json = '[]';
 				echo "\n<!-- \n\t" .
 					$this->debug(implode("\n\t", $lines), false) .
 					"\n -->\n";
-				if(function_exists('json_last_error')){
+				if(function_exists('json_last_error')) {
 					echo "\n<!-- \n\t" . $this->debug('json error: ' . json_last_error()) . "\n -->\n";
 				}
 			}
@@ -592,7 +599,7 @@
 			</div>
 
 			<script>
-				$j(function(){
+				$j(function() {
 					var csv_data = <?php echo $lines_json; ?>;
 					var fields = <?php echo json_encode($fields); ?>;
 
@@ -605,8 +612,8 @@
 					var config = $j.extend({}, default_config);
 
 					/* function to apply stored csv config to preview csv table */
-					var update_preview = function(){
-						if(!csv_data.length){
+					var update_preview = function() {
+						if(!csv_data.length) {
 							$j('#no-csv-data-error').removeClass('hidden');
 							return;
 						}
@@ -623,16 +630,16 @@
 						/* clear and hide errors */
 						$j('#csv-errors').addClass('hidden');
 
-						for(var i = 0; i < csv_data.length; i++){
+						for(var i = 0; i < csv_data.length; i++) {
 							if((data_rows - config.ignore_lines) >= 10) break;
 
 							try{
 								csv_row = $j.csv.toArray(csv_data[i], options);
-							}catch(e){
+							}catch(e) {
 								try{
 									/* BOM handling seems to strip the first " ni some cases */
 									csv_row = $j.csv.toArray('\"' + csv_data[i], options);
-								}catch(e){
+								}catch(e) {
 									$j('#csv-errors').removeClass('hidden');
 									continue;
 								}
@@ -641,12 +648,12 @@
 							/* disregard empty lines */
 							if((csv_row.length == 1 && csv_row[0] == '') || !csv_row.length) continue;
 
-							if(config.has_titles && !title_displayed){
+							if(config.has_titles && !title_displayed) {
 								add_table_header(csv_row);
 								title_displayed = true;
-							}else if(!config.has_titles && !title_displayed){
+							} else if(!config.has_titles && !title_displayed) {
 								var generic_titles = [];
-								for(var j = 0; j < csv_row.length; j++){
+								for(var j = 0; j < csv_row.length; j++) {
 									generic_titles.push('<?php echo html_attr($this->lang['field']); ?> ' + (j + 1));
 								}
 								add_table_header(generic_titles)
@@ -654,21 +661,21 @@
 
 								data_rows++;
 								if(data_rows > config.ignore_lines) add_table_row(csv_row);
-							}else{
+							} else {
 								data_rows++;
 								if(data_rows > config.ignore_lines) add_table_row(csv_row);
 							}
 						}
 					}
 
-					var add_table_row = function(row){
+					var add_table_row = function(row) {
 						if(!row.length) return;
 						var rand_id = 'tr-' + Math.floor(Math.random() * 100000);
 						var td = '';
 						var num_columns = $j('tr:first th').length;
 
 						$j('#csv-preview-table tbody').append('<tr id="' + rand_id + '"></tr>');
-						for(var i = 0; i < num_columns; i++){
+						for(var i = 0; i < num_columns; i++) {
 							td = '<td>';
 							if(row[i] == undefined) row[i] = '';
 							if(row[i].length > 34) row[i] = row[i].substr(0, 30) + ' ...';
@@ -677,16 +684,16 @@
 						}
 					}
 
-					var add_table_header = function(row){
-						for(var i = 0; i < row.length; i++){
+					var add_table_header = function(row) {
+						for(var i = 0; i < row.length; i++) {
 							$j('#csv-fields').append('<th>' + row[i] + '</th>');
 							$j('#db-fields').append('<th id="belongs-' + i + '"></th>');
 							render_belongs('#belongs-' + i, row[i]);
 						}
 					}
 
-					var import_button = function(hide_it){
-						if(!hide_it){
+					var import_button = function(hide_it) {
+						if(!hide_it) {
 							$j('#start-import').addClass('hidden');
 							$j('#mappings-warning').removeClass('hidden');
 							return;
@@ -696,15 +703,15 @@
 						$j('#mappings-warning').addClass('hidden');
 					}
 
-					var render_belongs = function(id, title){
+					var render_belongs = function(id, title) {
 						var selected = '';
 						var csv_field_num = id.replace(/#belongs-/, '');
 
 						var dropdown = '<select class="form-control" id="db-field-for-' + csv_field_num + '">';
 						dropdown += '<option value="ignore-field">&lt;<?php echo html_attr($this->lang['skip column']); ?>&gt;</option>';
-						for(var i = 0; i < fields.length; i++){
+						for(var i = 0; i < fields.length; i++) {
 							selected = '';
-							if(strip_name(fields[i]) == strip_name(title)){
+							if(strip_name(fields[i]) == strip_name(title)) {
 								selected = ' selected';
 							}
 							dropdown += '<option value="' + fields[i] + '"' + selected + '>' + fields[i] + '</option>';
@@ -720,12 +727,12 @@
 					}
 
 					/* function to strip strings  */
-					var strip_name = function(name){
+					var strip_name = function(name) {
 						return name.toLowerCase().replace(/[\W_]+/g,'');
 					}
 
 					/* sync csv settings from stored values to screen */
-					var sync_screen_settings = function(){
+					var sync_screen_settings = function() {
 						$j('#field_separator').val(config.field_separator);
 						$j('#field_delimiter').val(config.field_delimiter);
 						$j('#ignore_lines').val(config.ignore_lines);
@@ -733,7 +740,7 @@
 					}
 
 					/* sync csv settings from screen to stored values */
-					var sync_stored_settings = function(){
+					var sync_stored_settings = function() {
 						config.field_separator = $j('#field_separator').val();
 						config.field_delimiter = $j('#field_delimiter').val();
 						config.ignore_lines = parseInt($j('#ignore_lines').val());
@@ -742,11 +749,11 @@
 					}
 
 					/* parse GET parameters of the url and return the one requested */
-					var get = function(get_var){
+					var get = function(get_var) {
 						var result = "",
 							tmp = [];
 						var items = location.search.substr(1).split("&");
-						for (var index = 0; index < items.length; index++){
+						for (var index = 0; index < items.length; index++) {
 							tmp = items[index].split("=");
 							if (tmp[0] === get_var) result = decodeURIComponent(tmp[1]);
 						}
@@ -756,11 +763,11 @@
 					update_preview();
 
 					/* monitor column mappings and toggle import button accordingly */
-					setInterval(function(){
+					setInterval(function() {
 						/* at least one field is selected for mapping? */
 						var mappings_exist = false;
-						$j('#db-fields select').each(function(){
-							if($j(this).val() != 'ignore-field'){
+						$j('#db-fields select').each(function() {
+							if($j(this).val() != 'ignore-field') {
 								mappings_exist = true;
 								return false; // break loop
 							}
@@ -769,13 +776,13 @@
 						/* apply visual clues for mappings, checking for duplicates */
 						var mappings = {};
 						var no_duplicate_mapping = true;
-						$j('#db-fields select').each(function(){
-							if($j(this).val() == 'ignore-field'){
+						$j('#db-fields select').each(function() {
+							if($j(this).val() == 'ignore-field') {
 								$j(this).parent().removeClass('bg-success bg-danger has-error');
 								return true; // continue loop
 							}
 
-							if(mappings[$j(this).val()] != undefined){
+							if(mappings[$j(this).val()] != undefined) {
 								no_duplicate_mapping = false;
 								$j(this).parent().addClass('has-error bg-danger');
 								return false; // break loop
@@ -788,39 +795,39 @@
 					}, 1000);
 
 					/* toggle panel-body and panel-footer on clicking panel-title */
-					$j('.panel-heading').click(function(){
+					$j('.panel-heading').click(function() {
 						var panel = $j(this).parent();
 						panel.find('.panel-body').toggleClass('hidden');
 						panel.find('.panel-footer').toggleClass('hidden');
 					});
 
 					/* close settings panel on clicking outside it */
-					$j('html, #apply-settings').click(function(){
+					$j('html, #apply-settings').click(function() {
 						$j('.panel-success .panel-body, .panel-success .panel-footer').addClass('hidden');
 					});
-					$j('.panel-success').click(function(e){
+					$j('.panel-success').click(function(e) {
 						e.stopPropagation(); // don't bubble the click event to prevent closing the panel
 					});
 
 					/* reset csv settings to defaults */
-					$j('#reset-settings').click(function(){
+					$j('#reset-settings').click(function() {
 						config = $j.extend({}, default_config);
 						sync_screen_settings();
 						update_preview();
 					});
 
 					/* apply changes in csv settings to preview */
-					$j('#csv-settings').change(function(){
+					$j('#csv-settings').change(function() {
 						sync_stored_settings();
 						update_preview();
 					});
 
 					/* increase/decrease value in ignore_lines box */
-					$j('#increment-ignored-lines,#decrement-ignored-lines').click(function(){
+					$j('#increment-ignored-lines,#decrement-ignored-lines').click(function() {
 						var ignore_lines = parseInt($j('#ignore_lines').val());
-						if($j(this).attr('id') == 'increment-ignored-lines'){
+						if($j(this).attr('id') == 'increment-ignored-lines') {
 							ignore_lines++;
-						}else{
+						} else {
 							ignore_lines--;
 						}
 						if(ignore_lines < 0) ignore_lines = 0;
@@ -828,7 +835,7 @@
 					});
 
 					/* prepare csv settings for submission on clicking the import button */
-					$j('#start-import').click(function(){
+					$j('#start-import').click(function() {
 						if(!$j('#csv-errors').hasClass('hidden')) return;
 
 						/* fetch csv settings */
@@ -847,7 +854,7 @@
 
 						/* fetch csv field mappings */
 						var num_fields= $j('#db-fields th').length;
-						for(var i = 0; i < num_fields; i++){
+						for(var i = 0; i < num_fields; i++) {
 							params['mappings[' + i + ']'] = $j('#db-field-for-' + i).val();
 						}
 
@@ -856,7 +863,7 @@
 
 						/* disable submit for 60 seconds (timeout in case submission fails) */
 						$j(this).prop('disabled', true);
-						setTimeout(function(){
+						setTimeout(function() {
 							$j(this).prop('disabled', false);
 						}, 60000);
 
@@ -887,17 +894,17 @@
 		/**
 		  * start/continue importing a csv file into the db (ajax-friendly)
 		  */
-		public function import(){
+		public function import() {
 			@header('Content-type: application/json');
 			$res = array(
 				'imported' => 0,
 				'failed' => 0,
 				'remaining' => 0,
-				'logs' => array()
+				'logs' => []
 			);
 
 			$csv_status = $this->start();
-			if(isset($csv_status['error'])){
+			if(isset($csv_status['error'])) {
 				$res['logs'][] = $csv_status['error'];
 				echo json_encode($res);
 				return;
@@ -906,7 +913,7 @@
 			$start = $csv_status['start'];
 
 			$lines = $this->csv_lines();
-			if($start >= $lines){ // no more rows to import
+			if($start >= $lines) { // no more rows to import
 				$res['logs'][] = $this->lang['mission accomplished'];
 				echo json_encode($res);
 				$this->start(0);
@@ -914,7 +921,7 @@
 			}
 
 			$settings = $this->get_csv_settings();
-			if($settings === false){
+			if($settings === false) {
 				$res['logs'][] = $this->debug(__LINE__, false) . $this->lang['csv file upload error'];
 				echo json_encode($res);
 				return;
@@ -922,16 +929,16 @@
 			$data_lines = $lines - ($settings['has_titles'] ? 1 : 0);
 
 			$bkp_res = $this->backup_table($start, $settings);
-			if(isset($bkp_res['error'])){
+			if(isset($bkp_res['error'])) {
 				$res['logs'][] = $this->debug(__LINE__, false) . $bkp_res['error'];
 				echo json_encode($res);
 				return;
-			}elseif(isset($bkp_res['status'])){
+			} elseif(isset($bkp_res['status'])) {
 				$res['logs'][] = $bkp_res['status'];
 			}
 
 			$csv_data = $this->get_csv_data($start, $settings);
-			if(!count($csv_data)){
+			if(!count($csv_data)) {
 				$res['logs'][] = $this->lang['mission accomplished'];
 				echo json_encode($res);
 				$this->start(0);
@@ -948,15 +955,15 @@
 			$new_start = $start + $res['imported'];
 			$res['remaining'] = $lines - $new_start;
 
-			$query_info = $eo = array();
+			$query_info = $eo = [];
 			$insert = $this->get_query($csv_data, $settings, $query_info);
-			if($insert === false){
+			if($insert === false) {
 				$res['logs'][] = $this->debug(__LINE__, false) . $this->lang['csv file upload error'];
 				echo json_encode($res);
 				return;
 			}
 
-			if(!sql($insert, $eo)){
+			if(!sql($insert, $eo)) {
 				$res['logs'][] = $this->debug(__LINE__, false) . db_error();
 				echo json_encode($res);
 				return;
@@ -964,16 +971,16 @@
 
 			$res['logs'][count($res['logs']) - 1] .= " {$this->lang['ok']}";
 
-			if($new_start >= $lines){
+			if($new_start >= $lines) {
 				$this->start(0); /* reset csv status after finishing */
-			}else{
+			} else {
 				$this->start($new_start); /* update csv status file to new start */
 			}
 
 			echo json_encode($res);
 		}
 
-		protected function request_or($var, $default){
+		protected function request_or($var, $default) {
 			return (isset($this->request[$var]) ? $this->request[$var] : $default);
 		}
 
@@ -982,8 +989,8 @@
 		 *  
 		 *  @return false on error, or associative array (table, backup_table, update_pk, has_titles, ignore_lines, field_separator, field_delimiter, mappings[])
 		 */
-		protected function get_csv_settings(){
-			static $settings = array();
+		protected function get_csv_settings() {
+			static $settings = [];
 			if(!empty($settings)) return $settings; // cache to avoid reprocessing
 
 			$settings = array(
@@ -993,7 +1000,7 @@
 				'ignore_lines' => max(0, (int) $this->request_or('ignore_lines', 0)),
 				'field_separator' => $this->request_or('field_separator', ','),
 				'field_delimiter' => $this->request_or('field_delimiter', '"'),
-				'mappings' => $this->request_or('mappings', array())
+				'mappings' => $this->request_or('mappings', [])
 			);
 
 			if(!$settings['field_delimiter']) $settings['field_delimiter'] = '"';
@@ -1006,8 +1013,8 @@
 
 			/* validate and trim field names */
 			$last_field_key = count($settings['mappings']) - 1;
-			$mappings = array();
-			for($i = 0; $i <= $last_field_key; $i++){
+			$mappings = [];
+			for($i = 0; $i <= $last_field_key; $i++) {
 				$fn = $settings['mappings'][$i];
 				$fn = trim($fn);
 				if(!preg_match('/^[a-zA-Z_][a-zA-Z0-9_]*$/', $fn) && $fn != 'ignore-field') return false;
@@ -1016,9 +1023,9 @@
 				if(isset($mappgins[$fn])) return false;
 
 				$settings['mappings'][$i] = $fn;
-				if($fn == 'ignore-field'){
+				if($fn == 'ignore-field') {
 					unset($settings['mappings'][$i]);
-				}else{
+				} else {
 					$mappgins[$fn] = true;
 				}
 			}
@@ -1035,7 +1042,7 @@
 		 *  
 		 *  @details This function counts all non-empty, including the title column
 		 */
-		protected function csv_lines(){
+		protected function csv_lines() {
 			$csv = $this->get_csv();
 			if(!$csv) return 0;
 
@@ -1048,7 +1055,7 @@
 			$csv_file = "{$this->curr_dir}/csv/{$csv}";
 
 			/* if csv modified after counting its lines, force recount */
-			if(is_file($count_file) && filemtime($count_file) < filemtime($csv_file)){
+			if(is_file($count_file) && filemtime($count_file) < filemtime($csv_file)) {
 				@unlink($count_file);
 				return $this->csv_lines();
 			}
@@ -1062,7 +1069,7 @@
 			if($fp === false) return 0;
 
 			/* start counting non-empty lines of csv */
-			while($line = fgets($fp)){
+			while($line = fgets($fp)) {
 				if(strlen(trim($line))) $lines++;
 			}
 			fclose($fp);
@@ -1078,9 +1085,9 @@
 		 *  @param $settings assoc arry of csv settings
 		 *  @return assoc array, 'status' key and value if successful, 'error' key and value on error
 		 */
-		protected function backup_table($start, $settings){
-			if($start > 0) return array(); // no need to backup as we've passed the first batch
-			if(!$settings['backup_table']) return array(); // no backup requested
+		protected function backup_table($start, $settings) {
+			if($start > 0) return []; // no need to backup as we've passed the first batch
+			if(!$settings['backup_table']) return []; // no backup requested
 
 			$table = $this->get_table(true);
 			if($table === false) return array('error' => $this->lang['no table name provided'] . $this->debug(__LINE__, false));
@@ -1090,9 +1097,9 @@
 				return array('status' => str_replace('<TABLE>', $table, $this->lang['table backup not done']));
 
 			$btn = $stable . '_backup_' . @date('YmdHis');
-			$eo = array();
-			sql("drop table if exists `{$btn}`", $eo);
-			if(!sql("create table if not exists `{$btn}` like `{$stable}`", $eo))
+			$eo = [];
+			sql("DROP TABLE IF EXISTS `{$btn}`", $eo);
+			if(!sql("CREATE TABLE IF NOT EXISTS `{$btn}` LIKE `{$stable}`", $eo))
 				return array('error' => str_replace('<TABLE>', $table, $this->lang['error backing up table'] . $this->debug(__LINE__, false)));
 			if(!sql("insert `{$btn}` select * from `{$stable}`", $eo))
 				return array('error' => str_replace('<TABLE>', $table, $this->lang['error backing up table'] . $this->debug(__LINE__, false)));
@@ -1106,7 +1113,7 @@
 			);
 		}
 
-		protected function no_bom($str){
+		protected function no_bom($str) {
 			return preg_replace('/[\x00-\x1F\x80-\xFF]/', '', $str);
 		}
 
@@ -1117,15 +1124,15 @@
 		 *  @param $settings csv settings array as retrieved from CSV::get_csv_settings
 		 *  @return numeric 2D array of csv data (row1array, row2array, ...)
 		 */
-		protected function get_csv_data($start, $settings){
-			if($settings === false) return array();
+		protected function get_csv_data($start, $settings) {
+			if($settings === false) return [];
 
 			$csv = $this->get_csv();
 			$csv_file = "{$this->curr_dir}/csv/{$csv}";
 			$first_line = true;
 
 			$fp = @fopen($csv_file, 'r');
-			if(false === $fp) return array();
+			if(false === $fp) return [];
 
 			/* skip $start non-empty lines */
 			$skip = $start;
@@ -1140,26 +1147,26 @@
 			/* skip title line */
 			$skip += ($settings['has_titles'] ? 1 : 0);
 
-			for($i = 0; $i < $skip; $i++){
+			for($i = 0; $i < $skip; $i++) {
 				/* keep reading till a non-empty line or EOF */
 				do{
 					$line = @implode('', @fgetcsv($fp));
-					if($first_line){
+					if($first_line) {
 						$line = $this->no_bom($line); /* remove BOM from 1st line */
 						$first_line = false;
 					}
 				}while(trim($line) === '' && $line !== false);
 
-				if(false === $line){ fclose($fp); return array(); } /* EOF before $start */
+				if(false === $line) { fclose($fp); return []; } /* EOF before $start */
 			}
 
 			/* keep reading data from csv file till data size limit or EOF is reached */
-			$csv_data = array(); $raw_data = '';
+			$csv_data = []; $raw_data = '';
 			do{
 				$data = fgetcsv($fp, pow(2, 15), $settings['field_separator'], $settings['field_delimiter']);
-				if($data === false){ fclose($fp); return $csv_data; } /* EOF */
+				if($data === false) { fclose($fp); return $csv_data; } /* EOF */
 
-				if($first_line){
+				if($first_line) {
 					$data[0] = $this->no_bom($data[0]); /* remove BOM if 1st line */
 					$data[0] = trim($data[0], $settings['field_delimiter']); /* fix fgetcsv behavior with BOM */
 					$first_line = false;
@@ -1168,7 +1175,7 @@
 
 				/* handle ignored fields */
 				$last_key = max($last_field_key, count($data) - 1);
-				for($i = 0; $i <= $last_key; $i++){
+				for($i = 0; $i <= $last_key; $i++) {
 					if(!isset($data[$i])) $data[$i] = '';
 					if(!isset($settings['mappings'][$i])) unset($data[$i]);
 				}
@@ -1189,24 +1196,24 @@
 		 *  @param [in,out] $query_info assoc array for exchanging query info and options
 		 *  @return query string on success, false on error
 		 */
-		protected function get_query(&$csv_data, $settings, &$query_info){
+		protected function get_query(&$csv_data, $settings, &$query_info) {
 			/* make sure table name is provided */
 			$table = $this->get_table(true);
-			if($table === false){
+			if($table === false) {
 				$query_info['error'] = $this->lang['no table name provided'] . $this->debug(__LINE__, false);
 				return false;
 			}
 			$stable = makeSafe($table);
 
 			/* make sure mappings are provided */
-			if(!isset($settings['mappings']) || !is_array($settings['mappings']) || !count($settings['mappings'])){
+			if(!isset($settings['mappings']) || !is_array($settings['mappings']) || !count($settings['mappings'])) {
 				$query_info['error'] = $this->lang['error reading csv data'] . $this->debug(__LINE__, false);
 				return false;
 			}
 
 			/* replace or insert? */
 			$query = "INSERT IGNORE INTO ";
-			if(isset($settings['update_pk']) && $settings['update_pk'] === true){
+			if(isset($settings['update_pk']) && $settings['update_pk'] === true) {
 				$query = "REPLACE ";
 			}
 			$query .= "`{$stable}` ";
@@ -1215,10 +1222,10 @@
 			$query .= '(`' . implode('`,`', $settings['mappings']) . '`) VALUES ';
 
 			/* build query data */
-			$insert_data = array();
-			foreach($csv_data as $rec){
+			$insert_data = [];
+			foreach($csv_data as $rec) {
 				/* sanitize data for SQL */
-				foreach($rec as $i => $item){
+				foreach($rec as $i => $item) {
 					$rec[$i] = "'" . makeSafe($item, false) . "'";
 					if($item === '') $rec[$i] = 'NULL';
 				}
@@ -1236,9 +1243,9 @@
 		 *  @param $start optional, new start value to save into status file
 		 *  @return array('error' => error message) or array('start' => start line)
 		 */
-		protected function start($new_start = false){
+		protected function start($new_start = false) {
 			$csv = $this->get_csv();
-			if(!$csv){
+			if(!$csv) {
 				/* invalid csv file specified */
 				return array('error' => $this->debug(__LINE__, false) . $this->lang['csv file upload error']);
 			}
@@ -1249,19 +1256,19 @@
 				the file stores the last imported line#.
 			*/
 			$status_file = "{$this->curr_dir}/csv/{$csv}.status";
-			if(!is_file($status_file)){
+			if(!is_file($status_file)) {
 				/* this is a new import process */
 				/* create a status file and store $new_start into it */
 				@file_put_contents($status_file, $new_start);
 			}
 
-			if($new_start !== false && intval($new_start) >= 0){
+			if($new_start !== false && intval($new_start) >= 0) {
 				@file_put_contents($status_file, intval($new_start));
 				return array('start' => intval($new_start));
 			}
 
 			$start = @file_get_contents($status_file);
-			if(false === $start){
+			if(false === $start) {
 				/* can't read file */
 				return array('error' => $this->debug(__LINE__, false) . $this->lang['csv file upload error']);
 			}
@@ -1273,9 +1280,9 @@
 		  * show page to control and monitor csv import process
 		  * (launch import job via ajax and keep relaunching and showing progress till done)
 		  */
-		public function show_import_progress(){
+		public function show_import_progress() {
 			echo $this->header();
-			if(!csrf_token(true)){
+			if(!csrf_token(true)) {
 				echo errorMsg("{$this->lang['csrf token expired or invalid']}<br>{$this->error_back_link}" . $this->debug(__LINE__));
 				echo $this->footer();
 				return;
@@ -1299,8 +1306,8 @@
 			<div id="aborted" class="hidden alert-danger"><?php echo $this->lang['csv file upload error']; ?></div>
 
 			<script>
-				$j(function(){
-					var add_log = function(log_message){
+				$j(function() {
+					var add_log = function(log_message) {
 						if(!log_message) return;
 
 						var import_log = $j("#import-log");
@@ -1309,7 +1316,7 @@
 					}
 
 					/* function to update progress */
-					var update_progress = function(percent, log_message, status_class){
+					var update_progress = function(percent, log_message, status_class) {
 						if(isNaN(percent)) percent = 0;
 
 						/* limit to integer values between 0 and 100 */
@@ -1317,13 +1324,13 @@
 						$j('#import-progress').css({ width: p + '%' });
 						$j('#import-progress span').html(p + '%');
 
-						if(status_class != undefined){
+						if(status_class != undefined) {
 							$j('#import-progress')
 								.removeClass('progress-bar-success progress-bar-danger progress-bar-warning progress-bar-info progress-bar-primary')
 								.addClass('progress-bar-' + status_class);
 						}
 
-						if(status_class == 'danger' || p == 100){
+						if(status_class == 'danger' || p == 100) {
 							$j('#import-progress').removeClass('active');
 						}
 
@@ -1338,10 +1345,10 @@
 					 *  
 					 *  @return Return_Description
 					 */
-					var import_batch = function(progress, callbacks){
+					var import_batch = function(progress, callbacks) {
 						// if first param is functions
-						if(progress !== undefined){
-							if($j.isFunction(progress.completed) || $j.isFunction(progress.aborted)){
+						if(progress !== undefined) {
+							if($j.isFunction(progress.completed) || $j.isFunction(progress.aborted)) {
 								// we assume it's the callbacks
 								callbacks = progress;
 								progress = undefined;
@@ -1354,7 +1361,7 @@
 
 						$j.ajax({
 							url: url
-						}).done(function(data){
+						}).done(function(data) {
 							/* data: { imported, failed, remaining, logs[] } */
 							if(undefined == data.imported) data.imported = 0;
 							if(undefined == data.failed) data.failed = 0;
@@ -1364,9 +1371,9 @@
 							if(!progress.total) progress.total = data.imported + data.failed + data.remaining;
 
 							/* finished importing? */
-							if(progress.total <= 0 || data.remaining <= 0){
+							if(progress.total <= 0 || data.remaining <= 0) {
 								update_progress(100, '<b class="text-success"><?php echo html_attr($this->lang['finished status']); ?></b>', 'success');
-								if(callbacks !== undefined && $j.isFunction(callbacks.completed)){
+								if(callbacks !== undefined && $j.isFunction(callbacks.completed)) {
 									callbacks.completed();
 								}
 								return;
@@ -1377,17 +1384,17 @@
 
 							update_progress((progress.failed + progress.imported) / progress.total * 100, data.logs.join('\n'));
 							import_batch(progress, callbacks);
-						}).fail(function(){
+						}).fail(function() {
 							/* if ajax failed, retry up to 10 times, with 10 seconds in-between then fail */
-							if(progress.retries < 10){
+							if(progress.retries < 10) {
 								progress.retries++;
 								update_progress((progress.failed + progress.imported) / progress.total * 100, '<?php echo html_attr(str_replace('<SECONDS>', '10', $this->lang['connection failed retrying'])); ?>', 'warning');
-								setTimeout(function(){ import_batch(progress, callbacks); }, 3000);
+								setTimeout(function() { /* */ import_batch(progress, callbacks); }, 3000);
 								return;
-							}else{
+							} else {
 								/* fail and abort importing process */
 								update_progress((progress.failed + progress.imported) / progress.total * 100, '<?php echo html_attr($this->lang['connection failed timeout']); ?>', 'danger');
-								if(callbacks !== undefined && $j.isFunction(callbacks.aborted)){
+								if(callbacks !== undefined && $j.isFunction(callbacks.aborted)) {
 									callbacks.aborted();
 								}
 							}                          
@@ -1395,16 +1402,16 @@
 					}
 
 					/* adjust import-log height based on window height */
-					$j(window).resize(function(){
+					$j(window).resize(function() {
 						$j('#import-log').height($j(window).height() * 0.4);
 					}).resize();
 
 					add_log('<b class="text-warning"><?php echo html_attr($this->lang['please wait and do not close']); ?></b>');
 					import_batch({
-						completed: function(){
+						completed: function() {
 							$j('#next-action').removeClass('hidden');
 						},
-						aborted: function(){
+						aborted: function() {
 							$j('#aborted').removeClass('hidden');
 						}
 					});
@@ -1420,7 +1427,7 @@
 			echo $this->footer();
 		}
 
-		protected function header(){
+		protected function header() {
 			$Translation = $this->lang;
 			ob_start();
 			$GLOBALS['page_title'] = $Translation['importing CSV data'];
@@ -1431,7 +1438,7 @@
 			return $out;
 		}
 
-		protected function footer(){
+		protected function footer() {
 			$Translation = $this->lang;
 			ob_start();
 			include("{$this->curr_dir}/incFooter.php");
@@ -1449,12 +1456,10 @@
 		 *  @return UTF8-encoded array/string
 		 */
 		protected function utf8ize($mixed) {
-			if(is_array($mixed)){
-				foreach($mixed as $key => $value){
-					$mixed[$key] = $this->utf8ize($value);
-				}
-			}elseif(is_string($mixed)){
-				return utf8_encode($mixed);
+			if(!is_array($mixed)) return to_utf8($mixed);
+
+			foreach($mixed as $key => $value) {
+				$mixed[$key] = $this->utf8ize($value);
 			}
 			return $mixed;
 		}

@@ -13,40 +13,40 @@
 	// process sort
 	$sortDir = ($_GET['sortDir'] == 'desc' ? 'desc' : '');
 	$sort = makeSafe($_GET['sort']);
-	if($sort != 'dateAdded' && $sort != 'dateUpdated'){ // default sort is newly created first
+	if($sort != 'dateAdded' && $sort != 'dateUpdated') { // default sort is newly created first
 		$sort = 'dateAdded';
 		$sortDir = 'desc';
 	}
 
-	if($sort){
+	if($sort) {
 		$sortClause = "order by {$sort} {$sortDir}";
 	}
 
-	if($memberID->sql != ''){
-		$where .= ($where ? " and " : "") . "r.memberID like '{$memberID->sql}%'";
+	if($memberID->sql != '') {
+		$where .= ($where ? ' and ' : '') . "r.memberID like '{$memberID->sql}%'";
 	}
 
-	if($groupID){
-		$where .= ($where ? " and " : "") . "g.groupID='{$groupID}'";
+	if($groupID) {
+		$where .= ($where ? ' and ' : '') . "g.groupID='{$groupID}'";
 	}
 
-	if($tableName->sql != ''){
-		$where .= ($where ? " and " : "") . "r.tableName='{$tableName->sql}'";
+	if($tableName->sql != '') {
+		$where .= ($where ? ' and ' : '') . "r.tableName='{$tableName->sql}'";
 	}
 
-	if($where){
+	if($where) {
 		$where = "where {$where}";
 	}
 
 	$numRecords = sqlValue("select count(1) from membership_userrecords r left join membership_groups g on r.groupID=g.groupID {$where}");
 	$noResults = false;
-	if(!$numRecords){
+	if(!$numRecords) {
 		echo "<div class=\"alert alert-warning\">{$Translation['no matching results found']}</div>";
 		$noResults = true;
 		$page = 1;
 	}
 
-	if($page > ceil($numRecords / $adminConfig['recordsPerPage']) && !$noResults){
+	if($page > ceil($numRecords / $adminConfig['recordsPerPage']) && !$noResults) {
 		redirect("admin/pageViewRecords.php?page=" . ceil($numRecords/$adminConfig['recordsPerPage']));
 	}
 
@@ -114,7 +114,7 @@
 <?php
 
 	$res = sql("select r.recID, r.memberID, g.name, r.tableName, r.dateAdded, r.dateUpdated, r.pkValue from membership_userrecords r left join membership_groups g on r.groupID=g.groupID $where $sortClause limit $start, " . $adminConfig['recordsPerPage'], $eo);
-	while($row = db_fetch_row($res)){
+	while($row = db_fetch_row($res)) {
 		?>
 		<tr>
 			<td class="text-center">
@@ -127,7 +127,7 @@
 			<td class="<?php echo ($sort == 'dateAdded' ? 'warning' : '');?>"><?php echo @date($adminConfig['PHPDateTimeFormat'], $row[4]); ?></td>
 			<td class="<?php echo ($sort == 'dateUpdated' ? 'warning' : '');?>"><?php echo @date($adminConfig['PHPDateTimeFormat'], $row[5]); ?></td>
 			<td>
-				<a href="#" class="view-record" data-record-id="<?php echo $row[0]; ?>"><i class="glyphicon glyphicon-search hspacer-md"></i></a>
+				<a href="#" class="view-record" data-record_id="<?php echo $row[0]; ?>"><i class="glyphicon glyphicon-search hspacer-md"></i></a>
 				<?php echo substr(getCSVData($row[3], $row[6]), 0, 80) . " ... "; ?>
 			</td>
 		</tr>
@@ -141,7 +141,7 @@
 				<table width="100%" cellspacing="0">
 					<tr>
 						<th class="text-left flip" style="width: 25%;">
-							<?php if($start){ ?>
+							<?php if($start) { ?>
 								<a href="pageViewRecords.php?groupID=<?php echo $groupID; ?>&memberID=<?php echo $memberID->url; ?>&tableName=<?php echo $tableName->url; ?>&page=<?php echo ($page > 1 ? $page - 1 : 1); ?>&sort=<?php echo $sort; ?>&sortDir=<?php echo $sortDir; ?>" class="btn btn-default"><?php echo $Translation['previous'] ; ?></a>
 							<?php } ?>
 						</th>
@@ -155,7 +155,7 @@
 							?>
 						</th>
 						<th class="text-right flip" style="width: 25%;">
-							<?php if($record2 < $numRecords){ ?>
+							<?php if($record2 < $numRecords) { ?>
 								<a href="pageViewRecords.php?groupID=<?php echo $groupID; ?>&memberID=<?php echo $memberID->url; ?>&tableName=<?php echo $tableName->url; ?>&page=<?php echo ($page<ceil($numRecords/$adminConfig['recordsPerPage']) ? $page+1 : ceil($numRecords/$adminConfig['recordsPerPage'])); ?>&sort=<?php echo $sort; ?>&sortDir=<?php echo $sortDir; ?>" class="btn btn-default"><?php echo $Translation['next'] ; ?></a>
 							<?php } ?>
 						</th>
@@ -182,9 +182,9 @@
 </style>
 
 <script>
-	$j(function(){
-		$j('.view-record').click(function(){
-			var recID = $j(this).data('record-id');
+	$j(function() {
+		$j('.view-record').click(function() {
+			var recID = $j(this).data('record_id');
 			$j('#view-record-iframe').attr('src', 'pagePrintRecord.php?recID=' + recID);
 			$j('#view-record-modal').modal('show');
 			$j('#view-record-modal .modal-body').height($j(window).height() * 0.7);
@@ -192,7 +192,7 @@
 			return false;
 		});
 
-		$j('#reset-search').click(function(){
+		$j('#reset-search').click(function() {
 			window.location = 'pageViewRecords.php';
 		});
 

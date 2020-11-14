@@ -6,7 +6,7 @@
 <div class="panel-body" id="references_dv_container">
 	<!-- child links -->
 	<div class="row vspacer-md">
-		<div class="col-xs-12">
+		<div class="col-xs-12 children-links">
 			<div class="clearfix"></div>
 		</div>
 	</div>
@@ -17,7 +17,8 @@
 		<div class="col-md-8 col-lg-10" id="references_dv_form">
 			<fieldset class="form-horizontal">
 
-				<div class="form-group">
+				<!-- Field: ID -->
+				<div class="form-group references-id">
 					<hr class="hidden-md hidden-lg">
 					<label for="id" class="control-label col-lg-3">ID</label>
 					<div class="col-lg-9">
@@ -25,7 +26,8 @@
 					</div>
 				</div>
 
-				<div class="form-group">
+				<!-- Field: Tenant -->
+				<div class="form-group references-tenant">
 					<hr class="hidden-md hidden-lg">
 					<label for="tenant" class="control-label col-lg-3" data-parent_link="view_parent_modal">Tenant</label>
 					<div class="col-lg-9">
@@ -33,7 +35,8 @@
 					</div>
 				</div>
 
-				<div class="form-group">
+				<!-- Field: Reference name -->
+				<div class="form-group references-reference_name">
 					<hr class="hidden-md hidden-lg">
 					<label for="reference_name" class="control-label col-lg-3">Reference name</label>
 					<div class="col-lg-9">
@@ -41,7 +44,8 @@
 					</div>
 				</div>
 
-				<div class="form-group">
+				<!-- Field: Reference phone -->
+				<div class="form-group references-phone">
 					<hr class="hidden-md hidden-lg">
 					<label for="phone" class="control-label col-lg-3">Reference phone</label>
 					<div class="col-lg-9">
@@ -82,37 +86,49 @@
 			var autoclose_mode = ($j('input[name=AutoClose]').val() == 1);
 			var record_added_ok = (location.search.split('record-added-ok=').length == 2);
 			var record_updated_ok = (location.search.split('record-updated-ok=').length == 2);
-			if((record_added_ok || record_updated_ok) && embedded_mode && autoclose_mode){
+			if((record_added_ok || record_updated_ok) && embedded_mode && autoclose_mode) {
 				setTimeout(AppGini.closeParentModal, 2000);
 			}
 
 			/* enable DV action buttons to float on scrolling down the form */
 			enable_dvab_floating();
 
-			if(!(embedded_mode && AppGini.mobileDevice())){
-				$j('select, input[type=text], textarea').not(':disabled').eq(0).focus();
-			}
+			setTimeout(AppGini.focusFirstFormElement, 100);
 
-			$j('form').eq(0).change(function(){
+			$j('form').eq(0).change(function() {
 				if($j(this).data('already_changed')) return;
 				if($j('#deselect').length) $j('#deselect').removeClass('btn-default').addClass('btn-warning').get(0).lastChild.data = " <%%TRANSLATION(Cancel)%%>";
 				$j(this).data('already_changed', true);
 			});
 
-			$j('a[href="<%%TRANSLATION(ImageFolder)%%>"]').click(function(){ return false; });
+			$j('a[href="<%%TRANSLATION(ImageFolder)%%>"]').click(function() { /* */ return false; });
 
 
-			if(!embedded_mode){
+			if(!embedded_mode) {
 				/* add a horizontal spacer to [add new parent] buttons that don't have a spacered element before them */
 				$j('.add_new_parent').prev(':not(.hspacer-md)').next().addClass('hspacer-md');
 
-				$j('.add_new_parent').click(function(){
+				$j('.add_new_parent').click(function() {
 					var pt = $j(this).attr('id').replace(/_add_new$/, '');
 					modal_window({
 						url: pt + '_view.php?addNew_x=1&Embedded=1',
-						close: function(){
+						close: function() {
 							var field_id = $j('#' + pt + '_add_new').prevAll('input:hidden').eq(0).attr('id');
 							$j('#' + field_id + '-container').select2('focus').select2('focus');
+
+							/* if a new parent was added, select it */
+							var new_id = localStorage.getItem(pt + '_last_added_id');
+							if(new_id === null) return;
+
+							localStorage.clear(pt + '_last_added_id');
+							AppGini.lookupText({
+								id: new_id,
+								table: 'references',
+								field: field_id,
+								callback: function(data) {
+									$j('#' + field_id + '-container').select2('data', data, true);
+								}
+							});
 						},
 						size: 'full',
 						title: $j(this).attr('title')
@@ -120,33 +136,30 @@
 				});
 			}
 
-			/* find and hide parent links if field label has data 'parent_link' set to 'view_parent_hidden' */
-			$j('label[data-parent_link=view_parent_hidden]').each(function(){
-				$j(this).parents('.form-group').find('.view_parent').hide();
-			});
+			AppGini.hideViewParentLinks();
 
-			$j('form').on('click', '.view_parent', function(){
+			$j('form').on('click', '.view_parent', function() {
 				var pt = $j(this).attr('id').replace(/_view_parent$/, '');
-				if($j(this).prevAll('input:hidden').length){
+				if($j(this).prevAll('input:hidden').length) {
 					var parent_id = $j(this).prevAll('input:hidden').eq(0).val();
-				}else{
+				} else {
 					var parent_id = $j(this).prevAll().children('input:hidden').eq(0).val();
 				}
 
 				/* handle radio lookups */
-				if($j(this).prevAll('[type=radio]').length){
+				if($j(this).prevAll('[type=radio]').length) {
 					parent_id = $j(this).prevAll('[type=radio]').eq(0).val();
 				}
 
-				if(parent_id != '{empty_value}' && parent_id != undefined && parent_id != ''){
+				if(parent_id != '{empty_value}' && parent_id != undefined && parent_id != '') {
 					var parent_link = $j(this).parents('.form-group').children('label').data('parent_link');
-					switch(parent_link){
+					switch(parent_link) {
 						case 'view_parent_hidden':
 							break;
 						case 'view_parent_modal':
 							modal_window({
 								url: pt + '_view.php?Embedded=1&SelectedID=' + encodeURIComponent(parent_id),
-								close: function(){
+								close: function() {
 									var field_id = $j('#' + pt + '_view_parent').prevAll('input:hidden').eq(0).attr('id');
 									$j('#' + field_id + '-container').select2('focus').select2('focus');
 								},
@@ -167,11 +180,11 @@
 
 
 			/* load admin tools for admin user */
-			if(!add_new_mode){
+			if(!add_new_mode) {
 				$j('body').append('<div id="admin-tools-appendix"></div>');
 				$j('#admin-tools-appendix').load(
 					'ajax_admin_tools.php?table=references&id=<%%URLVALUE(id)%%>',
-					function(resp){
+					function(resp) {
 						if(!resp.length) return;
 						$j.ajax('ajax_admin_tools.php?action=get_admin_tools_js&table=references&id=<%%URLVALUE(id)%%>');
 					}
@@ -179,8 +192,8 @@
 			}
 
 			/* warn user if 'add new' clicked while unsaved changes exist */
-			$j('#addNew').click(function(){
-				if($j('#deselect.btn-warning').length){
+			$j('#addNew').click(function() {
+				if($j('#deselect.btn-warning').length) {
 					return confirm('<%%TRANSLATION(discard changes confirm)%%>');
 				}
 			});

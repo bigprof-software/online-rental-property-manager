@@ -1,8 +1,6 @@
 <?php
-	$currDir=dirname(__FILE__);
-	include("$currDir/defaultLang.php");
-	include("$currDir/language.php");
-	include("$currDir/lib.php");
+	$currDir = dirname(__FILE__);
+	include_once("$currDir/lib.php");
 
 	// upload paths
 	$p=array(   
@@ -44,34 +42,34 @@
 	if(!check_record_permission($t, $_GET['i'])) getLink();
 
 	// send default link if no id provided, e.g. new record
-	if(!$i){
+	if(!$i) {
 		$path=$p[$t][$f];
-		if(preg_match('/^(http|ftp)/i', $dL[$t][$f])){ $path=''; }
+		if(preg_match('/^(http|ftp)/i', $dL[$t][$f])) { $path=''; }
 		@header("Location: {$path}{$dL[$t][$f]}");
 		exit;
 	}
 
 	getLink($t, $f, $p[$t]['primary key'], $i, $p[$t][$f]);
 
-	function getLink($table='', $linkField='', $pk='', $id='', $path=''){
-		if(!$id || !$table || !$linkField || !$pk){ // default link to return
+	function getLink($table='', $linkField='', $pk='', $id='', $path='') {
+		if(!$id || !$table || !$linkField || !$pk) { // default link to return
 			exit;
 		}
 
-		if(preg_match('/^Lookup: (.*?)::(.*?)::(.*?)$/', $path, $m)){
+		if(preg_match('/^Lookup: (.*?)::(.*?)::(.*?)$/', $path, $m)) {
 			$linkID=makeSafe(sqlValue("select `$linkField` from `$table` where `$pk`='$id'"));
 			$link=sqlValue("select `{$m[3]}` from `{$m[1]}` where `{$m[2]}`='$linkID'");
-		}else{
+		} else {
 			$link=sqlValue("select `$linkField` from `$table` where `$pk`='$id'");
 		}
 
-		if(!$link){
+		if(!$link) {
 			exit;
 		}
 
-		if(preg_match('/^(http|ftp)/i', $link)){    // if the link points to an external url, don't prepend path
+		if(preg_match('/^(http|ftp)/i', $link)) {    // if the link points to an external url, don't prepend path
 			$path='';
-		}elseif(!is_file(dirname(__FILE__)."/$path$link")){    // if the file doesn't exist in the given path, try to find it without the path
+		} elseif(!is_file(dirname(__FILE__)."/$path$link")) {    // if the file doesn't exist in the given path, try to find it without the path
 			$path='';
 		}
 

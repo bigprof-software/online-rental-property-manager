@@ -6,7 +6,7 @@
 <div class="panel-body" id="employment_and_income_history_dv_container">
 	<!-- child links -->
 	<div class="row vspacer-md">
-		<div class="col-xs-12">
+		<div class="col-xs-12 children-links">
 			<div class="clearfix"></div>
 		</div>
 	</div>
@@ -17,7 +17,8 @@
 		<div class="col-md-8 col-lg-10" id="employment_and_income_history_dv_form">
 			<fieldset class="form-horizontal">
 
-				<div class="form-group">
+				<!-- Field: ID -->
+				<div class="form-group employment_and_income_history-id">
 					<hr class="hidden-md hidden-lg">
 					<label for="id" class="control-label col-lg-3">ID</label>
 					<div class="col-lg-9">
@@ -25,7 +26,8 @@
 					</div>
 				</div>
 
-				<div class="form-group">
+				<!-- Field: Tenant -->
+				<div class="form-group employment_and_income_history-tenant">
 					<hr class="hidden-md hidden-lg">
 					<label for="tenant" class="control-label col-lg-3" data-parent_link="view_parent_modal">Tenant</label>
 					<div class="col-lg-9">
@@ -33,7 +35,8 @@
 					</div>
 				</div>
 
-				<div class="form-group">
+				<!-- Field: Employer name -->
+				<div class="form-group employment_and_income_history-employer_name">
 					<hr class="hidden-md hidden-lg">
 					<label for="employer_name" class="control-label col-lg-3">Employer name</label>
 					<div class="col-lg-9">
@@ -41,7 +44,8 @@
 					</div>
 				</div>
 
-				<div class="form-group">
+				<!-- Field: City -->
+				<div class="form-group employment_and_income_history-city">
 					<hr class="hidden-md hidden-lg">
 					<label for="city" class="control-label col-lg-3">City</label>
 					<div class="col-lg-9">
@@ -49,7 +53,8 @@
 					</div>
 				</div>
 
-				<div class="form-group">
+				<!-- Field: Employer phone -->
+				<div class="form-group employment_and_income_history-employer_phone">
 					<hr class="hidden-md hidden-lg">
 					<label for="employer_phone" class="control-label col-lg-3">Employer phone</label>
 					<div class="col-lg-9">
@@ -57,7 +62,8 @@
 					</div>
 				</div>
 
-				<div class="form-group">
+				<!-- Field: employed from -->
+				<div class="form-group employment_and_income_history-employed_from">
 					<hr class="hidden-md hidden-lg">
 					<label for="employed_from" class="control-label col-lg-3">employed from</label>
 					<div class="col-lg-9">
@@ -65,7 +71,8 @@
 					</div>
 				</div>
 
-				<div class="form-group">
+				<!-- Field: Employed till -->
+				<div class="form-group employment_and_income_history-employed_till">
 					<hr class="hidden-md hidden-lg">
 					<label for="employed_till" class="control-label col-lg-3">Employed till</label>
 					<div class="col-lg-9">
@@ -73,7 +80,8 @@
 					</div>
 				</div>
 
-				<div class="form-group">
+				<!-- Field: Occupation -->
+				<div class="form-group employment_and_income_history-occupation">
 					<hr class="hidden-md hidden-lg">
 					<label for="occupation" class="control-label col-lg-3">Occupation</label>
 					<div class="col-lg-9">
@@ -81,7 +89,8 @@
 					</div>
 				</div>
 
-				<div class="form-group">
+				<!-- Field: Notes -->
+				<div class="form-group employment_and_income_history-notes">
 					<hr class="hidden-md hidden-lg">
 					<label for="notes" class="control-label col-lg-3">Notes</label>
 					<div class="col-lg-9">
@@ -113,7 +122,6 @@
 
 
 </div><!-- /div class="panel-body" -->
-	<script src="nicEdit.js"></script>
 	<script>
 		$j(function() {
 			var add_new_mode = (!$j('input[name=SelectedID]').val());
@@ -123,44 +131,58 @@
 			var autoclose_mode = ($j('input[name=AutoClose]').val() == 1);
 			var record_added_ok = (location.search.split('record-added-ok=').length == 2);
 			var record_updated_ok = (location.search.split('record-updated-ok=').length == 2);
-			if((record_added_ok || record_updated_ok) && embedded_mode && autoclose_mode){
+			if((record_added_ok || record_updated_ok) && embedded_mode && autoclose_mode) {
 				setTimeout(AppGini.closeParentModal, 2000);
 			}
 
-			bkLib.onDomLoaded(function(){
-				if($j('textarea#notes').length) new nicEditor({ fullPanel : true }).panelInstance('notes');
-
-				$j('.nicEdit-panelContain').parent().width('100%');
-				$j('.nicEdit-panelContain').parent().next().width('98%');
-				$j('.nicEdit-main').width('99%');
+			AppGini.once({
+				condition: function() { return bkLib != undefined; },
+				action: function() {
+					if($j('textarea#notes').length) new nicEditor({ fullPanel : true }).panelInstance('notes');
+				}
 			});
 			/* enable DV action buttons to float on scrolling down the form */
 			enable_dvab_floating();
 
-			if(!(embedded_mode && AppGini.mobileDevice())){
-				$j('select, input[type=text], textarea').not(':disabled').eq(0).focus();
-			}
+			setTimeout(AppGini.focusFirstFormElement, 100);
 
-			$j('form').eq(0).change(function(){
+			$j('form').eq(0).change(function() {
 				if($j(this).data('already_changed')) return;
 				if($j('#deselect').length) $j('#deselect').removeClass('btn-default').addClass('btn-warning').get(0).lastChild.data = " <%%TRANSLATION(Cancel)%%>";
 				$j(this).data('already_changed', true);
 			});
 
-			$j('a[href="<%%TRANSLATION(ImageFolder)%%>"]').click(function(){ return false; });
+			// try to detect rich text changes by adding 'input' handler after nicedit is loaded ...
+			AppGini.detectContentEditableChanges();
+
+			$j('a[href="<%%TRANSLATION(ImageFolder)%%>"]').click(function() { /* */ return false; });
 
 
-			if(!embedded_mode){
+			if(!embedded_mode) {
 				/* add a horizontal spacer to [add new parent] buttons that don't have a spacered element before them */
 				$j('.add_new_parent').prev(':not(.hspacer-md)').next().addClass('hspacer-md');
 
-				$j('.add_new_parent').click(function(){
+				$j('.add_new_parent').click(function() {
 					var pt = $j(this).attr('id').replace(/_add_new$/, '');
 					modal_window({
 						url: pt + '_view.php?addNew_x=1&Embedded=1',
-						close: function(){
+						close: function() {
 							var field_id = $j('#' + pt + '_add_new').prevAll('input:hidden').eq(0).attr('id');
 							$j('#' + field_id + '-container').select2('focus').select2('focus');
+
+							/* if a new parent was added, select it */
+							var new_id = localStorage.getItem(pt + '_last_added_id');
+							if(new_id === null) return;
+
+							localStorage.clear(pt + '_last_added_id');
+							AppGini.lookupText({
+								id: new_id,
+								table: 'employment_and_income_history',
+								field: field_id,
+								callback: function(data) {
+									$j('#' + field_id + '-container').select2('data', data, true);
+								}
+							});
 						},
 						size: 'full',
 						title: $j(this).attr('title')
@@ -168,33 +190,30 @@
 				});
 			}
 
-			/* find and hide parent links if field label has data 'parent_link' set to 'view_parent_hidden' */
-			$j('label[data-parent_link=view_parent_hidden]').each(function(){
-				$j(this).parents('.form-group').find('.view_parent').hide();
-			});
+			AppGini.hideViewParentLinks();
 
-			$j('form').on('click', '.view_parent', function(){
+			$j('form').on('click', '.view_parent', function() {
 				var pt = $j(this).attr('id').replace(/_view_parent$/, '');
-				if($j(this).prevAll('input:hidden').length){
+				if($j(this).prevAll('input:hidden').length) {
 					var parent_id = $j(this).prevAll('input:hidden').eq(0).val();
-				}else{
+				} else {
 					var parent_id = $j(this).prevAll().children('input:hidden').eq(0).val();
 				}
 
 				/* handle radio lookups */
-				if($j(this).prevAll('[type=radio]').length){
+				if($j(this).prevAll('[type=radio]').length) {
 					parent_id = $j(this).prevAll('[type=radio]').eq(0).val();
 				}
 
-				if(parent_id != '{empty_value}' && parent_id != undefined && parent_id != ''){
+				if(parent_id != '{empty_value}' && parent_id != undefined && parent_id != '') {
 					var parent_link = $j(this).parents('.form-group').children('label').data('parent_link');
-					switch(parent_link){
+					switch(parent_link) {
 						case 'view_parent_hidden':
 							break;
 						case 'view_parent_modal':
 							modal_window({
 								url: pt + '_view.php?Embedded=1&SelectedID=' + encodeURIComponent(parent_id),
-								close: function(){
+								close: function() {
 									var field_id = $j('#' + pt + '_view_parent').prevAll('input:hidden').eq(0).attr('id');
 									$j('#' + field_id + '-container').select2('focus').select2('focus');
 								},
@@ -215,11 +234,11 @@
 
 
 			/* load admin tools for admin user */
-			if(!add_new_mode){
+			if(!add_new_mode) {
 				$j('body').append('<div id="admin-tools-appendix"></div>');
 				$j('#admin-tools-appendix').load(
 					'ajax_admin_tools.php?table=employment_and_income_history&id=<%%URLVALUE(id)%%>',
-					function(resp){
+					function(resp) {
 						if(!resp.length) return;
 						$j.ajax('ajax_admin_tools.php?action=get_admin_tools_js&table=employment_and_income_history&id=<%%URLVALUE(id)%%>');
 					}
@@ -227,8 +246,8 @@
 			}
 
 			/* warn user if 'add new' clicked while unsaved changes exist */
-			$j('#addNew').click(function(){
-				if($j('#deselect.btn-warning').length){
+			$j('#addNew').click(function() {
+				if($j('#deselect.btn-warning').length) {
 					return confirm('<%%TRANSLATION(discard changes confirm)%%>');
 				}
 			});

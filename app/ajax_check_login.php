@@ -1,8 +1,6 @@
 <?php
 	$curr_dir = dirname(__FILE__);
-	include("{$curr_dir}/defaultLang.php");
-	include("{$curr_dir}/language.php");
-	include("{$curr_dir}/lib.php");
+	include_once("{$curr_dir}/lib.php");
 
 	/* check access */
 	$mi = getMemberInfo();

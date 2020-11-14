@@ -6,7 +6,7 @@
 ?>
 
 <?php
-	if(!sqlValue("select count(1) from membership_groups where allowSignup=1")){
+	if(!sqlValue("select count(1) from membership_groups where allowSignup=1")) {
 		$noSignup=TRUE;
 		?>
 		<div class="alert alert-info">
@@ -21,11 +21,11 @@
 	// get the count of records having no owners in each table
 	$arrTables=getTableList();
 
-	foreach($arrTables as $tn=>$tc){
+	foreach($arrTables as $tn=>$tc) {
 		$countOwned=sqlValue("select count(1) from membership_userrecords where tableName='$tn' and not isnull(groupID)");
 		$countAll=sqlValue("select count(1) from `$tn`");
 
-		if($countAll>$countOwned){
+		if($countAll>$countOwned) {
 			?>
 			<div class="alert alert-info">
 				<?php echo $Translation["table data without owner"]; ?>
@@ -38,7 +38,7 @@
 
 <div class="page-header"><h1><?php echo $Translation['membership management homepage']; ?></h1></div>
 
-<?php if(!$adminConfig['hide_twitter_feed']){ ?>
+<?php if(!$adminConfig['hide_twitter_feed']) { ?>
 	<div class="row" id="outer-row"><div class="col-md-8">
 <?php } ?>
 
@@ -46,10 +46,10 @@
 
 <!-- ################# Maintenance mode ###################### -->
 <?php
-	if(maintenance_mode()){
+	if(maintenance_mode()) {
 		$off_classes = 'btn-default locked_inactive';
 		$on_classes = 'btn-danger unlocked_active';
-	}else{
+	} else {
 		$off_classes = 'btn-success locked_active';
 		$on_classes = 'btn-default unlocked_inactive';
 	}
@@ -62,21 +62,21 @@
 	</div>
 </div>
 <script>
-	$j('#toggle_maintenance_mode button').click(function(){
-		if($j(this).hasClass('locked_active') || $j(this).hasClass('unlocked_inactive')){
-			if(confirm('<?php echo html_attr($Translation['enable maintenance mode?']); ?>')){
+	$j('#toggle_maintenance_mode button').click(function() {
+		if($j(this).hasClass('locked_active') || $j(this).hasClass('unlocked_inactive')) {
+			if(confirm('<?php echo html_attr($Translation['enable maintenance mode?']); ?>')) {
 				$j.ajax({
 					url: 'ajax-maintenance-mode.php?status=on', 
-					complete: function(){
+					complete: function() {
 						location.reload();
 					}
 				});
 			}
-		}else{
-			if(confirm('<?php echo html_attr($Translation['disable maintenance mode?']); ?>')){
+		} else {
+			if(confirm('<?php echo html_attr($Translation['disable maintenance mode?']); ?>')) {
 				$j.ajax({
 					url: 'ajax-maintenance-mode.php?status=off', 
-					complete: function(){
+					complete: function() {
 						location.reload();
 					}
 				});
@@ -95,7 +95,7 @@
 	<table class="table table-striped table-hover">
 	<?php
 		$res=sql("select tableName, pkValue, dateUpdated, recID from membership_userrecords order by dateUpdated desc limit 5", $eo);
-		while($row=db_fetch_row($res)){
+		while($row=db_fetch_row($res)) {
 			?>
 			<tr>
 				<th style="min-width: 13em;"><?php echo @date($adminConfig['PHPDateTimeFormat'], $row[2]); ?></th>
@@ -121,7 +121,7 @@
 	<table class="table table-striped table-hover">
 	<?php
 		$res=sql("select tableName, pkValue, dateAdded, recID from membership_userrecords order by dateAdded desc limit 5", $eo);
-		while($row=db_fetch_row($res)){
+		while($row=db_fetch_row($res)) {
 			?>
 			<tr>
 				<th style="min-width: 13em;"><?php echo @date($adminConfig['PHPDateTimeFormat'], $row[2]); ?></th>
@@ -149,7 +149,7 @@
 	<table class="table table-striped table-hover">
 	<?php
 		$res=sql("select lcase(memberID), count(1) from membership_userrecords group by memberID order by 2 desc limit 5", $eo);
-		while($row=db_fetch_row($res)){
+		while($row=db_fetch_row($res)) {
 			?>
 			<tr>
 				<th class="" style="max-width: 10em;"><a href="pageEditMember.php?memberID=<?php echo urlencode($row[0]); ?>" title="<?php echo $Translation["edit member details"]; ?>"><i class="glyphicon glyphicon-pencil"></i> <?php echo $row[0]; ?></a></th>
@@ -204,51 +204,36 @@
 
 </div> <!-- /div.row#inner-row -->
 
-<?php if(!$adminConfig['hide_twitter_feed']){ ?>
+<?php if(!$adminConfig['hide_twitter_feed']) { ?>
 		</div> <!-- /div.col-md-8 -->
 
 		<div class="col-md-4" id="twitter-feed">
-			<h3>
-				<?php echo $Translation["BigProf tweets"]; ?>
-				<span class="pull-right">
-					<a class="twitter-follow-button" href="https://twitter.com/bigprof" data-show-count="false" data-lang="en"><?php echo $Translation["follow BigProf"]; ?></a>
-					<script type="text/javascript">
-						window.twttr = (function (d, s, id) {
-							var t, js, fjs = d.getElementsByTagName(s)[0];
-							if (d.getElementById(id)) return;
-							js = d.createElement(s); js.id = id;
-							js.src= "https://platform.twitter.com/widgets.js";
-							fjs.parentNode.insertBefore(js, fjs);
-							return window.twttr || (t = { _e: [], ready: function (f) { t._e.push(f) } });
-						}(document, "script", "twitter-wjs"));
-					</script>
-				</span>
-			</h3><hr>
-			<div class="text-center">
-				<a class="twitter-timeline" height="400" href="https://twitter.com/bigprof" data-widget-id="552758720300843008" data-chrome="nofooter noheader"><?php echo $Translation["loading bigprof feed"]; ?></a>
-				<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+"://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
-			</div>
-			<div class="text-right hidden" id="remove-feed-link"><a href="pageSettings.php#hide_twitter_feed"><i class="glyphicon glyphicon-remove"></i> <?php echo $Translation["remove feed"]; ?></a></div>
+			<a class="twitter-timeline" data-height="300" href="https://twitter.com/bigprof?ref_src=twsrc%5Etfw"><?php echo $Translation["BigProf tweets"]; ?></a>
+			<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script> 
+
+			<div class="text-right hidden" id="remove-feed-link"><a href="pageSettings.php#anonymousMember"><i class="glyphicon glyphicon-remove"></i> <?php echo $Translation["remove feed"]; ?></a></div>
+
 			<script>
-				$j(function(){
-					show_remove_feed_link = function(){
-						if(!$j('.twitter-timeline-rendered').length){
-							setTimeout(function(){ show_remove_feed_link(); }, 1000);
-						}else{
+				$j(function() {
+					show_remove_feed_link = function() {
+						if(!$j('.twitter-timeline-rendered').length) {
+							setTimeout(function() { /* */ show_remove_feed_link(); }, 1000);
+						} else {
 							$j('#remove-feed-link').removeClass('hidden');
 						}
 					};
 					show_remove_feed_link();
 				});
 			</script>
+			<style> #twitter-feed > iframe { height: 54vh !important; } </style>
 		</div>
 	</div> <!-- /div.row#outer-row -->
 <?php } ?>
 
 <script>
-	$j(function(){
-		$j(window).resize(function(){
-			$j('.remaining-width').each(function(){
+	$j(function() {
+		$j(window).resize(function() {
+			$j('.remaining-width').each(function() {
 				var panel_width = $j(this).parents('.panel-body').width();
 				var other_cell_width = $j(this).prev().width();
 

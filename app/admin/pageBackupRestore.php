@@ -14,7 +14,7 @@
 				$backup_log,
 				$initial_ts; /* initial timestamp */
 
-		public function __construct($request = array()){
+		public function __construct($request = []) {
 			global $Translation;
 
 			$this->curr_dir = dirname(__FILE__);
@@ -30,33 +30,33 @@
 				'</a></div>';
 
 			/* create backup folder if needed */
-			if(!$this->create_backup_folder() && is_xhr()){
+			if(!$this->create_backup_folder() && is_xhr()) {
 				@header("{$_SERVER['SERVER_PROTOCOL']} 500 Internal Server Error");
 				return;
 			}
 
 			/* process request to retrieve $this->request, and then execute the requested action */
 			$this->process_request($request);
-			$out = call_user_func_array(array($this, $this->request['action']), array());
-			if($out === true || $out === false){
-				echo $this->backup_log;
+			$out = call_user_func_array(array($this, $this->request['action']), []);
+			if($out === true || $out === false) {
+				echo $this->cmd . "\n\n" . $this->backup_log;
 				if(!$out) @header("{$_SERVER['SERVER_PROTOCOL']} 500 Internal Server Error");
 				return;
 			}
 			echo $out;
 		}
 
-		protected function debug($msg, $html = true){
+		protected function debug($msg, $html = true) {
 			if($GLOBALS['DEBUG_MODE'] && $html) return "<pre>DEBUG: {$msg}</pre>";
 			if($GLOBALS['DEBUG_MODE']) return " [DEBUG: {$msg}] ";
 			return '';
 		}
 
-		protected function elapsed(){
+		protected function elapsed() {
 			return number_format(microtime(true) - $this->initial_ts, 3);
 		}
 
-		protected function process_request($request){
+		protected function process_request($request) {
 			/* action must be a valid controller, else set to default (main) */
 			$controller = isset($request['action']) ? $request['action'] : false;
 			if(!in_array($controller, $this->controllers())) $request['action'] = 'main';
@@ -69,23 +69,23 @@
 		 *  
 		 *  @return array of public function names
 		 */
-		protected function controllers(){
+		protected function controllers() {
 			$csv = new ReflectionClass($this);
 			$methods = $csv->getMethods(ReflectionMethod::IS_PUBLIC);
 
-			$controllers = array();
-			foreach($methods as $mthd){
+			$controllers = [];
+			foreach($methods as $mthd) {
 				$controllers[] = $mthd->name;
 			}
 
 			return $controllers;
 		}
 
-		protected function request_or($var, $default){
+		protected function request_or($var, $default) {
 			return (isset($this->request[$var]) ? $this->request[$var] : $default);
 		}
 
-		protected function header(){
+		protected function header() {
 			$Translation = $this->lang;
 			ob_start();
 			$GLOBALS['page_title'] = $Translation['database backups'];
@@ -96,7 +96,7 @@
 			return $out;
 		}
 
-		protected function footer(){
+		protected function footer() {
 			$Translation = $this->lang;
 			ob_start();
 			include("{$this->curr_dir}/incFooter.php");
@@ -114,12 +114,10 @@
 		 *  @return UTF8-encoded array/string
 		 */
 		protected function utf8ize($mixed) {
-			if(is_array($mixed)){
-				foreach($mixed as $key => $value){
-					$mixed[$key] = $this->utf8ize($value);
-				}
-			}elseif(is_string($mixed)){
-				return utf8_encode($mixed);
+			if(!is_array($mixed)) return to_utf8($mixed);
+
+			foreach($mixed as $key => $value) {
+				$mixed[$key] = $this->utf8ize($value);
 			}
 			return $mixed;
 		}
@@ -129,7 +127,7 @@
 		 *  
 		 *  @return False on error, backup file full path on success.
 		 */
-		protected function get_specified_backup_file(){
+		protected function get_specified_backup_file() {
 			$md5_hash = $this->request['md5_hash'];
 			if(!preg_match('/^[a-f0-9]{32}$/i', $md5_hash)) return false;
 
@@ -142,7 +140,7 @@
 		/**
 		 * function to show main page
 		 */
-		public function main(){
+		public function main() {
 			ob_start();
 
 			echo $this->header();
@@ -155,7 +153,7 @@
 			<div id="in-page-notifications"></div>
 			<script>
 				/* move notifications below page title */
-				$j(function(){
+				$j(function() {
 					$j('.notifcation-placeholder').appendTo('#in-page-notifications');
 				})
 			</script>
@@ -168,7 +166,7 @@
 					'id' => 'info-about-backups'
 				));
 
-				if(!$can_backup){
+				if(!$can_backup) {
 					echo Notification::show(array(
 						'message' => $this->lang['cant create backup folder'],
 						'class' => 'danger',
@@ -177,7 +175,7 @@
 				}
 			?>
 
-			<?php if($can_backup){ ?>
+			<?php if($can_backup) { ?>
 				<button type="button" class="vspacer-lg btn btn-primary btn-lg" id="create-backup"><i class="glyphicon glyphicon-plus"></i> <?php echo $this->lang['create backup file']; ?></button>
 				<pre id="backup-log" class="hidden"></pre>
 
@@ -192,7 +190,7 @@
 					}
 				</style>
 				<script>
-					$j(function(){
+					$j(function() {
 						/* language strings */
 						var create_backup = '<?php echo html_attr($this->lang['create backup file']); ?>';
 						var please_wait = '<?php echo html_attr($this->lang['please wait']); ?>';
@@ -212,21 +210,21 @@
 						var page = '<?php echo $this->curr_page; ?>';
 						var backup_files_list = $j('#backup-files-list');
 
-						var clear_list = function(){
+						var clear_list = function() {
 							backup_files_list.html('<div class="alert alert-warning">' + no_matches + '</div>');
 						}
 
-						var display_backups = function(){
+						var display_backups = function() {
 							$j.ajax({
 								url: page,
 								data: { action: 'get_backup_files' },
-								success: function(resp){
+								success: function(resp) {
 									try{
 										var list = JSON.parse(resp);
 										if(list.constructor !== Array) throw 'not a list of files';
 
 										backup_files_list.html('');
-										for(var i = 0; i < list.length; i++){
+										for(var i = 0; i < list.length; i++) {
 											backup_files_list.append(
 												'<h4 class="hspacer-lg backup-file">' + 
 													'<div class="btn-group hspacer-lg">' +
@@ -238,7 +236,7 @@
 												'</h4>'
 											);
 										}
-									}catch(e){
+									}catch(e) {
 										clear_list();
 									}
 								},
@@ -247,21 +245,21 @@
 						};
 
 						backup_files_list
-							.on('click', '.restore', function(){
+							.on('click', '.restore', function() {
 								/* confirm restore */
 								if(!confirm(confirm_restore)) return;
 
 								$j.ajax({
 									url: page,
 									data: { action: 'restore', md5_hash: $j(this).data('md5_hash') },
-									success: function(){
+									success: function() {
 										show_notification({
 											message: backup_restored,
 											class: 'success',
 											dismiss_seconds: 30
 										});
 									},
-									error: function(){
+									error: function() {
 										show_notification({
 											message: restore_error,
 											class: 'danger',
@@ -271,21 +269,21 @@
 									complete: display_backups
 								});
 							})
-							.on('click', '.delete', function(){
+							.on('click', '.delete', function() {
 								/* confirm delete backup */
 								if(!confirm(confirm_delete)) return;
 
 								$j.ajax({
 									url: page,
 									data: { action: 'delete', md5_hash: $j(this).data('md5_hash') },
-									success: function(){
+									success: function() {
 										show_notification({
 											message: backup_deleted,
 											class: 'success',
 											dismiss_seconds: 30
 										});
 									},
-									error: function(){
+									error: function() {
 										show_notification({
 											message: delete_error,
 											class: 'danger',
@@ -295,14 +293,14 @@
 									complete: display_backups
 								});
 							})
-							.on('mouseover', 'h4', function(){
+							.on('mouseover', 'h4', function() {
 								$j(this).addClass('bg-warning');
 							})
-							.on('mouseout', 'h4', function(){
+							.on('mouseout', 'h4', function() {
 								$j(this).removeClass('bg-warning');
 							});
 
-						$j('#create-backup').click(function(){
+						$j('#create-backup').click(function() {
 							if(!confirm(confirm_backup)) return;
 
 							$j('#backup-log').html('').addClass('hidden');
@@ -312,16 +310,16 @@
 							$j.ajax({
 								url: page,
 								data: { action: 'create_backup' },
-								success: function(){
+								success: function() {
 									btn.removeClass('btn-warning btn-primary').addClass('btn-success').html('<i class="glyphicon glyphicon-ok"></i> ' + finished);
 								},
-								error: function(){
+								error: function() {
 									btn.removeClass('btn-warning btn-primary').addClass('btn-danger').html('<i class="glyphicon glyphicon-remove"></i> ' + error);
 								},
-								complete: function(jx){
+								complete: function(jx) {
 									if(jx.responseText.length > 0) $j('#backup-log').html(jx.responseText).removeClass('hidden');
 									display_backups();
-									setTimeout(function(){
+									setTimeout(function() {
 										btn.removeClass('btn-danger btn-warning').addClass('btn-primary').prop('disabled', false).html('<i class="glyphicon glyphicon-plus"></i> ' + create_backup);
 									}, 10000);
 								}
@@ -329,7 +327,7 @@
 						});
 
 						/* keep removing dismissed notifications from DOM */
-						setInterval(function(){
+						setInterval(function() {
 							$j('.notifcation-placeholder .invisible').remove();
 						}, 1000);
 
@@ -353,16 +351,16 @@
 		 *  
 		 *  @details Backup files are those found in the folder 'backups' named as an md5 hash with .sql extension.
 		 */
-		public function get_backup_files(){
+		public function get_backup_files() {
 			$bdir = $this->curr_dir . '/backups';
 			$d = dir($bdir);
 			if(!$d) return false;
 			$admin_cfg = config('adminConfig');
 			$dtf = $admin_cfg['PHPDateTimeFormat'];
 
-			$list = array();
+			$list = [];
 
-			while(false !== ($entry = $d->read())){
+			while(false !== ($entry = $d->read())) {
 				if(!preg_match('/^[a-f0-9]{32}\.sql$/i', $entry)) continue;
 				$fts = @filemtime("{$bdir}/{$entry}");
 				$list[$fts] = array(
@@ -386,17 +384,22 @@
 		 *  
 		 *  @details Uses mysqldump (if available) to create a new backup file
 		 */
-		public function create_backup(){
-			$config = array('dbServer' => '', 'dbUsername' => '', 'dbPassword' => '', 'dbDatabase' => '');
+		public function create_backup() {
+			$config = ['dbServer' => '', 'dbUsername' => '', 'dbPassword' => '', 'dbDatabase' => ''];
 			foreach($config as $k => $v) $config[$k] = escapeshellarg(config($k));
 
-			$dump_file = $this->curr_dir . '/backups/' . md5(microtime()) . '.sql';
-			$out = array(); $ret = 0;
+			$dump_file = escapeshellarg(normalize_path($this->curr_dir)) . '/backups/' . md5(microtime()) . '.sql';
+			$pass_param = ($config['dbPassword'] ? "-p{$config['dbPassword']}" : '');
+			$this->cmd = "(mysqldump --no-tablespaces -u{$config['dbUsername']} {$pass_param} -h{$config['dbServer']} {$config['dbDatabase']} -r {$dump_file}) 2>&1";
+
 			maintenance_mode(true);
-			@exec("(mysqldump -u{$config['dbUsername']} -p{$config['dbPassword']} -h{$config['dbServer']} {$config['dbDatabase']} > {$dump_file}) 2>&1", $out, $ret);
-			$this->backup_log = implode("\n", $out);
+			$out = []; $ret = 0;
+			@exec($this->cmd, $out, $ret);
+			// redact password to avoid revealing it on error
+			if($pass_param !== '') $this->cmd = str_replace(" {$pass_param} ", ' -p**** ', $this->cmd);
 			maintenance_mode(false);
 
+			$this->backup_log = implode("\n", $out);
 			if($ret) return false;
 
 			return true;
@@ -409,20 +412,21 @@
 		 *  
 		 *  @details Overwrites existing data in the database, including users and groups.
 		 */
-		public function restore(){
+		public function restore() {
 			$bfile = $this->get_specified_backup_file();
 			if(!$bfile) return false;
 
 			$config = array('dbServer' => '', 'dbUsername' => '', 'dbPassword' => '', 'dbDatabase' => '');
-			foreach($config as $k => $v) $config[$k] = config($k);
+			foreach($config as $k => $v) $config[$k] = escapeshellarg(config($k));
 
 			$out = $ret = null;
 			maintenance_mode(true);
-			$cmd = "mysql -u{$config['dbUsername']} -p{$config['dbPassword']} -h{$config['dbServer']} {$config['dbDatabase']} < {$bfile}";
+			$pass_param = ($config['dbPassword'] ? "-p{$config['dbPassword']}" : '');
+			$cmd = "mysql -u{$config['dbUsername']} {$pass_param} -h{$config['dbServer']} {$config['dbDatabase']} < {$bfile}";
 			@exec($cmd, $out, $ret);
 			maintenance_mode(false);
 
-			if($ret){ echo $cmd; return false; }
+			if($ret) { echo $cmd; return false; }
 
 			return true;
 		}
@@ -432,14 +436,14 @@
 		 *  
 		 *  @return Boolean indicating success or failure
 		 */
-		public function delete(){
+		public function delete() {
 			$bfile = $this->get_specified_backup_file();
 			if(!$bfile) return false;
 
 			return @unlink($bfile);
 		}
 
-		protected function create_backup_folder(){
+		protected function create_backup_folder() {
 			$bdir = $this->curr_dir . '/backups';
 			if(!is_dir($bdir))
 				if(!@mkdir($bdir)) return false;

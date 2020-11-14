@@ -4,29 +4,29 @@
 	$GLOBALS['page_title'] = $Translation['groups'];
 	include("{$currDir}/incHeader.php");
 
-	if($_GET['searchGroups'] != ""){
+	if($_GET['searchGroups'] != "") {
 		$searchSQL = makeSafe($_GET['searchGroups']);
 		$searchHTML = html_attr($_GET['searchGroups']);
 		$where = "where name like '%{$searchSQL}%' or description like '%{$searchSQL}%'";
-	}else{
+	} else {
 		$searchSQL = '';
 		$searchHTML = '';
 		$where = "";
 	}
 
 	$numGroups = sqlValue("select count(1) from membership_groups $where");
-	if(!$numGroups && $searchSQL != ''){
+	if(!$numGroups && $searchSQL != '') {
 		echo "<div class=\"alert alert-danger\">{$Translation['no matching results found']}</div>";
 		$noResults = true;
 		$page = 1;
-	}else{
+	} else {
 		$noResults = false;
 	}
 
 	$page = intval($_GET['page']);
-	if($page < 1){
+	if($page < 1) {
 		$page = 1;
-	}elseif($page > ceil($numGroups / $adminConfig['groupsPerPage']) && !$noResults){
+	} elseif($page > ceil($numGroups / $adminConfig['groupsPerPage']) && !$noResults) {
 		redirect("admin/pageViewGroups.php?page=" . ceil($numGroups / $adminConfig['groupsPerPage']));
 	}
 
@@ -70,7 +70,7 @@
 		<?php
 
 			$res = sql("select groupID, name, description from membership_groups $where limit $start, ".$adminConfig['groupsPerPage'], $eo);
-			while( $row = db_fetch_row($res)){
+			while( $row = db_fetch_row($res)) {
 				$groupMembersCount = sqlValue("select count(1) from membership_users where groupID='$row[0]'");
 				?>
 				<tr>
@@ -79,21 +79,21 @@
 					<td class="text-right"><?php echo $groupMembersCount; ?></td>
 					<td class="text-center">
 						<a href="pageEditGroup.php?groupID=<?php echo $row[0]; ?>" title="<?php echo $Translation['Edit group']; ?>"><i class="glyphicon glyphicon-pencil"></i></a>
-						<?php if(!$groupMembersCount){ ?>
+						<?php if(!$groupMembersCount) { ?>
 								<a href="pageDeleteGroup.php?groupID=<?php echo $row[0]; ?>" 
 								   title="<?php echo $Translation['delete group'] ; ?>" 
 								   onClick="return confirm('<?php echo $Translation['confirm delete group'] ; ?>');">
 									<i class="glyphicon glyphicon-trash text-danger"></i>
 								</a>
-						<?php }else{ ?>
+						<?php } else { ?>
 								<i class="glyphicon glyphicon-trash text-muted"></i>
 						<?php } ?>
 						<a href="pageEditMember.php?groupID=<?php echo $row[0]; ?>" title="<?php echo $Translation["add new member"]; ?>"><i class="glyphicon glyphicon-plus text-success"></i></a>
 						<a href="pageViewRecords.php?groupID=<?php echo $row[0]; ?>" title="<?php echo $Translation['view group records'] ; ?>"><i class="glyphicon glyphicon-th"></i></a>
-						<?php if($groupMembersCount){ ?>
+						<?php if($groupMembersCount) { ?>
 								<a href="pageViewMembers.php?groupID=<?php echo $row[0]; ?>" title="<?php echo $Translation['view group members'] ; ?>"><i class="glyphicon glyphicon-user"></i></a>
 								<a href="pageMail.php?groupID=<?php echo $row[0]; ?>" title="<?php echo $Translation['send message to group']; ?>"><i class="glyphicon glyphicon-envelope"></i></a>
-						<?php }else{ ?>
+						<?php } else { ?>
 								<i class="glyphicon glyphicon-user text-muted"></i>
 								<i class="glyphicon glyphicon-envelope text-muted"></i>
 						<?php } ?>

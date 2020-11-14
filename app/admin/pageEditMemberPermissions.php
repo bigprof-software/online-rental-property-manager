@@ -6,7 +6,7 @@
 	$tables = getTableList();
 
 	// ensure that a memberID is provided
-	if(!isset($_REQUEST['memberID'])){
+	if(!isset($_REQUEST['memberID'])) {
 		// error in request. redirect to members page.
 		redirect('admin/pageViewMembers.php');
 	}
@@ -20,15 +20,18 @@
 	$adminGroupID = sqlValue("select groupID from membership_groups where name='Admins'");
 	$groupID = sqlValue("select groupID from membership_users where lcase(memberID)='{$memberID->sql}'");
 	$group = sqlValue("select name from membership_groups where groupID='{$groupID}'");
-	if($groupID == $anonGroupID || $memberID->raw == $anonymousMember || !$groupID || $groupID == $adminGroupID || $memberID->raw == $adminConfig['adminUsername']){
+	if($groupID == $anonGroupID || $memberID->raw == $anonymousMember || !$groupID || $groupID == $adminGroupID || $memberID->raw == $adminConfig['adminUsername']) {
 		// error in request. redirect to members page.
 		redirect('admin/pageViewMembers.php');
 	}
 
 	// request to save changes?
-	if(isset($_POST['saveChanges'])){
+	if(isset($_POST['saveChanges'])) {
+		// csrf check
+		if(!csrf_token(true)) die($Translation['invalid security token']);
+
 		// validate data
-		foreach ($tables as $t => $tc){
+		foreach ($tables as $t => $tc) {
 			eval(" 
 					\${$t}_insert = checkPermissionVal('{$t}_insert');
 					\${$t}_view = checkPermissionVal('{$t}_view');
@@ -42,7 +45,7 @@
 
 		// add new member permissions
 		$query = "insert into membership_userpermissions (memberID, tableName, allowInsert, allowView, allowEdit, allowDelete) values ";
-		foreach ($tables as $t => $tc){
+		foreach ($tables as $t => $tc) {
 			$insert = "{$t}_insert";
 			$view = "{$t}_view";
 			$edit = "{$t}_edit";
@@ -54,7 +57,7 @@
 
 		// redirect to member permissions page
 		redirect("admin/pageEditMemberPermissions.php?saved=1&memberID=" . $memberID->url);
-	}elseif(isset($_POST['resetPermissions'])){
+	} elseif(isset($_POST['resetPermissions'])) {
 		sql("delete from membership_userpermissions where lcase(memberID)='{$memberID->sql}'", $eo);
 		// redirect to member permissions page
 		redirect("admin/pageEditMemberPermissions.php?reset=1&memberID=" . $memberID->url);
@@ -65,7 +68,7 @@
 
 	// fetch group permissions to fill in the form below in case user has no special permissions
 	$res1 = sql("select * from membership_grouppermissions where groupID='{$groupID}'", $eo);
-	while ($row = db_fetch_assoc($res1)){
+	while ($row = db_fetch_assoc($res1)) {
 		$tableName = $row['tableName'];
 		$vIns = $tableName . "_insert";
 		$vUpd = $tableName . "_edit";
@@ -79,7 +82,7 @@
 
 	// fetch user permissions to fill in the form below, overwriting his group permissions
 	$res2 = sql("select * from membership_userpermissions where lcase(memberID)='{$memberID->sql}'", $eo);
-	while ($row = db_fetch_assoc($res2)){
+	while ($row = db_fetch_assoc($res2)) {
 		$tableName = $row['tableName'];
 		$vIns = $tableName . "_insert";
 		$vUpd = $tableName . "_edit";
@@ -94,13 +97,13 @@
 
 <!-- show notifications -->
 <?php
-	if(isset($_GET['saved'])){
+	if(isset($_GET['saved'])) {
 		echo Notification::show(array(
 			'message' => "<i class=\"glyphicon glyphicon-ok\"></i> {$Translation['member permissions saved']}",
 			'class' => 'success',
 			'dismiss_seconds' => 10
 		));
-	}elseif(isset($_GET['reset'])){
+	} elseif(isset($_GET['reset'])) {
 		echo Notification::show(array(
 			'message' => "<i class=\"glyphicon glyphicon-ok\"></i> {$Translation['member permissions reset']}",
 			'class' => 'success',
@@ -122,17 +125,19 @@
 </div>
 
 <form method="post" action="pageEditMemberPermissions.php">
+	<?php echo csrf_token(); ?>
+
 	<input type="hidden" name="memberID" value="<?php echo $memberID->attr; ?>">
 
 	<div class="text-right" style="margin: 2em 0;">
 		<?php
-			if(!db_num_rows($res2)){
+			if(!db_num_rows($res2)) {
 				echo Notification::show(array(
 					'message' => '<i class="glyphicon glyphicon-user"></i> ' . $Translation["no member permissions"],
 					'class' => 'info',
 					'dismiss_seconds' => 3600
 				));
-			}else{
+			} else {
 				?>
 					<button type="submit" name="resetPermissions" value="1" class="btn btn-warning btn-lg reset-permissions">
 						<i class="glyphicon glyphicon-refresh"></i> 
@@ -161,7 +166,7 @@
 			</thead>
 			<tbody>
 				<?php
-					foreach ($tables as $t => $tc){
+					foreach ($tables as $t => $tc) {
 						$insert = "{$t}_insert";
 						$view = "{$t}_view";
 						$edit = "{$t}_edit";
@@ -204,13 +209,13 @@
 </style>
 
 <script>
-	$j(function (){
-		var highlight_selections = function (){
-			$j('input[type=radio]').parent().parent().removeClass('text-primary');
-			$j('input[type=radio]:checked').parent().parent().addClass('text-primary');
+	$j(function () {
+		var highlight_selections = function () {
+			$j('input[type=radio]').parent().parent().removeClass('bg-warning text-primary text-bold');
+			$j('input[type=radio]:checked').parent().parent().addClass('bg-warning text-primary text-bold');
 		}
 
-		$j('button.reset-permissions').click(function(){
+		$j('button.reset-permissions').click(function() {
 			return confirm('<?php echo html_attr($Translation["remove special permissions"]); ?>');
 		})
 

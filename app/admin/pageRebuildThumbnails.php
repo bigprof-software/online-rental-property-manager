@@ -24,7 +24,7 @@
 
 	// validate input
 	$t=$_GET['table'];
-	if(!in_array($t, array_keys($p))){
+	if(!in_array($t, array_keys($p))) {
 		?>
 		<div class="page-header"><h1><?php echo $Translation['rebuild thumbnails']; ?></h1></div>
 		<form method="get" action="pageRebuildThumbnails.php" target="_blank">
@@ -49,23 +49,23 @@
 
 	<div style="text-align:left; padding: 0 5px; width:700px; height:250px;overflow:auto; border: solid 1px green;">
 	<?php
-		foreach($p[$t] as $f=>$path){
+		foreach($p[$t] as $f=>$path) {
 			$res=sql("select `$f` from `$t`", $eo);
 			echo str_replace ( "<FIELD>" , $f , $Translation['building field thumbnails'] )."<br>";
-			unset($tv); unset($dv);
-			while($row=db_fetch_row($res)){
-				if($row[0]!=''){
+			$tv = $dv = [];
+			while($row=db_fetch_row($res)) {
+				if($row[0]!='') {
 					$tv[]=$row[0];
 					$dv[]=$row[0];
 				}
 			}
-			for($i=0; $i<count($tv); $i++){
+			for($i=0; $i<count($tv); $i++) {
 				if($i && !($i%4))  echo '<br style="clear: left;">';
 				echo '<img src="../thumbnail.php?t='.$t.'&f='.$f.'&i='.$tv[$i].'&v=tv" align="left" style="margin: 10px 10px;"> ';
 			}
 			echo '<br style="clear: left;">';
 
-			for($i=0; $i<count($dv); $i++){
+			for($i=0; $i<count($dv); $i++) {
 				if($i && !($i%4))  echo '<br style="clear: left;">';
 				echo '<img src="../thumbnail.php?t='.$t.'&f='.$f.'&i='.$tv[$i].'&v=dv" align="left" style="margin: 10px 10px;"> ';
 			}
@@ -75,7 +75,7 @@
 	</div>
 
 	<script>
-		window.onload = function(){
+		window.onload = function() {
 			document.getElementById('status').innerHTML = "<?php echo $Translation['finished status'] ; ?>";
 			document.getElementById('status').style.color = 'green';
 			document.getElementById('status').style.fontSize = '25px';

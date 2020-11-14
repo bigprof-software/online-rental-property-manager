@@ -1,5 +1,9 @@
+<?php
+	$rdata = array_map('to_utf8', array_map('nl2br', array_map('html_attr_tags_ok', $rdata)));
+	$jdata = array_map('to_utf8', array_map('nl2br', array_map('html_attr_tags_ok', $jdata)));
+?>
 <script>
-	$j(function(){
+	$j(function() {
 		var tn = 'units';
 
 		/* data for selected record, or defaults if none is selected */
@@ -18,7 +22,7 @@
 		var cache = AppGini.cache[tn];
 
 		/* saved value for property */
-		cache.addCheck(function(u, d){
+		cache.addCheck(function(u, d) {
 			if(u != 'ajax_combo.php') return false;
 			if(d.t == tn && d.f == 'property' && d.id == data.property.id)
 				return { results: [ data.property ], more: false, elapsed: 0.01 };
@@ -26,12 +30,12 @@
 		});
 
 		/* saved value for property autofills */
-		cache.addCheck(function(u, d){
+		cache.addCheck(function(u, d) {
 			if(u != tn + '_autofill.php') return false;
 
 			for(var rnd in d) if(rnd.match(/^rnd/)) break;
 
-			if(d.mfk == 'property' && d.id == data.property.id){
+			if(d.mfk == 'property' && d.id == data.property.id) {
 				$j('#country' + d[rnd]).html(data.country);
 				$j('#street' + d[rnd]).html(data.street);
 				$j('#city' + d[rnd]).html(data.city);

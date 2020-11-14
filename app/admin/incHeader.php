@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<?php if(function_exists('set_headers')) { set_headers(); } ?><!DOCTYPE html>
 <?php if(!defined('PREPEND_PATH')) define('PREPEND_PATH', '../'); ?>
 <!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
 <!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
@@ -9,7 +9,7 @@
 		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 		<meta name="description" content="">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
-		<title><?php echo ucwords('rental property manager') . ' | ' . $Translation['admin area']; ?><?php echo html_attr(isset($GLOBALS['page_title']) ? " | {$GLOBALS['page_title']}" : ''); ?></title>
+		<title>Rental Property Manager | <?php echo $Translation['admin area']; ?><?php echo html_attr(isset($GLOBALS['page_title']) ? " | {$GLOBALS['page_title']}" : ''); ?></title>
 
 		<link id="browser_favicon" rel="shortcut icon" href="<?php echo PREPEND_PATH; ?>resources/table_icons/administrator.png">
 
@@ -22,7 +22,7 @@
 		<!--[if lt IE 9]>
 			<script src="<?php echo PREPEND_PATH; ?>resources/initializr/js/vendor/modernizr-2.6.2-respond-1.1.0.min.js"></script>
 		<![endif]-->
-		<script src="<?php echo PREPEND_PATH; ?>resources/jquery/js/jquery-1.12.4.min.js"></script>
+		<script src="<?php echo PREPEND_PATH; ?>resources/jquery/js/<?php echo latest_jquery(); ?>"></script>
 		<script>var $j = jQuery.noConflict(); var AppGini = AppGini || {};</script>
 		<script src="toolTips.js"></script>
 		<script src="<?php echo PREPEND_PATH; ?>resources/initializr/js/vendor/bootstrap.min.js"></script>
@@ -32,75 +32,75 @@
 
 			// VALIDATION FUNCTIONS FOR VARIOUS PAGES
 
-			function jsValidateEmail(address){
+			function jsValidateEmail(address) {
 				var reg = /^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/;
-				if(reg.test(address) == false){
+				if(reg.test(address) == false) {
 					modal_window({ message: '<div class="alert alert-danger">'+"<?php echo $Translation['invalid email'];?>"+'</div>', title: "<?php echo $Translation['error'] ; ?>"  });
 					return false;
-				}else{
+				} else {
 					return true;
 				}
 			}
 
-			function jsShowWait(){
+			function jsShowWait() {
 				return window.confirm("<?php echo $Translation['sending mails']; ?>");
 			}
 
-			function jsValidateAdminSettings(){
+			function jsValidateAdminSettings() {
 				var p1=document.getElementById('adminPassword').value;
 				var p2=document.getElementById('confirmPassword').value;
-				if(p1=='' || p1==p2){
+				if(p1=='' || p1==p2) {
 					return jsValidateEmail(document.getElementById('senderEmail').value);
-				}else{
+				} else {
 					modal_window({ message: '<div class="alert alert-error">'+"<?php echo $Translation['password mismatch']; ?>"+'</div>', title: "<?php echo $Translation['error'] ; ?>" });
 					return false;
 				}
 			}
 
-			function jsConfirmTransfer(){
+			function jsConfirmTransfer() {
 				var confirmMessage;
 				var sg=document.getElementById('sourceGroupID').options[document.getElementById('sourceGroupID').selectedIndex].text;
 				var sm=document.getElementById('sourceMemberID').value;
 				var dg=document.getElementById('destinationGroupID').options[document.getElementById('destinationGroupID').selectedIndex].text;
-				if(document.getElementById('destinationMemberID')){
+				if(document.getElementById('destinationMemberID')) {
 					var dm=document.getElementById('destinationMemberID').value;
 				}
-				if(document.getElementById('dontMoveMembers')){
+				if(document.getElementById('dontMoveMembers')) {
 					var dmm=document.getElementById('dontMoveMembers').checked;
 				}
-				if(document.getElementById('moveMembers')){
+				if(document.getElementById('moveMembers')) {
 					var mm=document.getElementById('moveMembers').checked;
 				}
 
 				//confirm('sg='+sg+'\n'+'sm='+sm+'\n'+'dg='+dg+'\n'+'dm='+dm+'\n'+'mm='+mm+'\n'+'dmm='+dmm+'\n');
 
-				if(dmm && !dm){
-					modal_window({ message: '<div>'+"<?php echo $Translation['complete step 4']; ?>"+'</div>', title: "<?php echo $Translation['info']; ?>", close: function(){ jQuery('#destinationMemberID').focus(); } });
+				if(dmm && !dm) {
+					modal_window({ message: '<div>'+"<?php echo $Translation['complete step 4']; ?>"+'</div>', title: "<?php echo $Translation['info']; ?>", close: function() { /* */ jQuery('#destinationMemberID').focus(); } });
 					return false;
 				}
 
-				if(mm && sm!='-1'){
+				if(mm && sm!='-1') {
 
 					confirmMessage = "<?php echo $Translation['sure move member']; ?>";
 					confirmMessage = confirmMessage.replace(/<MEMBER>/, sm).replace(/<OLDGROUP>/, sg).replace(/<NEWGROUP>/, dg);
 					return window.confirm(confirmMessage);
 
 				}
-				if((dmm || dm) && sm!='-1'){
+				if((dmm || dm) && sm!='-1') {
 
 					confirmMessage = "<?php echo $Translation['sure move data of member']; ?>";
 					confirmMessage = confirmMessage.replace(/<OLDMEMBER>/, sm).replace(/<OLDGROUP>/, sg).replace(/<NEWMEMBER>/, dm).replace(/<NEWGROUP>/, dg);                 
 					return window.confirm(confirmMessage);
 				}
 
-				if(mm){
+				if(mm) {
 
 					confirmMessage = "<?php echo $Translation['sure move all members']; ?>";
 					confirmMessage = confirmMessage.replace(/<OLDGROUP>/, sg).replace(/<NEWGROUP>/, dg);
 					return window.confirm(confirmMessage);
 				}
 
-				if(dmm){
+				if(dmm) {
 
 
 					confirmMessage = "<?php echo $Translation['sure move data of all members']; ?>";
@@ -109,20 +109,20 @@
 				}
 			}
 
-			function showDialog(dialogId){
-				$$('.dialog-box').invoke('addClassName', 'hidden-block');
-				$(dialogId).removeClassName('hidden-block');
+			function showDialog(dialogId) {
+				$j('.dialog-box').addClass('hidden-block');
+				$j('#' + dialogId).removeClass('hidden-block');
 				return false
 			};
 
-			function hideDialogs(){
-				$$('.dialog-box').invoke('addClassName', 'hidden-block');
+			function hideDialogs() {
+				$j('.dialog-box').addClass('hidden-block');
 				return false
 			};
 
 
-			$j(function(){
-				$j('input[type=submit],input[type=button]').each(function(){
+			$j(function() {
+				$j('input[type=submit],input[type=button]').each(function() {
 					var label = $j(this).val();
 					var onclick = $j(this).attr('onclick') || '';
 					var name = $j(this).attr('name') || '';
@@ -132,7 +132,7 @@
 				});
 
 				/* fix links inside alerts */
-				$j('.alert a').addClass('alert-link');
+				$j('.alert a:not(.btn)').addClass('alert-link');
 			});
 
 		</script>
@@ -164,7 +164,7 @@
 		</style>
 	</head>
 	<body>
-	<div class="container theme-bootstrap theme-3d theme-compact">
+	<div class="admin-area container theme-bootstrap theme-3d theme-compact">
 
 		<!-- top navbar -->
 		<nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
@@ -194,23 +194,25 @@
 						<a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="glyphicon glyphicon-user"></i> <?php echo $Translation['members']  ;?> <b class="caret"></b></a>
 						<ul class="dropdown-menu">
 							<li><a href="pageViewMembers.php"><i class="glyphicon menu-item-icon text-info glyphicon-eye-open"></i> <?php echo $Translation['view members'] ; ?></a></li>
-							<li><a href="pageEditMember.php"><i class="glyphicon menu-item-icon text-info glyphicon-plus"></i> <?php echo $Translation['add member']  ; ?></a></li>
+							<li><a href="pageEditMember.php"><i class="glyphicon menu-item-icon text-info glyphicon-plus"></i> <?php echo $Translation['add member']; ?></a></li>
 							<li class="divider"></li>
 							<li><a href="pageViewRecords.php"><i class="glyphicon menu-item-icon text-info glyphicon-th"></i> <?php echo $Translation["view members' records"]; ?> </a></li>
 						</ul>
 					</li>
 
 					<li class="dropdown">
-						<a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="glyphicon glyphicon-cog"></i> <?php echo $Translation["utilities"] ; ?> <b class="caret"></b></a>
+						<a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="glyphicon glyphicon-cog"></i> <?php echo $Translation['utilities']; ?> <b class="caret"></b></a>
 						<ul class="dropdown-menu">
-							<li><a href="pageSettings.php"><i class="glyphicon menu-item-icon text-info glyphicon-cog"></i> <?php echo $Translation["admin settings"]  ; ?></a></li>
+							<li><a href="pageSettings.php"><i class="glyphicon menu-item-icon text-info glyphicon-cog"></i> <?php echo $Translation['admin settings']; ?></a></li>
 							<li class="divider"></li>
-							<li><a href="pageRebuildThumbnails.php"><i class="glyphicon menu-item-icon text-info glyphicon-picture"></i> <?php echo  $Translation["rebuild thumbnails"]  ; ?></a></li>
-							<li><a href="pageRebuildFields.php"><i class="glyphicon menu-item-icon text-info glyphicon-refresh"></i> <?php echo  $Translation['rebuild fields'] ; ?></a></li>
-							<li><a href="pageUploadCSV.php"><i class="glyphicon menu-item-icon text-info glyphicon-upload"></i> <?php echo $Translation['import CSV'] ; ?></a></li>
-							<li><a href="pageTransferOwnership.php"><i class="glyphicon menu-item-icon text-info glyphicon-random"></i> <?php echo $Translation['batch transfer'] ; ?></a></li>
-							<li><a href="pageMail.php?sendToAll=1"><i class="glyphicon menu-item-icon text-info glyphicon-envelope"></i> <?php echo $Translation['mail all users'] ; ?></a></li>
-							<li><a href="pageBackupRestore.php"><i class="glyphicon menu-item-icon text-info glyphicon-tasks"></i> <?php echo $Translation['database backups'] ; ?></a></li>
+							<li><a href="pageRebuildThumbnails.php"><i class="glyphicon menu-item-icon text-info glyphicon-picture"></i> <?php echo  $Translation['rebuild thumbnails']; ?></a></li>
+							<li><a href="pageRebuildFields.php"><i class="glyphicon menu-item-icon text-info glyphicon-refresh"></i> <?php echo  $Translation['view or rebuild fields']; ?></a></li>
+							<li><a href="pageUploadCSV.php"><i class="glyphicon menu-item-icon text-info glyphicon-upload"></i> <?php echo $Translation['import CSV']; ?></a></li>
+							<li><a href="pageTransferOwnership.php"><i class="glyphicon menu-item-icon text-info glyphicon-random"></i> <?php echo $Translation['batch transfer']; ?></a></li>
+							<li><a href="pageMail.php?sendToAll=1"><i class="glyphicon menu-item-icon text-info glyphicon-envelope"></i> <?php echo $Translation['mail all users']; ?></a></li>
+							<li><a href="pageBackupRestore.php"><i class="glyphicon menu-item-icon text-info glyphicon-tasks"></i> <?php echo $Translation['database backups']; ?></a></li>
+							<li><a href="pageServerStatus.php"><i class="glyphicon menu-item-icon text-info glyphicon-hdd"></i> <?php echo $Translation['server status']; ?></a></li>
+							<li><a href="app-documentation.php"><i class="glyphicon menu-item-icon text-info glyphicon-book"></i> <?php echo $Translation['app documentation']; ?></a></li>
 							<li class="divider"></li>
 							<li><a href="https://forums.appgini.com" target="_blank"><i class="glyphicon menu-item-icon text-info glyphicon-new-window"></i> <?php echo $Translation['AppGini forum']; ?></a></li>
 						</ul>
@@ -218,11 +220,11 @@
 
 					<?php $plugins = get_plugins(); ?>
 
-					<?php if(count($plugins)){ ?>
+					<?php if(count($plugins)) { ?>
 						<li class="dropdown">
 							<a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="glyphicon glyphicon-plus"></i> <?php echo $Translation["plugins"] ; ?> <b class="caret"></b></a>
 							<ul class="dropdown-menu">
-								<?php foreach($plugins as $plugin){ ?>
+								<?php foreach($plugins as $plugin) { ?>
 									<?php
 										$plugin_icon = '';
 										if($plugin['glyphicon']) $plugin_icon = "<i class=\"glyphicon glyphicon-{$plugin['glyphicon']}\"></i> ";
@@ -243,10 +245,10 @@
 		</nav>
 		<script>
 			/* periodically check if user is still signed in */
-			setInterval(function(){
+			setInterval(function() {
 				$j.ajax({
 					url: '<?php echo PREPEND_PATH; ?>ajax_check_login.php',
-					success: function(username){
+					success: function(username) {
 						if(!username.length) window.location = '<?php echo PREPEND_PATH; ?>index.php?signIn=1';
 					}
 				});
@@ -264,14 +266,14 @@
 		<!-- /tool tips support -->
 
 <?php
-	if(!strstr($_SERVER['PHP_SELF'], 'pageSettings.php') && $adminConfig['adminPassword'] == md5('admin')){
-		$noSignup=TRUE;
+	if(!strstr($_SERVER['PHP_SELF'], 'pageSettings.php') && password_match('admin', $adminConfig['adminPassword'])) {
+		$noSignup = true;
 		?>
 		<div class="alert alert-danger">
 			<p><strong><?php echo $Translation["attention"] ; ?></strong></p>
-			<p><?php if($adminConfig['adminUsername'] == 'admin'){
+			<p><?php if($adminConfig['adminUsername'] == 'admin') {
 					echo $Translation['security risk admin'];
-			}else{
+			} else {
 					echo $Translation['security risk'];
 			} ?></p>
 		</div>

@@ -6,8 +6,8 @@
 <div class="panel-body" id="rental_owners_dv_container">
 	<!-- child links -->
 	<div class="row vspacer-md">
-		<div class="col-xs-12">
-			<a class="hidden-xs btn btn-default btn-lg pull-right hidden hspacer-sm" href="properties_view.php?filterer_owner=<%%URLVALUE(id)%%>&<%%EMBEDDED%%>" id="properties_link"><i class="glyphicon glyphicon-list-alt"></i> Properties</a>
+		<div class="col-xs-12 children-links">
+			<a class="hidden-xs btn btn-default btn-lg pull-right hidden hspacer-sm vspacer-sm" href="properties_view.php?filterer_owner=<%%URLVALUE(id)%%>&<%%EMBEDDED%%>" id="properties_link"><i class="glyphicon glyphicon-list-alt"></i> Properties</a>
 			<a class="visible-xs btn btn-default btn-lg btn-block hidden vspacer-sm" href="properties_view.php?filterer_owner=<%%URLVALUE(id)%%>&<%%EMBEDDED%%>" id="xs_properties_link"><i class="glyphicon glyphicon-list-alt"></i> Properties</a>
 			<input type="hidden" id="properties_hclink" value="properties_view.php?filterer_owner=<%%URLVALUE(id)%%>&<%%EMBEDDED%%>">
 			<div class="clearfix"></div>
@@ -20,7 +20,8 @@
 		<div class="col-md-8 col-lg-10" id="rental_owners_dv_form">
 			<fieldset class="form-horizontal">
 
-				<div class="form-group">
+				<!-- Field: ID -->
+				<div class="form-group rental_owners-id">
 					<hr class="hidden-md hidden-lg">
 					<label for="id" class="control-label col-lg-3">ID</label>
 					<div class="col-lg-9">
@@ -28,7 +29,8 @@
 					</div>
 				</div>
 
-				<div class="form-group">
+				<!-- Field: First name -->
+				<div class="form-group rental_owners-first_name">
 					<hr class="hidden-md hidden-lg">
 					<label for="first_name" class="control-label col-lg-3">First name</label>
 					<div class="col-lg-9">
@@ -36,7 +38,8 @@
 					</div>
 				</div>
 
-				<div class="form-group">
+				<!-- Field: Last name -->
+				<div class="form-group rental_owners-last_name">
 					<hr class="hidden-md hidden-lg">
 					<label for="last_name" class="control-label col-lg-3">Last name</label>
 					<div class="col-lg-9">
@@ -44,7 +47,8 @@
 					</div>
 				</div>
 
-				<div class="form-group">
+				<!-- Field: Company name -->
+				<div class="form-group rental_owners-company_name">
 					<hr class="hidden-md hidden-lg">
 					<label for="company_name" class="control-label col-lg-3">Company name</label>
 					<div class="col-lg-9">
@@ -52,7 +56,8 @@
 					</div>
 				</div>
 
-				<div class="form-group">
+				<!-- Field: Date of birth -->
+				<div class="form-group rental_owners-date_of_birth">
 					<hr class="hidden-md hidden-lg">
 					<label for="date_of_birth" class="control-label col-lg-3">Date of birth</label>
 					<div class="col-lg-9">
@@ -60,33 +65,36 @@
 					</div>
 				</div>
 
-				<div class="form-group">
+				<!-- Field: Primary email -->
+				<div class="form-group rental_owners-primary_email">
 					<hr class="hidden-md hidden-lg">
 					<label for="primary_email" class="control-label col-lg-3">Primary email</label>
 					<div class="col-lg-9">
 						
 						<div>
 							<a id="primary_email-link" href="mailto:<%%VALUE(primary_email)%%>" target="_blank"><i class="glyphicon glyphicon-envelope text-info" title="<%%VALUE(primary_email)%%>"></i></a>
-							<label for="primary_email"><button type="button" id="primary_email-edit-link" class="btn btn-default hspacer-lg vspacer-sm" data-toggle="collapse" data-target="#primary_email" title="<%%TRANSLATION(Edit)%%>"><i class="glyphicon glyphicon-pencil"></i></button></label>
+							<label for="primary_email"><button type="button" id="primary_email-edit-link" class="btn btn-default hspacer-lg vspacer-sm collapsed" data-toggle="collapse" data-target="#primary_email" title="<%%TRANSLATION(Edit)%%>"><i class="glyphicon glyphicon-pencil"></i></button></label>
 						</div>
-						<script>jQuery(function(){ var e_primary_email = '<%%VALUE(primary_email)%%>'; if(e_primary_email == '' || e_primary_email == '&nbsp;' || e_primary_email == 'blank.gif') jQuery('#primary_email-link').hide(); });</script><input maxlength="40" type="text" class="form-control collapse" name="primary_email" id="primary_email" value="<%%VALUE(primary_email)%%>">
+						<script>jQuery(function() { /* */ var e_primary_email = '<%%VALUE(primary_email)%%>'; if(e_primary_email == '' || e_primary_email == '&nbsp;' || e_primary_email == 'blank.gif') jQuery('#primary_email-link').hide(); });</script><input maxlength="40" type="text" class="form-control collapse" name="primary_email" id="primary_email" value="<%%VALUE(primary_email)%%>">
 					</div>
 				</div>
 
-				<div class="form-group">
+				<!-- Field: Alternate email -->
+				<div class="form-group rental_owners-alternate_email">
 					<hr class="hidden-md hidden-lg">
 					<label for="alternate_email" class="control-label col-lg-3">Alternate email</label>
 					<div class="col-lg-9">
 						
 						<div>
 							<a id="alternate_email-link" href="mailto:<%%VALUE(alternate_email)%%>" target="_blank"><i class="glyphicon glyphicon-envelope text-info" title="<%%VALUE(alternate_email)%%>"></i></a>
-							<label for="alternate_email"><button type="button" id="alternate_email-edit-link" class="btn btn-default hspacer-lg vspacer-sm" data-toggle="collapse" data-target="#alternate_email" title="<%%TRANSLATION(Edit)%%>"><i class="glyphicon glyphicon-pencil"></i></button></label>
+							<label for="alternate_email"><button type="button" id="alternate_email-edit-link" class="btn btn-default hspacer-lg vspacer-sm collapsed" data-toggle="collapse" data-target="#alternate_email" title="<%%TRANSLATION(Edit)%%>"><i class="glyphicon glyphicon-pencil"></i></button></label>
 						</div>
-						<script>jQuery(function(){ var e_alternate_email = '<%%VALUE(alternate_email)%%>'; if(e_alternate_email == '' || e_alternate_email == '&nbsp;' || e_alternate_email == 'blank.gif') jQuery('#alternate_email-link').hide(); });</script><input maxlength="40" type="text" class="form-control collapse" name="alternate_email" id="alternate_email" value="<%%VALUE(alternate_email)%%>">
+						<script>jQuery(function() { /* */ var e_alternate_email = '<%%VALUE(alternate_email)%%>'; if(e_alternate_email == '' || e_alternate_email == '&nbsp;' || e_alternate_email == 'blank.gif') jQuery('#alternate_email-link').hide(); });</script><input maxlength="40" type="text" class="form-control collapse" name="alternate_email" id="alternate_email" value="<%%VALUE(alternate_email)%%>">
 					</div>
 				</div>
 
-				<div class="form-group">
+				<!-- Field: Phone -->
+				<div class="form-group rental_owners-phone">
 					<hr class="hidden-md hidden-lg">
 					<label for="phone" class="control-label col-lg-3">Phone</label>
 					<div class="col-lg-9">
@@ -94,7 +102,8 @@
 					</div>
 				</div>
 
-				<div class="form-group">
+				<!-- Field: Country -->
+				<div class="form-group rental_owners-country">
 					<hr class="hidden-md hidden-lg">
 					<label for="country" class="control-label col-lg-3">Country</label>
 					<div class="col-lg-9">
@@ -102,7 +111,8 @@
 					</div>
 				</div>
 
-				<div class="form-group">
+				<!-- Field: Street -->
+				<div class="form-group rental_owners-street">
 					<hr class="hidden-md hidden-lg">
 					<label for="street" class="control-label col-lg-3">Street</label>
 					<div class="col-lg-9">
@@ -110,7 +120,8 @@
 					</div>
 				</div>
 
-				<div class="form-group">
+				<!-- Field: City -->
+				<div class="form-group rental_owners-city">
 					<hr class="hidden-md hidden-lg">
 					<label for="city" class="control-label col-lg-3">City</label>
 					<div class="col-lg-9">
@@ -118,7 +129,8 @@
 					</div>
 				</div>
 
-				<div class="form-group">
+				<!-- Field: State -->
+				<div class="form-group rental_owners-state">
 					<hr class="hidden-md hidden-lg">
 					<label for="state" class="control-label col-lg-3">State</label>
 					<div class="col-lg-9">
@@ -126,7 +138,8 @@
 					</div>
 				</div>
 
-				<div class="form-group">
+				<!-- Field: Zip -->
+				<div class="form-group rental_owners-zip">
 					<hr class="hidden-md hidden-lg">
 					<label for="zip" class="control-label col-lg-3">Zip</label>
 					<div class="col-lg-9">
@@ -134,7 +147,8 @@
 					</div>
 				</div>
 
-				<div class="form-group">
+				<!-- Field: Comments -->
+				<div class="form-group rental_owners-comments">
 					<hr class="hidden-md hidden-lg">
 					<label for="comments" class="control-label col-lg-3">Comments</label>
 					<div class="col-lg-9">
@@ -169,12 +183,13 @@
 	<hr>
 	<div class="row">
 		<div class="col-lg-10 col-lg-offset-1">
-			<div id="rental_owners-children" class="children-tabs"></div>
+			<div id="rental_owners-children" class="children-tabs">
+				<div class="text-center"><i class="glyphicon glyphicon-refresh loop-rotate"></i> <%%TRANSLATION(Loading ...)%%></div>
+			</div>
 		</div>
 	</div>
 
 </div><!-- /div class="panel-body" -->
-	<script src="nicEdit.js"></script>
 	<script>
 		$j(function() {
 			var add_new_mode = (!$j('input[name=SelectedID]').val());
@@ -184,40 +199,40 @@
 			var autoclose_mode = ($j('input[name=AutoClose]').val() == 1);
 			var record_added_ok = (location.search.split('record-added-ok=').length == 2);
 			var record_updated_ok = (location.search.split('record-updated-ok=').length == 2);
-			if((record_added_ok || record_updated_ok) && embedded_mode && autoclose_mode){
+			if((record_added_ok || record_updated_ok) && embedded_mode && autoclose_mode) {
 				setTimeout(AppGini.closeParentModal, 2000);
 			}
 
-			bkLib.onDomLoaded(function(){
-				if($j('textarea#comments').length) new nicEditor({ fullPanel : true }).panelInstance('comments');
-
-				$j('.nicEdit-panelContain').parent().width('100%');
-				$j('.nicEdit-panelContain').parent().next().width('98%');
-				$j('.nicEdit-main').width('99%');
+			AppGini.once({
+				condition: function() { return bkLib != undefined; },
+				action: function() {
+					if($j('textarea#comments').length) new nicEditor({ fullPanel : true }).panelInstance('comments');
+				}
 			});
 			/* enable DV action buttons to float on scrolling down the form */
 			enable_dvab_floating();
 
-			if(!(embedded_mode && AppGini.mobileDevice())){
-				$j('select, input[type=text], textarea').not(':disabled').eq(0).focus();
-			}
+			setTimeout(AppGini.focusFirstFormElement, 100);
 
-			$j('form').eq(0).change(function(){
+			$j('form').eq(0).change(function() {
 				if($j(this).data('already_changed')) return;
 				if($j('#deselect').length) $j('#deselect').removeClass('btn-default').addClass('btn-warning').get(0).lastChild.data = " <%%TRANSLATION(Cancel)%%>";
 				$j(this).data('already_changed', true);
 			});
 
-			$j('a[href="<%%TRANSLATION(ImageFolder)%%>"]').click(function(){ return false; });
+			// try to detect rich text changes by adding 'input' handler after nicedit is loaded ...
+			AppGini.detectContentEditableChanges();
 
-			if(embedded_mode){
+			$j('a[href="<%%TRANSLATION(ImageFolder)%%>"]').click(function() { /* */ return false; });
+
+			if(embedded_mode) {
 				/* hide links to children tables in embedded mode */
 				$j('.detail_view a[id$=_link]').remove();
 
 				/* append embedded mode to all links */
-				var append_embedded = function(){
+				var append_embedded = function() {
 					$j('a[href]:not([href^="#"]):not([href^="javascript"]):not([href$="Embedded=1"]):not([href*="link.php?t="]):not([href^="mailto:"])').each(
-						function(){
+						function() {
 							$j(this).attr('href', $j(this).attr('href') + '&Embedded=1');
 						}
 					);
@@ -229,10 +244,10 @@
 			}
 
 			/* when no record is selected ('add new' mode) */
-			if(add_new_mode){
+			if(add_new_mode) {
 				/* hide links to children tables */
 				$j('.detail_view a[id$=_link]').remove();
-			}else{
+			} else {
 				post(
 					'parent-children.php', {
 						ParentTable: 'rental_owners',
@@ -243,17 +258,31 @@
 				);
 			}
 
-			if(!embedded_mode){
+			if(!embedded_mode) {
 				/* add a horizontal spacer to [add new parent] buttons that don't have a spacered element before them */
 				$j('.add_new_parent').prev(':not(.hspacer-md)').next().addClass('hspacer-md');
 
-				$j('.add_new_parent').click(function(){
+				$j('.add_new_parent').click(function() {
 					var pt = $j(this).attr('id').replace(/_add_new$/, '');
 					modal_window({
 						url: pt + '_view.php?addNew_x=1&Embedded=1',
-						close: function(){
+						close: function() {
 							var field_id = $j('#' + pt + '_add_new').prevAll('input:hidden').eq(0).attr('id');
 							$j('#' + field_id + '-container').select2('focus').select2('focus');
+
+							/* if a new parent was added, select it */
+							var new_id = localStorage.getItem(pt + '_last_added_id');
+							if(new_id === null) return;
+
+							localStorage.clear(pt + '_last_added_id');
+							AppGini.lookupText({
+								id: new_id,
+								table: 'rental_owners',
+								field: field_id,
+								callback: function(data) {
+									$j('#' + field_id + '-container').select2('data', data, true);
+								}
+							});
 						},
 						size: 'full',
 						title: $j(this).attr('title')
@@ -261,33 +290,30 @@
 				});
 			}
 
-			/* find and hide parent links if field label has data 'parent_link' set to 'view_parent_hidden' */
-			$j('label[data-parent_link=view_parent_hidden]').each(function(){
-				$j(this).parents('.form-group').find('.view_parent').hide();
-			});
+			AppGini.hideViewParentLinks();
 
-			$j('form').on('click', '.view_parent', function(){
+			$j('form').on('click', '.view_parent', function() {
 				var pt = $j(this).attr('id').replace(/_view_parent$/, '');
-				if($j(this).prevAll('input:hidden').length){
+				if($j(this).prevAll('input:hidden').length) {
 					var parent_id = $j(this).prevAll('input:hidden').eq(0).val();
-				}else{
+				} else {
 					var parent_id = $j(this).prevAll().children('input:hidden').eq(0).val();
 				}
 
 				/* handle radio lookups */
-				if($j(this).prevAll('[type=radio]').length){
+				if($j(this).prevAll('[type=radio]').length) {
 					parent_id = $j(this).prevAll('[type=radio]').eq(0).val();
 				}
 
-				if(parent_id != '{empty_value}' && parent_id != undefined && parent_id != ''){
+				if(parent_id != '{empty_value}' && parent_id != undefined && parent_id != '') {
 					var parent_link = $j(this).parents('.form-group').children('label').data('parent_link');
-					switch(parent_link){
+					switch(parent_link) {
 						case 'view_parent_hidden':
 							break;
 						case 'view_parent_modal':
 							modal_window({
 								url: pt + '_view.php?Embedded=1&SelectedID=' + encodeURIComponent(parent_id),
-								close: function(){
+								close: function() {
 									var field_id = $j('#' + pt + '_view_parent').prevAll('input:hidden').eq(0).attr('id');
 									$j('#' + field_id + '-container').select2('focus').select2('focus');
 								},
@@ -308,11 +334,11 @@
 
 
 			/* load admin tools for admin user */
-			if(!add_new_mode){
+			if(!add_new_mode) {
 				$j('body').append('<div id="admin-tools-appendix"></div>');
 				$j('#admin-tools-appendix').load(
 					'ajax_admin_tools.php?table=rental_owners&id=<%%URLVALUE(id)%%>',
-					function(resp){
+					function(resp) {
 						if(!resp.length) return;
 						$j.ajax('ajax_admin_tools.php?action=get_admin_tools_js&table=rental_owners&id=<%%URLVALUE(id)%%>');
 					}
@@ -320,8 +346,8 @@
 			}
 
 			/* warn user if 'add new' clicked while unsaved changes exist */
-			$j('#addNew').click(function(){
-				if($j('#deselect.btn-warning').length){
+			$j('#addNew').click(function() {
+				if($j('#deselect.btn-warning').length) {
 					return confirm('<%%TRANSLATION(discard changes confirm)%%>');
 				}
 			});

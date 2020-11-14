@@ -8,9 +8,7 @@
 	 * @returns json result: { "result": "ok" } or { "result": "error" }
 	 */
 	$currDir=dirname(__FILE__);
-	include("$currDir/defaultLang.php");
-	include("$currDir/language.php");
-	include("$currDir/lib.php");
+	include_once("$currDir/lib.php");
 
 	/* maintenance mode */
 	handle_maintenance();
@@ -28,7 +26,7 @@
 	$value = new Request('value');
 
 	/* prevent conventional error output via a shutdown handler */
-	function cancel_all_buffers(){
+	function cancel_all_buffers() {
 		while(ob_get_level()) ob_end_clean();
 		echo $GLOBALS['result'];
 	}
@@ -38,7 +36,7 @@
 
 	/* user has access to table? */
 	$table_perms = getTablePermissions($table->raw);
-	if(!$table_perms[0]) exit();
+	if(!$table_perms['access']) exit();
 
 	/* PK field name */
 	$pk = getPKFieldName($table->raw);
@@ -47,7 +45,7 @@
 
 	/* check if value exists in records other than the current record */
 	$where = "`{$field->sql}`='{$value->sql}'";
-	if($id->raw){ // existing record to be excluded from search
+	if($id->raw) { // existing record to be excluded from search
 		$where .= " and `{$spk}`!='{$id->sql}'";
 	}
 	$chk_query = "select count(1) from `{$table->sql}` where {$where}";

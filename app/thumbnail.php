@@ -1,43 +1,42 @@
 <?php
-	$currDir=dirname(__FILE__);
-	include("$currDir/defaultLang.php");
-	include("$currDir/language.php");
-	include("$currDir/lib.php");
+	$currDir = dirname(__FILE__);
+	include_once("$currDir/lib.php");
 
 	handle_maintenance();
 
 	// image paths
-	$p=array(   
-		'properties' => array(
-			'photo' => $Translation['ImageFolder']
-		),
-		'property_photos' => array(
-			'photo' => $Translation['ImageFolder']
-		),
-		'units' => array(
-			'photo' => $Translation['ImageFolder']
-		),
-		'unit_photos' => array(
-			'photo' => $Translation['ImageFolder']
-		)
-	);
+	$p = [
+		'properties' => [
+			'photo' => $Translation['ImageFolder'],
+		],
+		'property_photos' => [
+			'photo' => $Translation['ImageFolder'],
+		],
+		'units' => [
+			'photo' => $Translation['ImageFolder'],
+		],
+		'unit_photos' => [
+			'photo' => $Translation['ImageFolder'],
+		],
+	];
 
 	if(!count($p)) exit;
 
 	// receive user input
-	$t=$_GET['t']; // table name
-	$f=$_GET['f']; // field name
-	$v=$_GET['v']; // thumbnail view type: 'tv' or 'dv'
-	$i=$_GET['i']; // original image file name
+	$t = $_GET['t']; // table name
+	$f = $_GET['f']; // field name
+	$v = $_GET['v']; // thumbnail view type: 'tv' or 'dv'
+	$i = $_GET['i']; // original image file name
 
 	// validate input
 	if(!in_array($t, array_keys($p)))  getImage();
 	if(!in_array($f, array_keys($p[$t])))  getImage();
-	if(!preg_match('/^[a-z0-9_]+\.(gif|png|jpg|jpeg|jpe)$/i', $i, $m)) getImage();
-	if($v!='tv' && $v!='dv')   getImage();
+	if(!preg_match('/^[a-z0-9_-]+\.(gif|png|jpg|jpeg|jpe)$/i', $i, $m)) getImage();
+	if($v != 'tv' && $v != 'dv')   getImage();
+	if($i == 'blank.gif') getImage();
 
-	$img=$p[$t][$f].$i;
-	$thumb=str_replace(".$m[1]ffffgggg", "_$v.$m[1]", $img.'ffffgggg');
+	$img = $p[$t][$f] . $i;
+	$thumb = str_replace(".{$m[1]}ffffgggg", "_$v.{$m[1]}", $img . 'ffffgggg');
 
 	// if thumbnail exists and the user is not admin, output it without rebuilding the thumbnail
 	if(getImage($thumb) && !getLoggedAdmin())  exit;
@@ -46,19 +45,40 @@
 	if(!createThumbnail($img, getThumbnailSpecs($t, $f, $v)))  getImage();
 	if(!getImage($thumb))  getImage();
 
-
-	function getImage($img=''){
-		if(!$img){ // default image to return
-			$img='./photo.gif';
-			$exit=TRUE;
-		}
-		$thumbInfo=@getimagesize($img);
-		$fp=@fopen($img, 'rb');
-		if($thumbInfo && $fp){
-			header("Content-type: {$thumbInfo['mime']}");
-			fpassthru($fp);
-			if(!$exit) return TRUE; else exit;
+	function getImage($img = '') {
+		if(!$img) { // default image to return
+			$img = './photo.gif';
+			$exit = true;
 		}
 
-		if(!$exit) return FALSE; else exit;
+		/* force caching */
+		$last_modified = @filemtime($img);
+		if($last_modified) {
+			$last_modified_gmt = gmdate('D, d M Y H:i:s', $last_modified) . ' GMT';
+			$expires_gmt = gmdate('D, d M Y H:i:s', $last_modified + 864000) . ' GMT';
+			$headers = (function_exists('getallheaders') ? getallheaders() : $_SERVER);
+			if(isset($headers['If-Modified-Since']) && (strtotime($headers['If-Modified-Since']) == $last_modified)) {
+				@header("Last-Modified: {$last_modified_gmt}", true, 304);
+				@header("Cache-Control: private, max-age=864000", true);
+				@header("Expires: {$expires_gmt}");
+				exit;
+			}
+		}
+
+		$thumbInfo = @getimagesize($img);
+		$fp = @fopen($img, 'rb');
+		if($thumbInfo && $fp) {
+			$file_size = filesize($img);
+			@header("Last-Modified: {$last_modified_gmt}", true, 200);
+			@header("Pragma:");
+			@header("Cache-Control: private, max-age=864000", true);
+			@header("Content-type: {$thumbInfo['mime']}");
+			@header("Content-Length: {$file_size}");
+			@header("Expires: {$expires_gmt}");
+			ob_end_clean();
+			@fpassthru($fp);
+			if(!$exit) return true; else exit;
+		}
+
+		if(!$exit) return false; else exit;
 	}

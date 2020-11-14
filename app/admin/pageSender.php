@@ -13,13 +13,13 @@
 
 	$queue = $_REQUEST['queue'];
 	$simulate = (isset($_REQUEST['simulate']) ? true : false);
-	if(!preg_match('/^[a-f0-9]{32}$/i', $queue)){
+	if(!preg_match('/^[a-f0-9]{32}$/i', $queue)) {
 		echo "<div class=\"alert alert-danger\">{$Translation['invalid mail queue']}</div>";
 		include("{$currDir}/incFooter.php");
 	}
 
 	$queueFile = "{$currDir}/{$queue}.php";
-	if(!is_file($queueFile)){
+	if(!is_file($queueFile)) {
 		echo "<div class=\"alert alert-danger\">{$Translation['invalid mail queue']}</div>";
 		include("{$currDir}/incFooter.php");
 	}
@@ -34,7 +34,7 @@
 		strip_tags($mailSubject)
 	);
 
-	if($simulate){
+	if($simulate) {
 		echo '<pre>' . htmlspecialchars($escaped_mailSubject) . '</pre>';
 		echo '<pre>' . htmlspecialchars($escaped_mailMessage) . '</pre>';
 	}
@@ -43,12 +43,12 @@
 	// send a batch of up to $mailsPerBatch messages
 	$i = 0;
 	echo '<pre id="sendmail-debug" style="display: none;">';
-	foreach($to as $email){
+	foreach($to as $email) {
 		if(!isEmail($email)) continue;
 		$i++;
 
 		$mail_status = (rand(1, 10) % 3 ? true : false);
-		if(!$simulate){
+		if(!$simulate) {
 			$mail_status = sendmail(array(
 				'to' => $email, 
 				'subject' => $escaped_mailSubject, 
@@ -58,7 +58,7 @@
 		}
 
 		$mail_log = str_replace("<EMAIL>", $email, $Translation['sending message ok']);
-		if($mail_status !== true){
+		if($mail_status !== true) {
 			$mail_log = str_replace("<EMAIL>",$email, $Translation['sending message failed'] . " -- {$mail_status}");
 		}
 		@fwrite($fLog, @date("d.m.Y H:i:s") . $mail_log . "\n");
@@ -68,7 +68,7 @@
 	echo '</pre>';
 	@fclose($fLog);
 
-	if($i < $mailsPerBatch){
+	if($i < $mailsPerBatch) {
 		// no more emails in queue, so delete queue and unset showDebug
 		@unlink($queueFile);
 
@@ -81,10 +81,10 @@
 		<br><br>
 		<pre style="text-align: left;"><?php echo "<b>{$Translation['mail log']}</b>\n{$mail_log}"; ?></pre>
 
-		<?php if($_SESSION["debug_{$queue}"]){ ?>
+		<?php if($_SESSION["debug_{$queue}"]) { ?>
 			<div id="sendmail-debug-show"></div>
 			<script>
-				$j(function(){
+				$j(function() {
 					$j('#sendmail-debug').appendTo('#sendmail-debug-show');
 					$j('#sendmail-debug').css({ display : 'block'});
 				})
@@ -97,9 +97,9 @@
 		include("{$currDir}/incFooter.php");
 	}
 
-	while($i--){ array_shift($to); }
+	while($i--) { array_shift($to); }
 
-	if(!$fp = fopen($queueFile, "w")){
+	if(!$fp = fopen($queueFile, "w")) {
 		?>
 		<div class="alert alert-danger">
 			<?php echo str_replace("<CURRDIR>", $currDir, $Translation["mail queue not saved"]); ?>
@@ -109,7 +109,7 @@
 	}
 
 	fwrite($fp, '<' . "?php\n");
-	foreach($to as $recip){
+	foreach($to as $recip) {
 		fwrite($fp, "\t\$to[] = '{$recip}';\n");
 	}
 	fwrite($fp, "\t\$mailSubject = \"" . addcslashes($mailSubject, "\r\n\t\"\\\$") . "\";\n");
@@ -118,9 +118,9 @@
 	fclose($fp);
 
 	// redirect to mail queue processor
-	if(!$simulate){
+	if(!$simulate) {
 		redirect("admin/pageSender.php?queue={$queue}");
-	}else{
+	} else {
 		echo "<a href=\"pageSender.php?queue={$queue}&simulate=1\">{$Translation['next']}</a>";
 	}
 

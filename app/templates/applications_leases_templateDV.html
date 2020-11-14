@@ -6,7 +6,7 @@
 <div class="panel-body" id="applications_leases_dv_container">
 	<!-- child links -->
 	<div class="row vspacer-md">
-		<div class="col-xs-12">
+		<div class="col-xs-12 children-links">
 			<div class="clearfix"></div>
 		</div>
 	</div>
@@ -17,7 +17,8 @@
 		<div class="col-md-8 col-lg-10" id="applications_leases_dv_form">
 			<fieldset class="form-horizontal">
 
-				<div class="form-group">
+				<!-- Field: ID -->
+				<div class="form-group applications_leases-id">
 					<hr class="hidden-md hidden-lg">
 					<label for="id" class="control-label col-lg-3">ID</label>
 					<div class="col-lg-9">
@@ -25,7 +26,8 @@
 					</div>
 				</div>
 
-				<div class="form-group">
+				<!-- Field: Applicant/ Tenant -->
+				<div class="form-group applications_leases-tenants">
 					<hr class="hidden-md hidden-lg">
 					<label for="tenants" class="control-label col-lg-3" data-parent_link="view_parent_modal">Applicant/ Tenant</label>
 					<div class="col-lg-9">
@@ -33,7 +35,8 @@
 					</div>
 				</div>
 
-				<div class="form-group">
+				<!-- Field: Application status -->
+				<div class="form-group applications_leases-status">
 					<hr class="hidden-md hidden-lg">
 					<label for="status" class="control-label col-lg-3">Application status<span class="text-danger"><%%TRANSLATION(*)%%></span> <i class="glyphicon glyphicon-info-sign text-info" data-toggle="collapse" data-target="#status-description"></i></label>
 					<div class="col-lg-9">
@@ -43,7 +46,8 @@
 					</div>
 				</div>
 
-				<div class="form-group">
+				<!-- Field: Property -->
+				<div class="form-group applications_leases-property">
 					<hr class="hidden-md hidden-lg">
 					<label for="property" class="control-label col-lg-3" data-parent_link="view_parent_modal">Property <i class="glyphicon glyphicon-info-sign text-info" data-toggle="collapse" data-target="#property-description"></i></label>
 					<div class="col-lg-9">
@@ -53,7 +57,8 @@
 					</div>
 				</div>
 
-				<div class="form-group">
+				<!-- Field: Unit applied for -->
+				<div class="form-group applications_leases-unit">
 					<hr class="hidden-md hidden-lg">
 					<label for="unit" class="control-label col-lg-3" data-parent_link="view_parent_modal">Unit applied for</label>
 					<div class="col-lg-9">
@@ -61,7 +66,8 @@
 					</div>
 				</div>
 
-				<div class="form-group">
+				<!-- Field: Lease type -->
+				<div class="form-group applications_leases-type">
 					<hr class="hidden-md hidden-lg">
 					<label for="type" class="control-label col-lg-3">Lease type<span class="text-danger"><%%TRANSLATION(*)%%></span> <i class="glyphicon glyphicon-info-sign text-info" data-toggle="collapse" data-target="#type-description"></i></label>
 					<div class="col-lg-9">
@@ -71,7 +77,8 @@
 					</div>
 				</div>
 
-				<div class="form-group">
+				<!-- Field: Total number of occupants -->
+				<div class="form-group applications_leases-total_number_of_occupants">
 					<hr class="hidden-md hidden-lg">
 					<label for="total_number_of_occupants" class="control-label col-lg-3">Total number of occupants</label>
 					<div class="col-lg-9">
@@ -79,7 +86,8 @@
 					</div>
 				</div>
 
-				<div class="form-group">
+				<!-- Field: Lease period from -->
+				<div class="form-group applications_leases-start_date">
 					<hr class="hidden-md hidden-lg">
 					<label for="start_date" class="control-label col-lg-3">Lease period from</label>
 					<div class="col-lg-9">
@@ -87,7 +95,8 @@
 					</div>
 				</div>
 
-				<div class="form-group">
+				<!-- Field: to -->
+				<div class="form-group applications_leases-end_date">
 					<hr class="hidden-md hidden-lg">
 					<label for="end_date" class="control-label col-lg-3">to</label>
 					<div class="col-lg-9">
@@ -95,7 +104,8 @@
 					</div>
 				</div>
 
-				<div class="form-group">
+				<!-- Field: Recurring charges frequency -->
+				<div class="form-group applications_leases-recurring_charges_frequency">
 					<hr class="hidden-md hidden-lg">
 					<label for="recurring_charges_frequency" class="control-label col-lg-3">Recurring charges frequency<span class="text-danger"><%%TRANSLATION(*)%%></span></label>
 					<div class="col-lg-9">
@@ -103,7 +113,8 @@
 					</div>
 				</div>
 
-				<div class="form-group">
+				<!-- Field: Next due date -->
+				<div class="form-group applications_leases-next_due_date">
 					<hr class="hidden-md hidden-lg">
 					<label for="next_due_date" class="control-label col-lg-3">Next due date</label>
 					<div class="col-lg-9">
@@ -111,7 +122,8 @@
 					</div>
 				</div>
 
-				<div class="form-group">
+				<!-- Field: Rental amount -->
+				<div class="form-group applications_leases-rent">
 					<hr class="hidden-md hidden-lg">
 					<label for="rent" class="control-label col-lg-3">Rental amount</label>
 					<div class="col-lg-9">
@@ -119,7 +131,8 @@
 					</div>
 				</div>
 
-				<div class="form-group">
+				<!-- Field: Security deposit -->
+				<div class="form-group applications_leases-security_deposit">
 					<hr class="hidden-md hidden-lg">
 					<label for="security_deposit" class="control-label col-lg-3">Security deposit</label>
 					<div class="col-lg-9">
@@ -127,7 +140,8 @@
 					</div>
 				</div>
 
-				<div class="form-group">
+				<!-- Field: Security deposit date -->
+				<div class="form-group applications_leases-security_deposit_date">
 					<hr class="hidden-md hidden-lg">
 					<label for="security_deposit_date" class="control-label col-lg-3">Security deposit date</label>
 					<div class="col-lg-9">
@@ -135,7 +149,8 @@
 					</div>
 				</div>
 
-				<div class="form-group">
+				<!-- Field: Emergency contact -->
+				<div class="form-group applications_leases-emergency_contact">
 					<hr class="hidden-md hidden-lg">
 					<label for="emergency_contact" class="control-label col-lg-3">Emergency contact <i class="glyphicon glyphicon-info-sign text-info" data-toggle="collapse" data-target="#emergency_contact-description"></i></label>
 					<div class="col-lg-9">
@@ -145,7 +160,8 @@
 					</div>
 				</div>
 
-				<div class="form-group">
+				<!-- Field: Co signer details -->
+				<div class="form-group applications_leases-co_signer_details">
 					<hr class="hidden-md hidden-lg">
 					<label for="co_signer_details" class="control-label col-lg-3">Co signer details <i class="glyphicon glyphicon-info-sign text-info" data-toggle="collapse" data-target="#co_signer_details-description"></i></label>
 					<div class="col-lg-9">
@@ -155,7 +171,8 @@
 					</div>
 				</div>
 
-				<div class="form-group">
+				<!-- Field: Notes -->
+				<div class="form-group applications_leases-notes">
 					<hr class="hidden-md hidden-lg">
 					<label for="notes" class="control-label col-lg-3">Notes <i class="glyphicon glyphicon-info-sign text-info" data-toggle="collapse" data-target="#notes-description"></i></label>
 					<div class="col-lg-9">
@@ -165,7 +182,8 @@
 					</div>
 				</div>
 
-				<div class="form-group">
+				<!-- Field: Applicant agrees -->
+				<div class="form-group applications_leases-agreement">
 					<hr class="hidden-md hidden-lg">
 					<div class="col-lg-offset-3 col-lg-9">
 						<div class="checkbox"><label for="agreement"><input type="checkbox" name="agreement" id="agreement" value="1" <%%CHECKED(agreement)%%>> Applicant agrees</label>
@@ -199,7 +217,6 @@
 
 
 </div><!-- /div class="panel-body" -->
-	<script src="nicEdit.js"></script>
 	<script>
 		$j(function() {
 			var add_new_mode = (!$j('input[name=SelectedID]').val());
@@ -209,44 +226,58 @@
 			var autoclose_mode = ($j('input[name=AutoClose]').val() == 1);
 			var record_added_ok = (location.search.split('record-added-ok=').length == 2);
 			var record_updated_ok = (location.search.split('record-updated-ok=').length == 2);
-			if((record_added_ok || record_updated_ok) && embedded_mode && autoclose_mode){
+			if((record_added_ok || record_updated_ok) && embedded_mode && autoclose_mode) {
 				setTimeout(AppGini.closeParentModal, 2000);
 			}
 
-			bkLib.onDomLoaded(function(){
-				if($j('textarea#notes').length) new nicEditor({ fullPanel : true }).panelInstance('notes');
-
-				$j('.nicEdit-panelContain').parent().width('100%');
-				$j('.nicEdit-panelContain').parent().next().width('98%');
-				$j('.nicEdit-main').width('99%');
+			AppGini.once({
+				condition: function() { return bkLib != undefined; },
+				action: function() {
+					if($j('textarea#notes').length) new nicEditor({ fullPanel : true }).panelInstance('notes');
+				}
 			});
 			/* enable DV action buttons to float on scrolling down the form */
 			enable_dvab_floating();
 
-			if(!(embedded_mode && AppGini.mobileDevice())){
-				$j('select, input[type=text], textarea').not(':disabled').eq(0).focus();
-			}
+			setTimeout(AppGini.focusFirstFormElement, 100);
 
-			$j('form').eq(0).change(function(){
+			$j('form').eq(0).change(function() {
 				if($j(this).data('already_changed')) return;
 				if($j('#deselect').length) $j('#deselect').removeClass('btn-default').addClass('btn-warning').get(0).lastChild.data = " <%%TRANSLATION(Cancel)%%>";
 				$j(this).data('already_changed', true);
 			});
 
-			$j('a[href="<%%TRANSLATION(ImageFolder)%%>"]').click(function(){ return false; });
+			// try to detect rich text changes by adding 'input' handler after nicedit is loaded ...
+			AppGini.detectContentEditableChanges();
+
+			$j('a[href="<%%TRANSLATION(ImageFolder)%%>"]').click(function() { /* */ return false; });
 
 
-			if(!embedded_mode){
+			if(!embedded_mode) {
 				/* add a horizontal spacer to [add new parent] buttons that don't have a spacered element before them */
 				$j('.add_new_parent').prev(':not(.hspacer-md)').next().addClass('hspacer-md');
 
-				$j('.add_new_parent').click(function(){
+				$j('.add_new_parent').click(function() {
 					var pt = $j(this).attr('id').replace(/_add_new$/, '');
 					modal_window({
 						url: pt + '_view.php?addNew_x=1&Embedded=1',
-						close: function(){
+						close: function() {
 							var field_id = $j('#' + pt + '_add_new').prevAll('input:hidden').eq(0).attr('id');
 							$j('#' + field_id + '-container').select2('focus').select2('focus');
+
+							/* if a new parent was added, select it */
+							var new_id = localStorage.getItem(pt + '_last_added_id');
+							if(new_id === null) return;
+
+							localStorage.clear(pt + '_last_added_id');
+							AppGini.lookupText({
+								id: new_id,
+								table: 'applications_leases',
+								field: field_id,
+								callback: function(data) {
+									$j('#' + field_id + '-container').select2('data', data, true);
+								}
+							});
 						},
 						size: 'full',
 						title: $j(this).attr('title')
@@ -254,33 +285,30 @@
 				});
 			}
 
-			/* find and hide parent links if field label has data 'parent_link' set to 'view_parent_hidden' */
-			$j('label[data-parent_link=view_parent_hidden]').each(function(){
-				$j(this).parents('.form-group').find('.view_parent').hide();
-			});
+			AppGini.hideViewParentLinks();
 
-			$j('form').on('click', '.view_parent', function(){
+			$j('form').on('click', '.view_parent', function() {
 				var pt = $j(this).attr('id').replace(/_view_parent$/, '');
-				if($j(this).prevAll('input:hidden').length){
+				if($j(this).prevAll('input:hidden').length) {
 					var parent_id = $j(this).prevAll('input:hidden').eq(0).val();
-				}else{
+				} else {
 					var parent_id = $j(this).prevAll().children('input:hidden').eq(0).val();
 				}
 
 				/* handle radio lookups */
-				if($j(this).prevAll('[type=radio]').length){
+				if($j(this).prevAll('[type=radio]').length) {
 					parent_id = $j(this).prevAll('[type=radio]').eq(0).val();
 				}
 
-				if(parent_id != '{empty_value}' && parent_id != undefined && parent_id != ''){
+				if(parent_id != '{empty_value}' && parent_id != undefined && parent_id != '') {
 					var parent_link = $j(this).parents('.form-group').children('label').data('parent_link');
-					switch(parent_link){
+					switch(parent_link) {
 						case 'view_parent_hidden':
 							break;
 						case 'view_parent_modal':
 							modal_window({
 								url: pt + '_view.php?Embedded=1&SelectedID=' + encodeURIComponent(parent_id),
-								close: function(){
+								close: function() {
 									var field_id = $j('#' + pt + '_view_parent').prevAll('input:hidden').eq(0).attr('id');
 									$j('#' + field_id + '-container').select2('focus').select2('focus');
 								},
@@ -301,11 +329,11 @@
 
 
 			/* load admin tools for admin user */
-			if(!add_new_mode){
+			if(!add_new_mode) {
 				$j('body').append('<div id="admin-tools-appendix"></div>');
 				$j('#admin-tools-appendix').load(
 					'ajax_admin_tools.php?table=applications_leases&id=<%%URLVALUE(id)%%>',
-					function(resp){
+					function(resp) {
 						if(!resp.length) return;
 						$j.ajax('ajax_admin_tools.php?action=get_admin_tools_js&table=applications_leases&id=<%%URLVALUE(id)%%>');
 					}
@@ -313,8 +341,8 @@
 			}
 
 			/* warn user if 'add new' clicked while unsaved changes exist */
-			$j('#addNew').click(function(){
-				if($j('#deselect.btn-warning').length){
+			$j('#addNew').click(function() {
+				if($j('#deselect.btn-warning').length) {
 					return confirm('<%%TRANSLATION(discard changes confirm)%%>');
 				}
 			});

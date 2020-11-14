@@ -6,11 +6,11 @@
 <div class="panel-body" id="units_dv_container">
 	<!-- child links -->
 	<div class="row vspacer-md">
-		<div class="col-xs-12">
-			<a class="hidden-xs btn btn-default btn-lg pull-right hidden hspacer-sm" href="applications_leases_view.php?filterer_unit=<%%URLVALUE(id)%%>&<%%EMBEDDED%%>" id="applications_leases_link"><i class="glyphicon glyphicon-list-alt"></i> Applications/Leases</a>
+		<div class="col-xs-12 children-links">
+			<a class="hidden-xs btn btn-default btn-lg pull-right hidden hspacer-sm vspacer-sm" href="applications_leases_view.php?filterer_unit=<%%URLVALUE(id)%%>&<%%EMBEDDED%%>" id="applications_leases_link"><i class="glyphicon glyphicon-list-alt"></i> Applications/Leases</a>
 			<a class="visible-xs btn btn-default btn-lg btn-block hidden vspacer-sm" href="applications_leases_view.php?filterer_unit=<%%URLVALUE(id)%%>&<%%EMBEDDED%%>" id="xs_applications_leases_link"><i class="glyphicon glyphicon-list-alt"></i> Applications/Leases</a>
 			<input type="hidden" id="applications_leases_hclink" value="applications_leases_view.php?filterer_unit=<%%URLVALUE(id)%%>&<%%EMBEDDED%%>">
-			<a class="hidden-xs btn btn-default btn-lg pull-right hidden hspacer-sm" href="unit_photos_view.php?filterer_unit=<%%URLVALUE(id)%%>&<%%EMBEDDED%%>" id="unit_photos_link"><i class="glyphicon glyphicon-list-alt"></i> Unit photos</a>
+			<a class="hidden-xs btn btn-default btn-lg pull-right hidden hspacer-sm vspacer-sm" href="unit_photos_view.php?filterer_unit=<%%URLVALUE(id)%%>&<%%EMBEDDED%%>" id="unit_photos_link"><i class="glyphicon glyphicon-list-alt"></i> Unit photos</a>
 			<a class="visible-xs btn btn-default btn-lg btn-block hidden vspacer-sm" href="unit_photos_view.php?filterer_unit=<%%URLVALUE(id)%%>&<%%EMBEDDED%%>" id="xs_unit_photos_link"><i class="glyphicon glyphicon-list-alt"></i> Unit photos</a>
 			<input type="hidden" id="unit_photos_hclink" value="unit_photos_view.php?filterer_unit=<%%URLVALUE(id)%%>&<%%EMBEDDED%%>">
 			<div class="clearfix"></div>
@@ -23,7 +23,8 @@
 		<div class="col-md-8 col-lg-10" id="units_dv_form">
 			<fieldset class="form-horizontal">
 
-				<div class="form-group">
+				<!-- Field: ID -->
+				<div class="form-group units-id">
 					<hr class="hidden-md hidden-lg">
 					<label for="id" class="control-label col-lg-3">ID</label>
 					<div class="col-lg-9">
@@ -31,7 +32,8 @@
 					</div>
 				</div>
 
-				<div class="form-group">
+				<!-- Field: Property -->
+				<div class="form-group units-property">
 					<hr class="hidden-md hidden-lg">
 					<label for="property" class="control-label col-lg-3" data-parent_link="view_parent_modal">Property</label>
 					<div class="col-lg-9">
@@ -39,7 +41,8 @@
 					</div>
 				</div>
 
-				<div class="form-group">
+				<!-- Field: Unit -->
+				<div class="form-group units-unit_number">
 					<hr class="hidden-md hidden-lg">
 					<label for="unit_number" class="control-label col-lg-3">Unit</label>
 					<div class="col-lg-9">
@@ -47,21 +50,28 @@
 					</div>
 				</div>
 
-				<div class="form-group">
+				<!-- Field: Cover photo -->
+				<div class="form-group units-photo">
 					<hr class="hidden-md hidden-lg">
 					<label class="control-label col-lg-3">Cover photo <i class="glyphicon glyphicon-info-sign text-info" data-toggle="collapse" data-target="#photo-description"></i></label>
 					<div class="col-lg-9">
 						<span class="help-block collapse" id="photo-description"><div class="alert alert-info">Maximum file size allowed: 2000 KB.<br>Allowed file types: jpg, jpeg, gif, png</div></span>
 
-						<div class="form-control-static"><div class="pull-left">
+						<div class="form-control-static well well-sm"><div class="pull-left">
 
 						<a href="<%%TRANSLATION(ImageFolder)%%><%%VALUE(photo)%%>" data-lightbox="units_dv"><img src="thumbnail.php?i=<%%VALUE(photo)%%>&t=units&f=photo&v=dv" class="img-thumbnail" id="photo-image"></a>
 </div>
 
-												<div class="pull-right" style="overflow-x: hidden;">
+												<div class="pull-right well upload-toolbox">
 							<div class="hidden-md hidden-lg vspacer-lg"></div>
 							<%%UPLOADFILE(photo)%%>
 							<%%REMOVEFILE(photo)%%>
+							<div class="text-bold text-danger file-type-error hidden">
+								<%%TRANSLATION(invalid file type)%%>
+							</div>
+							<div class="text-bold text-danger file-size-error hidden">
+								<%%TRANSLATION(file too large)%%>
+							</div>
 						</div>
 						<div class="clearfix"></div>
 					</div>
@@ -69,7 +79,8 @@
 					</div>
 				</div>
 
-				<div class="form-group">
+				<!-- Field: Status -->
+				<div class="form-group units-status">
 					<hr class="hidden-md hidden-lg">
 					<label for="status" class="control-label col-lg-3">Status<span class="text-danger"><%%TRANSLATION(*)%%></span></label>
 					<div class="col-lg-9">
@@ -77,7 +88,8 @@
 					</div>
 				</div>
 
-				<div class="form-group">
+				<!-- Field: Area (sq. feet) -->
+				<div class="form-group units-size">
 					<hr class="hidden-md hidden-lg">
 					<label for="size" class="control-label col-lg-3">Area (sq. feet)</label>
 					<div class="col-lg-9">
@@ -85,7 +97,8 @@
 					</div>
 				</div>
 
-				<div class="form-group">
+				<!-- Field: Country -->
+				<div class="form-group units-country">
 					<hr class="hidden-md hidden-lg">
 					<label for="country" class="control-label col-lg-3">Country</label>
 					<div class="col-lg-9">
@@ -93,7 +106,8 @@
 					</div>
 				</div>
 
-				<div class="form-group">
+				<!-- Field: Street -->
+				<div class="form-group units-street">
 					<hr class="hidden-md hidden-lg">
 					<label for="street" class="control-label col-lg-3">Street</label>
 					<div class="col-lg-9">
@@ -101,7 +115,8 @@
 					</div>
 				</div>
 
-				<div class="form-group">
+				<!-- Field: City -->
+				<div class="form-group units-city">
 					<hr class="hidden-md hidden-lg">
 					<label for="city" class="control-label col-lg-3">City</label>
 					<div class="col-lg-9">
@@ -109,7 +124,8 @@
 					</div>
 				</div>
 
-				<div class="form-group">
+				<!-- Field: State -->
+				<div class="form-group units-state">
 					<hr class="hidden-md hidden-lg">
 					<label for="state" class="control-label col-lg-3">State</label>
 					<div class="col-lg-9">
@@ -117,7 +133,8 @@
 					</div>
 				</div>
 
-				<div class="form-group">
+				<!-- Field: Postal code -->
+				<div class="form-group units-postal_code">
 					<hr class="hidden-md hidden-lg">
 					<label for="postal_code" class="control-label col-lg-3">Postal code</label>
 					<div class="col-lg-9">
@@ -125,7 +142,8 @@
 					</div>
 				</div>
 
-				<div class="form-group">
+				<!-- Field: Rooms -->
+				<div class="form-group units-rooms">
 					<hr class="hidden-md hidden-lg">
 					<label for="rooms" class="control-label col-lg-3">Rooms</label>
 					<div class="col-lg-9">
@@ -133,7 +151,8 @@
 					</div>
 				</div>
 
-				<div class="form-group">
+				<!-- Field: Bathroom -->
+				<div class="form-group units-bathroom">
 					<hr class="hidden-md hidden-lg">
 					<label for="bathroom" class="control-label col-lg-3">Bathroom</label>
 					<div class="col-lg-9">
@@ -141,7 +160,8 @@
 					</div>
 				</div>
 
-				<div class="form-group">
+				<!-- Field: Features -->
+				<div class="form-group units-features">
 					<hr class="hidden-md hidden-lg">
 					<label for="features" class="control-label col-lg-3">Features</label>
 					<div class="col-lg-9">
@@ -149,7 +169,8 @@
 					</div>
 				</div>
 
-				<div class="form-group">
+				<!-- Field: Rental amount -->
+				<div class="form-group units-rental_amount">
 					<hr class="hidden-md hidden-lg">
 					<label for="rental_amount" class="control-label col-lg-3">Rental amount</label>
 					<div class="col-lg-9">
@@ -157,7 +178,8 @@
 					</div>
 				</div>
 
-				<div class="form-group">
+				<!-- Field: Description -->
+				<div class="form-group units-description">
 					<hr class="hidden-md hidden-lg">
 					<label for="description" class="control-label col-lg-3">Description</label>
 					<div class="col-lg-9">
@@ -192,12 +214,13 @@
 	<hr>
 	<div class="row">
 		<div class="col-lg-10 col-lg-offset-1">
-			<div id="units-children" class="children-tabs"></div>
+			<div id="units-children" class="children-tabs">
+				<div class="text-center"><i class="glyphicon glyphicon-refresh loop-rotate"></i> <%%TRANSLATION(Loading ...)%%></div>
+			</div>
 		</div>
 	</div>
 
 </div><!-- /div class="panel-body" -->
-	<script src="nicEdit.js"></script>
 	<script>
 		$j(function() {
 			var add_new_mode = (!$j('input[name=SelectedID]').val());
@@ -207,40 +230,40 @@
 			var autoclose_mode = ($j('input[name=AutoClose]').val() == 1);
 			var record_added_ok = (location.search.split('record-added-ok=').length == 2);
 			var record_updated_ok = (location.search.split('record-updated-ok=').length == 2);
-			if((record_added_ok || record_updated_ok) && embedded_mode && autoclose_mode){
+			if((record_added_ok || record_updated_ok) && embedded_mode && autoclose_mode) {
 				setTimeout(AppGini.closeParentModal, 2000);
 			}
 
-			bkLib.onDomLoaded(function(){
-				if($j('textarea#description').length) new nicEditor({ fullPanel : true }).panelInstance('description');
-
-				$j('.nicEdit-panelContain').parent().width('100%');
-				$j('.nicEdit-panelContain').parent().next().width('98%');
-				$j('.nicEdit-main').width('99%');
+			AppGini.once({
+				condition: function() { return bkLib != undefined; },
+				action: function() {
+					if($j('textarea#description').length) new nicEditor({ fullPanel : true }).panelInstance('description');
+				}
 			});
 			/* enable DV action buttons to float on scrolling down the form */
 			enable_dvab_floating();
 
-			if(!(embedded_mode && AppGini.mobileDevice())){
-				$j('select, input[type=text], textarea').not(':disabled').eq(0).focus();
-			}
+			setTimeout(AppGini.focusFirstFormElement, 100);
 
-			$j('form').eq(0).change(function(){
+			$j('form').eq(0).change(function() {
 				if($j(this).data('already_changed')) return;
 				if($j('#deselect').length) $j('#deselect').removeClass('btn-default').addClass('btn-warning').get(0).lastChild.data = " <%%TRANSLATION(Cancel)%%>";
 				$j(this).data('already_changed', true);
 			});
 
-			$j('a[href="<%%TRANSLATION(ImageFolder)%%>"]').click(function(){ return false; });
+			// try to detect rich text changes by adding 'input' handler after nicedit is loaded ...
+			AppGini.detectContentEditableChanges();
 
-			if(embedded_mode){
+			$j('a[href="<%%TRANSLATION(ImageFolder)%%>"]').click(function() { /* */ return false; });
+
+			if(embedded_mode) {
 				/* hide links to children tables in embedded mode */
 				$j('.detail_view a[id$=_link]').remove();
 
 				/* append embedded mode to all links */
-				var append_embedded = function(){
+				var append_embedded = function() {
 					$j('a[href]:not([href^="#"]):not([href^="javascript"]):not([href$="Embedded=1"]):not([href*="link.php?t="]):not([href^="mailto:"])').each(
-						function(){
+						function() {
 							$j(this).attr('href', $j(this).attr('href') + '&Embedded=1');
 						}
 					);
@@ -252,10 +275,10 @@
 			}
 
 			/* when no record is selected ('add new' mode) */
-			if(add_new_mode){
+			if(add_new_mode) {
 				/* hide links to children tables */
 				$j('.detail_view a[id$=_link]').remove();
-			}else{
+			} else {
 				post(
 					'parent-children.php', {
 						ParentTable: 'units',
@@ -266,17 +289,31 @@
 				);
 			}
 
-			if(!embedded_mode){
+			if(!embedded_mode) {
 				/* add a horizontal spacer to [add new parent] buttons that don't have a spacered element before them */
 				$j('.add_new_parent').prev(':not(.hspacer-md)').next().addClass('hspacer-md');
 
-				$j('.add_new_parent').click(function(){
+				$j('.add_new_parent').click(function() {
 					var pt = $j(this).attr('id').replace(/_add_new$/, '');
 					modal_window({
 						url: pt + '_view.php?addNew_x=1&Embedded=1',
-						close: function(){
+						close: function() {
 							var field_id = $j('#' + pt + '_add_new').prevAll('input:hidden').eq(0).attr('id');
 							$j('#' + field_id + '-container').select2('focus').select2('focus');
+
+							/* if a new parent was added, select it */
+							var new_id = localStorage.getItem(pt + '_last_added_id');
+							if(new_id === null) return;
+
+							localStorage.clear(pt + '_last_added_id');
+							AppGini.lookupText({
+								id: new_id,
+								table: 'units',
+								field: field_id,
+								callback: function(data) {
+									$j('#' + field_id + '-container').select2('data', data, true);
+								}
+							});
 						},
 						size: 'full',
 						title: $j(this).attr('title')
@@ -284,33 +321,30 @@
 				});
 			}
 
-			/* find and hide parent links if field label has data 'parent_link' set to 'view_parent_hidden' */
-			$j('label[data-parent_link=view_parent_hidden]').each(function(){
-				$j(this).parents('.form-group').find('.view_parent').hide();
-			});
+			AppGini.hideViewParentLinks();
 
-			$j('form').on('click', '.view_parent', function(){
+			$j('form').on('click', '.view_parent', function() {
 				var pt = $j(this).attr('id').replace(/_view_parent$/, '');
-				if($j(this).prevAll('input:hidden').length){
+				if($j(this).prevAll('input:hidden').length) {
 					var parent_id = $j(this).prevAll('input:hidden').eq(0).val();
-				}else{
+				} else {
 					var parent_id = $j(this).prevAll().children('input:hidden').eq(0).val();
 				}
 
 				/* handle radio lookups */
-				if($j(this).prevAll('[type=radio]').length){
+				if($j(this).prevAll('[type=radio]').length) {
 					parent_id = $j(this).prevAll('[type=radio]').eq(0).val();
 				}
 
-				if(parent_id != '{empty_value}' && parent_id != undefined && parent_id != ''){
+				if(parent_id != '{empty_value}' && parent_id != undefined && parent_id != '') {
 					var parent_link = $j(this).parents('.form-group').children('label').data('parent_link');
-					switch(parent_link){
+					switch(parent_link) {
 						case 'view_parent_hidden':
 							break;
 						case 'view_parent_modal':
 							modal_window({
 								url: pt + '_view.php?Embedded=1&SelectedID=' + encodeURIComponent(parent_id),
-								close: function(){
+								close: function() {
 									var field_id = $j('#' + pt + '_view_parent').prevAll('input:hidden').eq(0).attr('id');
 									$j('#' + field_id + '-container').select2('focus').select2('focus');
 								},
@@ -331,11 +365,11 @@
 
 
 			/* load admin tools for admin user */
-			if(!add_new_mode){
+			if(!add_new_mode) {
 				$j('body').append('<div id="admin-tools-appendix"></div>');
 				$j('#admin-tools-appendix').load(
 					'ajax_admin_tools.php?table=units&id=<%%URLVALUE(id)%%>',
-					function(resp){
+					function(resp) {
 						if(!resp.length) return;
 						$j.ajax('ajax_admin_tools.php?action=get_admin_tools_js&table=units&id=<%%URLVALUE(id)%%>');
 					}
@@ -343,8 +377,8 @@
 			}
 
 			/* warn user if 'add new' clicked while unsaved changes exist */
-			$j('#addNew').click(function(){
-				if($j('#deselect.btn-warning').length){
+			$j('#addNew').click(function() {
+				if($j('#deselect.btn-warning').length) {
 					return confirm('<%%TRANSLATION(discard changes confirm)%%>');
 				}
 			});

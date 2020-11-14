@@ -1,5 +1,9 @@
+<?php
+	$rdata = array_map('to_utf8', array_map('nl2br', array_map('html_attr_tags_ok', $rdata)));
+	$jdata = array_map('to_utf8', array_map('nl2br', array_map('html_attr_tags_ok', $jdata)));
+?>
 <script>
-	$j(function(){
+	$j(function() {
 		var tn = 'applications_leases';
 
 		/* data for selected record, or defaults if none is selected */
@@ -15,7 +19,7 @@
 		var cache = AppGini.cache[tn];
 
 		/* saved value for tenants */
-		cache.addCheck(function(u, d){
+		cache.addCheck(function(u, d) {
 			if(u != 'ajax_combo.php') return false;
 			if(d.t == tn && d.f == 'tenants' && d.id == data.tenants.id)
 				return { results: [ data.tenants ], more: false, elapsed: 0.01 };
@@ -23,7 +27,7 @@
 		});
 
 		/* saved value for property */
-		cache.addCheck(function(u, d){
+		cache.addCheck(function(u, d) {
 			if(u != 'ajax_combo.php') return false;
 			if(d.t == tn && d.f == 'property' && d.id == data.property.id)
 				return { results: [ data.property ], more: false, elapsed: 0.01 };
@@ -31,7 +35,7 @@
 		});
 
 		/* saved value for unit */
-		cache.addCheck(function(u, d){
+		cache.addCheck(function(u, d) {
 			if(u != 'ajax_combo.php') return false;
 			if(d.t == tn && d.f == 'unit' && d.id == data.unit.id)
 				return { results: [ data.unit ], more: false, elapsed: 0.01 };

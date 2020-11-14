@@ -8,22 +8,22 @@
 	$approve = ($_GET['approve'] == 1 ? 1 : 0);
 	$ban = ($_GET['ban'] == 1 ? 1 : 0);
 
-	if($unban){
+	if($unban) {
 		sql("update membership_users set isBanned=0 where lcase(memberID)='{$memberID}'", $eo);
 	}
 
-	if($approve){
+	if($approve) {
 		sql("update membership_users set isBanned=0, isApproved=1 where lcase(memberID)='{$memberID}'", $eo);
 		notifyMemberApproval($memberID);
 	}
 
-	if($ban){
+	if($ban) {
 		sql("update membership_users set isBanned=1, isApproved=1 where lcase(memberID)='{$memberID}'", $eo);
 	}
 
-	if($_SERVER['HTTP_REFERER']){
+	if($_SERVER['HTTP_REFERER']) {
 		redirect($_SERVER['HTTP_REFERER'], true);
-	}else{
+	} else {
 		redirect("admin/pageViewMembers.php");
 	}
 

@@ -5,7 +5,7 @@
 	include("{$currDir}/incHeader.php");
 
 	// process search
-	if($_GET['searchMembers'] != ""){
+	if($_GET['searchMembers'] != "") {
 		$searchSQL = makeSafe($_GET['searchMembers']);
 		$searchHTML = html_attr($_GET['searchMembers']);
 		$searchURL = urlencode($_GET['searchMembers']);
@@ -20,12 +20,12 @@
 			'm.custom4' => 7,
 			'm.comments' => 8
 		));
-		if(!$searchFieldName){ // = search all fields
+		if(!$searchFieldName) { // = search all fields
 			$where = "where (m.memberID like '%{$searchSQL}%' or g.name like '%{$searchSQL}%' or m.email like '%{$searchSQL}%' or m.custom1 like '%{$searchSQL}%' or m.custom2 like '%{$searchSQL}%' or m.custom3 like '%{$searchSQL}%' or m.custom4 like '%{$searchSQL}%' or m.comments like '%{$searchSQL}%')";
-		}else{ // = search a specific field
+		} else { // = search a specific field
 			$where = "where ({$searchFieldName} like '%{$searchSQL}%')";
 		}
-	}else{
+	} else {
 		$searchSQL = '';
 		$searchHTML = '';
 		$searchField = 0;
@@ -35,18 +35,18 @@
 
 	// process groupID filter
 	$groupID = intval($_GET['groupID']);
-	if($groupID){
-		if($where != ''){
+	if($groupID) {
+		if($where != '') {
 			$where .= " and (g.groupID='{$groupID}')";
-		}else{
+		} else {
 			$where = "where (g.groupID='{$groupID}')";
 		}
 	}
 
 	// process status filter
 	$status = intval($_GET['status']); // 1=waiting approval, 2=active, 3=banned, 0=any
-	if($status){
-		switch($status){
+	if($status) {
+		switch($status) {
 			case 1:
 				$statusCond = "(m.isApproved=0)";
 				break;
@@ -59,24 +59,24 @@
 			default:
 				$statusCond = "";
 		}
-		if($where != '' && $statusCond != ''){
+		if($where != '' && $statusCond != '') {
 			$where .= " and {$statusCond}";
-		}else{
+		} else {
 			$where = "where {$statusCond}";
 		}
 	}
 
 	$numMembers = sqlValue("select count(1) from membership_users m left join membership_groups g on m.groupID=g.groupID {$where}");
-	if(!$numMembers){
+	if(!$numMembers) {
 		echo "<div class=\"alert alert-warning\">{$Translation['no matching results found']}</div>";
 		$noResults = true;
 		$page = 1;
-	}else{
+	} else {
 		$noResults = false;
 	}
 
 	$page = max(1, intval($_GET['page']));
-	if($page > ceil($numMembers / $adminConfig['membersPerPage']) && !$noResults){
+	if($page > ceil($numMembers / $adminConfig['membersPerPage']) && !$noResults) {
 		redirect("admin/pageViewMembers.php?page=" . ceil($numMembers/$adminConfig['membersPerPage']));
 	}
 
@@ -149,45 +149,45 @@
 <?php
 
 	$res=sql("select lcase(m.memberID), g.name, DATE_FORMAT(m.signupDate, '" . makeSafe($adminConfig['MySQLDateFormat'], false) . "'), m.custom1, m.custom2, m.custom3, m.custom4, m.isBanned, m.isApproved from membership_users m left join membership_groups g on m.groupID=g.groupID $where order by m.signupDate limit $start, " . intval($adminConfig['membersPerPage']), $eo);
-	while($row = db_fetch_row($res)){
+	while($row = db_fetch_row($res)) {
 		$tr_class = '';
 		if($adminConfig['adminUsername'] == $row[0]) $tr_class = 'warning text-bold';
 		if($adminConfig['anonymousMember'] == $row[0]) $tr_class = 'text-muted';
 		?>
 		<tr class="<?php echo $tr_class; ?>">
-			<?php if($adminConfig['anonymousMember'] == $row[0]){ ?>
-				<td class="text-left"><?php echo thisOr($row[0]); ?></td>
-			<?php }else{ ?>
-				<td class="text-left"><a href="pageEditMember.php?memberID=<?php echo $row[0]; ?>"><?php echo thisOr($row[0]); ?></a></td>
+			<?php if($adminConfig['anonymousMember'] == $row[0]) { ?>
+				<td class="text-left"><?php echo $row[0]; ?></td>
+			<?php } else { ?>
+				<td class="text-left"><a href="pageEditMember.php?memberID=<?php echo $row[0]; ?>"><?php echo $row[0]; ?></a></td>
 			<?php } ?>
-			<td class="text-left"><?php echo thisOr($row[1]); ?></td>
-			<td class="text-left"><?php echo thisOr($row[2]); ?></td>
-			<td class="text-left"><?php echo thisOr($row[3]); ?></td>
-			<td class="text-left"><?php echo thisOr($row[4]); ?></td>
-			<td class="text-left"><?php echo thisOr($row[5]); ?></td>
-			<td class="text-left"><?php echo thisOr($row[6]); ?></td>
+			<td class="text-left"><?php echo $row[1]; ?></td>
+			<td class="text-left"><?php echo $row[2]; ?></td>
+			<td class="text-left"><?php echo htmlspecialchars($row[3]); ?></td>
+			<td class="text-left"><?php echo htmlspecialchars($row[4]); ?></td>
+			<td class="text-left"><?php echo htmlspecialchars($row[5]); ?></td>
+			<td class="text-left"><?php echo htmlspecialchars($row[6]); ?></td>
 			<td class="text-left">
 				<?php echo (($row[7] && $row[8]) ? $Translation['Banned'] : ($row[8] ? $Translation['active'] : $Translation['waiting approval'] )); ?>
 			</td>
 			<td class="text-center">
-				<?php if($adminConfig['anonymousMember'] == $row[0]){ ?>
+				<?php if($adminConfig['anonymousMember'] == $row[0]) { ?>
 					<i class="glyphicon glyphicon-pencil text-muted"></i>
-				<?php }else{ ?>
+				<?php } else { ?>
 					<a href="pageEditMember.php?memberID=<?php echo $row[0]; ?>"><i class="glyphicon glyphicon-pencil" title="<?php echo $Translation['Edit member'] ; ?>"></i></a>
 				<?php } ?>
 
-				<?php if($adminConfig['anonymousMember'] == $row[0] || $adminConfig['adminUsername'] == $row[0]){ ?>
+				<?php if($adminConfig['anonymousMember'] == $row[0] || $adminConfig['adminUsername'] == $row[0]) { ?>
 					<i class="glyphicon glyphicon-trash text-muted"></i>
 					<i class="glyphicon glyphicon-ban-circle text-muted"></i>
-				<?php }else{ ?>
+				<?php } else { ?>
 					<a href="pageDeleteMember.php?memberID=<?php echo $row[0]; ?>" onClick="return confirm('<?php echo str_replace ( '<USERNAME>' , $row[0] , $Translation['sure delete user'] ); ?>');"><i class="glyphicon glyphicon-trash text-danger" title="<?php echo $Translation['delete member'] ; ?>"></i></a>
 					<?php
-						if(!$row[8]){ // if member is not approved, display approve link
+						if(!$row[8]) { // if member is not approved, display approve link
 							?><a href="pageChangeMemberStatus.php?memberID=<?php echo $row[0]; ?>&approve=1"><i class="glyphicon glyphicon-ok text-success" title="<?php echo $Translation["unban this member"] ; ?>" title="<?php echo $Translation["approve this member"] ; ?>"></i></a><?php
-						}else{
-							if($row[7]){ // if member is banned, display unban link
+						} else {
+							if($row[7]) { // if member is banned, display unban link
 								?><a href="pageChangeMemberStatus.php?memberID=<?php echo $row[0]; ?>&unban=1"><i class="glyphicon glyphicon-ok text-success" title="<?php echo $Translation["unban this member"] ; ?>"></i></a><?php
-							}else{ // if member is not banned, display ban link
+							} else { // if member is not banned, display ban link
 								?><a href="pageChangeMemberStatus.php?memberID=<?php echo $row[0]; ?>&ban=1"><i class="glyphicon glyphicon-ban-circle text-danger" title="<?php echo $Translation["ban this member"] ; ?>"></i></a><?php
 							}
 						}
@@ -196,9 +196,9 @@
 
 				<a href="pageViewRecords.php?memberID=<?php echo $row[0]; ?>"><i class="glyphicon glyphicon-th" title="<?php echo $Translation["View member records"] ; ?>"></i></a>
 
-				<?php if($adminConfig['anonymousMember'] == $row[0]){ ?>
+				<?php if($adminConfig['anonymousMember'] == $row[0]) { ?>
 					<i class="glyphicon glyphicon-envelope text-muted"></i>
-				<?php }else{ ?>
+				<?php } else { ?>
 					<a href="pageMail.php?memberID=<?php echo $row[0]; ?>"><i class="glyphicon glyphicon-envelope" title="<?php echo $Translation["send message to member"] ; ?>"></i></a>
 				<?php } ?>
 			</td>
@@ -251,7 +251,7 @@
 </style>
 
 <script>
-	$j(function(){
+	$j(function() {
 		$j('.form-inline select').addClass('form-control');
 	})
 </script>

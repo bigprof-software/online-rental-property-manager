@@ -5,7 +5,7 @@
 	include("{$currDir}/incHeader.php");
 
 	// check configured sender
-	if(!isEmail($adminConfig['senderEmail'])){
+	if(!isEmail($adminConfig['senderEmail'])) {
 		echo Notification::show(array(
 			'message' => $Translation["can not send mail"],
 			'class' => 'danger',
@@ -23,7 +23,7 @@
 	$isGroup = ($memberID->raw != '' ? false : true);
 
 	$recipient = ($sendToAll ? $Translation['all groups'] : ($isGroup ? sqlValue("select name from membership_groups where groupID='$groupID'") : sqlValue("select memberID from membership_users where lcase(memberID)='{$memberID->sql}'")));
-	if(!$recipient){
+	if(!$recipient) {
 		echo Notification::show(array(
 			'message' => $Translation['no recipient'],
 			'class' => 'danger',
@@ -32,8 +32,8 @@
 		include("{$currDir}/incFooter.php");
 	}
 
-	if(isset($_POST['saveChanges'])){
-		if(!csrf_token(true)){
+	if(isset($_POST['saveChanges'])) {
+		if(!csrf_token(true)) {
 			echo Notification::show(array(
 				'message' => $Translation['csrf token expired or invalid'],
 				'class' => 'warning',
@@ -50,7 +50,7 @@
 
 		$isGroup = ($memberID->raw != '' ? false : true);
 		$recipient = ($sendToAll ? $Translation["all groups"] : ($isGroup ? sqlValue("select name from membership_groups where groupID='$groupID'") : sqlValue("select lcase(memberID) from membership_users where lcase(memberID)='{$memberID->sql}'")));
-		if(!$recipient){
+		if(!$recipient) {
 			echo Notification::show(array(
 				'message' => $Translation["no recipient"],
 				'class' => 'danger',
@@ -60,21 +60,21 @@
 		}
 
 		// create a recipients array
-		$to = array();
-		if($sendToAll){
+		$to = [];
+		if($sendToAll) {
 			$res = sql("select email from membership_users", $eo);
-		}elseif($isGroup){
+		} elseif($isGroup) {
 			$res = sql("select email from membership_users where groupID='{$groupID}'", $eo);
-		}else{
+		} else {
 			$res = sql("select email from membership_users where lcase(memberID)='{$memberID->sql}'", $eo);
 		}
-		while($row = db_fetch_row($res)){
+		while($row = db_fetch_row($res)) {
 			if(!isEmail($row[0])) continue;
 			$to[] = $row[0];
 		}
 
 		// check that there is at least 1 recipient
-		if(count($to) < 1){
+		if(count($to) < 1) {
 			echo Notification::show(array(
 				'message' => $Translation['no recipient found'],
 				'class' => 'danger',
@@ -86,7 +86,7 @@
 		// save mail queue
 		$queueFile = md5(microtime());
 		$currDir = dirname(__FILE__);
-		if(!($fp = fopen("{$currDir}/{$queueFile}.php", 'w'))){
+		if(!($fp = fopen("{$currDir}/{$queueFile}.php", 'w'))) {
 			echo Notification::show(array(
 				'message' => str_replace('<CURRDIR>', $currDir, $Translation['mail queue not saved']),
 				'class' => 'danger',
@@ -96,7 +96,7 @@
 		}
 
 		fwrite($fp, '<' . "?php\n");
-		foreach($to as $recip){
+		foreach($to as $recip) {
 			fwrite($fp, "\t\$to[] = '{$recip}';\n");
 		}
 		fwrite($fp, "\t\$mailSubject = \"" . addcslashes($mailSubject, "\r\n\t\"\\\$") . "\";\n");
@@ -114,7 +114,7 @@
 		include("{$currDir}/incFooter.php");
 	}
 
-	if($sendToAll){
+	if($sendToAll) {
 		echo Notification::show(array(
 			'message' => "<b>{$Translation['attention']}</b><br>{$Translation['send mail to all members']}",
 			'class' => 'warning',
@@ -131,7 +131,7 @@
 	<input type="hidden" name="memberID" value="<?php echo $memberID->attr; ?>">
 	<input type="hidden" name="groupID" value="<?php echo $groupID; ?>">
 	<input type="hidden" name="sendToAll" value="<?php echo $sendToAll; ?>">
-	<?php if(isset($_REQUEST['simulate'])){ ?>
+	<?php if(isset($_REQUEST['simulate'])) { ?>
 		<input type="hidden" name="simulate" value="1">
 	<?php } ?>
 
@@ -187,7 +187,7 @@
 		</div>
 	</div>
 
-	<?php if($adminConfig['mail_function'] == 'smtp'){ ?>
+	<?php if($adminConfig['mail_function'] == 'smtp') { ?>
 		<div class="checkbox">
 			<div class="col-sm-offset-4 col-md-offset-3 col-lg-offset-4 col-sm-8 col-md-9 col-lg-6">
 				<label for="showDebug">
@@ -207,8 +207,8 @@
 </form>
 
 <script>
-	$j(function(){
-		$j('form').submit(function(){
+	$j(function() {
+		$j('form').submit(function() {
 			return jsShowWait();
 		});
 	})

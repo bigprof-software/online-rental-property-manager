@@ -14,31 +14,36 @@
 
 <div class="panel-body">
 	<fieldset class="form-horizontal">
-		<div class="form-group" style="border-bottom: dotted 1px #DDD;">
+		<!-- Field: ID -->
+		<div class="form-group properties-id" style="border-bottom: dotted 1px #DDD;">
 			<label class="col-xs-3 control-label">ID</label>
 			<div class="col-xs-9">
 				<div class="form-control-static"><%%VALUE(id)%%></div>
 			</div>
 		</div>
-		<div class="form-group" style="border-bottom: dotted 1px #DDD;">
+		<!-- Field: Property Name -->
+		<div class="form-group properties-property_name" style="border-bottom: dotted 1px #DDD;">
 			<label class="col-xs-3 control-label">Property Name</label>
 			<div class="col-xs-9">
 				<div class="form-control-static"><%%VALUE(property_name)%%></div>
 			</div>
 		</div>
-		<div class="form-group" style="border-bottom: dotted 1px #DDD;">
+		<!-- Field: Type -->
+		<div class="form-group properties-type" style="border-bottom: dotted 1px #DDD;">
 			<label class="col-xs-3 control-label">Type</label>
 			<div class="col-xs-9">
 				<div class="form-control-static"><%%COMBOTEXT(type)%%></div>
 			</div>
 		</div>
-		<div class="form-group" style="border-bottom: dotted 1px #DDD;">
+		<!-- Field: Number of units -->
+		<div class="form-group properties-number_of_units" style="border-bottom: dotted 1px #DDD;">
 			<label class="col-xs-3 control-label">Number of units</label>
 			<div class="col-xs-9">
 				<div class="form-control-static"><%%VALUE(number_of_units)%%></div>
 			</div>
 		</div>
-		<div class="form-group" style="border-bottom: dotted 1px #DDD;">
+		<!-- Field: Cover photo -->
+		<div class="form-group properties-photo" style="border-bottom: dotted 1px #DDD;">
 			<label class="col-xs-3 control-label">Cover photo</label>
 			<div class="col-xs-9">
 				<div class="form-control-static"><script>
@@ -48,37 +53,43 @@
 			<a href="#" onclick="$('photoImg<%%RND1%%>').src=($('photoImg<%%RND1%%>').src.search(/thumbnail\.php/) != -1 && photoSrc1<%%RND1%%> != '<%%TRANSLATION(ImageFolder)%%>' ? photoSrc1<%%RND1%%> : photoSrc2<%%RND1%%>); return false;"><img id="photoImg<%%RND1%%>" src="thumbnail.php?t=properties&f=photo&i=<%%VALUE(photo)%%>&v=dv" class="img-thumbnail"></a></div>
 			</div>
 		</div>
-		<div class="form-group" style="border-bottom: dotted 1px #DDD;">
+		<!-- Field: Owner -->
+		<div class="form-group properties-owner" style="border-bottom: dotted 1px #DDD;">
 			<label class="col-xs-3 control-label">Owner</label>
 			<div class="col-xs-9">
 				<div class="form-control-static"><span id="owner<%%RND1%%>"><%%COMBOTEXT(owner)%%></span></div>
 			</div>
 		</div>
-		<div class="form-group" style="border-bottom: dotted 1px #DDD;">
+		<!-- Field: Country -->
+		<div class="form-group properties-country" style="border-bottom: dotted 1px #DDD;">
 			<label class="col-xs-3 control-label">Country</label>
 			<div class="col-xs-9">
 				<div class="form-control-static"><%%COMBOTEXT(country)%%></div>
 			</div>
 		</div>
-		<div class="form-group" style="border-bottom: dotted 1px #DDD;">
+		<!-- Field: Street -->
+		<div class="form-group properties-street" style="border-bottom: dotted 1px #DDD;">
 			<label class="col-xs-3 control-label">Street</label>
 			<div class="col-xs-9">
 				<div class="form-control-static"><%%VALUE(street)%%></div>
 			</div>
 		</div>
-		<div class="form-group" style="border-bottom: dotted 1px #DDD;">
+		<!-- Field: City -->
+		<div class="form-group properties-City" style="border-bottom: dotted 1px #DDD;">
 			<label class="col-xs-3 control-label">City</label>
 			<div class="col-xs-9">
 				<div class="form-control-static"><%%VALUE(City)%%></div>
 			</div>
 		</div>
-		<div class="form-group" style="border-bottom: dotted 1px #DDD;">
+		<!-- Field: State -->
+		<div class="form-group properties-State" style="border-bottom: dotted 1px #DDD;">
 			<label class="col-xs-3 control-label">State</label>
 			<div class="col-xs-9">
 				<div class="form-control-static"><%%COMBOTEXT(State)%%></div>
 			</div>
 		</div>
-		<div class="form-group" style="border-bottom: dotted 1px #DDD;">
+		<!-- Field: ZIP -->
+		<div class="form-group properties-ZIP" style="border-bottom: dotted 1px #DDD;">
 			<label class="col-xs-3 control-label">ZIP</label>
 			<div class="col-xs-9">
 				<div class="form-control-static"><%%VALUE(ZIP)%%></div>
@@ -92,7 +103,7 @@
 </div>
 
 <script>
-	$j(function(){
+	$j(function() {
 		/* prevent loading child records in multiple DVP */
 		if($j('[id=properties-children]').length > 1) return;
 
@@ -108,7 +119,7 @@
 			apply_persisting_children
 		);
 
-		$j('form').on('click', '#children-tabs button[data-target]', function(){
+		$j('form').on('click', '#children-tabs button[data-target]', function() {
 			$j(this).toggleClass('active');
 			persist_expanded_child($j(this).attr('id'));
 		});

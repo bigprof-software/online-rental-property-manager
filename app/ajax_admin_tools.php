@@ -1,15 +1,13 @@
 <?php
 	$curr_dir = dirname(__FILE__);
-	include("{$curr_dir}/defaultLang.php");
-	include("{$curr_dir}/language.php");
-	include("{$curr_dir}/lib.php");
+	include_once("{$curr_dir}/lib.php");
 
 	$admin_tools = new AdminTools($_REQUEST);
 
 	class AdminTools{
 		private $request, $lang;
 
-		public function __construct($request = array()){
+		public function __construct($request = []) {
 			global $Translation;
 
 			if(!getLoggedAdmin()) return;
@@ -17,10 +15,10 @@
 
 			/* process request to retrieve $this->request, and then execute the requested action */
 			$this->process_request($request);          
-			echo call_user_func_array(array($this, $this->request['action']), array());
+			echo call_user_func_array(array($this, $this->request['action']), []);
 		}
 
-		protected function process_request($request){
+		protected function process_request($request) {
 			/* action must be a valid controller, else set to default (show_admin_tools) */
 			$controller = isset($request['action']) ? $request['action'] : false;
 			if(!in_array($controller, $this->controllers())) $request['action'] = 'show_admin_tools';
@@ -33,12 +31,12 @@
 		 *  
 		 *  @return array of public function names
 		 */
-		protected function controllers(){
+		protected function controllers() {
 			$rc = new ReflectionClass($this);
 			$methods = $rc->getMethods(ReflectionMethod::IS_PUBLIC);
 
-			$controllers = array();
-			foreach($methods as $mthd){
+			$controllers = [];
+			foreach($methods as $mthd) {
 				$controllers[] = $mthd->name;
 			}
 
@@ -48,7 +46,7 @@
 		/**
 		 * function to show admin tools menu for admins, or nothing otherwise
 		 */
-		public function show_admin_tools(){
+		public function show_admin_tools() {
 			handle_maintenance();
 
 			$tablename = $this->get_table();
@@ -114,7 +112,7 @@
 		/**
 		 * function to return the js code for the admin menu
 		 */
-		public function get_admin_tools_js(){
+		public function get_admin_tools_js() {
 			handle_maintenance();
 
 			$record_info = $this->get_record_info();
@@ -124,7 +122,7 @@
 			ob_start();
 			?>
 
-			$j(function(){
+			$j(function() {
 				var tablename = '<?php echo $this->get_table(); ?>';
 				var record_id = '<?php echo addslashes($this->request['id']); ?>';
 				var record_info = <?php echo $record_info; ?>;
@@ -133,21 +131,21 @@
 					.appendTo('.detail_view .panel-title:first')
 					.removeClass('invisible');
 
-				$j(window).resize(function(){
+				$j(window).resize(function() {
 					var dv_width = $j('.detail_view').width();
 					var menu_width = Math.min(dv_width * .9, 500);
 					$j('#admin-tools-menu').width(menu_width);
 				}).trigger('resize');
 
 				/* change owner link */
-				$j('#admin-tools-menu .change-owner-link').click(function(){
+				$j('#admin-tools-menu .change-owner-link').click(function() {
 					mass_change_owner(tablename, [record_id]);
 					setTimeout(update_username, 900);
 					return false;
 				});
 
 				/* function to update record info after 'change owner' dialog is gone */
-				var update_username = function(){
+				var update_username = function() {
 					/* wait till any modals disappear */
 					if(AppGini.modalOpen()) return setTimeout(update_username, 900);
 
@@ -158,19 +156,19 @@
 							id: record_id,
 							action: 'get_record_info'
 						},
-						success: function(ri){
+						success: function(ri) {
 							update_record_info(ri);
 						}
 					});
 				};
 
 				/* function to update record info */
-				var update_record_info = function(ri){
+				var update_record_info = function(ri) {
 					if(ri == undefined) return;
 					$j('#admin-tools-menu .no-owner').addClass('hidden');
 					$j('#admin-tools-menu .dl-horizontal').removeClass('hidden');
 
-					if(undefined == ri.memberID){
+					if(undefined == ri.memberID) {
 						$j('#admin-tools-menu .no-owner').removeClass('hidden');
 						$j('#admin-tools-menu .dl-horizontal').addClass('hidden');
 					}
@@ -196,7 +194,7 @@
 			return $js;
 		}
 
-		public function get_record_info(){
+		public function get_record_info() {
 			handle_maintenance();
 			@header('Content-type: application/json');
 
@@ -218,13 +216,13 @@
 		 *  @brief Retrieve and validate name of current table
 		 *  @return table name, or false on error.
 		 */
-		protected function get_table(){
+		protected function get_table() {
 			$table_ok = true;
 
 			$table = $this->request['table'];
 			if(!$table) $table_ok = false;
 
-			if($table_ok){
+			if($table_ok) {
 				$tables = getTableList();
 				if(!array_key_exists($table, $tables)) $table_ok = false;
 			}

@@ -1,311 +1,788 @@
 <?php
 
-	// IMPORTANT:
-	// ==========
-	// When translating, only translate the strings that are
-	// TO THE RIGHT OF the equal sign (=).
-	//
-	// Do NOT translate the strings between square brackets ([])
-	//
-	// Also, leave the text between < and > untranslated.
-	//
-	// =====================================================
-	// PLEASE NOTE:
-	// ============
-	// When a new version of AppGini is released, new strings
-	// might be added to the "defaultLang.php" file. To translate
-	// them, simply copy them to this file ("language.php") and 
-	// translate them here. Do NOT translate them directly in 
-	// the "defaultLang.php" file.
-	// =====================================================
-		
+/*
 
+If you'd like to translate your AppGini app, this is
+the right file to change! However, please check this page
+first as you might found an already existing translation
+that you can update instead of starting from scratch:
 
-	// datalist.php
-	$Translation['quick search'] = "Quick Search";
-	$Translation['records x to y of z'] = "Records <FirstRecord> to <LastRecord> of <RecordCount>";
-	$Translation['filters'] = "Filters";
-	$Translation['filter'] = "Filter";
-	$Translation['filtered field'] = "Filtered field";
-	$Translation['comparison operator'] = "Comparison Operator";
-	$Translation['comparison value'] = "Comparison Value";
-	$Translation['and'] = "And";
-	$Translation['or'] = "Or";
-	$Translation['equal to'] = "Equal to";
-	$Translation['not equal to'] = "Not equal to";
-	$Translation['greater than'] = "Greater than";
-	$Translation['greater than or equal to'] = "Greater than or equal to";
-	$Translation['less than'] = "Less than";
-	$Translation['less than or equal to'] = "Less than or equal to";
-	$Translation['like'] = "Like";
-	$Translation['not like'] = "Not like";
-	$Translation['is empty'] = "Is empty";
-	$Translation['is not empty'] = "Is not empty";
-	$Translation['apply filters'] = "Apply filters";
-	$Translation['save filters'] = "Save and apply filters";
-	$Translation['saved filters title'] = "HTML Code For The Applied Filters";
-	$Translation['saved filters instructions'] = "Copy the code below and paste it to an HTML file to save the filter you just defined so that you can return to it at any time in the future without having to redefine it. You can save this HTML code on your computer or on any server and access this prefiltered table view through it.";
-	$Translation['hide code'] = "Hide this code";
-	$Translation['printer friendly view'] = "Printer-friendly view";
-	$Translation['save as csv'] = "Download as csv file (comma-separated values)";
-	$Translation['edit filters'] = "Edit filters";
-	$Translation['clear filters'] = "Clear filters";
-	$Translation['order by'] = 'Order by';
-	$Translation['go to page'] = 'Go to page:';
-	$Translation['none'] = 'None';
-	$Translation['Select all records'] = 'Select all records';
-	$Translation['With selected records'] = 'With selected records';
-	$Translation['Print Preview Detail View'] = 'Print Preview Detail View';
-	$Translation['Print Preview Table View'] = 'Print Preview Table View';
-	$Translation['Print'] = 'Print';
-	$Translation['Cancel Printing'] = 'Cancel Printing';
-	$Translation['Cancel Selection'] = 'Cancel Selection';
-	$Translation['Maximum records allowed to enable this feature is'] = 'Maximum records allowed to enable this feature is';
-	$Translation['No matches found!'] = 'No matches found!';
-	$Translation['Start typing to get suggestions'] = 'Start typing to get suggestions.';
+https://bigprof.com/appgini/download-language-files
 
-	// _dml.php
-	$Translation['are you sure?'] = 'Are you sure you want to delete this record?';
-	$Translation['add new record'] = 'Add new record';
-	$Translation['update record'] = 'Update record';
-	$Translation['delete record'] = 'Delete record';
-	$Translation['deselect record'] = 'Deselect record';
-	$Translation["couldn't delete"] = 'Could not delete the record due to the presence of <RelatedRecords> related record(s) in table [<TableName>]';
-	$Translation['confirm delete'] = 'This record has <RelatedRecords> related record(s) in table [<TableName>]. Do you still want to delete it? <Delete> &nbsp; <Cancel>';
-	$Translation['yes'] = 'Yes';
-	$Translation['no'] = 'No';
-	$Translation['pkfield empty'] = ' field is a primary key field and cannot be empty.';
-	$Translation['upload image'] = 'Upload new file ';
-	$Translation['select image'] = 'Select an image ';
-	$Translation['remove image'] = 'Remove file';
-	$Translation['month names'] = 'January,February,March,April,May,June,July,August,September,October,November,December';
-	$Translation['field not null'] = 'You cannot leave this field empty.';
-	$Translation['*'] = '*';
-	$Translation['today'] = 'Today';
-	$Translation['Hold CTRL key to select multiple items from the above list.'] = 'Hold CTRL key to select multiple items from the above list.';
-	$Translation['Save New'] = 'Save New';
-	$Translation['Save As Copy'] = 'Save As Copy';
-	$Translation['Deselect'] = 'Cancel';
-	$Translation['Add New'] = 'Add New';
-	$Translation['Delete'] = 'Delete';
-	$Translation['Cancel'] = 'Cancel';
-	$Translation['Print Preview'] = 'Print Preview';
-	$Translation['Save Changes'] = 'Save Changes';
-	$Translation['CSV'] = 'Save CSV';
-	$Translation['Reset Filters'] = 'Show All';
-	$Translation['Find It'] = 'Find It';
-	$Translation['Previous'] = 'Previous';
-	$Translation['Next'] = 'Next';
-	$Translation['Back'] = 'Back';
+IMPORTANT:
+==========
+When translating, only translate the strings that are
+TO THE RIGHT OF the arrow sign (=>).
 
-	// lib.php
-	$Translation['select a table'] = "Jump to ...";
-	$Translation['homepage'] = "Homepage";
-	$Translation['error:'] = "Error:";
-	$Translation['sql error:'] = "SQL error:";
-	$Translation['query:'] = "Query:";
-	$Translation['< back'] = "Back";
-	$Translation["if you haven't set up"] = "If you haven't set up the database yet, you can do so by clicking <a href='setup.php'>here</a>.";
-	$Translation['file too large']="Error: The file you uploaded exceeds the maximum allowed size of <MaxSize> KB";
-	$Translation['invalid file type']="Error: This file type is not allowed. Only <FileTypes> files can be uploaded";
+Do NOT translate the strings between square brackets ([])
+Also, leave the text between < and > untranslated.
+And also, leave the special string %s as-is, untranslated.
 
-	// setup.php
-	$Translation['goto start page'] = "Back to start page";
-	$Translation['no db connection'] = "Couldn't establish a database connection.";
-	$Translation['no db name'] = "Couldn't access the database named '<DBName>' on this server.";
-	$Translation['provide connection data'] = "Please provide the following data to connect to the database:";
-	$Translation['mysql server'] = "MySQL server (host)";
-	$Translation['mysql username'] = "MySQL Username";
-	$Translation['mysql password'] = "MySQL password";
-	$Translation['mysql db'] = "Database name";
-	$Translation['connect'] = "Connect";
-	$Translation['couldnt save config'] = "Couldn't save connection data into 'config.php'.<br />Please make sure that the folder:<br />'".dirname(__FILE__)."'<br />is writable (chmod 775 or chmod 777).";
-	$Translation['setup performed'] = "Setup already performed on";
-	$Translation['delete md5'] = "If you want to force setup to run again, you should first delete the file 'setup.md5' from this folder.";
-	$Translation['table exists'] = "Table <b><TableName></b> exists, containing <NumRecords> records.";
-	$Translation['failed'] = "Failed";
-	$Translation['ok'] = "Ok";
-	$Translation['mysql said'] = "MySQL said:";
-	$Translation['table uptodate'] = "Table is up-to-date.";
-	$Translation['couldnt count'] = "Couldn't count records of table <b><TableName></b>";
-	$Translation['creating table'] = "Creating table <b><TableName></b> ... ";
+=====================================================
+PLEASE NOTE:
+============
+When a new version of AppGini is released, new strings
+might be added to the "defaultLang.php" file. To translate
+them, simply copy them to this file ("language.php") and 
+translate them here. Do NOT translate them directly in 
+the "defaultLang.php" file.
+=====================================================
 
-	// separateDVTV.php
-	$Translation['please wait'] = "Please wait";
+To avoid any error messages, please make sure to:
 
-	// _view.php
-	$Translation['tableAccessDenied']="Sorry! You don't have permission to access this table. Please contact the admin.";
+1. Add a comma at the end of each line if it's not already there.
+2. Leave the last line in this file like this:
+];
 
-	// incCommon.php
-	$Translation['not signed in']="You are not signed in";
-	$Translation['sign in']="Sign In";
-	$Translation['signed as']="Signed in as";
-	$Translation['sign out']="Sign Out";
-	$Translation['admin setup needed']="Admin setup was not performed. Please log in to the <a href=admin/>admin control panel</a> to perform the setup.";
-	$Translation['db setup needed']="Program setup was not performed yet. Please log in to the <a href=setup.php>setup page</a> first.";
-	$Translation['new record saved']="The new record has been saved successfully.";
-	$Translation['record updated']="The changes have been saved successfully.";
+*/
 
-	// index.php
-	$Translation['admin area']="Admin Area";
-	$Translation['login failed']="Your previous login attempt failed. Try again.";
-	$Translation['sign in here']="Sign In Here";
-	$Translation['remember me']="Remember me";
-	$Translation['username']="Username";
-	$Translation['password']="Password";
-	$Translation['go to signup']="Don't have a username? <br />&nbsp; <a href=membership_signup.php>Sign up here</a>";
-	$Translation['forgot password']="Forgot your password? <a href=membership_passwordReset.php>Click here</a>";
-	$Translation['browse as guest']="<a href=index.php>Continue browsing as a guest</a>";
-	$Translation['no table access']="You don't have enough permissions to access any page here. Please sign in first.";
-	$Translation['signup']="Sign up";
+$Translation = [
+	'language' => 'english',
+	'membership management' => 'Membership Management',
+	'password mismatch' => "Password doesn't match.",
+	'error' => 'Error',
+	'invalid email' => 'Invalid Email Address',
+	'sending mails' => "Sending mails might take some time. Please don't close this page until you see the 'Done' message.",
+	'complete step 4' => 'Please complete step 4 by selecting the member you want to transfer records to.',
+	'info' => 'Info',
+	'sure move member' => "Are you sure you want to move member '<MEMBER>' and his data from group '<OLDGROUP>' to group '<NEWGROUP>'?",
+	'sure move data of member' => "Are you sure you want to move data of member '<OLDMEMBER>' from group '<OLDGROUP>' to member '<NEWMEMBER>' from group '<NEWGROUP>'?",
+	'sure move all members' => "Are you sure you want to move all members and data from group '<OLDGROUP>' to group '<NEWGROUP>'?",
+	'sure move data of all members' => "Are you sure you want to move data of all members of group '<OLDGROUP>' to member '<MEMBER>' from group '<NEWGROUP>'?",
+	'toggle navigation' => 'Toggle navigation',
+	'admin area' => 'Admin Area',
+	'groups' => 'Groups',
+	'view groups' => 'View Groups',
+	'add group' => 'Add Group',
+	'edit anonymous permissions' => 'Edit Anonymous Permissions',
+	'members' => 'Members',
+	'view members' => 'View Members',
+	'add member' => 'Add Member',
+	"view members' records" => "View Members' Records",
+	'utilities' => 'Utilities',
+	'admin settings' => 'Admin Settings',
+	'rebuild thumbnails' => 'Rebuild thumbnails',
+	'rebuild fields' => 'You could try fixing this issue from the Admin Area : Utilities menu : View/Rebuild Fields.',
+	'import CSV' => 'Import CSV data',
+	'batch transfer' => 'Batch Transfer Wizard',
+	'mail all users' => 'Mail All Users',
+	'AppGini forum' => 'AppGini Community Forum',
+	"user's area" => "User's area",
+	'sign out' => 'Sign Out',
+	'attention' => 'Attention!',
+	'security risk admin' => 'You are using the default admin username and password. This is a huge security risk. Please change at least the admin password from the <a href="pageSettings.php">Admin Settings</a> page <em>immediately</em>.',
+	'security risk' => 'You are using the default admin password. This is a huge security	risk. Please change the admin password from the <a href="pageSettings.php">Admin Settings</a> page <em>immediately</em>.',
+	'plugins' => 'Plugins',
+	'assigned table records to group' => "Assigned <NUMBER> records of table '<TABLE>' to group '<GROUP>'",
+	'assigned table records to group and member' => "Assigned <NUMBER> records of table '<TABLE>' to group '<GROUP>' , member '<MEMBERID>'",
+	'data ownership assign' => 'Assign ownership to data that has no owners',
+	'records ownership done' => "All records in all tables have owners now.<br>Back to <a href='pageHome.php'>Admin homepage</a>.",
+	'select group' => 'Select group',
+	'data ownership' => 'Sometimes, you might have tables with data that were entered before implementing this AppGini membership management system, or entered using other applications unaware of AppGini ownership system. This data currently has no owners. This page allows you to assign owner groups and owner members to this data.',
+	'table' => 'Table',
+	'records with no owners' => 'Records with no owners',
+	'new owner group' => 'New owner group',
+	'new owner member' => 'New owner member*',
+	'cancel' => 'Cancel',
+	'assign new owners' => 'Assign new owners',
+	'please wait' => 'Please wait',
+	'if no owner member assigned' => '* If you assign no owner member here, you can still use the <a href="pageTransferOwnership.php">Batch Transfer Wizard</a> later to do so.',
+	'can not delete group remove members' => "Can't delete this group. Please remove members first.",
+	'can not delete group transfer records' => "Can't delete this group. Please transfer its data records to another group first..",
+	'group exists error' => 'Error: Group name already exists. You must choose a unique group name.',
+	'group not found error' => 'Error: Group not found!',
+	'edit group' => "Edit Group '<GROUPNAME>'",
+	'add new group' => 'Add New Group',
+	'anonymous group attention' => 'Attention! This is the anonymous group.',
+	'show tool tips' => 'Show tool tips as mouse moves over options',
+	'group name' => 'Group name',
+	'readonly group name' => 'The name of the anonymous group is read-only here.',
+	'anonymous group name' => "If you name the group '<ANONYMOUSGROUP>', it will be considered the anonymous group<br>that defines the permissions of guest visitors that do not log into the system.",
+	'description' => 'Description',
+	'allow visitors sign up' => 'Allow visitors to sign up?',
+	'admin add users' => 'No. Only the admin can add users.',
+	'admin approve users' => 'Yes, and the admin must approve them.',
+	'automatically approve users' => 'Yes, and automatically approve them.',
+	'group table permissions' => 'Table permissions for this group',
+	'no' => 'No',
+	'owner' => 'Owner',
+	'group' => 'Group',
+	'all' => 'All',
+	'insert' => 'Insert',
+	'view' => 'View',
+	'edit' => 'Edit',
+	'delete' => 'Delete',
+	'save changes' => 'Save changes',
+	'username error' => 'Error: Username already exists or is invalid. Make sure you provide a username containing 4 to 20 valid characters.',
+	'member not found' => 'Error: Member not found!',
+	'user has special permissions' => 'This user has special permissions that override his group permissions.',
+	'user has group permissions' => 'This user inherits the <a href="pageEditGroup.php?groupID=<GROUPID>">permissions of his group</a>.',
+	'set user special permissions' => 'Set special permissions for this user',
+	'sure continue' => 'If you made any changes to this member and did not save them yet, they will be lost if you continue. Are you sure you want to continue?',
+	'edit member' => 'Edit Member <MEMBERID>',
+	'add new member' => 'Add New Member',
+	'anonymous guest member' => 'Attention! This is the anonymous (guest) member.',
+	'admin member' => 'Attention! This is the admin member. You can\'t change the username, password or email of this member here, but you can do so in the <a href="pageSettings.php">admin settings</a> page.',
+	'member username' => 'Member username',
+	'check availability' => 'Check if this username is available',
+	'read only username' => 'The username of the guest member is read-only.',
+	'password' => 'Password',
+	'change password' => "Type a password only if you want to change this member's<br>password. Otherwise, leave this field empty.",
+	'confirm password' => 'Confirm Password',
+	'email' => 'Email Address',
+	'approved' => 'Approved?',
+	'banned' => 'Banned?',
+	'comments' => 'Comments',
+	'back to members' => 'Back to members',
+	'member added' => 'Member <USERNAME> added successfully',
+	'member permissions saved' => 'Member permissions have been saved successfully.',
+	'member permissions reset' => 'Member permissions have been reset to the same as his group.',
+	'user table permissions' => "Table permissions for user <a href='pageEditMember.php?memberID=<MEMBER>' title='View member details'><MEMBERID></a> of group <a href='pageEditGroup.php?groupID=<GROUPID>'  title='View group details and permissions'><GROUP></a>",
+	'no member permissions' => "This member doesn't currently have any special permissions. This list shows the permissions of his group.",
+	'reset member permissions' => 'Reset member permissions',
+	'remove special permissions' => 'This would remove all special permissions of this user and he will have the same permissions as his group. Are you sure you want to do that?',
+	'invalid table' => 'Invalid table.',
+	'invalid primary key' => 'Invalid primary key value',
+	'record not found' => 'Record not found ... if it was imported externally, try assigning an owner from the admin area.',
+	'invalid username' => 'Invalid username',
+	'record not found error' => 'Error: Record not found!',
+	'edit Record Ownership' => 'Edit Record Ownership',
+	'owner group' => 'Owner group',
+	'view all records by group' => 'View all records by this group',
+	'owner member' => 'Owner member',
+	'view all records by member' => 'View all records by this member',
+	'switch record ownership' => 'If you want to switch ownership of this record to a member of another group, you must change the owner group and save changes first.',
+	'record created on' => 'Record created on',
+	'record modified on' => 'Record modified on',
+	'view all records of table' => 'View all records of this table',
+	'record data' => 'Record data',
+	'print' => 'Print',
+	'could not retrieve field list' => "Couldn't retrieve field list from '<TABLENAME>'",
+	'field name' => 'Field name',
+	'value' => 'Value',
+	'visitor sign up' => '<a href="../membership_signup.php" target="_blank">Visitor sign up</a> is disabled because there are no groups where visitors can sign up currently. To enable visitor sign-up, set at least one group to allow visitor sign-up.',
+	'table data without owner' => 'You have data in one or more tables that doesn\'t have an owner. To assign an owner group for this data, <a href="pageAssignOwners.php">click here</a>.',
+	'membership management homepage' => 'Membership Management Homepage',
+	'newest updates' => 'Newest Updates',
+	'view record details' => 'View record details',
+	'newest entries' => 'Newest Entries',
+	'available add-ons' => 'Available add-ons',
+	'more info' => 'More info',
+	'close' => 'Close',
+	'view add-ons' => 'View all add-ons',
+	'top members' => 'Top Members',
+	'edit member details' => 'Edit member details',
+	'view member records' => "View member's data records",
+	'records' => 'records',
+	'members stats' => 'Members Stats',
+	'total groups' => 'Total groups',
+	'active members' => 'Active members',
+	'view active members' => 'View active members',
+	'members awaiting approval' => 'Members awaiting approval',
+	'view members awaiting approval' => 'View members awaiting approval',
+	'banned members' => 'Banned members',
+	'view banned members' => 'View banned members',
+	'total members' => 'Total members',
+	'view all members' => 'View all members',
+	'BigProf tweets' => 'Tweets By BigProf Software',
+	'follow BigProf' => 'Follow @bigprof',
+	'loading bigprof feed' => 'Loading @bigprof feed ...',
+	'remove feed' => 'Remove this feed',
+	'can not send mail' => "You can not send emails currently. The configured sender email address is not valid.	Please <a href='pageSettings.php'>correct it first</a> then try again.",
+	'all groups' => 'All groups',
+	'no recipient' => "Couldn't find recipient. Please make sure you provide a valid recipient.",
+	'invalid subject line' => 'Invalid subject line.',
+	'no recipient found' => "Couldn't find any recipients. Please make sure you provide a valid recipient.",
+	'mail queue not saved' => "Couldn't save mail queue. Please make sure the directory '<CURRDIR>' is writeable (chmod 755 or chmod 777).",
+	'send mail' => 'Send mail message to a member/group',
+	'send mail to all members' => "You are sending an email to all members. This could take a lot of time and affect your server performance. If you have a huge number of members, we don't recommend sending an email to all of them at once.",
+	'from' => 'From',
+	'change setting' => 'Change this setting',
+	'to' => 'To',
+	'subject' => 'Subject',
+	'message' => 'Message',
+	'send message' => 'Send Message',
+	'record details' => 'Membership Management -- Record details',
+	'table name' => 'Table: <TABLENAME>',
+	'create or update table' => 'An attempt to <ACTION> the field <i><FIELD></i> in <i><TABLE></i> table was made by executing this query: <pre><QUERY></pre> Results are shown below.',
+	'view or rebuild fields' => 'View/Rebuild fields',
+	'show deviations only' => 'Show deviations only',
+	'show all fields' => 'Show all fields',
+	'compare tables page' => 'This page compares the tables and fields structure/schema as designed in AppGini to the actual database structure and allows you to fix any deviations.',
+	'field' => 'Field',
+	'AppGini definition' => 'AppGini definition',
+	'database definition' => 'Current definition in the database',
+	'table name title' => '<TABLENAME> table',
+	'does not exist' => "Doesn't exist!",
+	'create field' => 'Create the field by running an ADD COLUMN query.',
+	'create it' => 'Create it',
+	'fix field' => 'Fix the field by running an ALTER COLUMN query so that its definition becomes the same as that in AppGini.',
+	'fix it' => 'Fix it',
+	'field update warning' => 'DANGER!! In some cases, this might lead to data loss, truncation, or corruption. It might be a better idea sometimes to update the field in AppGini to match that in the database. Would you still like to continue?',
+	'no deviations found' => 'No deviations found. All fields OK!',
+	'error fields' => 'Found <CREATENUM> non-existing fields that need to be created.<br>Found <UPDATENUM> deviating fields that might need to be updated.',
+	'thumbnails utility' => "Use this utility if you have one or more image fields in a table that don't have thumbnails or have thumbnails with incorrect dimensions.",
+	'rebuild thumbnails of table' => 'Rebuild thumbnails of table',
+	'rebuild' => 'Rebuild',
+	'rebuild thumbnails of table_name' => "Rebuilding thumbnails of '<i><TABLENAME></i>' table ...",
+	'do not close page message' => "Don't close this page until you see a confirmation message that all thumbnails have been built.",
+	'rebuild thumbnails status' => 'Status: still rebuilding thumbnails, please wait ...',
+	'building field thumbnails' => "Building thumbnails for '<i><FIELD></i>' field...",
+	'done' => 'Done.',
+	'finished status' => 'Status: finished. You can close this page now.',
+	'invalid mail queue' => 'Invalid mail queue.',
+	'sending message failed' => " -- Sending message to '<EMAIL>': Failed.",
+	'sending message ok' => " -- Sending message to '<EMAIL>': Ok.",
+	'done!' => 'Done!',
+	'close page' => 'You may close this page now or browse to some other page.',
+	'mail log' => 'Mail log:',
+	'invalid security token' => 'Invalid security token! Please <a href="pageSettings.php">reload the page</a> and try again.',
+	'unique admin username error' => 'The new admin username is already taken by another member. Please make sure the new admin username is unique.',
+	'unique anonymous username error' => 'The new anonymous username is already taken by another member. Please make sure the username provided is unique.',
+	'unique anonymous group name error' => 'The new anonymous group name is already in use by another group. Please make sure the group name provided is unique.',
+	'admin password mismatch' => '"Admin password" and "Confirm password" don\'t match.',
+	'invalid sender email' => 'Invalid "Sender email".',
+	'errors occurred' => 'The following errors occured:',
+	'go back' => 'Please <a href="pageSettings.php" onclick="history.go(-1); return false;">go back</a> to correct the above error(s) and try again.',
+	'record updated automatically' => 'Record updated automatically on <DATE>',
+	'admin settings saved' => 'Admin settings saved successfully.<br>Back to <a href="pageSettings.php">Admin settings</a>.',
+	'admin settings not saved' => 'Admin settings were NOT saved successfully. Failure reason: <ERROR><br>Back to <a href="pageSettings.php" onclick="history.go(-1); return false;">Admin settings</a>.',
+	'admin username' => 'Admin username',
+	'admin password' => 'Admin password',
+	'change admin password' => 'Type a password only if you want to change the admin password.',
+	'sender email' => 'Sender email',
+	'sender name and email' => "Sender name and email are used in the 'To' field when sending",
+	'email messages' => 'email messages to groups or members.',
+	'admin notifications' => 'Admin notifications',
+	'no email notifications' => 'No email notifications to admin.',
+	'member waiting approval' => 'Notify admin only when a new member is waiting for approval.',
+	'new sign-ups' => 'Notify admin for all new sign-ups.',
+	'sender name' => 'Sender name',
+	'members custom field 1' => 'Members custom field 1',
+	'members custom field 2' => 'Members custom field 2',
+	'members custom field 3' => 'Members custom field 3',
+	'members custom field 4' => 'Members custom field 4',
+	'member approval email subject' => 'Member approval<br>email subject',
+	'member approval email subject control' => 'When the admin approves a member, the member is notified by<br>email that he is approved. You can control the subject of the<br>approval email in this box,  and the content in the box below.',
+	'member approval email message' => 'Member approval<br>email message',
+	'MySQL date' => 'MySQL date<br>formatting string',
+	'MySQL reference' => 'Please refer to <a href="http://dev.mysql.com/doc/refman/5.0/en/date-and-time-functions.html#function_date-format" target="_blank">the MySQL reference</a> for possible formats.',
+	'PHP short date' => 'PHP short date<br>formatting string',
+	'PHP manual' => 'Please refer to <a href="http://www.php.net/manual/en/function.date.php" target="_blank">the PHP manual</a> for possible formats.',
+	'PHP long date' => 'PHP long date<br>formatting string',
+	'groups per page' => 'Groups per page',
+	'members per page' => 'Members per page',
+	'records per page' => 'Records per page',
+	'default sign-up mode' => 'Default sign-up mode<br>for new groups',
+	'no sign-up allowed' => 'No sign-up allowed. Only the admin can add members.',
+	'admin approve members' => 'Sign-up allowed, but the admin must approve members.',
+	'automatically approve members' => 'Sign-up allowed, and automatically approve members.',
+	'anonymous group' => 'Name of the anonymous<br>group',
+	'anonymous user name' => 'Name of the anonymous<br>user',
+	'hide twitter feed' => 'Hide Twitter feed in admin homepage?',
+	'twitter feed' => 'Our Twitter feed helps keep you informed of our latest news, useful resources, new releases, and many other helpful tips.',
+	'invalid source member' => 'Invalid source member selected.',
+	'invalid destination member' => 'Invalid destination member selected.',
+	'moving member' => "Moving member '<MEMBERID>' and his data from group '<SOURCEGROUP>' to group '<DESTINATIONGROUP>' ...",
+	'data records transferred' => "Member '<MEMBERID>' now belongs to group '<NEWGROUP>'. Data records transferred: <DATARECORDS>.",
+	'moving data' => "Moving data of member '<SOURCEMEMBER>' from group '<SOURCEGROUP>' to member '<DESTINATIONMEMBER>' from group '<DESTINATIONGROUP>' ...",
+	'member records status' => "Member '<SOURCEMEMBER>' of group '<SOURCEGROUP>' had <DATABEFORE> data records. <TRANSFERSTATUS> to member '<DESTINATIONMEMBER>' of group '<DESTINATIONGROUP>'.",
+	'moving all group members' => "Moving all members and data of group '<SOURCEGROUP>' to group '<DESTINATIONGROUP>' ...",
+	'failed transferring group members' => "Operation failed. No members were transferred from group '<SOURCEGROUP>' to '<DESTINATIONGROUP>'.",
+	'group members transferred' => "All members of group '<SOURCEGROUP>' now belong to '<DESTINATIONGROUP>'. ",
+	'failed transfer data records' => 'However, data records failed to transfer.',
+	'data records were transferred' => '<DATABEFORE> data records were transferred.',
+	'moving group data to member' => "Moving data of all members of group '<SOURCEGROUP>' to member '<DESTINATIONMEMBER>' from group '<DESTINATIONGROUP>' ...",
+	'moving group data to member status' => "<NUMBER> record(s) were transferred from group '<SOURCEGROUP>' to member '<DESTINATIONMEMBER>' of group '<DESTINATIONGROUP>'",
+	'status' => 'STATUS:',
+	'batch transfer link' => 'To repeat the same batch transfer again later you can <a href= "pageTransferOwnership.php?sourceGroupID=<SOURCEGROUP>&amp;sourceMemberID=<SOURCEMEMBER>&amp;destinationGroupID=<DESTINATIONGROUP>&amp;destinationMemberID=<DESTINATIONMEMBER>&amp;moveMembers=<MOVEMEMBERS>">bookmark or copy this link</a>.',
+	'ownership batch transfer' => 'Batch Transfer Of Ownership',
+	'step 1' => 'STEP 1:',
+	'batch transfer wizard' => 'The batch transfer wizard allows you to transfer data records of one or all members of a group (the <i>source group</i>) to a member of another group (the <i>destination member</i> of the <i>destination group</i>)',
+	'source group' => 'Source group',
+	'update' => 'Update',
+	'next step' => 'Next Step',
+	'group statistics' => 'This group has <MEMBERS> members, and <RECORDS> data records.',
+	'step 2' => 'STEP 2:',
+	'source member message' => 'The source member could be one member or all members of the source group.',
+	'source member' => 'Source member',
+	'all group members' => "All members of '<GROUPNAME>'",
+	'member statistics' => 'This member has <RECORDS> data records.',
+	'step 3' => 'STEP 3:',
+	'destination group message' => 'The destination group could be the same or different from the source group. Only groups that have members are listed below.',
+	'destination group' => 'Destination group',
+	'step 4' => 'STEP 4:',
+	'destination member message' => 'The destination member will be the new owner of the data records of the source	member.',
+	'destination member' => 'Destination member',
+	'begin transfer' => 'Begin Transfer',
+	'move records' => 'You could either move records from the source member(s) to a member in the destination group, or move the source member(s), together with their data records to the destination group.',
+	'move data records to member' => 'Move data records to this member:',
+	'move source member to group' => "Move source member(s) and all his/their data records to the '<GROUPNAME>' group.",
+	'file not found error' => "Error: File '<FILENAME>' not found.",
+	'preview and confirm CSV data' => 'Preview and confirm CSV data',
+	'display csv file rows' => 'Displaying the first 10 rows of the CSV file ...',
+	'change CSV settings' => 'Change CSV settings',
+	'import CSV data' => 'Confirm and import CSV data &gt;',
+	'apply CSV settings' => 'Apply CSV Settings',
+	'importing CSV data' => 'Importing CSV data ...',
+	'start at estimated record' => 'Starting at record <RECORDNUMBER> of <RECORDS> total estimated records ...',
+	'table backed up' => "Table '<TABLE>' backed up as '<TABLENAME>'.",
+	'table backup not done' => "Table '<TABLE>' is empty, so no backup was done.",
+	'importing batch' => 'Importing batch <BATCH> of <BATCHNUM>: ',
+	'ok' => 'Ok',
+	'records inserted or updated successfully' => '<RECORDS> records inserted/updated in <SECONDS> seconds.',
+	'mission accomplished' => 'Mission accomplished!',
+	'assign a records owner' => 'Assign an owner to the imported records &gt;',
+	'please wait and do not close' => "Please wait and don't close this page ...",
+	'hide advanced options' => 'Hide advanced options',
+	'show advanced options' => 'Show advanced options',
+	'import CSV to database' => 'Import a CSV file to the database',
+	'import CSV to database page' => 'This page allows you to upload a CSV file (for example, one generated from MS Excel) and import it to one of the tables of the database. This makes it so easy to bulk-populate the database with data from other sources rather than manually entering every single record.',
+	'populate table from CSV' => 'This is the table that you want to populate with data from the CSV file.',
+	'CSV file' => 'CSV file',
+	'preview CSV data' => 'Preview CSV data &gt;',
+	'no table name provided' => 'No table name provided.',
+	'can not open CSV' => "Can't open csv file '<FILENAME>'.",
+	'empty CSV file' => "The csv file '<FILENAME>' is empty.",
+	'no CSV file data' => "The csv file '<FILENAME>' has no data to read.",
+	'field separator' => 'Field separator',
+	'default comma' => 'The default is comma (,)',
+	'field delimiter' => 'Field delimiter',
+	'default double-quote' => 'The default is double-quote (")',
+	'maximum characters per line' => 'Maximum characters per line',
+	'trouble importing CSV' => 'If you have trouble importing the CSV file, try increasing this value.',
+	'ignore lines number' => 'Number of lines to ignore',
+	'skip lines number' => 'Change this value if you want to skip a specific number of lines in the CSV file.',
+	'first line field names' => 'The first line of the file contains field names',
+	'field names must match' => 'Field names must <b>exactly</b> match those in the database.',
+	'update table records' => 'Update matching table records (using primary key).',
+	'ignore CSV table records' => 'If not checked, records in the CSV file having the same primary key values as those in the table <b>will be ignored</b>',
+	'back up the table' => 'Back up the table before importing CSV data into it.',
+	'no matching results found' => 'No matching results found.',
+	'search groups' => 'Search groups',
+	'find' => 'Find',
+	'reset' => 'Reset',
+	'members count' => 'Members count',
+	'Edit group' => 'Edit group',
+	'confirm delete group' => 'Are you sure you want to completely delete this group?',
+	'delete group' => 'Delete group',
+	'view group records' => 'View group records',
+	'view group members' => 'View group members',
+	'send message to group' => 'Send message to group',
+	'previous' => 'Previous',
+	'displaying groups' => 'Displaying groups <GROUPNUM1> to <GROUPNUM2> of <GROUPS>',
+	'next' => 'Next',
+	'key' => 'Key:',
+	'edit group details' => 'Edit group details and permissions.',
+	'add member to group' => 'Add a new member to group.',
+	'view data records' => "View all data records entered by the group's members.",
+	'list group members' => 'List all members of a group.',
+	'send email to all members' => 'Send an email message to all members of a group.',
+	'search members' => 'Search members <SEARCH> in <HTMLSELECT>',
+	'all fields' => 'All fields',
+	'any' => 'Any',
+	'waiting approval' => 'Waiting approval',
+	'active' => 'Active',
+	'Banned' => 'Banned',
+	'username' => 'Username',
+	'sign up date' => 'Sign up date',
+	'Status' => 'Status',
+	'Edit member' => 'Edit member',
+	'sure delete user' => "Are you sure you want to delete user '<USERNAME>'?",
+	'delete member' => 'Delete member',
+	'approve this member' => 'Approve this member',
+	'unban this member' => 'Unban this member',
+	'ban this member' => 'Ban this member',
+	'View member records' => "View member's records",
+	'send message to member' => 'Send message to member',
+	'displaying members' => 'Displaying members <MEMBERNUM1> to <MEMBERNUM2> of <MEMBERS>',
+	'activate member' => 'Activate new/banned member.',
+	'ban member' => 'Ban (suspend) member.',
+	'view entered member records' => 'View all data records entered by member.',
+	'send email to member' => 'Send an email message to member.',
+	'data records' => 'Data Records',
+	'show records' => 'Show records from',
+	'all tables' => 'All tables',
+	'sort records' => 'Sort records by',
+	'date created' => 'Date created',
+	'date modified' => 'Date modified',
+	'newer first' => 'Newer first',
+	'older first' => 'Older first',
+	'created' => 'Created',
+	'modified' => 'Modified',
+	'data' => 'Data',
+	'change record ownership' => 'Change ownership of this record',
+	'sure delete record' => 'Are you sure you want to delete this record?',
+	'delete record' => 'Delete record',
+	'displaying records' => 'Displaying records <RECORDNUM1> to <RECORDNUM2> of <RECORDS>',
+	'maintenance mode admin notification' => 'Maintenance mode is enabled! You can disable it from the admin home page.',
+	'maintenance mode message' => 'Maintenance mode message',
+	'maintenance mode' => 'Maintenance mode',
+	'OFF' => 'OFF',
+	'ON' => 'ON',
+	'enable maintenance mode?' => 'Are you sure you want to enable maintenance mode? Only admin users can access the site in this mode!',
+	'disable maintenance mode?' => 'Are you sure you want to disable maintenance mode? All users will be able to access the site!',
+	'csv file upload error' => 'An error occured while processing the requested CSV file.',
+	'back and retry' => 'Go back and retry',
+	'upload or choose csv file' => 'Upload a CSV file or open an existing one',
+	'choose csv upload' => 'Choose a CSV file to upload',
+	'no file chosen yet' => 'No file chosen yet',
+	'start upload' => 'Start upload',
+	'select a table' => 'Select a table',
+	'error reading csv data' => 'An error occured while reading CSV data. Try resetting/adjusting the CSV settings.',
+	'belongs to' => 'Belongs to',
+	'skip column' => 'Skip this column',
+	'connection failed retrying' => 'Connection failed. Retrying in <SECONDS> seconds ...',
+	'connection failed timeout' => 'Connection timed out. Retry later.',
+	'sure delete csv' => 'Are you sure you want to delete the CSV file [CSVFILE] from the server?',
+	'invalid csv file selected' => 'Invalid file chosen. Must be a CSV file.',
+	'couldnt delete csv file' => "Couldn't delete this CSV file.",
+	'error backing up table' => "Error: Couldn't back up table <TABLE>.",
+	'no columns selected' => 'Please select at least one column to import and make sure each selected column belongs to a UNIQUE field.',
+	'csrf token expired or invalid' => 'Oops! Something went wrong with this page. Please go back and retry.',
+	'back to groups' => 'Back to groups',
+	'member updated' => 'Member <USERNAME> updated successfully',
+	'fix errors before submitting' => 'Please fix the highlighted errors before submitting the page!',
+	'mail_function' => 'Method of sending emails',
+	'smtp_server' => 'SMTP server',
+	'smtp_encryption' => 'SMTP encryption',
+	'smtp_port' => 'SMTP port',
+	'smtp_port_hint' => 'Typical values are 25 (for non-encrypted SMTP), 465 (used in many cases with SSL encryption) or 587 (typical with TLS encryption)',
+	'smtp_user' => 'SMTP username',
+	'smtp_pass' => 'SMTP password',
+	'configure mail settings' => 'Configure mail settings',
+	'display debugging info' => 'Display debugging info',
+	'debugging info hint' => 'Debugging info is useful if you are having trouble sending emails through the configured SMTP server',
+	'create backup file' => 'Create Backup File',
+	'database backups' => 'Database backups',
+	'no backups found' => 'No backups found. You can create a new backup by clicking the "Create Backup File" button.',
+	'available backups' => 'Available backups',
+	'restore backup' => 'Restore',
+	'delete backup' => 'Delete',
+	'backup restored' => 'Backup restored successfully.',
+	'backup deleted' => 'Backup deleted successfully.',
+	'restore error' => 'An error occured while restoring backup.',
+	'backup delete error' => 'An error occured while deleting backup.',
+	'confirm delete backup' => 'Are you sure you want to delete this backup file?',
+	'confirm restore' => 'Restoring your database from a backup file would OVERWRITE all existing data AND users/passwords, reverting all to the state when the backup was taken.\n\nDuring the restore process, maintenance mode will be enabled to prevent users from modifying the database, and will be disabled once the restore is finished.\n\nAre you sure you want to continue?',
+	'confirm backup' => 'During the backup process, maintenance mode will be enabled to prevent users from modifying the database, and will be disabled once the backup is finished.\n\nAre you sure you want to continue?',
+	'cant create backup folder' => "Error: Can't create or write to admin/backups folder. Please check your folder permissions and ownership or contact your server administrator for help.",
+	'fix all' => 'FIX ALL FIELDS',
+	'backup before fix' => "It's highly recommended that you create a database backup first before attempting to make any fixes here.",
+	'about backups' => 'Backups are performed using mysqldump commandline tool. If no backups are being created, it could be due to the web server not having permission to run mysqldump.',
+	'server status disabled' => 'Server status is disabled on this application. To enable it, regenerate the application with the option "Allow server status in admin area" turned on.',
+	'server status' => 'Server status',
+	'db status' => 'Database status',
+	'generated by' => 'This application was generated by AppGini <VERSION> on <DATETIME>.',
+	'column table name' => 'Table name',
+	'db storage' => 'Database storage',
+	'column size kb' => 'Size (KB)',
+	'total' => 'Total',
+	'php info' => 'PHP info',
+	'files' => 'files',
+	'uploads info' => 'Uploads info',
+	'quick search' => 'Quick Search',
+	'records x to y of z' => 'Records <FirstRecord> to <LastRecord> of <RecordCount>',
+	'filters' => 'Filters',
+	'filter' => 'Filter',
+	'filtered field' => 'Filtered field',
+	'comparison operator' => 'Comparison Operator',
+	'comparison value' => 'Comparison Value',
+	'and' => 'And',
+	'or' => 'Or',
+	'equal to' => 'Equal to',
+	'not equal to' => 'Not equal to',
+	'greater than' => 'Greater than',
+	'greater than or equal to' => 'Greater than or equal to',
+	'less than' => 'Less than',
+	'less than or equal to' => 'Less than or equal to',
+	'like' => 'Like',
+	'not like' => 'Not like',
+	'is empty' => 'Is empty',
+	'is not empty' => 'Is not empty',
+	'apply filters' => 'Apply filters',
+	'save filters' => 'Save and apply filters',
+	'saved filters title' => 'HTML Code For The Applied Filters',
+	'saved filters instructions' => 'Copy the code below and paste it to an HTML file to save the filter you just defined so that you can return to it at any time in the future without having to redefine it. You can save this HTML code on your computer or on any server and access this prefiltered table view through it.',
+	'hide code' => 'Hide this code',
+	'printer friendly view' => 'Printer-friendly view',
+	'save as csv' => 'Download as csv file (comma-separated values)',
+	'edit filters' => 'Edit filters',
+	'clear filters' => 'Clear filters',
+	'order by' => 'Order by',
+	'go to page' => 'Go to page:',
+	'none' => 'None',
+	'Select all records' => 'Select all records',
+	'With selected records' => 'With selected records',
+	'Print Preview Detail View' => 'Print Preview Detail View',
+	'Print Preview Table View' => 'Print Preview Table View',
+	'Print' => 'Print',
+	'Cancel Printing' => 'Cancel Printing',
+	'Cancel Selection' => 'Cancel Selection',
+	'Maximum records allowed to enable this feature is' => 'Maximum records allowed to enable this feature is',
+	'No matches found!' => 'No matches found!',
+	'Start typing to get suggestions' => 'Start typing to get suggestions.',
+	'are you sure?' => 'Are you sure you want to delete this record?',
+	'add new record' => 'Add new record',
+	'update record' => 'Update record',
+	'deselect record' => 'Deselect record',
+	"couldn't delete" => 'Could not delete the record due to the presence of <RelatedRecords> related record(s) in table [<TableName>]',
+	'confirm delete' => 'This record has <RelatedRecords> related record(s) in table [<TableName>]. Do you still want to delete it? <Delete> &nbsp; <Cancel>',
+	'yes' => 'Yes',
+	'pkfield empty' => ' field is a primary key field and cannot be empty.',
+	'upload image' => 'Upload new file ',
+	'select image' => 'Select an image ',
+	'remove image' => 'Remove file',
+	'month names' => 'January,February,March,April,May,June,July,August,September,October,November,December',
+	'field not null' => 'You cannot leave this field empty.',
+	'*' => '*',
+	'today' => 'Today',
+	'Hold CTRL key to select multiple items from the above list.' => 'Hold CTRL key to select multiple items from the above list.',
+	'Save New' => 'Save New',
+	'Save As Copy' => 'Save As Copy',
+	'Deselect' => 'Cancel',
+	'Add New' => 'Add New',
+	'Delete' => 'Delete',
+	'Cancel' => 'Cancel',
+	'Print Preview' => 'Print Preview',
+	'Save Changes' => 'Save Changes',
+	'CSV' => 'Save CSV',
+	'Reset Filters' => 'Show All',
+	'Find It' => 'Find It',
+	'Previous' => 'Previous',
+	'Next' => 'Next',
+	'Back' => 'Back',
+	'homepage' => 'Homepage',
+	'error:' => 'Error:',
+	'sql error:' => 'SQL error:',
+	'query:' => 'Query:',
+	'< back' => 'Back',
+	"if you haven't set up" => "If you haven't set up the database yet, you can do so by clicking <a href='setup.php'>here</a>.",
+	'file too large' => 'Error: The file you uploaded exceeds the maximum allowed size of <MaxSize> KB',
+	'invalid file type' => 'Error: This file type is not allowed. Only <FileTypes> files can be uploaded',
+	'goto start page' => 'Back to start page',
+	'no db connection' => "Couldn't establish a database connection.",
+	'no db name' => "Couldn't access the database named '<DBName>' on this server.",
+	'provide connection data' => 'Please provide the following data to connect to the database:',
+	'mysql server' => 'MySQL server (host)',
+	'mysql username' => 'MySQL Username',
+	'mysql password' => 'MySQL password',
+	'mysql db' => 'Database name',
+	'connect' => 'Connect',
+	'setup performed' => 'Setup already performed on',
+	'delete md5' => "If you want to force setup to run again, you should first delete the file 'setup.md5' from this folder.",
+	'table exists' => 'Table <b><TableName></b> exists, containing <NumRecords> records.',
+	'failed' => 'Failed',
+	'mysql said' => 'MySQL said:',
+	'table uptodate' => 'Table is up-to-date.',
+	'couldnt count' => "Couldn't count records of table <b><TableName></b>",
+	'creating table' => 'Creating table <b><TableName></b> ... ',
+	'tableAccessDenied' => "Sorry! You don't have permission to access this table. Please contact the admin.",
+	'not signed in' => 'You are not signed in',
+	'sign in' => 'Sign In',
+	'signed as' => 'Signed in as',
+	'admin setup needed' => 'Admin setup was not performed. Please log in to the <a href=admin/>admin control panel</a> to perform the setup.',
+	'db setup needed' => 'Program setup was not performed yet. Please log in to the <a href=setup.php>setup page</a> first.',
+	'new record saved' => 'The new record has been saved successfully.',
+	'record updated' => 'The changes have been saved successfully.',
+	'login failed' => 'Your previous login attempt failed. Try again.',
+	'sign in here' => 'Sign In Here',
+	'remember me' => 'Remember me',
+	'go to signup' => "Don't have a username? <br>&nbsp; <a href=membership_signup.php>Sign up here</a>",
+	'forgot password' => 'Forgot your password? <a href=membership_passwordReset.php>Click here</a>',
+	'browse as guest' => '<a href=index.php>Continue browsing as a guest</a>',
+	'no table access' => "You don't have enough permissions to access any page here. Please sign in first.",
+	'signup' => 'Sign up',
+	'user already exists' => "Username '<MemberID>' already exists. Try another username.",
+	'user available' => "Username '<MemberID>' is available and you can take it.",
+	'empty user' => "Please type a username in the box first then click 'Check availability'.",
+	'thanks' => 'Thank you for signing up!',
+	'sign in no approval' => "If you have chosen a group that doesn't require admin approval, you can sign in right now <a href=index.php?signIn=1>here</a>.",
+	'sign in wait approval' => 'If you have chosen a group that requires admin approval, please wait for an email confirming your approval.',
+	'username empty' => 'You must provide a username. Please go back and type a username',
+	'password invalid' => 'You must provide a password of 4 characters or more, without spaces. Please go back and type a valid password',
+	'password no match' => "Password doesn't match. Please go back and correct the password",
+	'username exists' => 'Username already exists. Please go back and choose a different username.',
+	'email invalid' => 'Invalid email address. Please go back and correct your email address.',
+	'group invalid' => 'Invalid group. Please go back and correct the group selection.',
+	'sign up here' => 'Sign Up Here!',
+	'registered? sign in' => 'Already registered? <a href=index.php?signIn=1>Sign in here</a>.',
+	'sign up disabled' => 'Sorry! Sign-up is temporarily disabled by admin. Try again later.',
+	'groups *' => "If you choose to sign up to a group marked with an asterisk (*), you won't be able to log in until the admin approves you. You'll receive an email when you are approved.",
+	'sign up' => 'Sign Up',
+	'password reset' => 'Password Reset Page',
+	'password reset details' => "Enter your username or email address below. We'll then send a special link to your email. After you click on that link, you'll be asked to enter a new password.",
+	'password reset subject' => 'Password reset instructions',
+	'password reset message' => "Dear member, \n If you have requested to reset/change your password, please click on this link: \n <ResetLink> \n\n If you didn't request a password reset/change, please ignore this message. \n\n Regards.",
+	'password reset ready' => "An email with password reset instructions has been sent to your registered email address. Please follow the instructions in that email message.<br><br>If you don't receive this email within 5 minutes, try resetting your password again, and make sure you enter a correct username or email address.",
+	'password reset invalid' => 'Invalid username or password. <a href=membership_passwordReset.php>Try again</a>, or go <a href=index.php>back to homepage</a>.',
+	'password change' => 'Password Change Page',
+	'new password' => 'New password',
+	'password reset done' => 'Your password was changed successfully. You can <a href=index.php?signOut=1>log in with the new password here</a>.',
+	'Loading ...' => 'Loading ...',
+	'No records found' => 'No records found',
+	'You can add children records after saving the main record first' => 'You can add child records after saving the main record first',
+	'ascending' => 'Ascending',
+	'descending' => 'Descending',
+	'then by' => 'Then by',
+	'Legend' => 'Legend',
+	'Table' => 'Table',
+	'Edit' => 'Edit',
+	'View' => 'View',
+	'Only your own records' => 'Only your own records',
+	'All records owned by your group' => 'All records owned by your group',
+	'All records' => 'All records',
+	'Not allowed' => 'Not allowed',
+	'Your info' => 'Your info',
+	'Hello user' => 'Hello %s!',
+	'Your access permissions' => 'Your access permissions',
+	'Update profile' => 'Update profile',
+	'Update password' => 'Update password',
+	'Change your password' => 'Change your password',
+	'Old password' => 'Old Password',
+	'Password strength: weak' => 'Password strength: weak',
+	'Password strength: good' => 'Password strength: good',
+	'Password strength: strong' => 'Password strength: strong',
+	'Wrong password' => 'Wrong password',
+	'Your profile was updated successfully' => 'Your profile was updated successfully',
+	'Your password was changed successfully' => 'Your password was changed successfully',
+	'Your IP address' => 'Your IP address',
+	'Records to display' => 'Records to display',
+	'Setup Data' => 'Setup Data',
+	'Database Information' => 'Database Information',
+	'Admin Information' => 'Admin Information',
+	'setup intro 1' => "There doesn't seem to be a configuration file. This is necessary for the application to work.<br><br>This setup page will help you create that file. But in some server configurations this might not work. In that case you might need to adjust the folder permissions, or create the config file manually.",
+	'setup intro 2' => "Welcome to your new AppGini application! Before getting started, we need some information about your database. You will need to know the following before proceeding:<ol><li>Database server (host)</li><li>Database name</li><li>Database username</li><li>Database password</li></ol>The above items were probably supplied to you by your web hosting provider. If you do not have this information, then you will need to contact them or refer to their service documentation before you can continue here. If you're ready, let's start!",
+	'setup finished' => '<b>Success!</b><br><br>Your AppGini application has been installed. Here are some suggestions to begin using it:',
+	'setup next 1' => 'Start using your application to add data, or work with existing data, if any.',
+	'setup next 2' => 'Import existing data into your application from a CSV file.',
+	'setup next 3' => 'Go to the admin homepage where you can change many other application settings.',
+	'db_name help' => 'The name of the database you want to run your AppGini application in.',
+	'db_server help' => '<i>localhost</i> works on most servers. If not, you should be able to get this info from your web hosting provider.',
+	'db_username help' => 'Your MySQL username',
+	'db_password help' => 'Your MySQL password',
+	'username help' => "Specify the admin username you'd like to use to access the admin area. Must be four characters or more.",
+	'password help' => 'Specify a strong password to access the admin area.',
+	'email help' => 'Enter the email address where you want admin notifications to be sent.',
+	'Continue' => 'Continue ...',
+	'Lets go' => "Let's go!",
+	'Submit' => 'Submit',
+	'Hide' => 'Hide help',
+	'Database info is correct' => '&#10003; Database info is correct!',
+	'Database connection error' => '&#10007; Database connection error!',
+	'The following errors occured' => 'The following errors occured',
+	'failed to create config instructions' => 'This is most probably due to folder permissions that are set to prevent creating files by your web server. Don\'t worry! You can still create the config file manually.<br><br>Just paste the following code into a text editor and save the file as "config.php", then upload it using FTP or any other method to the folder %s on your server.',
+	'Only show records having filterer' => 'Only show records where %s is %s',
+	"You don't have enough permissions to delete this record" => "You don't have enough permissions to delete this record",
+	"Couldn't delete this record" => "Couldn't delete this record",
+	'The record has been deleted successfully' => 'The record has been deleted successfully',
+	"Couldn't save changes to the record" => "Couldn't save changes to the record",
+	"Couldn't save the new record" => "Couldn't save the new record",
+	'More' => 'More',
+	'Confirm deleting multiple records' => 'Confirm deleting multiple records',
+	'<n> records will be deleted. Are you sure you want to do this?' => '<n> records will be deleted. Are you sure you want to do this?',
+	'Yes, delete them!' => 'Yes, delete them!',
+	'No, keep them.' => 'No, keep them.',
+	'Deleting record <i> of <n>' => 'Deleting record <i> of <n>',
+	'Delete progress' => 'Delete progress',
+	'Show/hide details' => 'Show/hide details',
+	'Connection error' => 'Connection error',
+	'Add more actions' => 'Add more actions',
+	'Update progress' => 'Update progress',
+	'Change owner' => 'Change owner',
+	'Updating record <i> of <n>' => 'Updating record <i> of <n>',
+	'Change owner of <n> selected records to' => 'Change owner of <n> selected records to',
+	'username invalid' => 'Username <MemberID> already exists or is invalid. Make sure you provide a username containing 4 to 20 valid characters.',
+	'permalink' => 'Permalink',
+	'invalid provider' => 'Invalid provider!',
+	'invalid url' => 'Invalid URL!',
+	'cant retrieve coordinates from url' => "Can't retrieve coordinates from URL!",
+	'unique field error' => 'This value already exists or is invalid. Please make sure to specify a unique valid value.',
+	'show all user records from table' => 'Show all records of this user from "<tablename>" table',
+	'show all group records from table' => 'Show all records of this group from "<tablename>" table',
+	'email this user' => 'Email this user',
+	'email this group' => 'Email this group',
+	'last modified' => 'Last modified',
+	'record has no owner' => 'This record has no assigned owner. You can assign an owner from the admin area.',
+	'admin-only info' => "The above info is displayed because you are currently signed in as the super admin. Other users won't see this.",
+	'discard changes confirm' => 'Discard changes to this record?',
+	'hide/show columns' => 'Hide/Show columns',
+	'next column' => 'Next column',
+	'previous column' => 'Previous column',
+	'hide all' => 'Hide all',
+	'toggle' => 'Toggle',
+	'datetimepicker locale' => 'en',
+	'account token theft warning' => 'Someone might have been trying to access your account by stealing your cookie-based access token. As a precaution, you have been logged out and are required to re-enter your login credentials to sign in.',
+	'group added successfully' => 'Group added successfully',
+	'group updated successfully' => 'Changes to this group saved successfully',
+	'saved filter link' => 'Saved filter link',
+	'app documentation' => 'App documentation',
+	'back to top' => 'Back to top',
+	'check all' => 'Check all',
+	'uncheck all' => 'Uncheck all',
+	'invert checks' => 'Invert checks',
+	'set all to x' => 'Set all to <x>',
+	'tip check csv for errors' => 'Tip: you can check if your CSV file contains errors using <a href="https://csvlint.io/" target="_blank">csvlint.io</a>',
+	'keyboard shortcuts' => 'Keyboard shortcuts',
+	'keyboard shortcuts disabled' => 'Keyboard shortcuts are disabled',
+	'keyboard shortcuts enabled' => 'Keyboard shortcuts are enabled',
+	'Enable' => 'Enable',
+	'Disable' => 'Disable',
+	'display this help window' => 'Display this help window',
+	'close this window' => 'Close this window',
+	'open x navigation menu' => 'Open <b><x></b> navigation menu',
+	'user profile' => 'User profile',
+	'clear search' => 'Clear search',
+	'navigate between sections of page' => 'Navigate between sections of page',
+	'open admin info menu' => 'Open Admin Information menu',
+	'navigate between sections of child records' => 'Navigate between sections of child records',
+	'old php version' => "You're using PHP version <PHP_VERSION>. The minimum version supported by this app is <minPHP>. Please upgrade PHP, or install the app on another server.",
+	'extension not enabled' => "This app can't run because <EXTENSION> extension is not enabled. Please enable it in your php.ini configuration file, restart the web server, then retry.",
+	'error reading csv file' => 'Error reading CSV file. Please make sure the file exists, and CSV settings are correct.',
+	'clean csv dir error' => 'Couldn\'t create or read/write to "import-csv" directory.',
+	'Invalid import job' => 'Invalid import job',
+	'Previous record' => 'Previous record',
+	'Next record' => 'Next record',
+	'job in progress by another process' => 'Job already in progress by another process',
+	'invalid clean csv file' => 'Clean CSV file invalid, unreadable, or not yet ready',
+	'invalid csv map' => 'Invalid CSV field mapping',
+	'invalid field separator' => 'Invalid field separator',
+	'import csv file' => 'Import CSV data to a table',
+	'import another csv file' => 'Import another CSV file',
+	'file upload error' => 'Error uploading file',
+	'to use tab' => 'To use TAB as field separator, type TAB',
+	'field qualifier' => 'Field qualifier (wrapper)',
+	'auto-detect csv columns' => 'Automatically detect CSV columns based on selected table.',
+	'nothing to import' => 'There is nothing to import. Please select at least one column to import.',
+	'multiple columns mapped to same field' => "You can't import multiple columns to the same field.",
+	'uploading in x seconds' => 'Uploading starts in [SECONDS] seconds.',
+	'cancel and back to csv upload' => 'Cancel and choose a different CSV file',
+	'confirm importing csv' => 'Confirm importing CSV data to selected table',
+	'total records' => 'Total records',
+	'imported records' => 'Imported records',
+	'remaining' => 'Remaining',
+	'ETA' => 'ETA',
+	'import finished' => 'Import finished. You can access imported records in the specified table.',
+	'import job taking long keep page open permalink' => 'This import job seems to be taking some time. You can keep this page open and continue working in another tab. We also recommend copying the link below so you can resume importing later if anything goes wrong.',
+	'pause' => 'Pause',
+	'resume' => 'Resume',
+	'new' => 'New',
+	'updated' => 'Updated',
+	'skipped' => 'Skipped',
+	'fast import mode' => 'Fast import mode (faster import, but less accurate stats, and record ownership set after importing)',
+	'assign owner for n records in table' => 'Assign owner for [n] records without owners in this table',
+	'no update missing pk field in csv' => "Updating is disabled because there is no primary key field specified in the CSV file, or you don't have edit access to this table.",
+	'no insert update only' => "You don't have permission to insert new records into this table. Only updates are allowed.",
+	'allow importing CSV files' => 'Allow importing CSV files',
+	'description of import CSV files option' => 'This option allows user(s) to import CSV files into tables where they have insert or edit permissions.',
+	'admin group attention' => 'Attention! This is the admin group.',
+	'toggle import logs' => 'Show/hide import logs',
+	'admin csv warning' => 'This page will be removed in future versions and you should use [a]the new import CSV page[/a] instead.',
+	'Jump to' => 'Jump to ...',
+	'check username availability' => 'Check if this username is available',
+	'try rebuild fields' => 'You could try fixing this issue from the Admin Area : Utilities menu : View/Rebuild Fields.',
+	'click continue if slow' => 'If this page is taking too long to load, [a]click continue[/a] to proceed.',
 
-	// checkMemberID.php
-	$Translation['user already exists']="Username '<MemberID>' already exists. Try another username.";
-	$Translation['user available']="Username '<MemberID>' is available and you can take it.";
-	$Translation['empty user']="Please type a username in the box first then click 'Check availability'.";
-
-	// membership_thankyou.php
-	$Translation['thanks']="Thank you for signing up!";
-	$Translation['sign in no approval']="If you have chosen a group that doesn't require admin approval, you can sign in right now <a href=index.php?signIn=1>here</a>.";
-	$Translation['sign in wait approval']="If you have chosen a group that requires admin approval, please wait for an email confirming your approval.";
-
-	// membership_signup.php
-	$Translation['username empty']="You must provide a username. Please go back and type a username";
-	$Translation['password invalid']="You must provide a password of 4 characters or more, without spaces. Please go back and type a valid password";
-	$Translation['password no match']="Password doesn't match. Please go back and correct the password";
-	$Translation['username exists']="Username already exists. Please go back and choose a different username.";
-	$Translation['email invalid']="Invalid email address. Please go back and correct your email address.";
-	$Translation['group invalid']="Invalid group. Please go back and correct the group selection.";
-	$Translation['sign up here']="Sign Up Here!";
-	$Translation['registered? sign in']="Already registered? <a href=index.php?signIn=1>Sign in here</a>.";
-	$Translation['sign up disabled']="Sorry! Sign-up is temporarily disabled by admin. Try again later.";
-	$Translation['check availability']="Check if this username is available";
-	$Translation['confirm password']="Confirm Password";
-	$Translation['email']="Email Address";
-	$Translation['group']="Group";
-	$Translation['groups *']="If you choose to sign up to a group marked with an asterisk (*), you won't be able to log in until the admin approves you. You'll receive an email when you are approved.";
-	$Translation['sign up']="Sign Up";
-
-	// membership_passwordReset.php
-	$Translation['password reset']="Password Reset Page";
-	$Translation['password reset details']="Enter your username or email address below. We'll then send a special link to your email. After you click on that link, you'll be asked to enter a new password.";
-	$Translation['password reset subject']="Password reset instructions";
-	$Translation['password reset message']="Dear member, \n If you have requested to reset/change your password, please click on this link: \n <ResetLink> \n\n If you didn't request a password reset/change, please ignore this message. \n\n Regards.";
-	$Translation['password reset ready']="An email with password reset instructions has been sent to your registered email address. Please follow the instructions in that email message.<br /><br />If you don't receive this email within 5 minutes, try resetting your password again, and make sure you enter a correct username or email address.";
-	$Translation['password reset invalid']="Invalid username or password. <a href=membership_passwordReset.php>Try again</a>, or go <a href=index.php>back to homepage</a>.";
-	$Translation['password change']="Password Change Page";
-	$Translation['new password']="New password";
-	$Translation['password reset done']="Your password was changed successfully. You can <a href=index.php?signOut=1>log in with the new password here</a>.";
-
-    $Translation['Loading ...']='Loading ...';
-    $Translation['No records found']='No records found';
-    $Translation['You can add children records after saving the main record first']='You can add child records after saving the main record first';
-
-    $Translation['ascending'] = 'Ascending';
-    $Translation['descending'] = 'Descending';
-    $Translation['then by'] = 'Then by';
-
-	// membership_profile
-	$Translation['Legend'] = 'Legend';
-	$Translation['Table'] = 'Table';
-	$Translation['Edit'] = 'Edit';
-	$Translation['View'] = 'View';
-	$Translation['Only your own records'] = 'Only your own records';
-	$Translation['All records owned by your group'] = 'All records owned by your group';
-	$Translation['All records'] = 'All records';
-	$Translation['Not allowed'] = 'Not allowed';
-	$Translation['Your info'] = 'Your info';
-	$Translation['Hello user'] = 'Hello %s!';
-	$Translation['Your access permissions'] = 'Your access permissions';
-	$Translation['Update profile'] = 'Update profile';
-	$Translation['Update password'] = 'Update password';
-	$Translation['Change your password'] = 'Change your password';
-	$Translation['Old password'] = 'Old Password';
-	$Translation['Password strength: weak'] = 'Password strength: weak';
-	$Translation['Password strength: good'] = 'Password strength: good';
-	$Translation['Password strength: strong'] = 'Password strength: strong';
-	$Translation['Wrong password'] = 'Wrong password';
-	$Translation['Your profile was updated successfully'] = 'Your profile was updated successfully';
-	$Translation['Your password was changed successfully'] = 'Your password was changed successfully';
-	$Translation['Your IP address'] = 'Your IP address';
-	
-	/* Added in AppGini 4.90 */
-	$Translation['Records to display'] = 'Records to display';
-	
-	/* Added in AppGini 5.10 */
-	$Translation['Setup Data'] = 'Setup Data';
-	$Translation['Database Information'] = 'Database Information';
-	$Translation['Admin Information'] = 'Admin Information';
-	$Translation['setup intro 1'] = 'There doesn\'t seem to be a configuration file. This is necessary for the application to work.<br><br>This setup page will help you create that file. But in some server configurations this might not work. In that case you might need to adjust the folder permissions, or create the config file manually.';
-	$Translation['setup intro 2'] = 'Welcome to your new AppGini application! Before getting started, we need some information about your database. You will need to know the following before proceeding:<ol><li>Database server (host)</li><li>Database name</li><li>Database username</li><li>Database password</li></ol>The above items were probably supplied to you by your web hosting provider. If you do not have this information, then you will need to contact them or refer to their service documentation before you can continue here. If you\'re ready, let\'s start!';
-	$Translation['setup finished'] = '<b>Success!</b><br><br>Your AppGini application has been installed. Here are some suggestions to begin using it:';
-	$Translation['setup next 1'] = 'Start using your application to add data, or work with existing data, if any.';
-	$Translation['setup next 2'] = 'Import existing data into your application from a CSV file.';
-	$Translation['setup next 3'] = 'Go to the admin homepage where you can change many other application settings.';
-	$Translation['db_name help'] = 'The name of the database you want to run your AppGini application in.';
-	$Translation['db_server help'] = '<i>localhost</i> works on most servers. If not, you should be able to get this info from your web hosting provider.';
-	$Translation['db_username help'] = 'Your MySQL username';
-	$Translation['db_password help'] = 'Your MySQL password';
-	$Translation['username help'] = 'Specify the admin username you\'d like to use to access the admin area. Must be four characters or more.';
-	$Translation['password help'] = 'Specify a strong password to access the admin area.';
-	$Translation['email help'] = 'Enter the email address where you want admin notifications to be sent.';
-	$Translation['Continue'] = 'Continue ...';
-	$Translation['Lets go'] = 'Let\'s go!';
-	$Translation['Submit'] = 'Submit';
-	$Translation['Hide'] = 'Hide help';
-	$Translation['Database info is correct'] = '&#10003; Database info is correct!';
-	$Translation['Database connection error'] = '&#10007; Database connection error!';
-	$Translation['The following errors occured'] = 'The following errors occured';
-	$Translation['failed to create config instructions'] = 'This is most probably due to folder permissions that are set to prevent creating files by your web server. Don\'t worry! You can still create the config file manually.<br><br>Just paste the following code into a text editor and save the file as "config.php", then upload it using FTP or any other method to the folder %s on your server.';
-	$Translation['Only show records having filterer'] = 'Only show records where %s is %s';
-	
-	/* Added in AppGini 5.20 */
-	$Translation['You don\'t have enough permissions to delete this record'] = 'You don\'t have enough permissions to delete this record';
-	$Translation['Couldn\'t delete this record'] = 'Couldn\'t delete this record';
-	$Translation['The record has been deleted successfully'] = 'The record has been deleted successfully';
-	$Translation['Couldn\'t save changes to the record'] = 'Couldn\'t save changes to the record';
-	$Translation['Couldn\'t save the new record'] = 'Couldn\'t save the new record';
-	
-	/* Added in AppGini 5.30 */
-	$Translation['More'] = 'More';
-	$Translation['Confirm deleting multiple records'] = 'Confirm deleting multiple records';
-	$Translation['<n> records will be deleted. Are you sure you want to do this?'] = '<n> records will be deleted. Are you sure you want to do this?';
-	$Translation['Yes, delete them!'] = 'Yes, delete them!';
-	$Translation['No, keep them.'] = 'No, keep them.';
-	$Translation['Deleting record <i> of <n>'] = 'Deleting record <i> of <n>';
-	$Translation['Delete progress'] = 'Delete progress';
-	$Translation['Show/hide details'] = 'Show/hide details';
-	$Translation['Connection error'] = 'Connection error';
-	$Translation['Add more actions'] = 'Add more actions';
-	$Translation['Update progress'] = 'Update progress';
-	$Translation['Change owner'] = 'Change owner';
-	$Translation['Updating record <i> of <n>'] = 'Updating record <i> of <n>';
-	$Translation['Change owner of <n> selected records to'] = 'Change owner of <n> selected records to';
-
-	/* Added in AppGini 5.40 */
-	$Translation['username invalid'] = 'Username <MemberID> already exists or is invalid. Make sure you provide a username containing 4 to 20 valid characters.';
-	$Translation['permalink'] = 'Permalink';
-	$Translation['invalid provider'] = 'Invalid provider!';
-	$Translation['invalid url'] = 'Invalid URL!';
-	$Translation['cant retrieve coordinates from url'] = 'Can\'t retrieve coordinates from URL!';
-
-	/* Added in AppGini 5.51 */
-	$Translation['maintenance mode admin notification'] = 'Maintenance mode is enabled! You can disable it from the admin home page.';
-	$Translation['unique field error'] = 'This value already exists or is invalid. Please make sure to specify a unique valid value.';
-
-	/* Added in AppGini 5.60 */
-	$Translation['show all user records from table'] = 'Show all records of this user from "<tablename>" table';
-	$Translation['show all group records from table'] = 'Show all records of this group from "<tablename>" table';
-	$Translation['email this user'] = 'Email this user';
-	$Translation['email this group'] = 'Email this group';
-	$Translation['owner'] = 'Owner';
-	$Translation['created'] = 'Created';
-	$Translation['last modified'] = 'Last modified';
-	$Translation['record has no owner'] = 'This record has no assigned owner. You can assign an owner from the admin area.';
-	$Translation['admin-only info'] = 'The above info is displayed because you are currently signed in as the super admin. Other users won\'t see this.';
-	$Translation['discard changes confirm'] = 'Discard changes to this record?';
-
-	/* Added in AppGini 5.70 */
-	$Translation['hide/show columns'] = 'Hide/Show columns';
-	$Translation['next column'] = 'Next column';
-	$Translation['previous column'] = 'Previous column';
+	// Added in 5.91
+	'keyboard shorcuts reference' => 'Keyboard shortcuts reference',
+];
