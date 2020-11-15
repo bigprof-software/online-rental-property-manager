@@ -4,7 +4,8 @@
 
 ![](https://cdn.bigprof.com/appgini-open-source-apps/orpm-properties-detail-view-showing-child-table-units-thumb.png)
 
-Online rental property manager (ORPM) allows you to manage landlords, rental properties, units, 
+Online rental property manager (ORPM) is a free open source app.
+It allows you to manage landlords, rental properties, units, 
 applications, leases and tenants. Add all details related to the tenants, i.e. references, 
 rental history, employment history and income overview. ORPM was created using 
 [AppGini](https://bigprof.com/appgini/). So you can easily customize it to add/remove 
@@ -46,7 +47,7 @@ This application is ready to run within the Gitpod IDE.
 This will allow you to try the application out and develop it for your needs.
 All you will need is a web browser. _Do not use this in production!!!_
 
-[Launch app on Gitpod](https://gitpod.io/#https://github.com/bigprof-software/online-rental-property-manager) 
+[Launch private demo on Gitpod](https://gitpod.io/#https://github.com/bigprof-software/online-rental-property-manager) 
 
 The app would take a couple of minutes to launch.
 Afterwards, you'll see the welcome screen of the app in the right part of the window, where you can start the setup wizard.
