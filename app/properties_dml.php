@@ -14,8 +14,6 @@ function properties_insert(&$error_message = '') {
 
 	$data = [
 		'property_name' => Request::val('property_name', ''),
-		'type' => Request::val('type', ''),
-		'number_of_units' => Request::val('number_of_units', ''),
 		'photo' => Request::fileUpload('photo', [
 			'maxSize' => 2048000,
 			'types' => 'jpg|jpeg|gif|png',
@@ -32,6 +30,8 @@ function properties_insert(&$error_message = '') {
 				return existing_value('properties', 'photo', $_REQUEST['SelectedID']);
 			},
 		]),
+		'type' => Request::val('type', ''),
+		'number_of_units' => Request::val('number_of_units', ''),
 		'owner' => Request::val('owner', ''),
 		'operating_account' => Request::val('operating_account', ''),
 		'property_reserve' => Request::val('property_reserve', ''),
@@ -203,8 +203,6 @@ function properties_update(&$selected_id, &$error_message = '') {
 
 	$data = [
 		'property_name' => Request::val('property_name', ''),
-		'type' => Request::val('type', ''),
-		'number_of_units' => Request::val('number_of_units', ''),
 		'photo' => Request::fileUpload('photo', [
 			'maxSize' => 2048000,
 			'types' => 'jpg|jpeg|gif|png',
@@ -220,6 +218,8 @@ function properties_update(&$selected_id, &$error_message = '') {
 				return existing_value('properties', 'photo', $selected_id);
 			},
 		]),
+		'type' => Request::val('type', ''),
+		'number_of_units' => Request::val('number_of_units', ''),
 		'owner' => Request::val('owner', ''),
 		'operating_account' => Request::val('operating_account', ''),
 		'property_reserve' => Request::val('property_reserve', ''),
@@ -412,7 +412,7 @@ function properties_form($selected_id = '', $AllowUpdate = 1, $AllowInsert = 1, 
 		$hc = new CI_Input();
 		$row = $hc->xss_clean($row); /* sanitize data */
 	} else {
-		$combo_type->SelectedText = ( $_REQUEST['FilterField'][1] == '3' && $_REQUEST['FilterOperator'][1] == '<=>' ? $_REQUEST['FilterValue'][1] : '');
+		$combo_type->SelectedText = ( $_REQUEST['FilterField'][1] == '4' && $_REQUEST['FilterOperator'][1] == '<=>' ? $_REQUEST['FilterValue'][1] : '');
 		$combo_owner->SelectedData = $filterer_owner;
 		$combo_operating_account->SelectedText = ( $_REQUEST['FilterField'][1] == '7' && $_REQUEST['FilterOperator'][1] == '<=>' ? $_REQUEST['FilterValue'][1] : '');
 		$combo_country->SelectedText = ( $_REQUEST['FilterField'][1] == '10' && $_REQUEST['FilterOperator'][1] == '<=>' ? $_REQUEST['FilterValue'][1] : '');
@@ -573,9 +573,9 @@ function properties_form($selected_id = '', $AllowUpdate = 1, $AllowInsert = 1, 
 	// set records to read only if user can't insert new records and can't edit current record
 	if(($selected_id && !$AllowUpdate && !$AllowInsert) || (!$selected_id && !$AllowInsert)) {
 		$jsReadOnly .= "\tjQuery('#property_name').replaceWith('<div class=\"form-control-static\" id=\"property_name\">' + (jQuery('#property_name').val() || '') + '</div>');\n";
+		$jsReadOnly .= "\tjQuery('#photo').replaceWith('<div class=\"form-control-static\" id=\"photo\">' + (jQuery('#photo').val() || '') + '</div>');\n";
 		$jsReadOnly .= "\tjQuery('input[name=type]').parent().html('<div class=\"form-control-static\">' + jQuery('input[name=type]:checked').next().text() + '</div>')\n";
 		$jsReadOnly .= "\tjQuery('#number_of_units').replaceWith('<div class=\"form-control-static\" id=\"number_of_units\">' + (jQuery('#number_of_units').val() || '') + '</div>');\n";
-		$jsReadOnly .= "\tjQuery('#photo').replaceWith('<div class=\"form-control-static\" id=\"photo\">' + (jQuery('#photo').val() || '') + '</div>');\n";
 		$jsReadOnly .= "\tjQuery('#owner').prop('disabled', true).css({ color: '#555', backgroundColor: '#fff' });\n";
 		$jsReadOnly .= "\tjQuery('#owner_caption').prop('disabled', true).css({ color: '#555', backgroundColor: 'white' });\n";
 		$jsReadOnly .= "\tjQuery('#country').replaceWith('<div class=\"form-control-static\" id=\"country\">' + (jQuery('#country').val() || '') + '</div>'); jQuery('#country-multi-selection-help').hide();\n";
@@ -623,14 +623,14 @@ function properties_form($selected_id = '', $AllowUpdate = 1, $AllowInsert = 1, 
 	// process images
 	$templateCode = str_replace('<%%UPLOADFILE(id)%%>', '', $templateCode);
 	$templateCode = str_replace('<%%UPLOADFILE(property_name)%%>', '', $templateCode);
-	$templateCode = str_replace('<%%UPLOADFILE(type)%%>', '', $templateCode);
-	$templateCode = str_replace('<%%UPLOADFILE(number_of_units)%%>', '', $templateCode);
 	$templateCode = str_replace('<%%UPLOADFILE(photo)%%>', ($noUploads ? '' : "<div>{$Translation['upload image']}</div>" . '<i class="glyphicon glyphicon-remove text-danger clear-upload hidden"></i> <input type="file" name="photo" id="photo" data-filetypes="jpg|jpeg|gif|png" data-maxsize="2048000" accept=".jpg,.jpeg,.gif,.png">'), $templateCode);
 	if($AllowUpdate && $row['photo'] != '') {
 		$templateCode = str_replace('<%%REMOVEFILE(photo)%%>', '<br><input type="checkbox" name="photo_remove" id="photo_remove" value="1"> <label for="photo_remove" style="color: red; font-weight: bold;">'.$Translation['remove image'].'</label>', $templateCode);
 	} else {
 		$templateCode = str_replace('<%%REMOVEFILE(photo)%%>', '', $templateCode);
 	}
+	$templateCode = str_replace('<%%UPLOADFILE(type)%%>', '', $templateCode);
+	$templateCode = str_replace('<%%UPLOADFILE(number_of_units)%%>', '', $templateCode);
 	$templateCode = str_replace('<%%UPLOADFILE(owner)%%>', '', $templateCode);
 	$templateCode = str_replace('<%%UPLOADFILE(operating_account)%%>', '', $templateCode);
 	$templateCode = str_replace('<%%UPLOADFILE(property_reserve)%%>', '', $templateCode);
@@ -649,16 +649,16 @@ function properties_form($selected_id = '', $AllowUpdate = 1, $AllowInsert = 1, 
 		if( $dvprint) $templateCode = str_replace('<%%VALUE(property_name)%%>', safe_html($urow['property_name']), $templateCode);
 		if(!$dvprint) $templateCode = str_replace('<%%VALUE(property_name)%%>', html_attr($row['property_name']), $templateCode);
 		$templateCode = str_replace('<%%URLVALUE(property_name)%%>', urlencode($urow['property_name']), $templateCode);
+		$row['photo'] = ($row['photo'] != '' ? $row['photo'] : 'blank.gif');
+		if( $dvprint) $templateCode = str_replace('<%%VALUE(photo)%%>', safe_html($urow['photo']), $templateCode);
+		if(!$dvprint) $templateCode = str_replace('<%%VALUE(photo)%%>', html_attr($row['photo']), $templateCode);
+		$templateCode = str_replace('<%%URLVALUE(photo)%%>', urlencode($urow['photo']), $templateCode);
 		if( $dvprint) $templateCode = str_replace('<%%VALUE(type)%%>', safe_html($urow['type']), $templateCode);
 		if(!$dvprint) $templateCode = str_replace('<%%VALUE(type)%%>', html_attr($row['type']), $templateCode);
 		$templateCode = str_replace('<%%URLVALUE(type)%%>', urlencode($urow['type']), $templateCode);
 		if( $dvprint) $templateCode = str_replace('<%%VALUE(number_of_units)%%>', safe_html($urow['number_of_units']), $templateCode);
 		if(!$dvprint) $templateCode = str_replace('<%%VALUE(number_of_units)%%>', html_attr($row['number_of_units']), $templateCode);
 		$templateCode = str_replace('<%%URLVALUE(number_of_units)%%>', urlencode($urow['number_of_units']), $templateCode);
-		$row['photo'] = ($row['photo'] != '' ? $row['photo'] : 'blank.gif');
-		if( $dvprint) $templateCode = str_replace('<%%VALUE(photo)%%>', safe_html($urow['photo']), $templateCode);
-		if(!$dvprint) $templateCode = str_replace('<%%VALUE(photo)%%>', html_attr($row['photo']), $templateCode);
-		$templateCode = str_replace('<%%URLVALUE(photo)%%>', urlencode($urow['photo']), $templateCode);
 		if( $dvprint) $templateCode = str_replace('<%%VALUE(owner)%%>', safe_html($urow['owner']), $templateCode);
 		if(!$dvprint) $templateCode = str_replace('<%%VALUE(owner)%%>', html_attr($row['owner']), $templateCode);
 		$templateCode = str_replace('<%%URLVALUE(owner)%%>', urlencode($urow['owner']), $templateCode);
@@ -691,11 +691,11 @@ function properties_form($selected_id = '', $AllowUpdate = 1, $AllowInsert = 1, 
 		$templateCode = str_replace('<%%URLVALUE(id)%%>', urlencode(''), $templateCode);
 		$templateCode = str_replace('<%%VALUE(property_name)%%>', '', $templateCode);
 		$templateCode = str_replace('<%%URLVALUE(property_name)%%>', urlencode(''), $templateCode);
+		$templateCode = str_replace('<%%VALUE(photo)%%>', 'blank.gif', $templateCode);
 		$templateCode = str_replace('<%%VALUE(type)%%>', '', $templateCode);
 		$templateCode = str_replace('<%%URLVALUE(type)%%>', urlencode(''), $templateCode);
 		$templateCode = str_replace('<%%VALUE(number_of_units)%%>', '', $templateCode);
 		$templateCode = str_replace('<%%URLVALUE(number_of_units)%%>', urlencode(''), $templateCode);
-		$templateCode = str_replace('<%%VALUE(photo)%%>', 'blank.gif', $templateCode);
 		$templateCode = str_replace('<%%VALUE(owner)%%>', '', $templateCode);
 		$templateCode = str_replace('<%%URLVALUE(owner)%%>', urlencode(''), $templateCode);
 		$templateCode = str_replace('<%%VALUE(operating_account)%%>', '', $templateCode);

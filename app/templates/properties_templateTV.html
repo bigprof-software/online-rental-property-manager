@@ -1,18 +1,34 @@
-<!-- Edit this file to change the layout of each record in the table view -->
-<!-- To disable clicking of a field, remove the <%%SELECT%%> and <%%ENDSELECT%%> formatters around it-->
+		<td colspan="11" class="row">
+			<div id="properties-property_name-<%%VALUE(id)%%>" class="properties-property_name col-sm-12 h5 text-bold"><%%SELECT%%><%%VALUE(property_name)%%><%%ENDSELECT%%></div>
+			<div class="col-md-3"><div id="properties-photo-<%%VALUE(id)%%>" class="properties-photo"><a href="<%%TRANSLATION(ImageFolder)%%><%%VALUE(photo)%%>" data-lightbox="properties-photo"><img src="thumbnail.php?i=<%%VALUE(photo)%%>&t=properties&f=photo&v=tv" class="img-thumbnail"></a></div></div>
+			<div class="col-md-9">				<dl class="dl-horizontal">
+					<dt class="properties-type-caption field-caption-tv">Type</dt>
+					<dd id="properties-type-<%%VALUE(id)%%>" class="properties-type"><%%SELECT%%><%%VALUE(type)%%><%%ENDSELECT%%></dd>
 
-<!-- If you wish to hide the table view header that contains the column titles, -->
-<!-- add the following to the properties_init() hook (in hooks/properties.php file) -->
-<!--     $options->ShowTableHeader = 0;     -->
+					<dt class="properties-number_of_units-caption field-caption-tv">Number of units</dt>
+					<dd id="properties-number_of_units-<%%VALUE(id)%%>" class="properties-number_of_units"><%%SELECT%%><%%VALUE(number_of_units)%%><%%ENDSELECT%%></dd>
 
-		<td id="properties-property_name-<%%VALUE(id)%%>" class="properties-property_name"><%%SELECT%%><%%VALUE(property_name)%%><%%ENDSELECT%%></td>
-		<td id="properties-type-<%%VALUE(id)%%>" class="properties-type"><%%SELECT%%><%%VALUE(type)%%><%%ENDSELECT%%></td>
-		<td id="properties-number_of_units-<%%VALUE(id)%%>" class="properties-number_of_units text-center"><%%SELECT%%><%%VALUE(number_of_units)%%><%%ENDSELECT%%></td>
-		<td id="properties-photo-<%%VALUE(id)%%>" class="properties-photo"><a href="<%%TRANSLATION(ImageFolder)%%><%%VALUE(photo)%%>" data-lightbox="properties-photo"><img src="thumbnail.php?i=<%%VALUE(photo)%%>&t=properties&f=photo&v=tv" class="img-thumbnail"></a></td>
-		<td id="properties-owner-<%%VALUE(id)%%>" class="properties-owner"><%%SELECT%%><%%VALUE(owner)%%><%%ENDSELECT%%></td>
-		<td id="properties-operating_account-<%%VALUE(id)%%>" class="properties-operating_account"><%%SELECT%%><%%VALUE(operating_account)%%><%%ENDSELECT%%></td>
-		<td id="properties-property_reserve-<%%VALUE(id)%%>" class="properties-property_reserve text-right"><%%SELECT%%><%%VALUE(property_reserve)%%><%%ENDSELECT%%></td>
-		<td id="properties-street-<%%VALUE(id)%%>" class="properties-street"><%%SELECT%%><%%VALUE(street)%%><%%ENDSELECT%%></td>
-		<td id="properties-City-<%%VALUE(id)%%>" class="properties-City"><%%SELECT%%><%%VALUE(City)%%><%%ENDSELECT%%></td>
-		<td id="properties-State-<%%VALUE(id)%%>" class="properties-State text-center"><%%SELECT%%><%%VALUE(State)%%><%%ENDSELECT%%></td>
-		<td id="properties-ZIP-<%%VALUE(id)%%>" class="properties-ZIP text-right"><%%SELECT%%><%%VALUE(ZIP)%%><%%ENDSELECT%%></td>
+					<dt class="properties-owner-caption field-caption-tv">Owner</dt>
+					<dd id="properties-owner-<%%VALUE(id)%%>" class="properties-owner"><%%SELECT%%><%%VALUE(owner)%%><%%ENDSELECT%%></dd>
+
+					<dt class="properties-operating_account-caption field-caption-tv">Operating account</dt>
+					<dd id="properties-operating_account-<%%VALUE(id)%%>" class="properties-operating_account"><%%SELECT%%><%%VALUE(operating_account)%%><%%ENDSELECT%%></dd>
+
+					<dt class="properties-property_reserve-caption field-caption-tv">Property reserve</dt>
+					<dd id="properties-property_reserve-<%%VALUE(id)%%>" class="properties-property_reserve text-right"><%%SELECT%%><%%VALUE(property_reserve)%%><%%ENDSELECT%%></dd>
+
+					<dt class="properties-street-caption field-caption-tv">Street</dt>
+					<dd id="properties-street-<%%VALUE(id)%%>" class="properties-street"><%%SELECT%%><%%VALUE(street)%%><%%ENDSELECT%%></dd>
+
+					<dt class="properties-City-caption field-caption-tv">City</dt>
+					<dd id="properties-City-<%%VALUE(id)%%>" class="properties-City"><%%SELECT%%><%%VALUE(City)%%><%%ENDSELECT%%></dd>
+
+					<dt class="properties-State-caption field-caption-tv">State</dt>
+					<dd id="properties-State-<%%VALUE(id)%%>" class="properties-State"><%%SELECT%%><%%VALUE(State)%%><%%ENDSELECT%%></dd>
+
+					<dt class="properties-ZIP-caption field-caption-tv">ZIP</dt>
+					<dd id="properties-ZIP-<%%VALUE(id)%%>" class="properties-ZIP"><%%SELECT%%><%%VALUE(ZIP)%%><%%ENDSELECT%%></dd>
+
+				</dl>
+			</div>
+		</td>

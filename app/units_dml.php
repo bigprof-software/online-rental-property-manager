@@ -326,7 +326,7 @@ function units_form($selected_id = '', $AllowUpdate = 1, $AllowInsert = 1, $Allo
 		$combo_features->ListItem = explode('||', entitiesToUTF8(convertLegacyOptions($features_data)));
 		$combo_features->ListData = $combo_features->ListItem;
 	} else {
-		$combo_features->ListItem = explode('||', entitiesToUTF8(convertLegacyOptions("Cable ready;; Micorwave;;Hardwood floors;; High speed internet;;Air conditioning;;Refrigerator;;Dishwasher;;Walk-in closets;;Balcony;;Deck;;Patio;;Garage parking;;Carport;;Fenced yard;;Laundry room / hookups;; Fireplace;;Oven / range;;Heat - electric;; Heat - gas;; Heat - oil")));
+		$combo_features->ListItem = explode('||', entitiesToUTF8(convertLegacyOptions("Cable ready;;Micorwave;;Hardwood floors;;High speed internet;;Air conditioning;;Refrigerator;;Dishwasher;;Walk-in closets;;Balcony;;Deck;;Patio;;Garage parking;;Carport;;Fenced yard;;Laundry room / hookups;;Fireplace;;Oven / range;;Heat - electric;;Heat - gas;;Heat - oil")));
 		$combo_features->ListData = $combo_features->ListItem;
 	}
 	$combo_features->SelectName = 'features';

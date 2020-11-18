@@ -21,14 +21,14 @@
 	// Fields that can be displayed in the table view
 	$x->QueryFieldsTV = [
 		"`property_photos`.`id`" => "id",
-		"IF(    CHAR_LENGTH(`properties1`.`id`) || CHAR_LENGTH(`properties1`.`property_name`), CONCAT_WS('',   `properties1`.`id`, ' / ', `properties1`.`property_name`), '') /* Property */" => "property",
+		"IF(    CHAR_LENGTH(`properties1`.`property_name`), CONCAT_WS('',   `properties1`.`property_name`), '') /* Property */" => "property",
 		"`property_photos`.`photo`" => "photo",
 		"`property_photos`.`description`" => "description",
 	];
 	// mapping incoming sort by requests to actual query fields
 	$x->SortFields = [
 		1 => '`property_photos`.`id`',
-		2 => 2,
+		2 => '`properties1`.`property_name`',
 		3 => 3,
 		4 => 4,
 	];
@@ -36,21 +36,21 @@
 	// Fields that can be displayed in the csv file
 	$x->QueryFieldsCSV = [
 		"`property_photos`.`id`" => "id",
-		"IF(    CHAR_LENGTH(`properties1`.`id`) || CHAR_LENGTH(`properties1`.`property_name`), CONCAT_WS('',   `properties1`.`id`, ' / ', `properties1`.`property_name`), '') /* Property */" => "property",
+		"IF(    CHAR_LENGTH(`properties1`.`property_name`), CONCAT_WS('',   `properties1`.`property_name`), '') /* Property */" => "property",
 		"`property_photos`.`photo`" => "photo",
 		"`property_photos`.`description`" => "description",
 	];
 	// Fields that can be filtered
 	$x->QueryFieldsFilters = [
 		"`property_photos`.`id`" => "ID",
-		"IF(    CHAR_LENGTH(`properties1`.`id`) || CHAR_LENGTH(`properties1`.`property_name`), CONCAT_WS('',   `properties1`.`id`, ' / ', `properties1`.`property_name`), '') /* Property */" => "Property",
+		"IF(    CHAR_LENGTH(`properties1`.`property_name`), CONCAT_WS('',   `properties1`.`property_name`), '') /* Property */" => "Property",
 		"`property_photos`.`description`" => "Description",
 	];
 
 	// Fields that can be quick searched
 	$x->QueryFieldsQS = [
 		"`property_photos`.`id`" => "id",
-		"IF(    CHAR_LENGTH(`properties1`.`id`) || CHAR_LENGTH(`properties1`.`property_name`), CONCAT_WS('',   `properties1`.`id`, ' / ', `properties1`.`property_name`), '') /* Property */" => "property",
+		"IF(    CHAR_LENGTH(`properties1`.`property_name`), CONCAT_WS('',   `properties1`.`property_name`), '') /* Property */" => "property",
 		"`property_photos`.`description`" => "description",
 	];
 
@@ -85,10 +85,10 @@
 	$x->TableIcon = 'resources/table_icons/camera_link.png';
 	$x->PrimaryKey = '`property_photos`.`id`';
 
-	$x->ColWidth = [150, 150, 150, ];
-	$x->ColCaption = ['Property', 'Photo', 'Description', ];
-	$x->ColFieldName = ['property', 'photo', 'description', ];
-	$x->ColNumber  = [2, 3, 4, ];
+	$x->ColWidth = [150, 150, ];
+	$x->ColCaption = ['Photo', 'Description', ];
+	$x->ColFieldName = ['photo', 'description', ];
+	$x->ColNumber  = [3, 4, ];
 
 	// template paths below are based on the app main directory
 	$x->Template = 'templates/property_photos_templateTV.html';

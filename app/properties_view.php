@@ -22,9 +22,9 @@
 	$x->QueryFieldsTV = [
 		"`properties`.`id`" => "id",
 		"`properties`.`property_name`" => "property_name",
+		"`properties`.`photo`" => "photo",
 		"`properties`.`type`" => "type",
 		"`properties`.`number_of_units`" => "number_of_units",
-		"`properties`.`photo`" => "photo",
 		"IF(    CHAR_LENGTH(`rental_owners1`.`first_name`) || CHAR_LENGTH(`rental_owners1`.`last_name`), CONCAT_WS('',   `rental_owners1`.`first_name`, ' ', `rental_owners1`.`last_name`), '') /* Owner */" => "owner",
 		"`properties`.`operating_account`" => "operating_account",
 		"CONCAT('$', FORMAT(`properties`.`property_reserve`, 2))" => "property_reserve",
@@ -40,8 +40,8 @@
 		1 => '`properties`.`id`',
 		2 => 2,
 		3 => 3,
-		4 => '`properties`.`number_of_units`',
-		5 => 5,
+		4 => 4,
+		5 => '`properties`.`number_of_units`',
 		6 => 6,
 		7 => 7,
 		8 => '`properties`.`property_reserve`',
@@ -57,9 +57,9 @@
 	$x->QueryFieldsCSV = [
 		"`properties`.`id`" => "id",
 		"`properties`.`property_name`" => "property_name",
+		"`properties`.`photo`" => "photo",
 		"`properties`.`type`" => "type",
 		"`properties`.`number_of_units`" => "number_of_units",
-		"`properties`.`photo`" => "photo",
 		"IF(    CHAR_LENGTH(`rental_owners1`.`first_name`) || CHAR_LENGTH(`rental_owners1`.`last_name`), CONCAT_WS('',   `rental_owners1`.`first_name`, ' ', `rental_owners1`.`last_name`), '') /* Owner */" => "owner",
 		"`properties`.`operating_account`" => "operating_account",
 		"CONCAT('$', FORMAT(`properties`.`property_reserve`, 2))" => "property_reserve",
@@ -134,10 +134,12 @@
 	$x->TableTitle = 'Properties';
 	$x->TableIcon = 'resources/table_icons/application_home.png';
 	$x->PrimaryKey = '`properties`.`id`';
+	$x->DefaultSortField = '1';
+	$x->DefaultSortDirection = 'desc';
 
-	$x->ColWidth = [50, 80, 50, 60, 100, 120, 70, 120, 70, 50, 50, ];
-	$x->ColCaption = ['Property Name', 'Type', 'Number of units', 'Cover photo', 'Owner', 'Operating account', 'Property reserve', 'Street', 'City', 'State', 'ZIP', ];
-	$x->ColFieldName = ['property_name', 'type', 'number_of_units', 'photo', 'owner', 'operating_account', 'property_reserve', 'street', 'City', 'State', 'ZIP', ];
+	$x->ColWidth = [50, 60, 80, 50, 100, 120, 70, 120, 70, 50, 50, ];
+	$x->ColCaption = ['Property Name', 'Cover photo', 'Type', 'Number of units', 'Owner', 'Operating account', 'Property reserve', 'Street', 'City', 'State', 'ZIP', ];
+	$x->ColFieldName = ['property_name', 'photo', 'type', 'number_of_units', 'owner', 'operating_account', 'property_reserve', 'street', 'City', 'State', 'ZIP', ];
 	$x->ColNumber  = [2, 3, 4, 5, 6, 7, 8, 11, 12, 13, 14, ];
 
 	// template paths below are based on the app main directory
@@ -146,7 +148,7 @@
 	$x->TemplateDV = 'templates/properties_templateDV.html';
 	$x->TemplateDVP = 'templates/properties_templateDVP.html';
 
-	$x->ShowTableHeader = 1;
+	$x->ShowTableHeader = 0;
 	$x->TVClasses = "";
 	$x->DVClasses = "";
 	$x->HasCalculatedFields = false;

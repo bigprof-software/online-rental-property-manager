@@ -126,7 +126,7 @@
 			'property' => array(
 				'parent_table' => 'properties',
 				'parent_pk_field' => 'id',
-				'parent_caption' => 'IF(CHAR_LENGTH(`properties`.`id`) || CHAR_LENGTH(`properties`.`property_name`), CONCAT_WS(\'\', `properties`.`id`, \' / \', `properties`.`property_name`), \'\')',
+				'parent_caption' => '`properties`.`property_name`',
 				'parent_from' => '`properties` LEFT JOIN `rental_owners` as rental_owners1 ON `rental_owners1`.`id`=`properties`.`owner` ',
 				'filterers' => array(),
 				'custom_query' => '',
@@ -207,7 +207,7 @@
 			'unit' => array(
 				'parent_table' => 'units',
 				'parent_pk_field' => 'id',
-				'parent_caption' => 'IF(CHAR_LENGTH(`units`.`property`) || CHAR_LENGTH(`units`.`unit_number`), CONCAT_WS(\'\', IF(    CHAR_LENGTH(`properties1`.`property_name`), CONCAT_WS(\'\',   `properties1`.`property_name`), \'\'), \' / \', `units`.`unit_number`), \'\')',
+				'parent_caption' => 'IF(CHAR_LENGTH(`units`.`property`) || CHAR_LENGTH(`units`.`unit_number`), CONCAT_WS(\'\', IF(    CHAR_LENGTH(`properties1`.`property_name`), CONCAT_WS(\'\',   `properties1`.`property_name`), \'\'), \' - unit# \', `units`.`unit_number`), \'\')',
 				'parent_from' => '`units` LEFT JOIN `properties` as properties1 ON `properties1`.`id`=`units`.`property` ',
 				'filterers' => array(),
 				'custom_query' => '',

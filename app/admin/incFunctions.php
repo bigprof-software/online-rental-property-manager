@@ -202,9 +202,9 @@
 	########################################################################
 	function getThumbnailSpecs($tableName, $fieldName, $view) {
 		if($tableName=='properties' && $fieldName=='photo' && $view=='tv')
-			return array('width'=>250, 'height'=>250, 'identifier'=>'_tv');
+			return array('width'=>300, 'height'=>250, 'identifier'=>'_tv');
 		elseif($tableName=='properties' && $fieldName=='photo' && $view=='dv')
-			return array('width'=>250, 'height'=>250, 'identifier'=>'_dv');
+			return array('width'=>800, 'height'=>600, 'identifier'=>'_dv');
 		elseif($tableName=='property_photos' && $fieldName=='photo' && $view=='tv')
 			return array('width'=>100, 'height'=>100, 'identifier'=>'_tv');
 		elseif($tableName=='property_photos' && $fieldName=='photo' && $view=='dv')
@@ -1046,9 +1046,9 @@
 				'properties' => [
 					'id' => ['appgini' => "INT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT"],
 					'property_name' => ['appgini' => "TEXT NOT NULL"],
+					'photo' => ['appgini' => "VARCHAR(40) NULL"],
 					'type' => ['appgini' => "VARCHAR(40) NOT NULL"],
 					'number_of_units' => ['appgini' => "DECIMAL(15,0) NULL"],
-					'photo' => ['appgini' => "VARCHAR(40) NULL"],
 					'owner' => ['appgini' => "INT UNSIGNED NULL"],
 					'operating_account' => ['appgini' => "VARCHAR(40) NULL"],
 					'property_reserve' => ['appgini' => "DECIMAL(15,0) NULL"],
@@ -2340,7 +2340,7 @@
 				'owner' => 'SELECT `rental_owners`.`id`, IF(CHAR_LENGTH(`rental_owners`.`first_name`) || CHAR_LENGTH(`rental_owners`.`last_name`), CONCAT_WS(\'\', `rental_owners`.`first_name`, \' \', `rental_owners`.`last_name`), \'\') FROM `rental_owners` ORDER BY 2',
 			],
 			'property_photos' => [
-				'property' => 'SELECT `properties`.`id`, IF(CHAR_LENGTH(`properties`.`id`) || CHAR_LENGTH(`properties`.`property_name`), CONCAT_WS(\'\', `properties`.`id`, \' / \', `properties`.`property_name`), \'\') FROM `properties` LEFT JOIN `rental_owners` as rental_owners1 ON `rental_owners1`.`id`=`properties`.`owner` ORDER BY 2',
+				'property' => 'SELECT `properties`.`id`, `properties`.`property_name` FROM `properties` LEFT JOIN `rental_owners` as rental_owners1 ON `rental_owners1`.`id`=`properties`.`owner` ORDER BY 2',
 			],
 			'units' => [
 				'property' => 'SELECT `properties`.`id`, `properties`.`property_name` FROM `properties` LEFT JOIN `rental_owners` as rental_owners1 ON `rental_owners1`.`id`=`properties`.`owner` ORDER BY 2',
@@ -2351,7 +2351,7 @@
 				'postal_code' => 'SELECT `properties`.`id`, `properties`.`ZIP` FROM `properties` LEFT JOIN `rental_owners` as rental_owners1 ON `rental_owners1`.`id`=`properties`.`owner` ORDER BY 2',
 			],
 			'unit_photos' => [
-				'unit' => 'SELECT `units`.`id`, IF(CHAR_LENGTH(`units`.`property`) || CHAR_LENGTH(`units`.`unit_number`), CONCAT_WS(\'\', IF(    CHAR_LENGTH(`properties1`.`property_name`), CONCAT_WS(\'\',   `properties1`.`property_name`), \'\'), \' / \', `units`.`unit_number`), \'\') FROM `units` LEFT JOIN `properties` as properties1 ON `properties1`.`id`=`units`.`property` ORDER BY 2',
+				'unit' => 'SELECT `units`.`id`, IF(CHAR_LENGTH(`units`.`property`) || CHAR_LENGTH(`units`.`unit_number`), CONCAT_WS(\'\', IF(    CHAR_LENGTH(`properties1`.`property_name`), CONCAT_WS(\'\',   `properties1`.`property_name`), \'\'), \' - unit# \', `units`.`unit_number`), \'\') FROM `units` LEFT JOIN `properties` as properties1 ON `properties1`.`id`=`units`.`property` ORDER BY 2',
 			],
 		];
 

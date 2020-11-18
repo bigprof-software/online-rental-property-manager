@@ -1,3 +1,8 @@
 /.idea
 setup.md5
 config.php
+app/plugins
+app/rand
+app/images
+!app/images/index.html
+!app/images/blank*

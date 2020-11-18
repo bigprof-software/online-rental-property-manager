@@ -115,9 +115,9 @@ td.employment_and_income_history-notes{ white-space: normal !important; max-widt
 td.references-reference_name{ white-space: normal !important; max-width: 160px !important; min-width: 160px !important; overflow: hidden;  }
 td.references-phone{ white-space: normal !important; max-width: 160px !important; min-width: 160px !important; overflow: hidden;  }
 td.properties-property_name{ white-space: normal !important; max-width: 50px !important; min-width: 50px !important; overflow: hidden;  }
+td.properties-photo{ white-space: normal !important; max-width: 60px !important; min-width: 60px !important; overflow: hidden;  }
 td.properties-type{ white-space: normal !important; max-width: 80px !important; min-width: 80px !important; overflow: hidden;  }
 td.properties-number_of_units{ white-space: normal !important; max-width: 50px !important; min-width: 50px !important; overflow: hidden;  }
-td.properties-photo{ white-space: normal !important; max-width: 60px !important; min-width: 60px !important; overflow: hidden;  }
 td.properties-owner{ white-space: normal !important; max-width: 100px !important; min-width: 100px !important; overflow: hidden;  }
 td.properties-operating_account{ white-space: normal !important; max-width: 120px !important; min-width: 120px !important; overflow: hidden;  }
 td.properties-property_reserve{ white-space: normal !important; max-width: 70px !important; min-width: 70px !important; overflow: hidden;  }

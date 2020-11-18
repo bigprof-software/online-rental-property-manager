@@ -154,6 +154,8 @@
 	$x->TableTitle = 'Units';
 	$x->TableIcon = 'resources/table_icons/change_password.png';
 	$x->PrimaryKey = '`units`.`id`';
+	$x->DefaultSortField = '2';
+	$x->DefaultSortDirection = 'asc';
 
 	$x->ColWidth = [90, 40, 60, 60, 60, 100, 55, 40, 45, 70, 150, 60, ];
 	$x->ColCaption = ['Property', 'Unit', 'Cover photo', 'Status', 'Area (sq. feet)', 'Street', 'City', 'State', 'Rooms', 'Bathroom', 'Features', 'Rental amount', ];

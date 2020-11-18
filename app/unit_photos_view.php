@@ -21,7 +21,7 @@
 	// Fields that can be displayed in the table view
 	$x->QueryFieldsTV = [
 		"`unit_photos`.`id`" => "id",
-		"IF(    CHAR_LENGTH(`properties1`.`property_name`) || CHAR_LENGTH(`units1`.`unit_number`), CONCAT_WS('',   `properties1`.`property_name`, ' / ', ' / ', `units1`.`unit_number`), '') /* Property */" => "unit",
+		"IF(    CHAR_LENGTH(`properties1`.`property_name`) || CHAR_LENGTH(`units1`.`unit_number`), CONCAT_WS('',   `properties1`.`property_name`, ' - unit# ', `units1`.`unit_number`), '') /* Unit */" => "unit",
 		"`unit_photos`.`photo`" => "photo",
 		"`unit_photos`.`description`" => "description",
 	];
@@ -36,26 +36,26 @@
 	// Fields that can be displayed in the csv file
 	$x->QueryFieldsCSV = [
 		"`unit_photos`.`id`" => "id",
-		"IF(    CHAR_LENGTH(`properties1`.`property_name`) || CHAR_LENGTH(`units1`.`unit_number`), CONCAT_WS('',   `properties1`.`property_name`, ' / ', ' / ', `units1`.`unit_number`), '') /* Property */" => "unit",
+		"IF(    CHAR_LENGTH(`properties1`.`property_name`) || CHAR_LENGTH(`units1`.`unit_number`), CONCAT_WS('',   `properties1`.`property_name`, ' - unit# ', `units1`.`unit_number`), '') /* Unit */" => "unit",
 		"`unit_photos`.`photo`" => "photo",
 		"`unit_photos`.`description`" => "description",
 	];
 	// Fields that can be filtered
 	$x->QueryFieldsFilters = [
 		"`unit_photos`.`id`" => "ID",
-		"IF(    CHAR_LENGTH(`properties1`.`property_name`) || CHAR_LENGTH(`units1`.`unit_number`), CONCAT_WS('',   `properties1`.`property_name`, ' / ', ' / ', `units1`.`unit_number`), '') /* Property */" => "Property",
+		"IF(    CHAR_LENGTH(`properties1`.`property_name`) || CHAR_LENGTH(`units1`.`unit_number`), CONCAT_WS('',   `properties1`.`property_name`, ' - unit# ', `units1`.`unit_number`), '') /* Unit */" => "Unit",
 		"`unit_photos`.`description`" => "Description",
 	];
 
 	// Fields that can be quick searched
 	$x->QueryFieldsQS = [
 		"`unit_photos`.`id`" => "id",
-		"IF(    CHAR_LENGTH(`properties1`.`property_name`) || CHAR_LENGTH(`units1`.`unit_number`), CONCAT_WS('',   `properties1`.`property_name`, ' / ', ' / ', `units1`.`unit_number`), '') /* Property */" => "unit",
+		"IF(    CHAR_LENGTH(`properties1`.`property_name`) || CHAR_LENGTH(`units1`.`unit_number`), CONCAT_WS('',   `properties1`.`property_name`, ' - unit# ', `units1`.`unit_number`), '') /* Unit */" => "unit",
 		"`unit_photos`.`description`" => "description",
 	];
 
 	// Lookup fields that can be used as filterers
-	$x->filterers = ['unit' => 'Property', ];
+	$x->filterers = ['unit' => 'Unit', ];
 
 	$x->QueryFrom = "`unit_photos` LEFT JOIN `units` as units1 ON `units1`.`id`=`unit_photos`.`unit` LEFT JOIN `properties` as properties1 ON `properties1`.`id`=`units1`.`property` ";
 	$x->QueryWhere = '';
@@ -85,10 +85,10 @@
 	$x->TableIcon = 'resources/table_icons/camera_link.png';
 	$x->PrimaryKey = '`unit_photos`.`id`';
 
-	$x->ColWidth = [150, 150, 150, ];
-	$x->ColCaption = ['Property', 'Photo', 'Description', ];
-	$x->ColFieldName = ['unit', 'photo', 'description', ];
-	$x->ColNumber  = [2, 3, 4, ];
+	$x->ColWidth = [150, 150, ];
+	$x->ColCaption = ['Photo', 'Description', ];
+	$x->ColFieldName = ['photo', 'description', ];
+	$x->ColNumber  = [3, 4, ];
 
 	// template paths below are based on the app main directory
 	$x->Template = 'templates/unit_photos_templateTV.html';

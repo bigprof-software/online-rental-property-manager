@@ -28,6 +28,17 @@
 				<div class="form-control-static"><%%VALUE(property_name)%%></div>
 			</div>
 		</div>
+		<!-- Field: Cover photo -->
+		<div class="form-group properties-photo" style="border-bottom: dotted 1px #DDD;">
+			<label class="col-xs-3 control-label">Cover photo</label>
+			<div class="col-xs-9">
+				<div class="form-control-static"><script>
+				var photoSrc1<%%RND1%%>='<%%TRANSLATION(ImageFolder)%%><%%VALUE(photo)%%>';
+				var photoSrc2<%%RND1%%>='thumbnail.php?t=properties&f=photo&i=<%%VALUE(photo)%%>&v=dv'
+			</script>
+			<a href="#" onclick="$('photoImg<%%RND1%%>').src=($('photoImg<%%RND1%%>').src.search(/thumbnail\.php/) != -1 && photoSrc1<%%RND1%%> != '<%%TRANSLATION(ImageFolder)%%>' ? photoSrc1<%%RND1%%> : photoSrc2<%%RND1%%>); return false;"><img id="photoImg<%%RND1%%>" src="thumbnail.php?t=properties&f=photo&i=<%%VALUE(photo)%%>&v=dv" class="img-thumbnail"></a></div>
+			</div>
+		</div>
 		<!-- Field: Type -->
 		<div class="form-group properties-type" style="border-bottom: dotted 1px #DDD;">
 			<label class="col-xs-3 control-label">Type</label>
@@ -40,17 +51,6 @@
 			<label class="col-xs-3 control-label">Number of units</label>
 			<div class="col-xs-9">
 				<div class="form-control-static"><%%VALUE(number_of_units)%%></div>
-			</div>
-		</div>
-		<!-- Field: Cover photo -->
-		<div class="form-group properties-photo" style="border-bottom: dotted 1px #DDD;">
-			<label class="col-xs-3 control-label">Cover photo</label>
-			<div class="col-xs-9">
-				<div class="form-control-static"><script>
-				var photoSrc1<%%RND1%%>='<%%TRANSLATION(ImageFolder)%%><%%VALUE(photo)%%>';
-				var photoSrc2<%%RND1%%>='thumbnail.php?t=properties&f=photo&i=<%%VALUE(photo)%%>&v=dv'
-			</script>
-			<a href="#" onclick="$('photoImg<%%RND1%%>').src=($('photoImg<%%RND1%%>').src.search(/thumbnail\.php/) != -1 && photoSrc1<%%RND1%%> != '<%%TRANSLATION(ImageFolder)%%>' ? photoSrc1<%%RND1%%> : photoSrc2<%%RND1%%>); return false;"><img id="photoImg<%%RND1%%>" src="thumbnail.php?t=properties&f=photo&i=<%%VALUE(photo)%%>&v=dv" class="img-thumbnail"></a></div>
 			</div>
 		</div>
 		<!-- Field: Owner -->
