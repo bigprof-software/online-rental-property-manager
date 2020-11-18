@@ -2,6 +2,10 @@
 	// For help on using hooks, please refer to https://bigprof.com/appgini/help/working-with-generated-web-database-application/hooks
 
 	function property_photos_init(&$options, $memberInfo, &$args){
+		/* Inserted by Search Page Maker for AppGini on 2020-11-18 12:19:27 */
+		$options->FilterPage = 'hooks/property_photos_filter.php';
+		/* End of Search Page Maker for AppGini code */
+
 
 		return TRUE;
 	}
