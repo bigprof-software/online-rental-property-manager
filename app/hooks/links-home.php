@@ -14,3 +14,16 @@
 		);
 	 */
 
+
+	/* summary_reports links */
+	$homeLinks[] = array(
+		'url' => 'hooks/summary-reports-list.php',
+		'title' => 'Summary Reports',
+		'groups' => array('*'),
+		'table_group' => 'Leases',
+		'description' => '',
+		'grid_column_classes' => 'col-xs-12 col-sm-6 col-md-6 col-lg-6',
+		'panel_classes' => '',
+		'link_classes' => '',
+		'icon' => 'hooks/summary_reports-logo-md.png'
+	);

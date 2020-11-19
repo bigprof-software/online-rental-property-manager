@@ -11,3 +11,18 @@
 	</script>
 
 <?php } ?>
+
+<?php if(strpos($_SERVER['PHP_SELF'], 'summary-reports-')) { ?>
+
+	<script>
+		$j(function() {
+			var vSpacer = $j('div.hidden-print');
+			vSpacer.eq(vSpacer.length - 2).replaceWith('<div class="alert alert-info">' +
+				'<i class="glyphicon glyphicon-exclamation-sign"></i> ' +
+				'This report was created by ' +
+				'<a href="https://bigprof.com/appgini/applications/summary-reports-plugin" target="_blank" title="Summary Reports plugin for AppGini">Summary Reports plugin for AppGini</a>.' +
+			'</div>');
+		})
+	</script>
+
+<?php } ?>
