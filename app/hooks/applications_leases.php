@@ -112,6 +112,52 @@
 		return $query;
 	}
 	function applications_leases_batch_actions(&$args){
+		/* Inserted by Mass Update on 2020-11-19 11:55:55 */
+		
+		/*
+		 * Q: How do I return other custom batch commands not defined in mass_update plugin?
+		 * 
+		 * A: Define your commands ABOVE the 'Inserted by Mass Update' comment above 
+		 * in an array named $custom_actions_top to display them above the commands 
+		 * created by the mass_update plugin.
+		 * 
+		 * You can also define commands in an array named $custom_actions_bottom
+		 * (also ABOVE the 'Inserted by Mass Update' comment block) to display them 
+		 * below the commands created by the mass_update plugin.
+		 * 
+		*/
+
+		if(!isset($custom_actions_top) || !is_array($custom_actions_top))
+			$custom_actions_top = array();
+
+		if(!isset($custom_actions_bottom) || !is_array($custom_actions_bottom))
+			$custom_actions_bottom = array();
+
+		$command = array(
+			'ghqe4agakj7de10gc0ba' => array(
+				'title' => "Approve application",
+				'function' => 'massUpdateCommand_ghqe4agakj7de10gc0ba',
+				'icon' => 'ok'
+			),
+		);
+
+		$mi = getMemberInfo();
+		switch($mi['group']) {
+			default:
+				/* for all other logged users, enable the following commands */
+				if($mi['username'] && $mi['username'] != 'guest')
+					return array_merge(
+						$custom_actions_top,
+						array(
+							$command['ghqe4agakj7de10gc0ba']
+						),
+						$custom_actions_bottom
+					);
+		}
+
+
+		/* End of Mass Update code */
+
 
 		return array();
 	}
