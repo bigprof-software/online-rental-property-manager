@@ -29,6 +29,8 @@ mobile or any other device.
 	* **Applications/leases by property** review the growth of demand for each property over time.
 	* **Leases by property over time** review the growth of actual leases for each property over time.
 	* **Lease value by property over time** check the monthly rental revenue for each property and its growth over time.
+* Efficient management of applications status through mass update of multiple applications.
+* Quickly view leases starting and ending each month through a calendar view -- also allows adding and editing (created by [Calendar plugin for AppGini](https://bigprof.com/appgini/applications/calendar-plugin)).
 
 This application was created using [AppGini](https://bigprof.com/appgini/),
 and therefore it shares the features of any AppGini application as well, including:
