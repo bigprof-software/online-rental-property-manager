@@ -27,3 +27,18 @@
 		'link_classes' => '',
 		'icon' => 'hooks/summary_reports-logo-md.png'
 	);
+
+	/* calendar links */
+		$homeLinks[] = array(
+			'url' => 'hooks/calendar-lease-start-end.php',
+			'icon' => 'resources/table_icons/calendar.png',
+			'title' => 'Leases starting/ending',
+			'description' => '',
+			'groups' => array('Admins'),
+			'grid_column_classes' => 'col-sm-6 col-md-4 col-lg-3',
+			'panel_classes' => 'panel-info',
+			'link_classes' => 'btn-info',
+			'table_group' => 'Leases',
+		);
+
+	/* end of calendar links */

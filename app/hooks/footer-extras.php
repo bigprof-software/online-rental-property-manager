@@ -1,30 +1,43 @@
 <?php if(!empty($_REQUEST['Filter_x']) && !intval($_REQUEST['advanced_search_mode'])) { ?>
-
 	<script>
 		$j(function() {
-			$j('.row').last().after('<div class="alert alert-info" style="margin-top: 3em;">' +
-				'<i class="glyphicon glyphicon-exclamation-sign"></i> ' +
+			$j('.navbar-fixed-bottom small').after(
+				'<small>' +
+				'<i class="glyphicon glyphicon-asterisk"></i> ' +
 				'This search page was created by ' +
 				'<a href="https://bigprof.com/appgini/applications/search-page-maker-plugin" target="_blank" title="Search Page Maker plugin for AppGini">SPM plugin for AppGini</a>.' +
-			'</div>');
+				'</small>'
+			);
 		})
 	</script>
-
 <?php } ?>
 
 <?php if(strpos($_SERVER['PHP_SELF'], 'summary-reports-')) { ?>
-
 	<script>
 		$j(function() {
-			var vSpacer = $j('div.hidden-print');
-			vSpacer.eq(vSpacer.length - 2).replaceWith('<div class="alert alert-info">' +
-				'<i class="glyphicon glyphicon-exclamation-sign"></i> ' +
+			$j('.navbar-fixed-bottom small').after(
+				'<small>' +
+				'<i class="glyphicon glyphicon-asterisk"></i> ' +
 				'This report was created by ' +
 				'<a href="https://bigprof.com/appgini/applications/summary-reports-plugin" target="_blank" title="Summary Reports plugin for AppGini">Summary Reports plugin for AppGini</a>.' +
-			'</div>');
+				'</small>'
+			);
 		})
 	</script>
+<?php } ?>
 
+<?php if(strpos($_SERVER['PHP_SELF'], 'hooks/calendar-')) { ?>
+	<script>
+		$j(function() {
+			$j('.navbar-fixed-bottom small').after(
+				'<small>' +
+				'<i class="glyphicon glyphicon-asterisk"></i> ' +
+				'This calendar was created by ' +
+				'<a href="https://bigprof.com/appgini/applications/calendar-plugin" target="_blank" title="Calendar plugin for AppGini">Calendar plugin for AppGini</a>.' +
+				'</small>'
+			);
+		})
+	</script>
 <?php } ?>
 
 <!-- start of mass update plugin code -->
