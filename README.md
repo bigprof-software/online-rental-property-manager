@@ -23,6 +23,12 @@ mobile or any other device.
 * Add, search and manage applications and leases.
 * Manage applicants/tenants rental history, employment history and other references.
 * Manage landlords, properties, and units.
+* Reports (created by [Summary Reports plugin for AppGini](https://bigprof.com/appgini/applications/summary-reports-plugin)):
+	* **Applicants by status** review the how many new applicants vs. tenants vs. previous tenants.
+	* **Applications/leases over time** review the growth of leases and applications over time.
+	* **Applications/leases by property** review the growth of demand for each property over time.
+	* **Leases by property over time** review the growth of actual leases for each property over time.
+	* **Lease value by property over time** check the monthly rental revenue for each property and its growth over time.
 
 This application was created using [AppGini](https://bigprof.com/appgini/),
 and therefore it shares the features of any AppGini application as well, including:
