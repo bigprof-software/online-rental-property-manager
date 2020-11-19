@@ -2,7 +2,7 @@
 
 # Online Rental Property Manager (ORPM)
 
-![](https://cdn.bigprof.com/appgini-open-source-apps/orpm-properties-detail-view-showing-child-table-units-thumb.png)
+![ORPM screenshots](https://cdn.bigprof.com/screencasts/online-rental-property-manager-demo-6.3.gif)
 
 Online rental property manager (ORPM) is a free open source app.
 It allows you to manage landlords, rental properties, units, 
