@@ -24,7 +24,7 @@ mobile or any other device.
 * Manage applicants/tenants rental history, employment history and other references.
 * Manage landlords, properties, and units.
 * Reports (created by [Summary Reports plugin for AppGini](https://bigprof.com/appgini/applications/summary-reports-plugin)):
-	* **Applicants by status** review the how many new applicants vs. tenants vs. previous tenants.
+	* **Applicants by status** review how many new applicants vs. tenants vs. previous tenants do we have.
 	* **Applications/leases over time** review the growth of leases and applications over time.
 	* **Applications/leases by property** review the growth of demand for each property over time.
 	* **Leases by property over time** review the growth of actual leases for each property over time.
