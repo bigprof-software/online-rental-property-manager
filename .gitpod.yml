@@ -1,5 +1,5 @@
 tasks:
-  - init: mysql -e "create database orpm; create user orpm identified by 'orpm'; grant all on orpm.* to orpm;"
+  - init: mysql -e "create database appgini; create user appgini identified by 'appgini'; grant all on appgini.* to appgini;"
     command: php -S 0.0.0.0:8080
 image: gitpod/workspace-mysql
 ports:

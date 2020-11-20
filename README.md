@@ -62,7 +62,7 @@ All you will need is a web browser. _Do not use this in production!!!_
 
 The app would take a couple of minutes to launch.
 Afterwards, you'll see the welcome screen of the app in the right part of the window, where you can start the setup wizard.
-When prompted to enter the database name, database username and datatbase password, you should enter `orpm` for all.
+When prompted to enter the database name, database username and datatbase password, you should enter `appgini` for all.
 
 Gitpod is intended for previewing the app only, and is _not suitable for use in actual production environments_.
 
