@@ -12,7 +12,7 @@ rental history, employment history and income overview.
 ORPM was created using [AppGini](https://bigprof.com/appgini/).
 So you can easily customize it to add/remove 
 details or any extra functionality to fit your own requirements. 
-ORPM is a responsive, mul,lti-user web-based application that you can access from your PC, tablet, 
+ORPM is a responsive, multi-user web-based application that you can access from your PC, tablet, 
 mobile or any other device. 
 
 #### [⇩ Download the latest release](https://github.com/bigprof-software/online-rental-property-manager/releases/latest) ([_Changelog_](https://github.com/bigprof-software/online-rental-property-manager/releases))
