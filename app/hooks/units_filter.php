@@ -134,17 +134,263 @@
 		
 			<!-- ########################################################## -->
 					
+
+	<div class="row vspacer-lg" style="border-bottom: dotted 2px #DDD;">
+		
+		<div class="hidden-xs hidden-sm col-md-3 vspacer-lg text-right"><label for="">City</label></div>
+		<div class="hidden-md hidden-lg col-xs-12 vspacer-lg"><label for="">City</label></div>
+		
+		
+		<div class="col-md-8 col-lg-6 vspacer-md">
+			<div id="filter_8" class="vspacer-lg"><span></span></div>
+
+			<input type="hidden" class="populatedLookupData" name="2" value="<?php echo htmlspecialchars($FilterValue[2]); ?>" >
+			<input type="hidden" name="FilterAnd[2]" value="and">
+			<input type="hidden" name="FilterField[2]" value="8">  
+			<input type="hidden" id="lookupoperator_8" name="FilterOperator[2]" value="equal-to">
+			<input type="hidden" id="filterfield_8" name="FilterValue[2]" value="<?php echo htmlspecialchars($FilterValue[2]); ?>" size="3">
+		</div>
+		
+		
+		<div class="col-xs-3 col-xs-offset-9 col-md-offset-0 col-md-1">
+			<button type="button" class="btn btn-default vspacer-md btn-block" title='Clear fields' onclick="clearFilters($j(this).parent());" ><span class="glyphicon glyphicon-trash text-danger"></button>
+		</div>
+
+			</div>
+
+	<script>
+
+		$j(function(){
+			/* display a drop-down of categories that populates its content from ajax_combo.php */
+			$j("#filter_8").select2({
+				ajax: {
+					url: "ajax_combo.php",
+					dataType: 'json',
+					cache: true,
+					data: function(term, page){ return { s: term, p:page, t:"units", f:"city" }; },
+					results: function (resp, page) { return resp; }
+				}
+			}).on('change', function(e){
+				$j("#filterfield_8").val(e.added.text);
+				$j("#lookupoperator_8").val('equal-to');
+				if (e.added.id=='{empty_value}'){
+					$j("#lookupoperator_8").val('is-empty');
+				}
+			});
+
+
+			/* preserve the applied category filter and show it when re-opening the filters page */
+			if ($j("#filterfield_8").val().length){
+				
+				//None case 
+				if ($j("#filterfield_8").val() == '<None>'){
+					$j("#filter_8").select2( 'data' , {
+						id: '{empty-value}',
+						text: '<None>'
+					});
+					$j("#lookupoperator_8").val('is-empty');
+					return;
+				}
+				$j.ajax({
+					url: 'ajax_combo.php',
+					dataType: 'json',
+					data: {
+						s: $j("#filterfield_8").val(),  //search term
+						p: 1,                                         //page number
+						t: "units",                //table name
+						f: "city"               //field name
+					}
+				}).done(function(response){
+					if (response.results.length){
+						$j("#filter_8").select2('data' , {
+							id: response.results[1].id,
+							text: response.results[1].text
+						});
+					}
+				});
+			}
+
+		});
+	</script>
+
+		
+			<!-- ########################################################## -->
+					
+
+	<div class="row vspacer-lg" style="border-bottom: dotted 2px #DDD;">
+		
+		<div class="hidden-xs hidden-sm col-md-3 vspacer-lg text-right"><label for="">Street</label></div>
+		<div class="hidden-md hidden-lg col-xs-12 vspacer-lg"><label for="">Street</label></div>
+		
+		
+		<div class="col-md-8 col-lg-6 vspacer-md">
+			<div id="filter_7" class="vspacer-lg"><span></span></div>
+
+			<input type="hidden" class="populatedLookupData" name="3" value="<?php echo htmlspecialchars($FilterValue[3]); ?>" >
+			<input type="hidden" name="FilterAnd[3]" value="and">
+			<input type="hidden" name="FilterField[3]" value="7">  
+			<input type="hidden" id="lookupoperator_7" name="FilterOperator[3]" value="equal-to">
+			<input type="hidden" id="filterfield_7" name="FilterValue[3]" value="<?php echo htmlspecialchars($FilterValue[3]); ?>" size="3">
+		</div>
+		
+		
+		<div class="col-xs-3 col-xs-offset-9 col-md-offset-0 col-md-1">
+			<button type="button" class="btn btn-default vspacer-md btn-block" title='Clear fields' onclick="clearFilters($j(this).parent());" ><span class="glyphicon glyphicon-trash text-danger"></button>
+		</div>
+
+			</div>
+
+	<script>
+
+		$j(function(){
+			/* display a drop-down of categories that populates its content from ajax_combo.php */
+			$j("#filter_7").select2({
+				ajax: {
+					url: "ajax_combo.php",
+					dataType: 'json',
+					cache: true,
+					data: function(term, page){ return { s: term, p:page, t:"units", f:"street" }; },
+					results: function (resp, page) { return resp; }
+				}
+			}).on('change', function(e){
+				$j("#filterfield_7").val(e.added.text);
+				$j("#lookupoperator_7").val('equal-to');
+				if (e.added.id=='{empty_value}'){
+					$j("#lookupoperator_7").val('is-empty');
+				}
+			});
+
+
+			/* preserve the applied category filter and show it when re-opening the filters page */
+			if ($j("#filterfield_7").val().length){
+				
+				//None case 
+				if ($j("#filterfield_7").val() == '<None>'){
+					$j("#filter_7").select2( 'data' , {
+						id: '{empty-value}',
+						text: '<None>'
+					});
+					$j("#lookupoperator_7").val('is-empty');
+					return;
+				}
+				$j.ajax({
+					url: 'ajax_combo.php',
+					dataType: 'json',
+					data: {
+						s: $j("#filterfield_7").val(),  //search term
+						p: 1,                                         //page number
+						t: "units",                //table name
+						f: "street"               //field name
+					}
+				}).done(function(response){
+					if (response.results.length){
+						$j("#filter_7").select2('data' , {
+							id: response.results[1].id,
+							text: response.results[1].text
+						});
+					}
+				});
+			}
+
+		});
+	</script>
+
+		
+			<!-- ########################################################## -->
+					
+
+	<div class="row vspacer-lg" style="border-bottom: dotted 2px #DDD;">
+		
+		<div class="hidden-xs hidden-sm col-md-3 vspacer-lg text-right"><label for="">State</label></div>
+		<div class="hidden-md hidden-lg col-xs-12 vspacer-lg"><label for="">State</label></div>
+		
+		
+		<div class="col-md-8 col-lg-6 vspacer-md">
+			<div id="filter_9" class="vspacer-lg"><span></span></div>
+
+			<input type="hidden" class="populatedLookupData" name="4" value="<?php echo htmlspecialchars($FilterValue[4]); ?>" >
+			<input type="hidden" name="FilterAnd[4]" value="and">
+			<input type="hidden" name="FilterField[4]" value="9">  
+			<input type="hidden" id="lookupoperator_9" name="FilterOperator[4]" value="equal-to">
+			<input type="hidden" id="filterfield_9" name="FilterValue[4]" value="<?php echo htmlspecialchars($FilterValue[4]); ?>" size="3">
+		</div>
+		
+		
+		<div class="col-xs-3 col-xs-offset-9 col-md-offset-0 col-md-1">
+			<button type="button" class="btn btn-default vspacer-md btn-block" title='Clear fields' onclick="clearFilters($j(this).parent());" ><span class="glyphicon glyphicon-trash text-danger"></button>
+		</div>
+
+			</div>
+
+	<script>
+
+		$j(function(){
+			/* display a drop-down of categories that populates its content from ajax_combo.php */
+			$j("#filter_9").select2({
+				ajax: {
+					url: "ajax_combo.php",
+					dataType: 'json',
+					cache: true,
+					data: function(term, page){ return { s: term, p:page, t:"units", f:"state" }; },
+					results: function (resp, page) { return resp; }
+				}
+			}).on('change', function(e){
+				$j("#filterfield_9").val(e.added.text);
+				$j("#lookupoperator_9").val('equal-to');
+				if (e.added.id=='{empty_value}'){
+					$j("#lookupoperator_9").val('is-empty');
+				}
+			});
+
+
+			/* preserve the applied category filter and show it when re-opening the filters page */
+			if ($j("#filterfield_9").val().length){
+				
+				//None case 
+				if ($j("#filterfield_9").val() == '<None>'){
+					$j("#filter_9").select2( 'data' , {
+						id: '{empty-value}',
+						text: '<None>'
+					});
+					$j("#lookupoperator_9").val('is-empty');
+					return;
+				}
+				$j.ajax({
+					url: 'ajax_combo.php',
+					dataType: 'json',
+					data: {
+						s: $j("#filterfield_9").val(),  //search term
+						p: 1,                                         //page number
+						t: "units",                //table name
+						f: "state"               //field name
+					}
+				}).done(function(response){
+					if (response.results.length){
+						$j("#filter_9").select2('data' , {
+							id: response.results[1].id,
+							text: response.results[1].text
+						});
+					}
+				});
+			}
+
+		});
+	</script>
+
+		
+			<!-- ########################################################## -->
+					
 	<div class="row vspacer-lg" style="border-bottom: dotted 2px #DDD;" >
 		
 		<div class="hidden-xs hidden-sm col-md-3 vspacer-lg text-right"><label for="">Unit</label></div>
 		<div class="hidden-md hidden-lg col-xs-12 vspacer-lg"><label for="">Unit</label></div>
 		
 				
-		<input type="hidden" name="FilterAnd[2]" value="and">
-		<input type="hidden" name="FilterField[2]" value="3">  
-		<input type="hidden" name="FilterOperator[2]" value="like">
+		<input type="hidden" name="FilterAnd[5]" value="and">
+		<input type="hidden" name="FilterField[5]" value="3">  
+		<input type="hidden" name="FilterOperator[5]" value="like">
 		<div class="col-md-8 col-lg-6 vspacer-md">
-			<input type="text" class="form-control" name="FilterValue[2]" value="<?php echo htmlspecialchars($FilterValue[2]); ?>" size="3">
+			<input type="text" class="form-control" name="FilterValue[5]" value="<?php echo htmlspecialchars($FilterValue[5]); ?>" size="3">
 		</div>
 		
 		
@@ -164,27 +410,27 @@
 		<div class="hidden-md hidden-lg col-xs-12 vspacer-lg"><label for="">Status</label></div>
 		
 		
-		<input type="hidden" class="optionsData" name="FilterField[3]" value="4">
+		<input type="hidden" class="optionsData" name="FilterField[6]" value="4">
 		<div class="col-xs-10 col-sm-11 col-md-8 col-lg-6">
 
-			<input type="hidden" name="FilterAnd[3]" value="and">
-			<input type="hidden" name="FilterOperator[3]" value="equal-to">
-			<input type="hidden" name="FilterValue[3]" id="4_currValue" value="<?php echo htmlspecialchars($FilterValue[3]); ?>" size="3">
+			<input type="hidden" name="FilterAnd[6]" value="and">
+			<input type="hidden" name="FilterOperator[6]" value="equal-to">
+			<input type="hidden" name="FilterValue[6]" id="4_currValue" value="<?php echo htmlspecialchars($FilterValue[6]); ?>" size="3">
 
 	
 			<div class="radio">
 				<label>
-					 <input type="radio" name="FilterValue[3]" class="filter_4" value='Occupied'>Occupied				</label>
+					 <input type="radio" name="FilterValue[6]" class="filter_4" value='Occupied'>Occupied				</label>
 			</div>
 	 
 			<div class="radio">
 				<label>
-					 <input type="radio" name="FilterValue[3]" class="filter_4" value='Listed'>Listed				</label>
+					 <input type="radio" name="FilterValue[6]" class="filter_4" value='Listed'>Listed				</label>
 			</div>
 	 
 			<div class="radio">
 				<label>
-					 <input type="radio" name="FilterValue[3]" class="filter_4" value='Unlisted'>Unlisted				</label>
+					 <input type="radio" name="FilterValue[6]" class="filter_4" value='Unlisted'>Unlisted				</label>
 			</div>
 	 		</div>
 
@@ -196,7 +442,7 @@
 			</div>
 	<script>
 		//for population
-		var filterValue_4 = '<?php echo htmlspecialchars($FilterValue[ 3 ]); ?>';
+		var filterValue_4 = '<?php echo htmlspecialchars($FilterValue[ 6 ]); ?>';
 		$j(function () {
 			if (filterValue_4) {
 				$j("input[class =filter_4][value ='" + filterValue_4 + "']").attr("checked", "checked");
@@ -212,11 +458,11 @@
 		<div class="hidden-md hidden-lg col-xs-12 vspacer-lg"><label for="">Rooms</label></div>
 		
 				
-		<input type="hidden" name="FilterAnd[4]" value="and">
-		<input type="hidden" name="FilterField[4]" value="11">  
-		<input type="hidden" name="FilterOperator[4]" value="like">
+		<input type="hidden" name="FilterAnd[7]" value="and">
+		<input type="hidden" name="FilterField[7]" value="11">  
+		<input type="hidden" name="FilterOperator[7]" value="like">
 		<div class="col-md-8 col-lg-6 vspacer-md">
-			<input type="text" class="form-control" name="FilterValue[4]" value="<?php echo htmlspecialchars($FilterValue[4]); ?>" size="3">
+			<input type="text" class="form-control" name="FilterValue[7]" value="<?php echo htmlspecialchars($FilterValue[7]); ?>" size="3">
 		</div>
 		
 		
@@ -237,19 +483,19 @@
 		
 					
 		<div class="col-xs-3 col-md-1 vspacer-lg text-center">Between</div>
-		<input type="hidden" name="FilterAnd[5]" value="and">
-		<input type="hidden" name="FilterField[5]" value="12">   
-		<input type="hidden" name="FilterOperator[5]" value="greater-than-or-equal-to">
+		<input type="hidden" name="FilterAnd[8]" value="and">
+		<input type="hidden" name="FilterField[8]" value="12">   
+		<input type="hidden" name="FilterOperator[8]" value="greater-than-or-equal-to">
 		<div class="col-xs-9 col-md-3 col-lg-2 vspacer-md">
-			<input type="text" class="numeric form-control" name="FilterValue[5]" value="<?php echo htmlspecialchars($FilterValue[5]); ?>" size="3">
+			<input type="text" class="numeric form-control" name="FilterValue[8]" value="<?php echo htmlspecialchars($FilterValue[8]); ?>" size="3">
 		</div>
 
 				<div class="col-xs-3 col-md-1 text-center vspacer-lg and"> and </div>
-		<input type="hidden" name="FilterAnd[6]" value="and">
-		<input type="hidden" name="FilterField[6]" value="12">  
-		<input type="hidden" name="FilterOperator[6]" value="less-than-or-equal-to">
+		<input type="hidden" name="FilterAnd[9]" value="and">
+		<input type="hidden" name="FilterField[9]" value="12">  
+		<input type="hidden" name="FilterOperator[9]" value="less-than-or-equal-to">
 		<div class="col-xs-9 col-md-3 col-lg-2 vspacer-md">
-			<input type="text" class="numeric form-control" name="FilterValue[6]" value="<?php echo htmlspecialchars($FilterValue[6]); ?>" size="3">
+			<input type="text" class="numeric form-control" name="FilterValue[9]" value="<?php echo htmlspecialchars($FilterValue[9]); ?>" size="3">
 		</div>
 
 		
@@ -276,9 +522,9 @@
 
 			
 				//convert value to select2 format
-				if ($FilterValue[8]) {
+				if ($FilterValue[11]) {
 					$filtervalueObj = new stdClass();
-					$text = htmlspecialchars($FilterValue[8]);
+					$text = htmlspecialchars($FilterValue[11]);
 					$filtervalueObj->text = $text;
 					$filtervalueObj->id = array_search($text, $options);
 
@@ -294,11 +540,11 @@
 		<div class="col-md-8 col-lg-6 vspacer-md">	
 			<div id="13_DropDown"><span></span></div>
 		</div>
-		<input type="hidden" class="populatedOptionsData" name="8" value="<?php echo htmlspecialchars($FilterValue[8]); ?>" >
-		<input type="hidden" name="FilterAnd[8]" value="and">
-		<input type="hidden" name="FilterField[8]" value="13">
-		<input type="hidden" name="FilterOperator[8]" value="like">
-		<input type="hidden" name="FilterValue[8]" id="13_currValue" value="<?php echo htmlspecialchars($FilterValue[8]); ?>" size="3">
+		<input type="hidden" class="populatedOptionsData" name="11" value="<?php echo htmlspecialchars($FilterValue[11]); ?>" >
+		<input type="hidden" name="FilterAnd[11]" value="and">
+		<input type="hidden" name="FilterField[11]" value="13">
+		<input type="hidden" name="FilterOperator[11]" value="like">
+		<input type="hidden" name="FilterValue[11]" id="13_currValue" value="<?php echo htmlspecialchars($FilterValue[11]); ?>" size="3">
 
 		
 		<div class="col-xs-3 col-xs-offset-9 col-md-offset-0 col-md-1">
@@ -332,19 +578,19 @@
 		
 					
 		<div class="col-xs-3 col-md-1 vspacer-lg text-center">Between</div>
-		<input type="hidden" name="FilterAnd[9]" value="and">
-		<input type="hidden" name="FilterField[9]" value="15">   
-		<input type="hidden" name="FilterOperator[9]" value="greater-than-or-equal-to">
+		<input type="hidden" name="FilterAnd[12]" value="and">
+		<input type="hidden" name="FilterField[12]" value="15">   
+		<input type="hidden" name="FilterOperator[12]" value="greater-than-or-equal-to">
 		<div class="col-xs-9 col-md-3 col-lg-2 vspacer-md">
-			<input type="text" class="numeric form-control" name="FilterValue[9]" value="<?php echo htmlspecialchars($FilterValue[9]); ?>" size="3">
+			<input type="text" class="numeric form-control" name="FilterValue[12]" value="<?php echo htmlspecialchars($FilterValue[12]); ?>" size="3">
 		</div>
 
 				<div class="col-xs-3 col-md-1 text-center vspacer-lg and"> and </div>
-		<input type="hidden" name="FilterAnd[10]" value="and">
-		<input type="hidden" name="FilterField[10]" value="15">  
-		<input type="hidden" name="FilterOperator[10]" value="less-than-or-equal-to">
+		<input type="hidden" name="FilterAnd[13]" value="and">
+		<input type="hidden" name="FilterField[13]" value="15">  
+		<input type="hidden" name="FilterOperator[13]" value="less-than-or-equal-to">
 		<div class="col-xs-9 col-md-3 col-lg-2 vspacer-md">
-			<input type="text" class="numeric form-control" name="FilterValue[10]" value="<?php echo htmlspecialchars($FilterValue[10]); ?>" size="3">
+			<input type="text" class="numeric form-control" name="FilterValue[13]" value="<?php echo htmlspecialchars($FilterValue[13]); ?>" size="3">
 		</div>
 
 		
@@ -356,17 +602,7 @@
 
 		
 			<!-- ########################################################## -->
-			
-		<?php $si = 12; ?>
-		<?php for($afi = $si; $afi <= 12; $afi++) { ?>
-			<!-- advanced filter <?php echo $afi; ?> -->
-			<input type="hidden" name="FilterAnd[<?php echo $afi; ?>]" value="<?php echo html_attr($_REQUEST['FilterAnd'][$afi]); ?>">
-			<input type="hidden" name="FilterField[<?php echo $afi; ?>]" value="<?php echo html_attr($_REQUEST['FilterField'][$afi]); ?>">
-			<input type="hidden" name="FilterOperator[<?php echo $afi; ?>]" value="<?php echo html_attr($_REQUEST['FilterOperator'][$afi]); ?>">
-			<input type="hidden" name="FilterValue[<?php echo $afi; ?>]" value="<?php echo html_attr($_REQUEST['FilterValue'][$afi]); ?>">
-		<?php } ?>
-
-		    
+			    
 
 			<!-- sorting header  -->   
 			<div class="row" style="border-bottom: solid 2px #DDD;">
