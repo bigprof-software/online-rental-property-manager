@@ -1,9 +1,10 @@
-<!-- Edit this file to change the layout of the detail view form -->
+<!-- To change the layout of the detail view form, we recommend using JS code in hooks/employment_and_income_history-dv.js rather than editing this file -->
 
-<a name="detail-view"></a>
+<div id="detail-view"></div>
 <div class="panel-heading"><h3 class="panel-title"><strong><%%DETAIL_VIEW_TITLE%%></strong></h3></div>
 
-<div class="panel-body" id="employment_and_income_history_dv_container">
+<div id="employment_and_income_history_dv_container-loading" class="text-center text-info text-bold vspacer-lg"><i class="glyphicon glyphicon-refresh loop-rotate"></i> <%%TRANSLATION(Loading ...)%%></div>
+<div class="panel-body hidden" id="employment_and_income_history_dv_container">
 	<!-- child links -->
 	<div class="row vspacer-md">
 		<div class="col-xs-12 children-links">
@@ -20,7 +21,7 @@
 				<!-- Field: ID -->
 				<div class="form-group employment_and_income_history-id">
 					<hr class="hidden-md hidden-lg">
-					<label for="id" class="control-label col-lg-3">ID</label>
+					<label class="control-label col-lg-3" for="id">ID</label>
 					<div class="col-lg-9">
 						<div class="form-control-static" id="id"><%%VALUE(id)%%></div>
 					</div>
@@ -29,7 +30,7 @@
 				<!-- Field: Tenant -->
 				<div class="form-group employment_and_income_history-tenant">
 					<hr class="hidden-md hidden-lg">
-					<label for="tenant" class="control-label col-lg-3" data-parent_link="view_parent_modal">Tenant</label>
+					<label class="control-label col-lg-3" for="tenant" data-parent_link="view_parent_modal">Tenant</label>
 					<div class="col-lg-9">
 						<div class="form-control-static" style="white-space: nowrap; overflow-x: hidden;"><%%COMBO(tenant)%%><%%PLINK(tenant)%%><%%ADDNEW(applicants_and_tenants)%%></div>
 					</div>
@@ -38,7 +39,7 @@
 				<!-- Field: Employer name -->
 				<div class="form-group employment_and_income_history-employer_name">
 					<hr class="hidden-md hidden-lg">
-					<label for="employer_name" class="control-label col-lg-3">Employer name</label>
+					<label class="control-label col-lg-3" for="employer_name">Employer name</label>
 					<div class="col-lg-9">
 						<input maxlength="15" type="text" class="form-control" name="employer_name" id="employer_name" value="<%%VALUE(employer_name)%%>">
 					</div>
@@ -47,7 +48,7 @@
 				<!-- Field: City -->
 				<div class="form-group employment_and_income_history-city">
 					<hr class="hidden-md hidden-lg">
-					<label for="city" class="control-label col-lg-3">City</label>
+					<label class="control-label col-lg-3" for="city">City</label>
 					<div class="col-lg-9">
 						<input maxlength="20" type="text" class="form-control" name="city" id="city" value="<%%VALUE(city)%%>">
 					</div>
@@ -56,7 +57,7 @@
 				<!-- Field: Employer phone -->
 				<div class="form-group employment_and_income_history-employer_phone">
 					<hr class="hidden-md hidden-lg">
-					<label for="employer_phone" class="control-label col-lg-3">Employer phone</label>
+					<label class="control-label col-lg-3" for="employer_phone">Employer phone</label>
 					<div class="col-lg-9">
 						<input maxlength="15" type="text" class="form-control" name="employer_phone" id="employer_phone" value="<%%VALUE(employer_phone)%%>">
 					</div>
@@ -65,7 +66,7 @@
 				<!-- Field: employed from -->
 				<div class="form-group employment_and_income_history-employed_from">
 					<hr class="hidden-md hidden-lg">
-					<label for="employed_from" class="control-label col-lg-3">employed from</label>
+					<label class="control-label col-lg-3" for="employed_from-mm">employed from</label>
 					<div class="col-lg-9">
 						<%%COMBO(employed_from)%%>
 					</div>
@@ -74,7 +75,7 @@
 				<!-- Field: Employed till -->
 				<div class="form-group employment_and_income_history-employed_till">
 					<hr class="hidden-md hidden-lg">
-					<label for="employed_till" class="control-label col-lg-3">Employed till</label>
+					<label class="control-label col-lg-3" for="employed_till-mm">Employed till</label>
 					<div class="col-lg-9">
 						<%%COMBO(employed_till)%%>
 					</div>
@@ -83,7 +84,7 @@
 				<!-- Field: Occupation -->
 				<div class="form-group employment_and_income_history-occupation">
 					<hr class="hidden-md hidden-lg">
-					<label for="occupation" class="control-label col-lg-3">Occupation</label>
+					<label class="control-label col-lg-3" for="occupation">Occupation</label>
 					<div class="col-lg-9">
 						<input maxlength="40" type="text" class="form-control" name="occupation" id="occupation" value="<%%VALUE(occupation)%%>">
 					</div>
@@ -92,8 +93,8 @@
 				<!-- Field: Notes -->
 				<div class="form-group employment_and_income_history-notes">
 					<hr class="hidden-md hidden-lg">
-					<label for="notes" class="control-label col-lg-3">Notes</label>
-					<div class="col-lg-9">
+					<label class="control-label col-lg-3" for="notes">Notes</label>
+					<div class="col-lg-9 has-nicedit">
 						<%%HTMLAREA(notes)%%>
 					</div>
 				</div>
@@ -144,7 +145,12 @@
 			/* enable DV action buttons to float on scrolling down the form */
 			enable_dvab_floating();
 
-			setTimeout(AppGini.focusFirstFormElement, 100);
+
+			setTimeout(function() {
+				$j('#employment_and_income_history_dv_container-loading').addClass('hidden');
+				$j('#employment_and_income_history_dv_container').removeClass('hidden');
+				AppGini.focusFormElement('employment_and_income_history', 'tenant');
+			}, 1100);
 
 			$j('form').eq(0).change(function() {
 				if($j(this).data('already_changed')) return;
@@ -155,7 +161,7 @@
 			// try to detect rich text changes by adding 'input' handler after nicedit is loaded ...
 			AppGini.detectContentEditableChanges();
 
-			$j('a[href="<%%TRANSLATION(ImageFolder)%%>"]').click(function() { /* */ return false; });
+			$j('a[href="<%%BASE_UPLOAD_PATH%%>"]').click(function() { return false; });
 
 
 			if(!embedded_mode) {

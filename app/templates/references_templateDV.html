@@ -1,9 +1,10 @@
-<!-- Edit this file to change the layout of the detail view form -->
+<!-- To change the layout of the detail view form, we recommend using JS code in hooks/references-dv.js rather than editing this file -->
 
-<a name="detail-view"></a>
+<div id="detail-view"></div>
 <div class="panel-heading"><h3 class="panel-title"><strong><%%DETAIL_VIEW_TITLE%%></strong></h3></div>
 
-<div class="panel-body" id="references_dv_container">
+<div id="references_dv_container-loading" class="text-center text-info text-bold vspacer-lg"><i class="glyphicon glyphicon-refresh loop-rotate"></i> <%%TRANSLATION(Loading ...)%%></div>
+<div class="panel-body hidden" id="references_dv_container">
 	<!-- child links -->
 	<div class="row vspacer-md">
 		<div class="col-xs-12 children-links">
@@ -20,7 +21,7 @@
 				<!-- Field: ID -->
 				<div class="form-group references-id">
 					<hr class="hidden-md hidden-lg">
-					<label for="id" class="control-label col-lg-3">ID</label>
+					<label class="control-label col-lg-3" for="id">ID</label>
 					<div class="col-lg-9">
 						<div class="form-control-static" id="id"><%%VALUE(id)%%></div>
 					</div>
@@ -29,7 +30,7 @@
 				<!-- Field: Tenant -->
 				<div class="form-group references-tenant">
 					<hr class="hidden-md hidden-lg">
-					<label for="tenant" class="control-label col-lg-3" data-parent_link="view_parent_modal">Tenant</label>
+					<label class="control-label col-lg-3" for="tenant" data-parent_link="view_parent_modal">Tenant</label>
 					<div class="col-lg-9">
 						<div class="form-control-static" style="white-space: nowrap; overflow-x: hidden;"><%%COMBO(tenant)%%><%%PLINK(tenant)%%><%%ADDNEW(applicants_and_tenants)%%></div>
 					</div>
@@ -38,7 +39,7 @@
 				<!-- Field: Reference name -->
 				<div class="form-group references-reference_name">
 					<hr class="hidden-md hidden-lg">
-					<label for="reference_name" class="control-label col-lg-3">Reference name</label>
+					<label class="control-label col-lg-3" for="reference_name">Reference name</label>
 					<div class="col-lg-9">
 						<input maxlength="15" type="text" class="form-control" name="reference_name" id="reference_name" value="<%%VALUE(reference_name)%%>">
 					</div>
@@ -47,7 +48,7 @@
 				<!-- Field: Reference phone -->
 				<div class="form-group references-phone">
 					<hr class="hidden-md hidden-lg">
-					<label for="phone" class="control-label col-lg-3">Reference phone</label>
+					<label class="control-label col-lg-3" for="phone">Reference phone</label>
 					<div class="col-lg-9">
 						<input maxlength="15" type="text" class="form-control" name="phone" id="phone" value="<%%VALUE(phone)%%>">
 					</div>
@@ -93,7 +94,12 @@
 			/* enable DV action buttons to float on scrolling down the form */
 			enable_dvab_floating();
 
-			setTimeout(AppGini.focusFirstFormElement, 100);
+
+			setTimeout(function() {
+				$j('#references_dv_container-loading').addClass('hidden');
+				$j('#references_dv_container').removeClass('hidden');
+				AppGini.focusFormElement('references', 'tenant');
+			}, 1100);
 
 			$j('form').eq(0).change(function() {
 				if($j(this).data('already_changed')) return;
@@ -101,7 +107,7 @@
 				$j(this).data('already_changed', true);
 			});
 
-			$j('a[href="<%%TRANSLATION(ImageFolder)%%>"]').click(function() { /* */ return false; });
+			$j('a[href="<%%BASE_UPLOAD_PATH%%>"]').click(function() { return false; });
 
 
 			if(!embedded_mode) {

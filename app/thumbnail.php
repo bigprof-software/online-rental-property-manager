@@ -7,16 +7,16 @@
 	// image paths
 	$p = [
 		'properties' => [
-			'photo' => $Translation['ImageFolder'],
+			'photo' => getUploadDir(''),
 		],
 		'property_photos' => [
-			'photo' => $Translation['ImageFolder'],
+			'photo' => getUploadDir(''),
 		],
 		'units' => [
-			'photo' => $Translation['ImageFolder'],
+			'photo' => getUploadDir(''),
 		],
 		'unit_photos' => [
-			'photo' => $Translation['ImageFolder'],
+			'photo' => getUploadDir(''),
 		],
 	];
 

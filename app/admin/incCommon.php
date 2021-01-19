@@ -1,5 +1,5 @@
 <?php
-	error_reporting(E_ERROR | E_WARNING | E_PARSE);
+	error_reporting(E_ERROR /*| E_WARNING*/ | E_PARSE);
 
 	// incCommon.php is included only in the admin area, so if this flag is defined, this indicates we're in admin area
 	define('ADMIN_AREA', true);

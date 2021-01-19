@@ -180,7 +180,7 @@
 					<i class="glyphicon glyphicon-trash text-muted"></i>
 					<i class="glyphicon glyphicon-ban-circle text-muted"></i>
 				<?php } else { ?>
-					<a href="pageDeleteMember.php?memberID=<?php echo $row[0]; ?>" onClick="return confirm('<?php echo str_replace ( '<USERNAME>' , $row[0] , $Translation['sure delete user'] ); ?>');"><i class="glyphicon glyphicon-trash text-danger" title="<?php echo $Translation['delete member'] ; ?>"></i></a>
+					<a href="pageDeleteMember.php?memberID=<?php echo $row[0]; ?>" onClick="return confirm('<?php echo addslashes(str_replace('<USERNAME>', $row[0], $Translation['sure delete user'])); ?>');"><i class="glyphicon glyphicon-trash text-danger" title="<?php echo $Translation['delete member'] ; ?>"></i></a>
 					<?php
 						if(!$row[8]) { // if member is not approved, display approve link
 							?><a href="pageChangeMemberStatus.php?memberID=<?php echo $row[0]; ?>&approve=1"><i class="glyphicon glyphicon-ok text-success" title="<?php echo $Translation["unban this member"] ; ?>" title="<?php echo $Translation["approve this member"] ; ?>"></i></a><?php

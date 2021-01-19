@@ -9,36 +9,31 @@
 	$groupID = max(0, intval($_GET['groupID']));
 	$tableName = new Request('tableName');
 	$page = max(1, intval($_GET['page']));
+	$where = [];
 
 	// process sort
-	$sortDir = ($_GET['sortDir'] == 'desc' ? 'desc' : '');
+	$sortDir = ($_GET['sortDir'] == 'DESC' ? 'DESC' : '');
 	$sort = makeSafe($_GET['sort']);
 	if($sort != 'dateAdded' && $sort != 'dateUpdated') { // default sort is newly created first
 		$sort = 'dateAdded';
-		$sortDir = 'desc';
+		$sortDir = 'DESC';
 	}
 
-	if($sort) {
-		$sortClause = "order by {$sort} {$sortDir}";
-	}
+	if($sort) $sortClause = "ORDER BY {$sort} {$sortDir}";
 
-	if($memberID->sql != '') {
-		$where .= ($where ? ' and ' : '') . "r.memberID like '{$memberID->sql}%'";
-	}
+	if($memberID->sql == '{none}')
+		$where[] = "NOT LENGTH(r.memberID)";
+	elseif($memberID->sql != '')
+		$where[] = "r.memberID LIKE '{$memberID->sql}%'";
 
-	if($groupID) {
-		$where .= ($where ? ' and ' : '') . "g.groupID='{$groupID}'";
-	}
+	if($groupID) $where[] = "g.groupID='{$groupID}'";
 
-	if($tableName->sql != '') {
-		$where .= ($where ? ' and ' : '') . "r.tableName='{$tableName->sql}'";
-	}
+	if($tableName->sql != '') $where[] = "r.tableName='{$tableName->sql}'";
 
-	if($where) {
-		$where = "where {$where}";
-	}
+	$whereStr = count($where) ? 'WHERE ' . implode(' AND ', $where) : '';
 
-	$numRecords = sqlValue("select count(1) from membership_userrecords r left join membership_groups g on r.groupID=g.groupID {$where}");
+	$numRecords = sqlValue("SELECT COUNT(1) FROM membership_userrecords r LEFT JOIN membership_groups g ON r.groupID=g.groupID {$whereStr}");
+
 	$noResults = false;
 	if(!$numRecords) {
 		echo "<div class=\"alert alert-warning\">{$Translation['no matching results found']}</div>";
@@ -113,13 +108,19 @@
 	<tbody>
 <?php
 
-	$res = sql("select r.recID, r.memberID, g.name, r.tableName, r.dateAdded, r.dateUpdated, r.pkValue from membership_userrecords r left join membership_groups g on r.groupID=g.groupID $where $sortClause limit $start, " . $adminConfig['recordsPerPage'], $eo);
+	$res = sql(
+		"SELECT
+			r.recID, r.memberID, g.name, r.tableName, r.dateAdded, r.dateUpdated, r.pkValue 
+		FROM
+			membership_userrecords r LEFT JOIN membership_groups g ON r.groupID=g.groupID
+		$whereStr $sortClause LIMIT $start, " . intval($adminConfig['recordsPerPage']),
+	$eo);
 	while($row = db_fetch_row($res)) {
 		?>
 		<tr>
 			<td class="text-center">
 				<a href="pageEditOwnership.php?recID=<?php echo $row[0]; ?>" title="<?php echo $Translation['change record ownership'] ; ?>"><i class="glyphicon glyphicon-user"></i></a>
-				<a href="pageDeleteRecord.php?recID=<?php echo $row[0]; ?>" onClick="return confirm('<?php echo $Translation['sure delete record'] ; ?>');" title="<?php echo $Translation['delete record'] ; ?>"><i class="glyphicon glyphicon-trash text-danger"></i></a>
+				<a href="pageDeleteRecord.php?recID=<?php echo $row[0]; ?>" onClick="return confirm('<?php echo addslashes($Translation['sure delete record']); ?>');" title="<?php echo $Translation['delete record']; ?>"><i class="glyphicon glyphicon-trash text-danger"></i></a>
 			</td>
 			<td><?php echo $row[1]; ?></td>
 			<td><?php echo $row[2]; ?></td>
@@ -171,7 +172,7 @@
 		<div class="modal-content">
 			<button type="button" class="close hspacer-md vspacer-md" data-dismiss="modal">&times;</button>
 			<div class="modal-body" style="-webkit-overflow-scrolling:touch !important; overflow-y: auto;">
-				<iframe width="100%" height="100%" sandbox="allow-forms allow-scripts allow-same-origin" src="" id="view-record-iframe"></iframe>
+				<iframe width="100%" height="100%" sandbox="allow-forms allow-scripts allow-same-origin allow-popups-to-escape-sandbox" src="" id="view-record-iframe"></iframe>
 			</div>
 		</div>
 	</div>

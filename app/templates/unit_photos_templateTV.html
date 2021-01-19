@@ -5,5 +5,5 @@
 <!-- add the following to the unit_photos_init() hook (in hooks/unit_photos.php file) -->
 <!--     $options->ShowTableHeader = 0;     -->
 
-		<td id="unit_photos-photo-<%%VALUE(id)%%>" class="unit_photos-photo"><a href="<%%TRANSLATION(ImageFolder)%%><%%VALUE(photo)%%>" data-lightbox="unit_photos-photo"><img src="thumbnail.php?i=<%%VALUE(photo)%%>&t=unit_photos&f=photo&v=tv" class="img-thumbnail"></a></td>
+		<td id="unit_photos-photo-<%%VALUE(id)%%>" class="unit_photos-photo"><a href="<%%BASE_UPLOAD_PATH%%><%%VALUE(photo)%%>" data-lightbox="unit_photos-photo"><img src="thumbnail.php?i=<%%VALUE(photo)%%>&t=unit_photos&f=photo&v=tv" class="img-thumbnail"></a></td>
 		<td id="unit_photos-description-<%%VALUE(id)%%>" class="unit_photos-description"><%%SELECT%%><%%VALUE(description)%%><%%ENDSELECT%%></td>

@@ -1,5 +1,3 @@
-<?php header('Content-type: text/css'); ?>
-
 @media (min-width: 768px) { .container{ width: 90% !important; } }
 @media (max-width: 767px) { .detail_view{ padding: 0; } }
 @media print{
@@ -31,14 +29,53 @@ iframe{ border: none; overflow: auto; }
 /* prevent prototype conflicts */
 li.dropdown{ display: block !important; }
 
+/* horizontal spacer */
 .hspacer-xs{ margin-left: 0.1em; margin-right: 0.1em; }
 .hspacer-sm{ margin-left: 0.2em; margin-right: 0.2em; }
 .hspacer-md{ margin-left: 0.4em; margin-right: 0.4em; }
 .hspacer-lg{ margin-left: 0.8em; margin-right: 0.8em; }
+
+/* right spacer in ltr context */
+.container:not(.theme-rtl) .rspacer-xs{ margin-right: 0.1em; }
+.container:not(.theme-rtl) .rspacer-sm{ margin-right: 0.2em; }
+.container:not(.theme-rtl) .rspacer-md{ margin-right: 0.4em; }
+.container:not(.theme-rtl) .rspacer-lg{ margin-right: 0.8em; }
+
+/* right spacer in rtl context */
+.theme-rtl .rspacer-xs{ margin-left: 0.1em; }
+.theme-rtl .rspacer-sm{ margin-left: 0.2em; }
+.theme-rtl .rspacer-md{ margin-left: 0.4em; }
+.theme-rtl .rspacer-lg{ margin-left: 0.8em; }
+
+/* left spacer in ltr context */
+.container:not(.theme-rtl) .lspacer-xs{ margin-left: 0.1em; }
+.container:not(.theme-rtl) .lspacer-sm{ margin-left: 0.2em; }
+.container:not(.theme-rtl) .lspacer-md{ margin-left: 0.4em; }
+.container:not(.theme-rtl) .lspacer-lg{ margin-left: 0.8em; }
+
+/* left spacer in rtl context */
+.theme-rtl .lspacer-xs{ margin-right: 0.1em; }
+.theme-rtl .lspacer-sm{ margin-right: 0.2em; }
+.theme-rtl .lspacer-md{ margin-right: 0.4em; }
+.theme-rtl .lspacer-lg{ margin-right: 0.8em; }
+
+/* vertical spacer */
 .vspacer-xs{ margin-top: 0.1em; margin-bottom: 0.1em; }
 .vspacer-sm{ margin-top: 0.2em; margin-bottom: 0.2em; }
 .vspacer-md{ margin-top: 0.4em; margin-bottom: 0.4em; }
 .vspacer-lg{ margin-top: 0.8em; margin-bottom: 0.8em; }
+
+/* top spacer */
+.tspacer-xs{ margin-top: 0.1em; }
+.tspacer-sm{ margin-top: 0.2em; }
+.tspacer-md{ margin-top: 0.4em; }
+.tspacer-lg{ margin-top: 0.8em; }
+
+/* bottom spacer */
+.bspacer-xs{ margin-bottom: 0.1em; }
+.bspacer-sm{ margin-bottom: 0.2em; }
+.bspacer-md{ margin-bottom: 0.4em; }
+.bspacer-lg{ margin-bottom: 0.8em; }
 
 div.datePicker{ font-size: 1.3em; }
 .always_shown{ display: inline !important; }
@@ -347,3 +384,21 @@ img.help-shortcuts-launcher {
 .theme-compact .help-shortcuts-launcher-container {
 	margin: 10px !important;
 }
+
+/* web and email links in DV */
+.detail_view a > .glyphicon-globe {
+	vertical-align: top;
+	font-size: x-large;
+}
+.detail_view a > .glyphicon-envelope {
+	vertical-align: text-bottom;
+	font-size: large;
+}
+
+.glyphicon-lg {
+	font-size: 2em;
+}
+
+/* fix nicedit components' widths */
+.has-nicedit > div { width: 100% !important; }
+.has-nicedit .nicEdit-main { width: 99% !important; }

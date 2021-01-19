@@ -1,7 +1,7 @@
 <?php if(!isset($Translation)) { @header('Location: index.php'); exit; } ?>
 
 <div class="page-header"><h1>
-	<span id="table-title-img"><img align="top" src="<?php echo $this->TableIcon; ?>" /></span> <?php echo $this->TableTitle . " " . $Translation['filters']; ?>
+	<span id="table-title-img"><img align="top" src="<?php echo $this->TableIcon; ?>"></span> <?php echo $this->TableTitle . " " . $Translation['filters']; ?>
 </h1></div>
 
 <?php
@@ -221,19 +221,19 @@
 			<div class="col-md-8 col-md-offset-2">
 				<div class="radio filterByOwnership">
 					<label>
-						<input type="radio" name="DisplayRecords" id="DisplayRecordsUser" value="user"/>
+						<input type="radio" name="DisplayRecords" id="DisplayRecordsUser" value="user">
 						<?php echo $Translation['Only your own records']; ?>
 					</label>
 				</div>
 				<div class="radio filterByOwnership">
 					<label>
-						<input type="radio" name="DisplayRecords" id="DisplayRecordsGroup" value="group"/>
+						<input type="radio" name="DisplayRecords" id="DisplayRecordsGroup" value="group">
 						<?php echo $Translation['All records owned by your group']; ?>
 					</label>
 				</div>
 				<div class="radio filterByOwnership">
 					<label>
-						<input type="radio" name="DisplayRecords" id="DisplayRecordsAll" value="all"/>
+						<input type="radio" name="DisplayRecords" id="DisplayRecordsAll" value="all">
 						<?php echo $Translation['All records']; ?>
 					</label>
 				</div>

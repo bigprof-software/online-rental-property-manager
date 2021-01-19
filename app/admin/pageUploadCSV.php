@@ -1020,13 +1020,13 @@
 				if(!preg_match('/^[a-zA-Z_][a-zA-Z0-9_]*$/', $fn) && $fn != 'ignore-field') return false;
 
 				/* make sure field is not already mapped to another column */
-				if(isset($mappgins[$fn])) return false;
+				if(isset($mappings[$fn])) return false;
 
 				$settings['mappings'][$i] = $fn;
 				if($fn == 'ignore-field') {
 					unset($settings['mappings'][$i]);
 				} else {
-					$mappgins[$fn] = true;
+					$mappings[$fn] = true;
 				}
 			}
 
@@ -1389,7 +1389,7 @@
 							if(progress.retries < 10) {
 								progress.retries++;
 								update_progress((progress.failed + progress.imported) / progress.total * 100, '<?php echo html_attr(str_replace('<SECONDS>', '10', $this->lang['connection failed retrying'])); ?>', 'warning');
-								setTimeout(function() { /* */ import_batch(progress, callbacks); }, 3000);
+								setTimeout(function() { import_batch(progress, callbacks); }, 3000);
 								return;
 							} else {
 								/* fail and abort importing process */

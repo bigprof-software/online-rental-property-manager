@@ -35,7 +35,7 @@ if($_POST['saveChanges'] != '') {
 	if($_POST['groupID'] == '') { // new group
 		// make sure group name is unique
 		if(sqlValue("SELECT COUNT(1) FROM `membership_groups` WHERE `name`='{$name}'")) {
-			echo "<div class=\"alert alert-danger\">{$Translation['group exists error']}</div>";
+			echo "<div class=\"alert alert-danger text-center\">{$Translation['group exists error']}</div>";
 			include("{$currDir}/incFooter.php");
 		}
 
@@ -62,7 +62,7 @@ if($_POST['saveChanges'] != '') {
 
 		// make sure group name is unique
 		if(sqlValue("SELECT COUNT(1) FROM `membership_groups` WHERE `name`='{$name}' AND `groupID`!='{$groupID}'")) {
-			echo "<div class=\"alert alert-danger\">{$Translation['group exists error']}</div>";
+			echo "<div class=\"alert alert-danger text-center\">{$Translation['group exists error']}</div>";
 			include("{$currDir}/incFooter.php");
 		}
 
@@ -123,21 +123,21 @@ if($groupID != '') {
 		}
 	} else {
 		// no such group exists
-		echo "<div class=\"alert alert-danger\">{$Translation['group not found error']}</div>";
+		echo "<div class=\"alert alert-danger text-center\">{$Translation['group not found error']}</div>";
 		$groupID = 0;
 	}
 }
 ?>
 
 <?php if($_GET['msg'] == 'added'){ ?>
-	<div id="added-group-confirmation" class="alert alert-success alert-dismissible">
+	<div id="added-group-confirmation" class="alert alert-success alert-dismissible text-center">
 		<?php echo $Translation['group added successfully']; ?>
 		<button type="button" class="close" data-dismiss="alert">&times;</button>
 	</div>
 <?php } ?>
 
 <?php if($_GET['msg'] == 'saved'){ ?>
-	<div id="saved-group-confirmation" class="alert alert-success alert-dismissible">
+	<div id="saved-group-confirmation" class="alert alert-success alert-dismissible text-center">
 		<?php echo $Translation['group updated successfully']; ?>
 		<button type="button" class="close" data-dismiss="alert">&times;</button>
 	</div>
@@ -173,9 +173,9 @@ if($groupID != '') {
 </div>
 
 <?php if($anonGroupID == $groupID) { ?>
-	<div class="alert alert-warning"><?php echo $Translation['anonymous group attention']; ?></div>
+	<div class="alert alert-warning text-center"><?php echo $Translation['anonymous group attention']; ?></div>
 <?php } elseif($name == 'Admins') { ?> 
-	<div class="alert alert-warning"><?php echo $Translation['admin group attention']; ?></div>
+	<div class="alert alert-warning text-center"><?php echo $Translation['admin group attention']; ?></div>
 <?php } ?> 
 
 

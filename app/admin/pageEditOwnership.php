@@ -198,8 +198,8 @@
 								<?php
 									foreach ($row as $field_name => $field_value) {
 										$field_link = false;
-										if(@is_file("{$currDir}/../{$Translation['ImageFolder']}{$field_value}")) {
-										   $field_value = "<a href=\"../{$Translation['ImageFolder']}{$field_value}\" target=\"_blank\">" . html_attr($field_value) . "</a>";
+										if(@is_file("{$currDir}/../" . getUploadDir('') . $field_value)) {
+										   $field_value = "<a href=\"../" . getUploadDir('') . "{$field_value}\" target=\"_blank\">" . html_attr($field_value) . "</a>";
 										   $field_link = true;
 										}
 										?>

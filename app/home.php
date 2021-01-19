@@ -15,22 +15,22 @@
 		Classes of first and other blocks
 		---------------------------------
 		For possible classes, refer to the Bootstrap grid columns, panels and buttons documentation:
-			Grid columns: http://getbootstrap.com/css/#grid
-			Panels: http://getbootstrap.com/components/#panels
-			Buttons: http://getbootstrap.com/css/#buttons
+			Grid columns: https://getbootstrap.com/css/#grid
+			Panels: https://getbootstrap.com/components/#panels
+			Buttons: https://getbootstrap.com/css/#buttons
 	*/
-	$block_classes = array(
-		'first' => array(
+	$block_classes = [
+		'first' => [
 			'grid_column' => 'col-lg-6',
 			'panel' => 'panel-warning',
-			'link' => 'btn-warning'
-		),
-		'other' => array(
+			'link' => 'btn-warning',
+		],
+		'other' => [
 			'grid_column' => 'col-lg-6',
 			'panel' => 'panel-info',
-			'link' => 'btn-info'
-		)
-	);
+			'link' => 'btn-info',
+		],
+	];
 ?>
 
 <style>

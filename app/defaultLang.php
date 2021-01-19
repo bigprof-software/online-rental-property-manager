@@ -239,9 +239,9 @@ $TranslationEn = [
 	'member approval email subject control' => 'When the admin approves a member, the member is notified by<br>email that he is approved. You can control the subject of the<br>approval email in this box,  and the content in the box below.',
 	'member approval email message' => 'Member approval<br>email message',
 	'MySQL date' => 'MySQL date<br>formatting string',
-	'MySQL reference' => 'Please refer to <a href="http://dev.mysql.com/doc/refman/5.0/en/date-and-time-functions.html#function_date-format" target="_blank">the MySQL reference</a> for possible formats.',
+	'MySQL reference' => 'Please refer to <a href="https://dev.mysql.com/doc/refman/5.0/en/date-and-time-functions.html#function_date-format" target="_blank">the MySQL reference</a> for possible formats.',
 	'PHP short date' => 'PHP short date<br>formatting string',
-	'PHP manual' => 'Please refer to <a href="http://www.php.net/manual/en/function.date.php" target="_blank">the PHP manual</a> for possible formats.',
+	'PHP manual' => 'Please refer to <a href="https://www.php.net/manual/en/function.date.php" target="_blank">the PHP manual</a> for possible formats.',
 	'PHP long date' => 'PHP long date<br>formatting string',
 	'groups per page' => 'Groups per page',
 	'members per page' => 'Members per page',
@@ -758,4 +758,16 @@ $TranslationEn = [
 
 	// Added in 5.91
 	'keyboard shorcuts reference' => 'Keyboard shortcuts reference',
+
+	// Added in 5.93
+	'google API key' => 'Google API key',
+	'google API key instructions' => 'How to get and configure your Google API key?',
+	'base upload path' => 'Base upload path',
+	'base upload path change warning' => 'If you change the base upload path, existing uploaded files/images will not be accessible from the app until moving them to the new upload path.',
+	'base upload path instructions' => 'The path were uploaded files/images are to be stored. The path is assumed to be relative to the app path, but you can start it with <code>../</code> to specify a path outside the app.',
+	'invalid upload path' => 'Specified base upload path does not exists and could not be created.',
+	'Appearance' => 'Appearance',
+	'Mail' => 'Mail',
+	'Preconfigured users and groups' => 'Preconfigured users and groups',
+	'Application' => 'Application',
 ];

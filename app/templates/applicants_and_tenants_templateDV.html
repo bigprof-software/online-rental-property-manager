@@ -1,9 +1,10 @@
-<!-- Edit this file to change the layout of the detail view form -->
+<!-- To change the layout of the detail view form, we recommend using JS code in hooks/applicants_and_tenants-dv.js rather than editing this file -->
 
-<a name="detail-view"></a>
+<div id="detail-view"></div>
 <div class="panel-heading"><h3 class="panel-title"><strong><%%DETAIL_VIEW_TITLE%%></strong></h3></div>
 
-<div class="panel-body" id="applicants_and_tenants_dv_container">
+<div id="applicants_and_tenants_dv_container-loading" class="text-center text-info text-bold vspacer-lg"><i class="glyphicon glyphicon-refresh loop-rotate"></i> <%%TRANSLATION(Loading ...)%%></div>
+<div class="panel-body hidden" id="applicants_and_tenants_dv_container">
 	<!-- child links -->
 	<div class="row vspacer-md">
 		<div class="col-xs-12 children-links">
@@ -32,7 +33,7 @@
 				<!-- Field: ID -->
 				<div class="form-group applicants_and_tenants-id">
 					<hr class="hidden-md hidden-lg">
-					<label for="id" class="control-label col-lg-3">ID</label>
+					<label class="control-label col-lg-3" for="id">ID</label>
 					<div class="col-lg-9">
 						<div class="form-control-static" id="id"><%%VALUE(id)%%></div>
 					</div>
@@ -41,7 +42,7 @@
 				<!-- Field: Last name -->
 				<div class="form-group applicants_and_tenants-last_name">
 					<hr class="hidden-md hidden-lg">
-					<label for="last_name" class="control-label col-lg-3">Last name</label>
+					<label class="control-label col-lg-3" for="last_name">Last name</label>
 					<div class="col-lg-9">
 						<input maxlength="15" type="text" class="form-control" name="last_name" id="last_name" value="<%%VALUE(last_name)%%>">
 					</div>
@@ -50,7 +51,7 @@
 				<!-- Field: First name -->
 				<div class="form-group applicants_and_tenants-first_name">
 					<hr class="hidden-md hidden-lg">
-					<label for="first_name" class="control-label col-lg-3">First name</label>
+					<label class="control-label col-lg-3" for="first_name">First name</label>
 					<div class="col-lg-9">
 						<input maxlength="15" type="text" class="form-control" name="first_name" id="first_name" value="<%%VALUE(first_name)%%>">
 					</div>
@@ -59,21 +60,20 @@
 				<!-- Field: Email -->
 				<div class="form-group applicants_and_tenants-email">
 					<hr class="hidden-md hidden-lg">
-					<label for="email" class="control-label col-lg-3">Email</label>
+					<label class="control-label col-lg-3" for="email-edit-link">Email</label>
 					<div class="col-lg-9">
-						
 						<div>
-							<a id="email-link" href="mailto:<%%VALUE(email)%%>" target="_blank"><i class="glyphicon glyphicon-envelope text-info" title="<%%VALUE(email)%%>"></i></a>
-							<label for="email"><button type="button" id="email-edit-link" class="btn btn-default hspacer-lg vspacer-sm collapsed" data-toggle="collapse" data-target="#email" title="<%%TRANSLATION(Edit)%%>"><i class="glyphicon glyphicon-pencil"></i></button></label>
-						</div>
-						<script>jQuery(function() { /* */ var e_email = '<%%VALUE(email)%%>'; if(e_email == '' || e_email == '&nbsp;' || e_email == 'blank.gif') jQuery('#email-link').hide(); });</script><input maxlength="80" type="text" class="form-control collapse" name="email" id="email" value="<%%VALUE(email)%%>">
+							<a id="email-link" href="mailto:<%%VALUE(email)%%>" target="_blank" class="rspacer-lg"><i class="glyphicon glyphicon-envelope text-info" title="<%%VALUE(email)%%>"></i></a>
+							<label for="email"><button type="button" id="email-edit-link" class="btn btn-default vspacer-sm" data-toggle="collapse" data-target="#email" title="<%%TRANSLATION(Edit)%%>"><i class="glyphicon glyphicon-pencil"></i></button></label>
+							<input maxlength="80" type="text" class="form-control collapse" name="email" id="email" value="<%%VALUE(email)%%>">
+						</div><script>jQuery(function() { var e_email = '<%%VALUE(email)%%>'; if(e_email == '' || e_email == '&nbsp;' || e_email == 'blank.gif') jQuery('#email-link').hide(); });</script>
 					</div>
 				</div>
 
 				<!-- Field: Phone -->
 				<div class="form-group applicants_and_tenants-phone">
 					<hr class="hidden-md hidden-lg">
-					<label for="phone" class="control-label col-lg-3">Phone</label>
+					<label class="control-label col-lg-3" for="phone">Phone</label>
 					<div class="col-lg-9">
 						<input maxlength="15" type="text" class="form-control" name="phone" id="phone" value="<%%VALUE(phone)%%>">
 					</div>
@@ -82,7 +82,7 @@
 				<!-- Field: Birth date -->
 				<div class="form-group applicants_and_tenants-birth_date">
 					<hr class="hidden-md hidden-lg">
-					<label for="birth_date" class="control-label col-lg-3">Birth date</label>
+					<label class="control-label col-lg-3" for="birth_date-mm">Birth date</label>
 					<div class="col-lg-9">
 						<%%COMBO(birth_date)%%>
 					</div>
@@ -91,7 +91,7 @@
 				<!-- Field: Driver license number -->
 				<div class="form-group applicants_and_tenants-driver_license_number">
 					<hr class="hidden-md hidden-lg">
-					<label for="driver_license_number" class="control-label col-lg-3">Driver license number</label>
+					<label class="control-label col-lg-3" for="driver_license_number">Driver license number</label>
 					<div class="col-lg-9">
 						<input maxlength="15" type="text" class="form-control" name="driver_license_number" id="driver_license_number" value="<%%VALUE(driver_license_number)%%>">
 					</div>
@@ -100,7 +100,7 @@
 				<!-- Field: Monthly gross pay -->
 				<div class="form-group applicants_and_tenants-monthly_gross_pay">
 					<hr class="hidden-md hidden-lg">
-					<label for="monthly_gross_pay" class="control-label col-lg-3">Monthly gross pay</label>
+					<label class="control-label col-lg-3" for="monthly_gross_pay">Monthly gross pay</label>
 					<div class="col-lg-9">
 						<input maxlength="11" type="text" class="form-control" name="monthly_gross_pay" id="monthly_gross_pay" value="<%%VALUE(monthly_gross_pay)%%>">
 					</div>
@@ -109,7 +109,7 @@
 				<!-- Field: Additional income -->
 				<div class="form-group applicants_and_tenants-additional_income">
 					<hr class="hidden-md hidden-lg">
-					<label for="additional_income" class="control-label col-lg-3">Additional income</label>
+					<label class="control-label col-lg-3" for="additional_income">Additional income</label>
 					<div class="col-lg-9">
 						<input maxlength="11" type="text" class="form-control" name="additional_income" id="additional_income" value="<%%VALUE(additional_income)%%>">
 					</div>
@@ -118,7 +118,7 @@
 				<!-- Field: Assets -->
 				<div class="form-group applicants_and_tenants-assets">
 					<hr class="hidden-md hidden-lg">
-					<label for="assets" class="control-label col-lg-3">Assets</label>
+					<label class="control-label col-lg-3" for="assets">Assets</label>
 					<div class="col-lg-9">
 						<input maxlength="11" type="text" class="form-control" name="assets" id="assets" value="<%%VALUE(assets)%%>">
 					</div>
@@ -127,7 +127,7 @@
 				<!-- Field: Status -->
 				<div class="form-group applicants_and_tenants-status">
 					<hr class="hidden-md hidden-lg">
-					<label for="status" class="control-label col-lg-3">Status<span class="text-danger"><%%TRANSLATION(*)%%></span></label>
+					<label class="control-label col-lg-3">Status<span class="text-danger"><%%TRANSLATION(*)%%></span></label>
 					<div class="col-lg-9">
 						<%%COMBO(status)%%>
 					</div>
@@ -180,7 +180,12 @@
 				setTimeout(AppGini.closeParentModal, 2000);
 			}
 
-			setTimeout(AppGini.focusFirstFormElement, 100);
+
+			setTimeout(function() {
+				$j('#applicants_and_tenants_dv_container-loading').addClass('hidden');
+				$j('#applicants_and_tenants_dv_container').removeClass('hidden');
+				AppGini.focusFormElement('applicants_and_tenants', 'last_name');
+			}, 1100);
 
 			$j('form').eq(0).change(function() {
 				if($j(this).data('already_changed')) return;
@@ -188,7 +193,7 @@
 				$j(this).data('already_changed', true);
 			});
 
-			$j('a[href="<%%TRANSLATION(ImageFolder)%%>"]').click(function() { /* */ return false; });
+			$j('a[href="<%%BASE_UPLOAD_PATH%%>"]').click(function() { return false; });
 
 			if(embedded_mode) {
 				/* hide links to children tables in embedded mode */

@@ -224,7 +224,7 @@
 		});
 
 		$j('.btn_update, #fix_all').click(function() {
-			return confirm("<?php echo $Translation['field update warning'] ; ?>");
+			return confirm('<?php echo addslashes($Translation['field update warning']); ?>');
 		});
 
 		var count_updates = $j('.btn_update').length;

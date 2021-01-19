@@ -47,7 +47,7 @@
 		public function __construct($transformFunctions, $filterFunctions, $uri = '', $request = false) {
 			global $Translation;
 
-			if($uri === '') $uri = $_SERVER['PHP_SELF'];
+			if($uri === '') $uri = htmlspecialchars($_SERVER['PHP_SELF']);
 			if($request === false) $request = $_REQUEST;
 
 			$this->transformFunctions = $transformFunctions;

@@ -5,25 +5,25 @@
 	include("{$currDir}/incHeader.php");
 
 	// image paths
-	$p=array(   
-		'properties' => array(
-			'photo' => '../images/'
-		),
-		'property_photos' => array(
-			'photo' => '../images/'
-		),
-		'units' => array(
-			'photo' => '../images/'
-		),
-		'unit_photos' => array(
-			'photo' => '../images/'
-		)
-	);
+	$p = [
+		'properties' => [
+			'photo' => '../' . getUploadDir(''),
+		],
+		'property_photos' => [
+			'photo' => '../' . getUploadDir(''),
+		],
+		'units' => [
+			'photo' => '../' . getUploadDir(''),
+		],
+		'unit_photos' => [
+			'photo' => '../' . getUploadDir(''),
+		],
+	];
 
 	if(!count($p)) exit;
 
 	// validate input
-	$t=$_GET['table'];
+	$t = $_GET['table'];
 	if(!in_array($t, array_keys($p))) {
 		?>
 		<div class="page-header"><h1><?php echo $Translation['rebuild thumbnails']; ?></h1></div>

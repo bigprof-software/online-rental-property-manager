@@ -1,9 +1,10 @@
-<!-- Edit this file to change the layout of the detail view form -->
+<!-- To change the layout of the detail view form, we recommend using JS code in hooks/residence_and_rental_history-dv.js rather than editing this file -->
 
-<a name="detail-view"></a>
+<div id="detail-view"></div>
 <div class="panel-heading"><h3 class="panel-title"><strong><%%DETAIL_VIEW_TITLE%%></strong></h3></div>
 
-<div class="panel-body" id="residence_and_rental_history_dv_container">
+<div id="residence_and_rental_history_dv_container-loading" class="text-center text-info text-bold vspacer-lg"><i class="glyphicon glyphicon-refresh loop-rotate"></i> <%%TRANSLATION(Loading ...)%%></div>
+<div class="panel-body hidden" id="residence_and_rental_history_dv_container">
 	<!-- child links -->
 	<div class="row vspacer-md">
 		<div class="col-xs-12 children-links">
@@ -20,7 +21,7 @@
 				<!-- Field: ID -->
 				<div class="form-group residence_and_rental_history-id">
 					<hr class="hidden-md hidden-lg">
-					<label for="id" class="control-label col-lg-3">ID</label>
+					<label class="control-label col-lg-3" for="id">ID</label>
 					<div class="col-lg-9">
 						<div class="form-control-static" id="id"><%%VALUE(id)%%></div>
 					</div>
@@ -29,7 +30,7 @@
 				<!-- Field: Tenant -->
 				<div class="form-group residence_and_rental_history-tenant">
 					<hr class="hidden-md hidden-lg">
-					<label for="tenant" class="control-label col-lg-3" data-parent_link="view_parent_modal">Tenant</label>
+					<label class="control-label col-lg-3" for="tenant" data-parent_link="view_parent_modal">Tenant</label>
 					<div class="col-lg-9">
 						<div class="form-control-static" style="white-space: nowrap; overflow-x: hidden;"><%%COMBO(tenant)%%><%%PLINK(tenant)%%><%%ADDNEW(applicants_and_tenants)%%></div>
 					</div>
@@ -38,7 +39,7 @@
 				<!-- Field: Address -->
 				<div class="form-group residence_and_rental_history-address">
 					<hr class="hidden-md hidden-lg">
-					<label for="address" class="control-label col-lg-3">Address</label>
+					<label class="control-label col-lg-3" for="address">Address</label>
 					<div class="col-lg-9">
 						<input maxlength="40" type="text" class="form-control" name="address" id="address" value="<%%VALUE(address)%%>">
 					</div>
@@ -47,7 +48,7 @@
 				<!-- Field: Landlord/manager name -->
 				<div class="form-group residence_and_rental_history-landlord_or_manager_name">
 					<hr class="hidden-md hidden-lg">
-					<label for="landlord_or_manager_name" class="control-label col-lg-3">Landlord/manager name</label>
+					<label class="control-label col-lg-3" for="landlord_or_manager_name">Landlord/manager name</label>
 					<div class="col-lg-9">
 						<input maxlength="15" type="text" class="form-control" name="landlord_or_manager_name" id="landlord_or_manager_name" value="<%%VALUE(landlord_or_manager_name)%%>">
 					</div>
@@ -56,7 +57,7 @@
 				<!-- Field: Landlord/manager phone -->
 				<div class="form-group residence_and_rental_history-landlord_or_manager_phone">
 					<hr class="hidden-md hidden-lg">
-					<label for="landlord_or_manager_phone" class="control-label col-lg-3">Landlord/manager phone</label>
+					<label class="control-label col-lg-3" for="landlord_or_manager_phone">Landlord/manager phone</label>
 					<div class="col-lg-9">
 						<input maxlength="15" type="text" class="form-control" name="landlord_or_manager_phone" id="landlord_or_manager_phone" value="<%%VALUE(landlord_or_manager_phone)%%>">
 					</div>
@@ -65,7 +66,7 @@
 				<!-- Field: Monthly rent -->
 				<div class="form-group residence_and_rental_history-monthly_rent">
 					<hr class="hidden-md hidden-lg">
-					<label for="monthly_rent" class="control-label col-lg-3">Monthly rent</label>
+					<label class="control-label col-lg-3" for="monthly_rent">Monthly rent</label>
 					<div class="col-lg-9">
 						<input maxlength="9" type="text" class="form-control" name="monthly_rent" id="monthly_rent" value="<%%VALUE(monthly_rent)%%>">
 					</div>
@@ -74,7 +75,7 @@
 				<!-- Field: Duration of residency from -->
 				<div class="form-group residence_and_rental_history-duration_of_residency_from">
 					<hr class="hidden-md hidden-lg">
-					<label for="duration_of_residency_from" class="control-label col-lg-3">Duration of residency from</label>
+					<label class="control-label col-lg-3" for="duration_of_residency_from-mm">Duration of residency from</label>
 					<div class="col-lg-9">
 						<%%COMBO(duration_of_residency_from)%%>
 					</div>
@@ -83,7 +84,7 @@
 				<!-- Field: to -->
 				<div class="form-group residence_and_rental_history-to">
 					<hr class="hidden-md hidden-lg">
-					<label for="to" class="control-label col-lg-3">to</label>
+					<label class="control-label col-lg-3" for="to-mm">to</label>
 					<div class="col-lg-9">
 						<%%COMBO(to)%%>
 					</div>
@@ -92,7 +93,7 @@
 				<!-- Field: Reason for leaving -->
 				<div class="form-group residence_and_rental_history-reason_for_leaving">
 					<hr class="hidden-md hidden-lg">
-					<label for="reason_for_leaving" class="control-label col-lg-3">Reason for leaving</label>
+					<label class="control-label col-lg-3" for="reason_for_leaving">Reason for leaving</label>
 					<div class="col-lg-9">
 						<input maxlength="40" type="text" class="form-control" name="reason_for_leaving" id="reason_for_leaving" value="<%%VALUE(reason_for_leaving)%%>">
 					</div>
@@ -101,8 +102,8 @@
 				<!-- Field: Notes -->
 				<div class="form-group residence_and_rental_history-notes">
 					<hr class="hidden-md hidden-lg">
-					<label for="notes" class="control-label col-lg-3">Notes</label>
-					<div class="col-lg-9">
+					<label class="control-label col-lg-3" for="notes">Notes</label>
+					<div class="col-lg-9 has-nicedit">
 						<%%HTMLAREA(notes)%%>
 					</div>
 				</div>
@@ -153,7 +154,12 @@
 			/* enable DV action buttons to float on scrolling down the form */
 			enable_dvab_floating();
 
-			setTimeout(AppGini.focusFirstFormElement, 100);
+
+			setTimeout(function() {
+				$j('#residence_and_rental_history_dv_container-loading').addClass('hidden');
+				$j('#residence_and_rental_history_dv_container').removeClass('hidden');
+				AppGini.focusFormElement('residence_and_rental_history', 'tenant');
+			}, 1100);
 
 			$j('form').eq(0).change(function() {
 				if($j(this).data('already_changed')) return;
@@ -164,7 +170,7 @@
 			// try to detect rich text changes by adding 'input' handler after nicedit is loaded ...
 			AppGini.detectContentEditableChanges();
 
-			$j('a[href="<%%TRANSLATION(ImageFolder)%%>"]').click(function() { /* */ return false; });
+			$j('a[href="<%%BASE_UPLOAD_PATH%%>"]').click(function() { return false; });
 
 
 			if(!embedded_mode) {

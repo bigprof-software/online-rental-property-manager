@@ -192,10 +192,10 @@
 								<?php foreach($permissions as $tn => $perm) { ?>
 									<tr>
 										<td><img src="<?php echo $userTables[$tn][2]; ?>"> <a href="<?php echo $tn; ?>_view.php"><?php echo $userTables[$tn][0]; ?></a></td>
-										<td class="text-center"><img src="admin/images/<?php echo permIcon($perm['view']); ?>" /></td>
-										<td class="text-center"><img src="admin/images/<?php echo ($perm['insert'] ? 'approve' : 'stop'); ?>_icon.gif" /></td>
-										<td class="text-center"><img src="admin/images/<?php echo permIcon($perm['edit']); ?>" /></td>
-										<td class="text-center"><img src="admin/images/<?php echo permIcon($perm['delete']); ?>" /></td>
+										<td class="text-center"><img src="admin/images/<?php echo permIcon($perm['view']); ?>"></td>
+										<td class="text-center"><img src="admin/images/<?php echo ($perm['insert'] ? 'approve' : 'stop'); ?>_icon.gif"></td>
+										<td class="text-center"><img src="admin/images/<?php echo permIcon($perm['edit']); ?>"></td>
+										<td class="text-center"><img src="admin/images/<?php echo permIcon($perm['delete']); ?>"></td>
 									</tr>
 								<?php } ?>
 							</tbody>
@@ -248,13 +248,13 @@
 
 								<div class="form-group">
 									<label for="new-password"><?php echo $Translation['new password']; ?></label>
-									<input type="password" id="new-password" autocomplete="off" class="form-control">
+									<input type="password" id="new-password" autocomplete="new-password" class="form-control">
 									<p id="password-strength" class="help-block"></p>
 								</div>
 
 								<div class="form-group">
 									<label for="confirm-password"><?php echo $Translation['confirm password']; ?></label>
-									<input type="password" id="confirm-password" autocomplete="off" class="form-control">
+									<input type="password" id="confirm-password" autocomplete="new-password" class="form-control">
 									<p id="confirm-status" class="help-block"></p>
 								</div>
 
@@ -337,7 +337,7 @@
 
 		function notify(msg) {
 			$j('#notify').html(msg).fadeIn();
-			window.setTimeout(function() { /* */ $j('#notify').fadeOut(); }, 15000);
+			window.setTimeout(function() { $j('#notify').fadeOut(); }, 15000);
 		}
 	</script>
 

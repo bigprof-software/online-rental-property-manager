@@ -3,33 +3,33 @@
 	require("{$currDir}/incCommon.php");
 	$GLOBALS['page_title'] = $Translation['membership management homepage'];
 	include("{$currDir}/incHeader.php");
-?>
 
-<?php
-	if(!sqlValue("select count(1) from membership_groups where allowSignup=1")) {
-		$noSignup=TRUE;
+	$eo = ['silentErrors' => true];
+
+	if(!sqlValue("SELECT COUNT(1) FROM `membership_groups` WHERE `allowSignup`=1")) {
+		$noSignup = true;
 		?>
 		<div class="alert alert-info">
-			<i><?php echo $Translation["attention"]; ?></i>
-			<br><?php echo $Translation["visitor sign up"]; ?>
-			</div>
+			<i><?php echo $Translation['attention']; ?></i>
+			<br><?php echo $Translation['visitor sign up']; ?>
+		</div>
 		<?php
 	}
 ?>
 
 <?php
 	// get the count of records having no owners in each table
-	$arrTables=getTableList();
+	$arrTables = getTableList();
 
-	foreach($arrTables as $tn=>$tc) {
-		$countOwned=sqlValue("select count(1) from membership_userrecords where tableName='$tn' and not isnull(groupID)");
-		$countAll=sqlValue("select count(1) from `$tn`");
+	foreach($arrTables as $tn => $tc) {
+		$countOwned = sqlValue("SELECT COUNT(1) FROM membership_userrecords WHERE tableName='$tn' AND NOT ISNULL(groupID)");
+		$countAll = sqlValue("SELECT COUNT(1) FROM `$tn`");
 
-		if($countAll>$countOwned) {
+		if($countAll > $countOwned) {
 			?>
 			<div class="alert alert-info">
-				<?php echo $Translation["table data without owner"]; ?>
-				</div>
+				<?php echo $Translation['table data without owner']; ?>
+			</div>
 			<?php
 			break;
 		}
@@ -148,12 +148,25 @@
 	<div class="panel-body">
 	<table class="table table-striped table-hover">
 	<?php
-		$res=sql("select lcase(memberID), count(1) from membership_userrecords group by memberID order by 2 desc limit 5", $eo);
-		while($row=db_fetch_row($res)) {
+		$res = sql("SELECT LCASE(`memberID`), COUNT(1) FROM `membership_userrecords` GROUP BY `memberID` ORDER BY 2 DESC LIMIT 5", $eo);
+		while($row = db_fetch_row($res)) {
 			?>
 			<tr>
-				<th class="" style="max-width: 10em;"><a href="pageEditMember.php?memberID=<?php echo urlencode($row[0]); ?>" title="<?php echo $Translation["edit member details"]; ?>"><i class="glyphicon glyphicon-pencil"></i> <?php echo $row[0]; ?></a></th>
-				<td class="remaining-width"><a href="pageViewRecords.php?memberID=<?php echo urlencode($row[0]); ?>"><img src="images/data_icon.gif" border="0" alt="<?php echo $Translation["view member records"]; ?>" title="<?php echo $Translation["view member records"]; ?>"></a> <?php echo $row[1]; ?> <?php echo $Translation["records"]; ?></td>
+				<th class="" style="max-width: 10em;">
+					<?php if($row[0]) { ?>
+						<a href="pageEditMember.php?memberID=<?php echo urlencode($row[0]); ?>" title="<?php echo $Translation["edit member details"]; ?>">
+							<i class="glyphicon glyphicon-pencil"></i> <?php echo $row[0]; ?>
+						</a>
+					<?php } else { ?>
+						<i class="glyphicon glyphicon-pencil text-muted"></i> <i><?php echo $Translation['none']; ?></i>
+					<?php } ?>
+				</th>
+				<td class="remaining-width">
+					<a href="pageViewRecords.php?memberID=<?php echo urlencode($row[0] ? $row[0] : '{none}'); ?>">
+						<img src="images/data_icon.gif" border="0" alt="<?php echo $Translation["view member records"]; ?>" title="<?php echo $Translation["view member records"]; ?>">
+					</a>
+					<?php echo $row[1]; ?> <?php echo $Translation["records"]; ?>
+				</td>
 			</tr>
 			<?php
 		}
@@ -211,13 +224,13 @@
 			<a class="twitter-timeline" data-height="300" href="https://twitter.com/bigprof?ref_src=twsrc%5Etfw"><?php echo $Translation["BigProf tweets"]; ?></a>
 			<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script> 
 
-			<div class="text-right hidden" id="remove-feed-link"><a href="pageSettings.php#anonymousMember"><i class="glyphicon glyphicon-remove"></i> <?php echo $Translation["remove feed"]; ?></a></div>
+			<div class="text-right hidden" id="remove-feed-link"><a href="pageSettings.php?search-settings=twitter"><i class="glyphicon glyphicon-remove"></i> <?php echo $Translation["remove feed"]; ?></a></div>
 
 			<script>
 				$j(function() {
 					show_remove_feed_link = function() {
 						if(!$j('.twitter-timeline-rendered').length) {
-							setTimeout(function() { /* */ show_remove_feed_link(); }, 1000);
+							setTimeout(function() { show_remove_feed_link(); }, 1000);
 						} else {
 							$j('#remove-feed-link').removeClass('hidden');
 						}

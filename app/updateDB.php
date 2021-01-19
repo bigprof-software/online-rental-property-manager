@@ -228,6 +228,7 @@
 
 	function setupTable($tableName, $createSQL = '', $silent = true, $arrAlter = '') {
 		global $Translation;
+		$oldTableName = '';
 		ob_start();
 
 		echo '<div style="padding: 5px; border-bottom:solid 1px silver; font-family: verdana, arial; font-size: 10px;">';

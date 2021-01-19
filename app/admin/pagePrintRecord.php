@@ -65,8 +65,8 @@
 		<?php
 			foreach($row as $fn => $fv) {
 				$op = html_attr($fv);
-				if(@is_file("{$currDir}/../{$Translation['ImageFolder']}{$fv}")) {
-					$op = "<a href=\"../{$Translation['ImageFolder']}{$fv}\" target=\"_blank\">" . html_attr($fv) . "</a>";
+				if(@is_file("{$currDir}/../" . getUploadDir('') . $fv)) {
+					$op = "<a href=\"../" . getUploadDir('') . "{$fv}\" target=\"_blank\">" . html_attr($fv) . "</a>";
 				}
 
 				$tr_class = $pk_icon = '';

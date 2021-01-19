@@ -1,9 +1,10 @@
-<!-- Edit this file to change the layout of the detail view form -->
+<!-- To change the layout of the detail view form, we recommend using JS code in hooks/rental_owners-dv.js rather than editing this file -->
 
-<a name="detail-view"></a>
+<div id="detail-view"></div>
 <div class="panel-heading"><h3 class="panel-title"><strong><%%DETAIL_VIEW_TITLE%%></strong></h3></div>
 
-<div class="panel-body" id="rental_owners_dv_container">
+<div id="rental_owners_dv_container-loading" class="text-center text-info text-bold vspacer-lg"><i class="glyphicon glyphicon-refresh loop-rotate"></i> <%%TRANSLATION(Loading ...)%%></div>
+<div class="panel-body hidden" id="rental_owners_dv_container">
 	<!-- child links -->
 	<div class="row vspacer-md">
 		<div class="col-xs-12 children-links">
@@ -23,7 +24,7 @@
 				<!-- Field: ID -->
 				<div class="form-group rental_owners-id">
 					<hr class="hidden-md hidden-lg">
-					<label for="id" class="control-label col-lg-3">ID</label>
+					<label class="control-label col-lg-3" for="id">ID</label>
 					<div class="col-lg-9">
 						<div class="form-control-static" id="id"><%%VALUE(id)%%></div>
 					</div>
@@ -32,7 +33,7 @@
 				<!-- Field: First name -->
 				<div class="form-group rental_owners-first_name">
 					<hr class="hidden-md hidden-lg">
-					<label for="first_name" class="control-label col-lg-3">First name</label>
+					<label class="control-label col-lg-3" for="first_name">First name</label>
 					<div class="col-lg-9">
 						<input maxlength="40" type="text" class="form-control" name="first_name" id="first_name" value="<%%VALUE(first_name)%%>">
 					</div>
@@ -41,7 +42,7 @@
 				<!-- Field: Last name -->
 				<div class="form-group rental_owners-last_name">
 					<hr class="hidden-md hidden-lg">
-					<label for="last_name" class="control-label col-lg-3">Last name</label>
+					<label class="control-label col-lg-3" for="last_name">Last name</label>
 					<div class="col-lg-9">
 						<input maxlength="40" type="text" class="form-control" name="last_name" id="last_name" value="<%%VALUE(last_name)%%>">
 					</div>
@@ -50,7 +51,7 @@
 				<!-- Field: Company name -->
 				<div class="form-group rental_owners-company_name">
 					<hr class="hidden-md hidden-lg">
-					<label for="company_name" class="control-label col-lg-3">Company name</label>
+					<label class="control-label col-lg-3" for="company_name">Company name</label>
 					<div class="col-lg-9">
 						<input maxlength="40" type="text" class="form-control" name="company_name" id="company_name" value="<%%VALUE(company_name)%%>">
 					</div>
@@ -59,7 +60,7 @@
 				<!-- Field: Date of birth -->
 				<div class="form-group rental_owners-date_of_birth">
 					<hr class="hidden-md hidden-lg">
-					<label for="date_of_birth" class="control-label col-lg-3">Date of birth</label>
+					<label class="control-label col-lg-3" for="date_of_birth-mm">Date of birth</label>
 					<div class="col-lg-9">
 						<%%COMBO(date_of_birth)%%>
 					</div>
@@ -68,35 +69,33 @@
 				<!-- Field: Primary email -->
 				<div class="form-group rental_owners-primary_email">
 					<hr class="hidden-md hidden-lg">
-					<label for="primary_email" class="control-label col-lg-3">Primary email</label>
+					<label class="control-label col-lg-3" for="primary_email-edit-link">Primary email</label>
 					<div class="col-lg-9">
-						
 						<div>
-							<a id="primary_email-link" href="mailto:<%%VALUE(primary_email)%%>" target="_blank"><i class="glyphicon glyphicon-envelope text-info" title="<%%VALUE(primary_email)%%>"></i></a>
-							<label for="primary_email"><button type="button" id="primary_email-edit-link" class="btn btn-default hspacer-lg vspacer-sm collapsed" data-toggle="collapse" data-target="#primary_email" title="<%%TRANSLATION(Edit)%%>"><i class="glyphicon glyphicon-pencil"></i></button></label>
-						</div>
-						<script>jQuery(function() { /* */ var e_primary_email = '<%%VALUE(primary_email)%%>'; if(e_primary_email == '' || e_primary_email == '&nbsp;' || e_primary_email == 'blank.gif') jQuery('#primary_email-link').hide(); });</script><input maxlength="40" type="text" class="form-control collapse" name="primary_email" id="primary_email" value="<%%VALUE(primary_email)%%>">
+							<a id="primary_email-link" href="mailto:<%%VALUE(primary_email)%%>" target="_blank" class="rspacer-lg"><i class="glyphicon glyphicon-envelope text-info" title="<%%VALUE(primary_email)%%>"></i></a>
+							<label for="primary_email"><button type="button" id="primary_email-edit-link" class="btn btn-default vspacer-sm" data-toggle="collapse" data-target="#primary_email" title="<%%TRANSLATION(Edit)%%>"><i class="glyphicon glyphicon-pencil"></i></button></label>
+							<input maxlength="40" type="text" class="form-control collapse" name="primary_email" id="primary_email" value="<%%VALUE(primary_email)%%>">
+						</div><script>jQuery(function() { var e_primary_email = '<%%VALUE(primary_email)%%>'; if(e_primary_email == '' || e_primary_email == '&nbsp;' || e_primary_email == 'blank.gif') jQuery('#primary_email-link').hide(); });</script>
 					</div>
 				</div>
 
 				<!-- Field: Alternate email -->
 				<div class="form-group rental_owners-alternate_email">
 					<hr class="hidden-md hidden-lg">
-					<label for="alternate_email" class="control-label col-lg-3">Alternate email</label>
+					<label class="control-label col-lg-3" for="alternate_email-edit-link">Alternate email</label>
 					<div class="col-lg-9">
-						
 						<div>
-							<a id="alternate_email-link" href="mailto:<%%VALUE(alternate_email)%%>" target="_blank"><i class="glyphicon glyphicon-envelope text-info" title="<%%VALUE(alternate_email)%%>"></i></a>
-							<label for="alternate_email"><button type="button" id="alternate_email-edit-link" class="btn btn-default hspacer-lg vspacer-sm collapsed" data-toggle="collapse" data-target="#alternate_email" title="<%%TRANSLATION(Edit)%%>"><i class="glyphicon glyphicon-pencil"></i></button></label>
-						</div>
-						<script>jQuery(function() { /* */ var e_alternate_email = '<%%VALUE(alternate_email)%%>'; if(e_alternate_email == '' || e_alternate_email == '&nbsp;' || e_alternate_email == 'blank.gif') jQuery('#alternate_email-link').hide(); });</script><input maxlength="40" type="text" class="form-control collapse" name="alternate_email" id="alternate_email" value="<%%VALUE(alternate_email)%%>">
+							<a id="alternate_email-link" href="mailto:<%%VALUE(alternate_email)%%>" target="_blank" class="rspacer-lg"><i class="glyphicon glyphicon-envelope text-info" title="<%%VALUE(alternate_email)%%>"></i></a>
+							<label for="alternate_email"><button type="button" id="alternate_email-edit-link" class="btn btn-default vspacer-sm" data-toggle="collapse" data-target="#alternate_email" title="<%%TRANSLATION(Edit)%%>"><i class="glyphicon glyphicon-pencil"></i></button></label>
+							<input maxlength="40" type="text" class="form-control collapse" name="alternate_email" id="alternate_email" value="<%%VALUE(alternate_email)%%>">
+						</div><script>jQuery(function() { var e_alternate_email = '<%%VALUE(alternate_email)%%>'; if(e_alternate_email == '' || e_alternate_email == '&nbsp;' || e_alternate_email == 'blank.gif') jQuery('#alternate_email-link').hide(); });</script>
 					</div>
 				</div>
 
 				<!-- Field: Phone -->
 				<div class="form-group rental_owners-phone">
 					<hr class="hidden-md hidden-lg">
-					<label for="phone" class="control-label col-lg-3">Phone</label>
+					<label class="control-label col-lg-3" for="phone">Phone</label>
 					<div class="col-lg-9">
 						<input maxlength="40" type="text" class="form-control" name="phone" id="phone" value="<%%VALUE(phone)%%>">
 					</div>
@@ -105,7 +104,7 @@
 				<!-- Field: Country -->
 				<div class="form-group rental_owners-country">
 					<hr class="hidden-md hidden-lg">
-					<label for="country" class="control-label col-lg-3">Country</label>
+					<label class="control-label col-lg-3" for="country">Country</label>
 					<div class="col-lg-9">
 						<%%COMBO(country)%%>
 					</div>
@@ -114,7 +113,7 @@
 				<!-- Field: Street -->
 				<div class="form-group rental_owners-street">
 					<hr class="hidden-md hidden-lg">
-					<label for="street" class="control-label col-lg-3">Street</label>
+					<label class="control-label col-lg-3" for="street">Street</label>
 					<div class="col-lg-9">
 						<input maxlength="40" type="text" class="form-control" name="street" id="street" value="<%%VALUE(street)%%>">
 					</div>
@@ -123,7 +122,7 @@
 				<!-- Field: City -->
 				<div class="form-group rental_owners-city">
 					<hr class="hidden-md hidden-lg">
-					<label for="city" class="control-label col-lg-3">City</label>
+					<label class="control-label col-lg-3" for="city">City</label>
 					<div class="col-lg-9">
 						<input maxlength="40" type="text" class="form-control" name="city" id="city" value="<%%VALUE(city)%%>">
 					</div>
@@ -132,7 +131,7 @@
 				<!-- Field: State -->
 				<div class="form-group rental_owners-state">
 					<hr class="hidden-md hidden-lg">
-					<label for="state" class="control-label col-lg-3">State</label>
+					<label class="control-label col-lg-3" for="state">State</label>
 					<div class="col-lg-9">
 						<%%COMBO(state)%%>
 					</div>
@@ -141,7 +140,7 @@
 				<!-- Field: Zip -->
 				<div class="form-group rental_owners-zip">
 					<hr class="hidden-md hidden-lg">
-					<label for="zip" class="control-label col-lg-3">Zip</label>
+					<label class="control-label col-lg-3" for="zip">Zip</label>
 					<div class="col-lg-9">
 						<input maxlength="15" type="text" class="form-control" name="zip" id="zip" value="<%%VALUE(zip)%%>">
 					</div>
@@ -150,8 +149,8 @@
 				<!-- Field: Comments -->
 				<div class="form-group rental_owners-comments">
 					<hr class="hidden-md hidden-lg">
-					<label for="comments" class="control-label col-lg-3">Comments</label>
-					<div class="col-lg-9">
+					<label class="control-label col-lg-3" for="comments">Comments</label>
+					<div class="col-lg-9 has-nicedit">
 						<%%HTMLAREA(comments)%%>
 					</div>
 				</div>
@@ -212,7 +211,12 @@
 			/* enable DV action buttons to float on scrolling down the form */
 			enable_dvab_floating();
 
-			setTimeout(AppGini.focusFirstFormElement, 100);
+
+			setTimeout(function() {
+				$j('#rental_owners_dv_container-loading').addClass('hidden');
+				$j('#rental_owners_dv_container').removeClass('hidden');
+				AppGini.focusFormElement('rental_owners', 'first_name');
+			}, 1100);
 
 			$j('form').eq(0).change(function() {
 				if($j(this).data('already_changed')) return;
@@ -223,7 +227,7 @@
 			// try to detect rich text changes by adding 'input' handler after nicedit is loaded ...
 			AppGini.detectContentEditableChanges();
 
-			$j('a[href="<%%TRANSLATION(ImageFolder)%%>"]').click(function() { /* */ return false; });
+			$j('a[href="<%%BASE_UPLOAD_PATH%%>"]').click(function() { return false; });
 
 			if(embedded_mode) {
 				/* hide links to children tables in embedded mode */

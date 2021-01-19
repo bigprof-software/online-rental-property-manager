@@ -9,12 +9,7 @@ class Request {
 	public function __construct($var, $filter = false) {
 		$unsafe = (isset($_REQUEST[$var]) ? $_REQUEST[$var] : '');
 
-		// useful for old versions of PHP. 5.4+ has no magic quotes
-		if(get_magic_quotes_gpc()) $unsafe = stripslashes($unsafe);
-
-		if($filter) {
-			$unsafe = call_user_func_array($filter, array($unsafe));
-		}
+		if($filter) $unsafe = call_user_func_array($filter, [$unsafe]);
 
 		$this->sql = makeSafe($unsafe, false);
 		$this->url = urlencode($unsafe);

@@ -1,9 +1,10 @@
-<!-- Edit this file to change the layout of the detail view form -->
+<!-- To change the layout of the detail view form, we recommend using JS code in hooks/applications_leases-dv.js rather than editing this file -->
 
-<a name="detail-view"></a>
+<div id="detail-view"></div>
 <div class="panel-heading"><h3 class="panel-title"><strong><%%DETAIL_VIEW_TITLE%%></strong></h3></div>
 
-<div class="panel-body" id="applications_leases_dv_container">
+<div id="applications_leases_dv_container-loading" class="text-center text-info text-bold vspacer-lg"><i class="glyphicon glyphicon-refresh loop-rotate"></i> <%%TRANSLATION(Loading ...)%%></div>
+<div class="panel-body hidden" id="applications_leases_dv_container">
 	<!-- child links -->
 	<div class="row vspacer-md">
 		<div class="col-xs-12 children-links">
@@ -20,7 +21,7 @@
 				<!-- Field: ID -->
 				<div class="form-group applications_leases-id">
 					<hr class="hidden-md hidden-lg">
-					<label for="id" class="control-label col-lg-3">ID</label>
+					<label class="control-label col-lg-3" for="id">ID</label>
 					<div class="col-lg-9">
 						<div class="form-control-static" id="id"><%%VALUE(id)%%></div>
 					</div>
@@ -29,7 +30,7 @@
 				<!-- Field: Applicant/ Tenant -->
 				<div class="form-group applications_leases-tenants">
 					<hr class="hidden-md hidden-lg">
-					<label for="tenants" class="control-label col-lg-3" data-parent_link="view_parent_modal">Applicant/ Tenant</label>
+					<label class="control-label col-lg-3" for="tenants" data-parent_link="view_parent_modal">Applicant/ Tenant</label>
 					<div class="col-lg-9">
 						<div class="form-control-static" style="white-space: nowrap; overflow-x: hidden;"><%%COMBO(tenants)%%><%%PLINK(tenants)%%><%%ADDNEW(applicants_and_tenants)%%></div>
 					</div>
@@ -38,10 +39,9 @@
 				<!-- Field: Application status -->
 				<div class="form-group applications_leases-status">
 					<hr class="hidden-md hidden-lg">
-					<label for="status" class="control-label col-lg-3">Application status<span class="text-danger"><%%TRANSLATION(*)%%></span> <i class="glyphicon glyphicon-info-sign text-info" data-toggle="collapse" data-target="#status-description"></i></label>
+					<label class="control-label col-lg-3">Application status<span class="text-danger"><%%TRANSLATION(*)%%></span> <i class="glyphicon glyphicon-info-sign text-info" data-toggle="collapse" data-target="#status-description"></i></label>
 					<div class="col-lg-9">
-						<span class="help-block collapse" id="status-description"><div class="alert alert-info">After an application is approved, set this to "Lease". When the lease expires or is terminated, set it to "Historical lease"</div></span>
-
+						<span class="help-block bspacer-xs collapse" id="status-description"><div class="alert alert-info bspacer-xs">After an application is approved, set this to "Lease". When the lease expires or is terminated, set it to "Historical lease"</div></span>
 						<%%COMBO(status)%%>
 					</div>
 				</div>
@@ -49,10 +49,9 @@
 				<!-- Field: Property -->
 				<div class="form-group applications_leases-property">
 					<hr class="hidden-md hidden-lg">
-					<label for="property" class="control-label col-lg-3" data-parent_link="view_parent_modal">Property <i class="glyphicon glyphicon-info-sign text-info" data-toggle="collapse" data-target="#property-description"></i></label>
+					<label class="control-label col-lg-3" for="property" data-parent_link="view_parent_modal">Property <i class="glyphicon glyphicon-info-sign text-info" data-toggle="collapse" data-target="#property-description"></i></label>
 					<div class="col-lg-9">
-						<span class="help-block collapse" id="property-description"><div class="alert alert-info">The property containing the unit for which the applicant/tenant is applying for a lease.</div></span>
-
+						<span class="help-block bspacer-xs collapse" id="property-description"><div class="alert alert-info bspacer-xs">The property containing the unit for which the applicant/tenant is applying for a lease.</div></span>
 						<div class="form-control-static" style="white-space: nowrap; overflow-x: hidden;"><%%COMBO(property)%%><%%PLINK(property)%%><%%ADDNEW(properties)%%></div>
 					</div>
 				</div>
@@ -60,7 +59,7 @@
 				<!-- Field: Unit applied for -->
 				<div class="form-group applications_leases-unit">
 					<hr class="hidden-md hidden-lg">
-					<label for="unit" class="control-label col-lg-3" data-parent_link="view_parent_modal">Unit applied for</label>
+					<label class="control-label col-lg-3" for="unit" data-parent_link="view_parent_modal">Unit applied for</label>
 					<div class="col-lg-9">
 						<div class="form-control-static" style="white-space: nowrap; overflow-x: hidden;"><%%COMBO(unit)%%><%%PLINK(unit)%%><%%ADDNEW(units)%%></div>
 					</div>
@@ -69,10 +68,9 @@
 				<!-- Field: Lease type -->
 				<div class="form-group applications_leases-type">
 					<hr class="hidden-md hidden-lg">
-					<label for="type" class="control-label col-lg-3">Lease type<span class="text-danger"><%%TRANSLATION(*)%%></span> <i class="glyphicon glyphicon-info-sign text-info" data-toggle="collapse" data-target="#type-description"></i></label>
+					<label class="control-label col-lg-3">Lease type<span class="text-danger"><%%TRANSLATION(*)%%></span> <i class="glyphicon glyphicon-info-sign text-info" data-toggle="collapse" data-target="#type-description"></i></label>
 					<div class="col-lg-9">
-						<span class="help-block collapse" id="type-description"><div class="alert alert-info">Specify the type of lease term.</div></span>
-
+						<span class="help-block bspacer-xs collapse" id="type-description"><div class="alert alert-info bspacer-xs">Specify the type of lease term.</div></span>
 						<%%COMBO(type)%%>
 					</div>
 				</div>
@@ -80,7 +78,7 @@
 				<!-- Field: Total number of occupants -->
 				<div class="form-group applications_leases-total_number_of_occupants">
 					<hr class="hidden-md hidden-lg">
-					<label for="total_number_of_occupants" class="control-label col-lg-3">Total number of occupants</label>
+					<label class="control-label col-lg-3" for="total_number_of_occupants">Total number of occupants</label>
 					<div class="col-lg-9">
 						<input maxlength="15" type="text" class="form-control" name="total_number_of_occupants" id="total_number_of_occupants" value="<%%VALUE(total_number_of_occupants)%%>">
 					</div>
@@ -89,7 +87,7 @@
 				<!-- Field: Lease period from -->
 				<div class="form-group applications_leases-start_date">
 					<hr class="hidden-md hidden-lg">
-					<label for="start_date" class="control-label col-lg-3">Lease period from</label>
+					<label class="control-label col-lg-3" for="start_date-mm">Lease period from</label>
 					<div class="col-lg-9">
 						<%%COMBO(start_date)%%>
 					</div>
@@ -98,7 +96,7 @@
 				<!-- Field: to -->
 				<div class="form-group applications_leases-end_date">
 					<hr class="hidden-md hidden-lg">
-					<label for="end_date" class="control-label col-lg-3">to</label>
+					<label class="control-label col-lg-3" for="end_date-mm">to</label>
 					<div class="col-lg-9">
 						<%%COMBO(end_date)%%>
 					</div>
@@ -107,7 +105,7 @@
 				<!-- Field: Recurring charges frequency -->
 				<div class="form-group applications_leases-recurring_charges_frequency">
 					<hr class="hidden-md hidden-lg">
-					<label for="recurring_charges_frequency" class="control-label col-lg-3">Recurring charges frequency<span class="text-danger"><%%TRANSLATION(*)%%></span></label>
+					<label class="control-label col-lg-3" for="recurring_charges_frequency">Recurring charges frequency<span class="text-danger"><%%TRANSLATION(*)%%></span></label>
 					<div class="col-lg-9">
 						<%%COMBO(recurring_charges_frequency)%%>
 					</div>
@@ -116,7 +114,7 @@
 				<!-- Field: Next due date -->
 				<div class="form-group applications_leases-next_due_date">
 					<hr class="hidden-md hidden-lg">
-					<label for="next_due_date" class="control-label col-lg-3">Next due date</label>
+					<label class="control-label col-lg-3" for="next_due_date-mm">Next due date</label>
 					<div class="col-lg-9">
 						<%%COMBO(next_due_date)%%>
 					</div>
@@ -125,7 +123,7 @@
 				<!-- Field: Rental amount -->
 				<div class="form-group applications_leases-rent">
 					<hr class="hidden-md hidden-lg">
-					<label for="rent" class="control-label col-lg-3">Rental amount</label>
+					<label class="control-label col-lg-3" for="rent">Rental amount</label>
 					<div class="col-lg-9">
 						<input maxlength="11" type="text" class="form-control" name="rent" id="rent" value="<%%VALUE(rent)%%>">
 					</div>
@@ -134,7 +132,7 @@
 				<!-- Field: Security deposit -->
 				<div class="form-group applications_leases-security_deposit">
 					<hr class="hidden-md hidden-lg">
-					<label for="security_deposit" class="control-label col-lg-3">Security deposit</label>
+					<label class="control-label col-lg-3" for="security_deposit">Security deposit</label>
 					<div class="col-lg-9">
 						<input maxlength="18" type="text" class="form-control" name="security_deposit" id="security_deposit" value="<%%VALUE(security_deposit)%%>">
 					</div>
@@ -143,7 +141,7 @@
 				<!-- Field: Security deposit date -->
 				<div class="form-group applications_leases-security_deposit_date">
 					<hr class="hidden-md hidden-lg">
-					<label for="security_deposit_date" class="control-label col-lg-3">Security deposit date</label>
+					<label class="control-label col-lg-3" for="security_deposit_date-mm">Security deposit date</label>
 					<div class="col-lg-9">
 						<%%COMBO(security_deposit_date)%%>
 					</div>
@@ -152,32 +150,29 @@
 				<!-- Field: Emergency contact -->
 				<div class="form-group applications_leases-emergency_contact">
 					<hr class="hidden-md hidden-lg">
-					<label for="emergency_contact" class="control-label col-lg-3">Emergency contact <i class="glyphicon glyphicon-info-sign text-info" data-toggle="collapse" data-target="#emergency_contact-description"></i></label>
+					<label class="control-label col-lg-3" for="emergency_contact">Emergency contact <i class="glyphicon glyphicon-info-sign text-info" data-toggle="collapse" data-target="#emergency_contact-description"></i></label>
 					<div class="col-lg-9">
-						<span class="help-block collapse" id="emergency_contact-description"><div class="alert alert-info">Add all details of whom to contact in case of emergency</div></span>
-
-						<textarea class="form-control" name="emergency_contact" id="emergency_contact" rows="3"><%%VALUE(emergency_contact)%%></textarea>
+						<span class="help-block bspacer-xs collapse" id="emergency_contact-description"><div class="alert alert-info bspacer-xs">Add all details of whom to contact in case of emergency</div></span>
+						<textarea class="form-control" name="emergency_contact" id="emergency_contact" rows=" 2"><%%VALUE(emergency_contact)%%></textarea>
 					</div>
 				</div>
 
 				<!-- Field: Co signer details -->
 				<div class="form-group applications_leases-co_signer_details">
 					<hr class="hidden-md hidden-lg">
-					<label for="co_signer_details" class="control-label col-lg-3">Co signer details <i class="glyphicon glyphicon-info-sign text-info" data-toggle="collapse" data-target="#co_signer_details-description"></i></label>
+					<label class="control-label col-lg-3" for="co_signer_details">Co signer details <i class="glyphicon glyphicon-info-sign text-info" data-toggle="collapse" data-target="#co_signer_details-description"></i></label>
 					<div class="col-lg-9">
-						<span class="help-block collapse" id="co_signer_details-description"><div class="alert alert-info">Add all details to your co-signer, for example name, e-mail, address, phone... etc.</div></span>
-
-						<textarea class="form-control" name="co_signer_details" id="co_signer_details" rows="3"><%%VALUE(co_signer_details)%%></textarea>
+						<span class="help-block bspacer-xs collapse" id="co_signer_details-description"><div class="alert alert-info bspacer-xs">Add all details to your co-signer, for example name, e-mail, address, phone... etc.</div></span>
+						<textarea class="form-control" name="co_signer_details" id="co_signer_details" rows=" 2"><%%VALUE(co_signer_details)%%></textarea>
 					</div>
 				</div>
 
 				<!-- Field: Notes -->
 				<div class="form-group applications_leases-notes">
 					<hr class="hidden-md hidden-lg">
-					<label for="notes" class="control-label col-lg-3">Notes <i class="glyphicon glyphicon-info-sign text-info" data-toggle="collapse" data-target="#notes-description"></i></label>
-					<div class="col-lg-9">
-						<span class="help-block collapse" id="notes-description"><div class="alert alert-info">You can type any notes regarding this applicaton/lease here, for example rejected or cancelled by user or any other notes.</div></span>
-
+					<label class="control-label col-lg-3" for="notes">Notes <i class="glyphicon glyphicon-info-sign text-info" data-toggle="collapse" data-target="#notes-description"></i></label>
+					<div class="col-lg-9 has-nicedit">
+						<span class="help-block bspacer-xs collapse" id="notes-description"><div class="alert alert-info bspacer-xs">You can type any notes regarding this applicaton/lease here, for example rejected or cancelled by user or any other notes.</div></span>
 						<%%HTMLAREA(notes)%%>
 					</div>
 				</div>
@@ -186,9 +181,9 @@
 				<div class="form-group applications_leases-agreement">
 					<hr class="hidden-md hidden-lg">
 					<div class="col-lg-offset-3 col-lg-9">
-						<div class="checkbox"><label for="agreement"><input type="checkbox" name="agreement" id="agreement" value="1" <%%CHECKED(agreement)%%>> Applicant agrees</label>
-							<i class="glyphicon glyphicon-info-sign text-info" data-toggle="collapse" data-target="#agreement-description"></i>
-							<span class="help-block collapse" id="agreement-description"><div class="alert alert-info"><b>The applicant must agree to the following terms: </b><br><ol><li>I understand that this is a routine application to establish credit, character, employment, and rental history.</li><br><li>I also understand that this is NOT an agreement to rent and that all applications must be approved.</li><br><li>I authorize verification of references given.</li><br><li>I declare that the statements above are true and correct, and I agree that the landlord may terminate my agreement entered into in reliance on any misstatement made above.</li><br></ul></div></span>
+						<span class="help-block bspacer-xs collapse" id="agreement-description"><div class="alert alert-info bspacer-xs"><b>The applicant must agree to the following terms: </b><br><ol><li>I understand that this is a routine application to establish credit, character, employment, and rental history.</li><br><li>I also understand that this is NOT an agreement to rent and that all applications must be approved.</li><br><li>I authorize verification of references given.</li><br><li>I declare that the statements above are true and correct, and I agree that the landlord may terminate my agreement entered into in reliance on any misstatement made above.</li><br></ul></div></span>
+						<div class="checkbox">
+							<label for="agreement"><input type="checkbox" name="agreement" id="agreement" value="1" <%%CHECKED(agreement)%%>> Applicant agrees</label> <i class="glyphicon glyphicon-info-sign text-info" data-toggle="collapse" data-target="#agreement-description"></i>
 						</div>
 					</div>
 				</div>
@@ -239,7 +234,12 @@
 			/* enable DV action buttons to float on scrolling down the form */
 			enable_dvab_floating();
 
-			setTimeout(AppGini.focusFirstFormElement, 100);
+
+			setTimeout(function() {
+				$j('#applications_leases_dv_container-loading').addClass('hidden');
+				$j('#applications_leases_dv_container').removeClass('hidden');
+				AppGini.focusFormElement('applications_leases', 'tenants');
+			}, 1100);
 
 			$j('form').eq(0).change(function() {
 				if($j(this).data('already_changed')) return;
@@ -250,7 +250,7 @@
 			// try to detect rich text changes by adding 'input' handler after nicedit is loaded ...
 			AppGini.detectContentEditableChanges();
 
-			$j('a[href="<%%TRANSLATION(ImageFolder)%%>"]').click(function() { /* */ return false; });
+			$j('a[href="<%%BASE_UPLOAD_PATH%%>"]').click(function() { return false; });
 
 
 			if(!embedded_mode) {

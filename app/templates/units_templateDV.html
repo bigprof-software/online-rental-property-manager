@@ -1,9 +1,10 @@
-<!-- Edit this file to change the layout of the detail view form -->
+<!-- To change the layout of the detail view form, we recommend using JS code in hooks/units-dv.js rather than editing this file -->
 
-<a name="detail-view"></a>
+<div id="detail-view"></div>
 <div class="panel-heading"><h3 class="panel-title"><strong><%%DETAIL_VIEW_TITLE%%></strong></h3></div>
 
-<div class="panel-body" id="units_dv_container">
+<div id="units_dv_container-loading" class="text-center text-info text-bold vspacer-lg"><i class="glyphicon glyphicon-refresh loop-rotate"></i> <%%TRANSLATION(Loading ...)%%></div>
+<div class="panel-body hidden" id="units_dv_container">
 	<!-- child links -->
 	<div class="row vspacer-md">
 		<div class="col-xs-12 children-links">
@@ -26,7 +27,7 @@
 				<!-- Field: ID -->
 				<div class="form-group units-id">
 					<hr class="hidden-md hidden-lg">
-					<label for="id" class="control-label col-lg-3">ID</label>
+					<label class="control-label col-lg-3" for="id">ID</label>
 					<div class="col-lg-9">
 						<div class="form-control-static" id="id"><%%VALUE(id)%%></div>
 					</div>
@@ -35,7 +36,7 @@
 				<!-- Field: Property -->
 				<div class="form-group units-property">
 					<hr class="hidden-md hidden-lg">
-					<label for="property" class="control-label col-lg-3" data-parent_link="view_parent_modal">Property</label>
+					<label class="control-label col-lg-3" for="property" data-parent_link="view_parent_modal">Property</label>
 					<div class="col-lg-9">
 						<div class="form-control-static" style="white-space: nowrap; overflow-x: hidden;"><%%COMBO(property)%%><%%PLINK(property)%%><%%ADDNEW(properties)%%><span id="propertyLoading"></span></div>
 					</div>
@@ -44,7 +45,7 @@
 				<!-- Field: Unit -->
 				<div class="form-group units-unit_number">
 					<hr class="hidden-md hidden-lg">
-					<label for="unit_number" class="control-label col-lg-3">Unit</label>
+					<label class="control-label col-lg-3" for="unit_number">Unit</label>
 					<div class="col-lg-9">
 						<input maxlength="40" type="text" class="form-control" name="unit_number" id="unit_number" value="<%%VALUE(unit_number)%%>">
 					</div>
@@ -55,34 +56,26 @@
 					<hr class="hidden-md hidden-lg">
 					<label class="control-label col-lg-3">Cover photo <i class="glyphicon glyphicon-info-sign text-info" data-toggle="collapse" data-target="#photo-description"></i></label>
 					<div class="col-lg-9">
-						<span class="help-block collapse" id="photo-description"><div class="alert alert-info">Maximum file size allowed: 2000 KB.<br>Allowed file types: jpg, jpeg, gif, png</div></span>
-
-						<div class="form-control-static well well-sm"><div class="pull-left">
-
-						<a href="<%%TRANSLATION(ImageFolder)%%><%%VALUE(photo)%%>" data-lightbox="units_dv"><img src="thumbnail.php?i=<%%VALUE(photo)%%>&t=units&f=photo&v=dv" class="img-thumbnail" id="photo-image"></a>
-</div>
-
-												<div class="pull-right well upload-toolbox">
-							<div class="hidden-md hidden-lg vspacer-lg"></div>
-							<%%UPLOADFILE(photo)%%>
-							<%%REMOVEFILE(photo)%%>
-							<div class="text-bold text-danger file-type-error hidden">
-								<%%TRANSLATION(invalid file type)%%>
+						<span class="help-block bspacer-xs collapse" id="photo-description"><div class="alert alert-info bspacer-xs">Maximum file size allowed: 2000 KB.<br>Allowed file types: jpg, jpeg, gif, png</div></span>
+						<div class="form-control-static well well-sm">
+							<div class="pull-left"><a href="<%%BASE_UPLOAD_PATH%%><%%VALUE(photo)%%>" data-lightbox="units_dv"><img src="thumbnail.php?i=<%%VALUE(photo)%%>&t=units&f=photo&v=dv" class="img-thumbnail" id="photo-image"></a></div>
+							<div class="pull-right well upload-toolbox">
+								<div class="hidden-md hidden-lg vspacer-lg"></div>
+								<%%UPLOADFILE(photo)%%>
+								<%%REMOVEFILE(photo)%%>
+								<div class="text-bold text-danger file-type-error hidden"><%%TRANSLATION(invalid file type)%%></div>
+								<div class="text-bold text-danger file-size-error hidden"><%%TRANSLATION(file too large)%%></div>
 							</div>
-							<div class="text-bold text-danger file-size-error hidden">
-								<%%TRANSLATION(file too large)%%>
-							</div>
+							<div class="clearfix"></div>
 						</div>
-						<div class="clearfix"></div>
-					</div>
-
+						<script>/* disable links to empty images */ $j(function() { var e_photo = '<%%VALUE(photo)%%>'; if(e_photo == '' || e_photo == '&nbsp;' || e_photo == 'blank.gif') { $j('#photo-link').hide(); $j('#photo-image').parents('a').attr('href', '').on('click', function(e) { e.preventDefault(); }); } });</script>
 					</div>
 				</div>
 
 				<!-- Field: Status -->
 				<div class="form-group units-status">
 					<hr class="hidden-md hidden-lg">
-					<label for="status" class="control-label col-lg-3">Status<span class="text-danger"><%%TRANSLATION(*)%%></span></label>
+					<label class="control-label col-lg-3">Status<span class="text-danger"><%%TRANSLATION(*)%%></span></label>
 					<div class="col-lg-9">
 						<%%COMBO(status)%%>
 					</div>
@@ -91,7 +84,7 @@
 				<!-- Field: Area (sq. feet) -->
 				<div class="form-group units-size">
 					<hr class="hidden-md hidden-lg">
-					<label for="size" class="control-label col-lg-3">Area (sq. feet)</label>
+					<label class="control-label col-lg-3" for="size">Area (sq. feet)</label>
 					<div class="col-lg-9">
 						<input maxlength="40" type="text" class="form-control" name="size" id="size" value="<%%VALUE(size)%%>">
 					</div>
@@ -100,7 +93,7 @@
 				<!-- Field: Country -->
 				<div class="form-group units-country">
 					<hr class="hidden-md hidden-lg">
-					<label for="country" class="control-label col-lg-3">Country</label>
+					<label class="control-label col-lg-3">Country</label>
 					<div class="col-lg-9">
 						<div class="form-control-static" id="country"></div>
 					</div>
@@ -109,7 +102,7 @@
 				<!-- Field: Street -->
 				<div class="form-group units-street">
 					<hr class="hidden-md hidden-lg">
-					<label for="street" class="control-label col-lg-3">Street</label>
+					<label class="control-label col-lg-3">Street</label>
 					<div class="col-lg-9">
 						<div class="form-control-static" id="street"></div>
 					</div>
@@ -118,7 +111,7 @@
 				<!-- Field: City -->
 				<div class="form-group units-city">
 					<hr class="hidden-md hidden-lg">
-					<label for="city" class="control-label col-lg-3">City</label>
+					<label class="control-label col-lg-3">City</label>
 					<div class="col-lg-9">
 						<div class="form-control-static" id="city"></div>
 					</div>
@@ -127,7 +120,7 @@
 				<!-- Field: State -->
 				<div class="form-group units-state">
 					<hr class="hidden-md hidden-lg">
-					<label for="state" class="control-label col-lg-3">State</label>
+					<label class="control-label col-lg-3">State</label>
 					<div class="col-lg-9">
 						<div class="form-control-static" id="state"></div>
 					</div>
@@ -136,7 +129,7 @@
 				<!-- Field: Postal code -->
 				<div class="form-group units-postal_code">
 					<hr class="hidden-md hidden-lg">
-					<label for="postal_code" class="control-label col-lg-3">Postal code</label>
+					<label class="control-label col-lg-3">Postal code</label>
 					<div class="col-lg-9">
 						<div class="form-control-static" id="postal_code"></div>
 					</div>
@@ -145,7 +138,7 @@
 				<!-- Field: Rooms -->
 				<div class="form-group units-rooms">
 					<hr class="hidden-md hidden-lg">
-					<label for="rooms" class="control-label col-lg-3">Rooms</label>
+					<label class="control-label col-lg-3" for="rooms">Rooms</label>
 					<div class="col-lg-9">
 						<input maxlength="40" type="text" class="form-control" name="rooms" id="rooms" value="<%%VALUE(rooms)%%>">
 					</div>
@@ -154,7 +147,7 @@
 				<!-- Field: Bathroom -->
 				<div class="form-group units-bathroom">
 					<hr class="hidden-md hidden-lg">
-					<label for="bathroom" class="control-label col-lg-3">Bathroom</label>
+					<label class="control-label col-lg-3" for="bathroom">Bathroom</label>
 					<div class="col-lg-9">
 						<input maxlength="15" type="text" class="form-control" name="bathroom" id="bathroom" value="<%%VALUE(bathroom)%%>">
 					</div>
@@ -163,7 +156,7 @@
 				<!-- Field: Features -->
 				<div class="form-group units-features">
 					<hr class="hidden-md hidden-lg">
-					<label for="features" class="control-label col-lg-3">Features</label>
+					<label class="control-label col-lg-3" for="features">Features</label>
 					<div class="col-lg-9">
 						<%%COMBO(features)%%>
 					</div>
@@ -172,7 +165,7 @@
 				<!-- Field: Rental amount -->
 				<div class="form-group units-rental_amount">
 					<hr class="hidden-md hidden-lg">
-					<label for="rental_amount" class="control-label col-lg-3">Rental amount</label>
+					<label class="control-label col-lg-3" for="rental_amount">Rental amount</label>
 					<div class="col-lg-9">
 						<input maxlength="9" type="text" class="form-control" name="rental_amount" id="rental_amount" value="<%%VALUE(rental_amount)%%>">
 					</div>
@@ -181,8 +174,8 @@
 				<!-- Field: Description -->
 				<div class="form-group units-description">
 					<hr class="hidden-md hidden-lg">
-					<label for="description" class="control-label col-lg-3">Description</label>
-					<div class="col-lg-9">
+					<label class="control-label col-lg-3" for="description">Description</label>
+					<div class="col-lg-9 has-nicedit">
 						<%%HTMLAREA(description)%%>
 					</div>
 				</div>
@@ -243,7 +236,12 @@
 			/* enable DV action buttons to float on scrolling down the form */
 			enable_dvab_floating();
 
-			setTimeout(AppGini.focusFirstFormElement, 100);
+
+			setTimeout(function() {
+				$j('#units_dv_container-loading').addClass('hidden');
+				$j('#units_dv_container').removeClass('hidden');
+				AppGini.focusFormElement('units', 'property');
+			}, 1100);
 
 			$j('form').eq(0).change(function() {
 				if($j(this).data('already_changed')) return;
@@ -254,7 +252,7 @@
 			// try to detect rich text changes by adding 'input' handler after nicedit is loaded ...
 			AppGini.detectContentEditableChanges();
 
-			$j('a[href="<%%TRANSLATION(ImageFolder)%%>"]').click(function() { /* */ return false; });
+			$j('a[href="<%%BASE_UPLOAD_PATH%%>"]').click(function() { return false; });
 
 			if(embedded_mode) {
 				/* hide links to children tables in embedded mode */

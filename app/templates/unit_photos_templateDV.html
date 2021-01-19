@@ -1,9 +1,10 @@
-<!-- Edit this file to change the layout of the detail view form -->
+<!-- To change the layout of the detail view form, we recommend using JS code in hooks/unit_photos-dv.js rather than editing this file -->
 
-<a name="detail-view"></a>
+<div id="detail-view"></div>
 <div class="panel-heading"><h3 class="panel-title"><strong><%%DETAIL_VIEW_TITLE%%></strong></h3></div>
 
-<div class="panel-body" id="unit_photos_dv_container">
+<div id="unit_photos_dv_container-loading" class="text-center text-info text-bold vspacer-lg"><i class="glyphicon glyphicon-refresh loop-rotate"></i> <%%TRANSLATION(Loading ...)%%></div>
+<div class="panel-body hidden" id="unit_photos_dv_container">
 	<!-- child links -->
 	<div class="row vspacer-md">
 		<div class="col-xs-12 children-links">
@@ -20,7 +21,7 @@
 				<!-- Field: ID -->
 				<div class="form-group unit_photos-id">
 					<hr class="hidden-md hidden-lg">
-					<label for="id" class="control-label col-lg-3">ID</label>
+					<label class="control-label col-lg-3" for="id">ID</label>
 					<div class="col-lg-9">
 						<div class="form-control-static" id="id"><%%VALUE(id)%%></div>
 					</div>
@@ -29,7 +30,7 @@
 				<!-- Field: Unit -->
 				<div class="form-group unit_photos-unit">
 					<hr class="hidden-md hidden-lg">
-					<label for="unit" class="control-label col-lg-3" data-parent_link="view_parent_hidden">Unit</label>
+					<label class="control-label col-lg-3" for="unit" data-parent_link="view_parent_hidden">Unit</label>
 					<div class="col-lg-9">
 						<div class="form-control-static" style="white-space: nowrap; overflow-x: hidden;"><%%COMBO(unit)%%><%%ADDNEW(units)%%></div>
 					</div>
@@ -40,35 +41,27 @@
 					<hr class="hidden-md hidden-lg">
 					<label class="control-label col-lg-3">Photo <i class="glyphicon glyphicon-info-sign text-info" data-toggle="collapse" data-target="#photo-description"></i></label>
 					<div class="col-lg-9">
-						<span class="help-block collapse" id="photo-description"><div class="alert alert-info">Maximum file size allowed: 2000 KB.<br>Allowed file types: jpg, jpeg, gif, png</div></span>
-
-						<div class="form-control-static well well-sm"><div class="pull-left">
-
-						<a href="<%%TRANSLATION(ImageFolder)%%><%%VALUE(photo)%%>" data-lightbox="unit_photos_dv"><img src="thumbnail.php?i=<%%VALUE(photo)%%>&t=unit_photos&f=photo&v=dv" class="img-thumbnail" id="photo-image"></a>
-</div>
-
-												<div class="pull-right well upload-toolbox">
-							<div class="hidden-md hidden-lg vspacer-lg"></div>
-							<%%UPLOADFILE(photo)%%>
-							<%%REMOVEFILE(photo)%%>
-							<div class="text-bold text-danger file-type-error hidden">
-								<%%TRANSLATION(invalid file type)%%>
+						<span class="help-block bspacer-xs collapse" id="photo-description"><div class="alert alert-info bspacer-xs">Maximum file size allowed: 2000 KB.<br>Allowed file types: jpg, jpeg, gif, png</div></span>
+						<div class="form-control-static well well-sm">
+							<div class="pull-left"><a href="<%%BASE_UPLOAD_PATH%%><%%VALUE(photo)%%>" data-lightbox="unit_photos_dv"><img src="thumbnail.php?i=<%%VALUE(photo)%%>&t=unit_photos&f=photo&v=dv" class="img-thumbnail" id="photo-image"></a></div>
+							<div class="pull-right well upload-toolbox">
+								<div class="hidden-md hidden-lg vspacer-lg"></div>
+								<%%UPLOADFILE(photo)%%>
+								<%%REMOVEFILE(photo)%%>
+								<div class="text-bold text-danger file-type-error hidden"><%%TRANSLATION(invalid file type)%%></div>
+								<div class="text-bold text-danger file-size-error hidden"><%%TRANSLATION(file too large)%%></div>
 							</div>
-							<div class="text-bold text-danger file-size-error hidden">
-								<%%TRANSLATION(file too large)%%>
-							</div>
+							<div class="clearfix"></div>
 						</div>
-						<div class="clearfix"></div>
-					</div>
-
+						<script>/* disable links to empty images */ $j(function() { var e_photo = '<%%VALUE(photo)%%>'; if(e_photo == '' || e_photo == '&nbsp;' || e_photo == 'blank.gif') { $j('#photo-link').hide(); $j('#photo-image').parents('a').attr('href', '').on('click', function(e) { e.preventDefault(); }); } });</script>
 					</div>
 				</div>
 
 				<!-- Field: Description -->
 				<div class="form-group unit_photos-description">
 					<hr class="hidden-md hidden-lg">
-					<label for="description" class="control-label col-lg-3">Description</label>
-					<div class="col-lg-9">
+					<label class="control-label col-lg-3" for="description">Description</label>
+					<div class="col-lg-9 has-nicedit">
 						<%%HTMLAREA(description)%%>
 					</div>
 				</div>
@@ -119,7 +112,12 @@
 			/* enable DV action buttons to float on scrolling down the form */
 			enable_dvab_floating();
 
-			setTimeout(AppGini.focusFirstFormElement, 100);
+
+			setTimeout(function() {
+				$j('#unit_photos_dv_container-loading').addClass('hidden');
+				$j('#unit_photos_dv_container').removeClass('hidden');
+				AppGini.focusFormElement('unit_photos', 'unit');
+			}, 1100);
 
 			$j('form').eq(0).change(function() {
 				if($j(this).data('already_changed')) return;
@@ -130,7 +128,7 @@
 			// try to detect rich text changes by adding 'input' handler after nicedit is loaded ...
 			AppGini.detectContentEditableChanges();
 
-			$j('a[href="<%%TRANSLATION(ImageFolder)%%>"]').click(function() { /* */ return false; });
+			$j('a[href="<%%BASE_UPLOAD_PATH%%>"]').click(function() { return false; });
 
 
 			if(!embedded_mode) {

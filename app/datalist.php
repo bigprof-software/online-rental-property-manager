@@ -224,7 +224,7 @@ class DataList{
 		$this->HTML .= '</script>';
 		$this->HTML .= '<input id="EnterAction" type="submit" style="position: absolute; left: 0px; top: -250px;" onclick="return enterAction();">';
 
-		$this->ContentType='tableview'; // default content type
+		$this->ContentType = 'tableview'; // default content type
 
 		if($PrintTV != '') {
 			$Print_x = 1;
@@ -345,7 +345,7 @@ class DataList{
 		}
 
 		elseif($addNew_x != '') {
-			$SelectedID='';
+			$SelectedID = '';
 			$this->hideTV();
 		}
 
@@ -387,13 +387,13 @@ class DataList{
 			$orderBy = [];
 			if($SortField) {
 				$sortFields = explode(',', $SortField);
-				$i=0;
+				$i = 0;
 				foreach($sortFields as $sf) {
 					$tob = preg_split('/\s+/', $sf, 2);
-					$orderBy[] = array(trim($tob[0]) => (strtolower(trim($tob[1]))=='desc' ? 'desc' : 'asc'));
+					$orderBy[] = [trim($tob[0]) => (strtolower(trim($tob[1])) == 'desc' ? 'desc' : 'asc')];
 					$i++;
 				}
-				$orderBy[$i-1][$tob[0]] = (strtolower(trim($SortDirection))=='desc' ? 'desc' : 'asc');
+				$orderBy[$i - 1][$tob[0]] = (strtolower(trim($SortDirection)) == 'desc' ? 'desc' : 'asc');
 			}
 
 			// check if magic filter files exist
@@ -429,9 +429,10 @@ class DataList{
 			}
 
 			// hidden variables ....
-			$this->HTML .= '<input name="SortField" value="' . html_attr($SortField) . '" type="hidden" />';
-			$this->HTML .= '<input name="SortDirection" type="hidden" value="' . html_attr($SortDirection) . '" />';
-			$this->HTML .= '<input name="FirstRecord" type="hidden" value="1" />';
+			$this->HTML .= '<input name="SortField" value="' . html_attr($SortField) . '" type="hidden">';
+			$this->HTML .= '<input name="SortDirection" type="hidden" value="' . html_attr($SortDirection) . '" >';
+			$this->HTML .= '<input name="FirstRecord" type="hidden" value="1" >';
+			$this->HTML .= '</form></div></div>';
 
 			$this->ContentType = 'filters';
 			return;
@@ -474,20 +475,18 @@ class DataList{
 
 			// apply quick search to the query
 			if($SearchString != '') {
-				if($Search_x!='') { $FirstRecord=1; }
+				if($Search_x != '') { $FirstRecord = 1; }
 
-				if($this->QueryWhere=='')
+				if($this->QueryWhere == '')
 					$this->QueryWhere = "where ";
 				else
 					$this->QueryWhere .= " and ";
 
-				foreach($this->QueryFieldsQS as $fName => $fCaption) {
-					if(strpos($fName, '<img')===False) {
-						$this->QuerySearchableFields[$fName]=$fCaption;
-					}
-				}
+				foreach($this->QueryFieldsQS as $fName => $fCaption)
+					if(strpos($fName, '<img') === false)
+						$this->QuerySearchableFields[$fName] = $fCaption;
 
-				$this->QueryWhere.='('.implode(" LIKE '%".makeSafe($SearchString)."%' or ", array_keys($this->QuerySearchableFields))." LIKE '%".makeSafe($SearchString)."%')";
+				$this->QueryWhere .= '(' . implode(" LIKE '%" . makeSafe($SearchString) . "%' or ", array_keys($this->QuerySearchableFields)) . " LIKE '%" . makeSafe($SearchString) . "%')";
 			}
 
 
@@ -547,13 +546,13 @@ class DataList{
 								$this->QueryWhere .= ' <FilterItem> ' . $FilterAnd[$ij] . ' (' . $this->QueryFieldsIndexed[($FilterField[$ij])] . "='' or " . $this->QueryFieldsIndexed[($FilterField[$ij])] . ' is NULL) </FilterItem>';
 							} elseif($FilterOperator[$ij] == 'is-not-empty' && !$isDateTime) {
 								$this->QueryWhere .= ' <FilterItem> ' . $FilterAnd[$ij] . " " . $this->QueryFieldsIndexed[($FilterField[$ij])] . "!='' </FilterItem>";
-							} elseif($FilterOperator[$ij]=='is-empty' && $isDateTime) {
+							} elseif($FilterOperator[$ij] == 'is-empty' && $isDateTime) {
 								$this->QueryWhere .= " <FilterItem> " . $FilterAnd[$ij] . " (" . $this->QueryFieldsIndexed[($FilterField[$ij])] . "=0 or " . $this->QueryFieldsIndexed[($FilterField[$ij])] . " is NULL) </FilterItem>";
-							} elseif($FilterOperator[$ij]=='is-not-empty' && $isDateTime) {
+							} elseif($FilterOperator[$ij] == 'is-not-empty' && $isDateTime) {
 								$this->QueryWhere .= " <FilterItem> " . $FilterAnd[$ij] . " " . $this->QueryFieldsIndexed[($FilterField[$ij])] . "!=0 </FilterItem>";
-							} elseif($FilterOperator[$ij]=='like' && !strstr($FilterValue[$ij], "%") && !strstr($FilterValue[$ij], "_")) {
+							} elseif($FilterOperator[$ij] == 'like' && !strstr($FilterValue[$ij], "%") && !strstr($FilterValue[$ij], "_")) {
 								$this->QueryWhere .= " <FilterItem> " . $FilterAnd[$ij] . " " . $this->QueryFieldsIndexed[($FilterField[$ij])] . " like '%" . makeSafe($FilterValue[$ij]) . "%' </FilterItem>";
-							} elseif($FilterOperator[$ij]=='not-like' && !strstr($FilterValue[$ij], "%") && !strstr($FilterValue[$ij], "_")) {
+							} elseif($FilterOperator[$ij] == 'not-like' && !strstr($FilterValue[$ij], "%") && !strstr($FilterValue[$ij], "_")) {
 								$this->QueryWhere .= " <FilterItem> " . $FilterAnd[$ij] . " " . $this->QueryFieldsIndexed[($FilterField[$ij])] . " not like '%" . makeSafe($FilterValue[$ij]) . "%' </FilterItem>";
 							} elseif($isDate) {
 								$dateValue = mysql_datetime($FilterValue[$ij]);
@@ -701,7 +700,8 @@ class DataList{
 				$this->HTML .= '</div>';
 			}
 
-			// quick search and TV action buttons  
+			// quick search and TV action buttons
+			$tvRowNeedsClosing = false;
 			if(!$this->HideTableView && !($dvprint_x && $this->AllowSelection && $SelectedID) && !$PrintDV) {
 				/* if user can print DV, add action to 'More' menu */
 				$selected_records_more = [];
@@ -726,7 +726,7 @@ class DataList{
 
 				/* if user is admin, add 'Change owner' action to 'More' menu */
 				/* also, add help link for adding more actions */
-				if($mi['admin']) {
+				if(getLoggedAdmin() !== false) {
 					$selected_records_more[] = array(
 						'function' => 'mass_change_owner',
 						'title' => $this->translation['Change owner'],
@@ -809,6 +809,7 @@ class DataList{
 					$this->HTML .= '</div>';
 
 					$this->HTML .= '<div class="row"><div data-table="' . $this->TableName . '" class="table-' . $this->TableName . ' table_view col-xs-12 ' . $this->TVClasses . '">';
+					$tvRowNeedsClosing = true;
 				}
 
 				if($Print_x != '') {
@@ -831,6 +832,7 @@ class DataList{
 
 				$this->HTML .= '<thead><tr>';
 				if(!$Print_x) $this->HTML .= '<th style="width: 18px;" class="text-center"><input class="hidden-print" type="checkbox" title="' . html_attr($this->translation['Select all records']) . '" id="select_all_records"></th>';
+
 				// Templates
 				$rowTemplate = $selrowTemplate = '';
 				if($this->Template) {
@@ -841,16 +843,8 @@ class DataList{
 				}
 
 				// process translations
-				if($rowTemplate) {
-					foreach($this->translation as $symbol => $trans) {
-						$rowTemplate=str_replace("<%%TRANSLATION($symbol)%%>", $trans, $rowTemplate);
-					}
-				}
-				if($selrowTemplate) {
-					foreach($this->translation as $symbol => $trans) {
-						$selrowTemplate = str_replace("<%%TRANSLATION($symbol)%%>", $trans, $selrowTemplate);
-					}
-				}
+				$rowTemplate = parseTemplate($rowTemplate);
+				$selrowTemplate = parseTemplate($selrowTemplate);
 				// End of templates
 
 				// $this->ccffv: map $FilterField values to field captions as stored in ColCaption
@@ -903,7 +897,7 @@ class DataList{
 
 					if($this->AllowSorting == 1) {
 						$sortCombo = new Combo;
-						for($i=0; $i < count($this->ColCaption); $i++) {
+						for($i = 0; $i < count($this->ColCaption); $i++) {
 							$sortCombo->ListItem[] = $this->ColCaption[$i];
 							$sortCombo->ListData[] = $this->ColNumber[$i];
 						}
@@ -917,7 +911,7 @@ class DataList{
 						if($SortField) {
 							$SortDirection = ($SortDirection == 'desc' ? 'asc' : 'desc');
 							$sort_class = ($SortDirection == 'asc' ? 'sort-by-attributes-alt' : 'sort-by-attributes');
-							$sort = "<a href=\"javascript: document.myform.NoDV.value=1; document.myform.SortDirection.value='{$SortDirection}'; document.myform.SortField.value='{$SortField}'; document.myform.submit();\" class=TableHeader><i class=\"text-warning glyphicon glyphicon-{$sort_class}\"></i></a>";
+							$sort = "<a href=\"javascript: document.myform.NoDV.value = 1; document.myform.SortDirection.value = '{$SortDirection}'; document.myform.SortField.value = '{$SortField}'; document.myform.submit();\" class=TableHeader><i class=\"text-warning glyphicon glyphicon-{$sort_class}\"></i></a>";
 							$SortDirection = ($SortDirection == 'desc' ? 'asc' : 'desc');
 						} else {
 							$sort = '';
@@ -965,7 +959,7 @@ class DataList{
 							}
 
 							if($this->AllowSelection == 1 && $SelectedID != $currentID) {
-								$rowTemp = str_replace('<%%SELECT%%>',"<a onclick=\"document.myform.SelectedField.value=this.parentNode.cellIndex; document.myform.SelectedID.value='" . addslashes($currentID) . "'; document.myform.submit(); return false;\" href=\"{$this->ScriptFileName}?SelectedID=" . html_attr($currentID) . "\" style=\"display: block; padding:0px;\">",$rowTemp);
+								$rowTemp = str_replace('<%%SELECT%%>',"<a onclick=\"document.myform.SelectedField.value = this.parentNode.cellIndex; document.myform.SelectedID.value = '" . addslashes($currentID) . "'; document.myform.submit(); return false;\" href=\"{$this->ScriptFileName}?SelectedID=" . html_attr($currentID) . "\" style=\"display: block; padding:0px;\">",$rowTemp);
 								$rowTemp = str_replace('<%%ENDSELECT%%>','</a>',$rowTemp);
 							} else {
 								$rowTemp = str_replace('<%%SELECT%%>', '', $rowTemp);
@@ -987,8 +981,8 @@ class DataList{
 
 								if(strpos($rowTemp, "<%%YOUTUBETHUMB($fieldTVCaption)%%>") !== false) $rowTemp = str_replace("<%%YOUTUBETHUMB($fieldTVCaption)%%>", thisOr(get_embed('youtube', $fd, '', '', 'thumbnail_url'), 'blank.gif'), $rowTemp);
 								if(strpos($rowTemp, "<%%GOOGLEMAPTHUMB($fieldTVCaption)%%>") !== false) $rowTemp = str_replace("<%%GOOGLEMAPTHUMB($fieldTVCaption)%%>", thisOr(get_embed('googlemap', $fd, '', '', 'thumbnail_url'), 'blank.gif'), $rowTemp);
-								if(thisOr($fd)=='&nbsp;' && preg_match('/<a href=".*?&nbsp;.*?<\/a>/i', $rowTemp, $m)) {
-									$rowTemp=str_replace($m[0], '', $rowTemp);
+								if(thisOr($fd) == '&nbsp;' && preg_match('/<a href=".*?&nbsp;.*?<\/a>/i', $rowTemp, $m)) {
+									$rowTemp = str_replace($m[0], '', $rowTemp);
 								}
 							}
 
@@ -999,7 +993,7 @@ class DataList{
 							// default view if no template
 							for($j = 0; $j < $fieldCountTV; $j++) {
 								if($this->AllowSelection == 1) {
-									$sel1 = "<a href=\"{$this->ScriptFileName}?SelectedID=" . html_attr($currentID) . "\" onclick=\"document.myform.SelectedID.value='" . addslashes($currentID) . "'; document.myform.submit(); return false;\" style=\"padding:0px;\">";
+									$sel1 = "<a href=\"{$this->ScriptFileName}?SelectedID=" . html_attr($currentID) . "\" onclick=\"document.myform.SelectedID.value = '" . addslashes($currentID) . "'; document.myform.submit(); return false;\" style=\"padding:0px;\">";
 									$sel2 = "</a>";
 								} else {
 									$sel1 = '';
@@ -1019,14 +1013,14 @@ class DataList{
 				$this->HTML = preg_replace("/<a [^>]*>(&nbsp;)*<\/a>/", '&nbsp;', $this->HTML);
 				$this->HTML = preg_replace("/<%%.*%%>/U", '&nbsp;', $this->HTML);
 				// end of data
-				$this->HTML.='<!-- tv data above -->';
+				$this->HTML .= '<!-- tv data above -->';
 				$this->HTML .= "\n</tbody>";
 
 				if($Print_x == '') { // TV
 					$pagesMenu = '';
 					if($RecordCount > $this->RecordsPerPage) {
 						$pagesMenuId = "{$this->TableName}_pagesMenu";
-						$pagesMenu = $this->translation['go to page'] . ' <select style="width: 90%; max-width: 8em;" class="input-sm ltr form-control" id="' . $pagesMenuId . '" onChange="document.myform.writeAttribute(\'novalidate\', \'novalidate\'); document.myform.NoDV.value=1; document.myform.FirstRecord.value=(this.value * ' . $this->RecordsPerPage . '+1); document.myform.submit();">';
+						$pagesMenu = $this->translation['go to page'] . ' <select style="width: 90%; max-width: 8em;" class="input-sm ltr form-control" id="' . $pagesMenuId . '" onChange="document.myform.writeAttribute(\'novalidate\', \'novalidate\'); document.myform.NoDV.value = 1; document.myform.FirstRecord.value = (this.value * ' . $this->RecordsPerPage . '+1); document.myform.submit();">';
 						$pagesMenu .= '</select>';
 
 						$pagesMenu .= '<script>';
@@ -1103,12 +1097,12 @@ class DataList{
 				$this->HTML = str_replace("<FirstRecord>", number_format($FirstRecord), $this->HTML);
 				$this->HTML = str_replace("<LastRecord>", number_format($i), $this->HTML);
 				$this->HTML = str_replace("<RecordCount>", number_format($RecordCount), $this->HTML);
-				$tvShown=true;
+				$tvShown = true;
 
 				$this->HTML .= "</table></div>\n";
 
 				/* highlight quick search matches */
-				if($SearchString!='') $this->HTML .= '<script>$j(function() { $j(".table-responsive td").mark("' . html_attr($SearchString) . '", { className: "text-bold bg-warning", diacritics: false }); })</script>';
+				if($SearchString != '' && $RecordCount) $this->HTML .= '<script>$j(function() { $j(".table-responsive td:not([colspan])").mark("' . html_attr($SearchString) . '", { className: "text-bold bg-warning", diacritics: false }); })</script>';
 
 				if($Print_x == '' && $i) { // TV
 					$this->HTML .= '<div class="row pagination-section">';
@@ -1121,7 +1115,7 @@ class DataList{
 						$this->HTML .= '</div>';
 
 						$this->HTML .= '<div class="col-xs-4 col-md-3 col-lg-2 col-md-offset-1 col-lg-offset-3 text-right vspacer-lg">';
-							if($i < $RecordCount) $this->HTML .= '<button onClick="'.$resetSelection.' document.myform.NoDV.value=1; return true;" type="submit" name="Next_x" id="Next" value="1" class="btn btn-default btn-block"><span class="hidden-xs">' . $this->translation['Next'] . '</span> <i class="glyphicon glyphicon-chevron-right"></i></button>';
+							if($i < $RecordCount) $this->HTML .= '<button onClick="'.$resetSelection.' document.myform.NoDV.value = 1; return true;" type="submit" name="Next_x" id="Next" value="1" class="btn btn-default btn-block"><span class="hidden-xs">' . $this->translation['Next'] . '</span> <i class="glyphicon glyphicon-chevron-right"></i></button>';
 						$this->HTML .= '</div>';
 					$this->HTML .= '</div>';
 				}
@@ -1134,7 +1128,7 @@ class DataList{
 		// hidden variables ....
 		foreach($this->filterers as $filterer => $caption) {
 			if($_REQUEST['filterer_' . $filterer] != '') {
-				$this->HTML .= "<input name=\"filterer_{$filterer}\" value=\"" . html_attr($_REQUEST['filterer_' . $filterer]) . "\" type=\"hidden\" />";
+				$this->HTML .= "<input name=\"filterer_{$filterer}\" value=\"" . html_attr($_REQUEST['filterer_' . $filterer]) . "\" type=\"hidden\">";
 				break; // currently, only one filterer can be applied at a time
 			}
 		}
@@ -1163,11 +1157,11 @@ class DataList{
 				$FiltersCode .= "<input name=\"FilterValue[{$i}]\" value=\"" . html_attr($FilterValue[$i]) . "\" type=\"hidden\">\n";
 			}
 		}
-		$FiltersCode .= "<input name=\"DisplayRecords\" value=\"$DisplayRecords\" type=\"hidden\" />";
+		$FiltersCode .= "<input name=\"DisplayRecords\" value=\"$DisplayRecords\" type=\"hidden\">";
 		$this->HTML .= $FiltersCode;
 
 		// display details form ...
-		if(($this->AllowSelection || $this->AllowInsert || $this->AllowUpdate || $this->AllowDelete) && $Print_x=='' && !$PrintDV) {
+		if(($this->AllowSelection || $this->AllowInsert || $this->AllowUpdate || $this->AllowDelete) && $Print_x == '' && !$PrintDV) {
 			if(($this->SeparateDV && $this->HideTableView) || !$this->SeparateDV) {
 				$dvCode = call_user_func_array($this->TableName . '_form', [
 					$SelectedID,
@@ -1234,7 +1228,7 @@ class DataList{
 			// hidden vars
 			foreach($this->filterers as $filterer => $caption) {
 				if($_REQUEST['filterer_' . $filterer] != '') {
-					$this->HTML .= "<input name=\"filterer_{$filterer}\" value=\"" . html_attr($_REQUEST['filterer_' . $filterer]) . "\" type=\"hidden\" />";
+					$this->HTML .= "<input name=\"filterer_{$filterer}\" value=\"" . html_attr($_REQUEST['filterer_' . $filterer]) . "\" type=\"hidden\">";
 					break; // currently, only one filterer can be applied at a time
 				}
 			}
@@ -1251,7 +1245,7 @@ class DataList{
 					$dvCode .= call_user_func_array($this->TableName . '_form', array($id, 0, 0, 0, 1, $this->TemplateDV, $this->TemplateDVP));
 				}
 
-				if($dvCode!='') {
+				if($dvCode != '') {
 					$dvCode = preg_replace('/<input .*?type="?image"?.*?>/', '', $dvCode);
 					$this->HTML .= $dvCode;
 				}
@@ -1261,7 +1255,8 @@ class DataList{
 			}
 		}
 
-		$this->HTML .= "</div></form>";
+		if($tvRowNeedsClosing) $this->HTML .= "</div>";
+		$this->HTML .= "</form>";
 		$this->HTML .= '</div><div class="col-xs-1 md-hidden lg-hidden"></div></div>';
 
 		// $this->HTML .= '<font face="garamond">'.html_attr($tvQuery).'</font>';  // uncomment this line for debugging the table view query
@@ -1272,9 +1267,9 @@ class DataList{
 		if($PrintDV != '') $this->ContentType = 'print-detailview';
 
 		// call detail view javascript hook file if found
-		$dvJSHooksFile=dirname(__FILE__).'/hooks/'.$this->TableName.'-dv.js';
-		if(is_file($dvJSHooksFile) && ($this->ContentType=='detailview' || $this->ContentType=='tableview+detailview')) {
-			$this->HTML.="\n<script src=\"hooks/{$this->TableName}-dv.js\"></script>\n";
+		$dvJSHooksFile = dirname(__FILE__) . '/hooks/' . $this->TableName . '-dv.js';
+		if(is_file($dvJSHooksFile) && ($this->ContentType == 'detailview' || $this->ContentType == 'tableview+detailview')) {
+			$this->HTML .= "\n<script src=\"hooks/{$this->TableName}-dv.js\"></script>\n";
 		}
 
 		return;
@@ -1480,15 +1475,6 @@ class DataList{
 		return ob_get_clean();
 	}
 
-	function templateTranslate($template) {
-		$tr = &$this->translation;
-		return preg_replace_callback(
-			'/<%%TRANSLATION\((.*?)\)%%>/', 
-			function($m) use($tr) { return !empty($tr[$m[1]]) ? $tr[$m[1]] : $m[1]; }, 
-			$template
-		);
-	}
-
 	function resetSelection() {
 		if($this->SeparateDV)
 			return "document.myform.SelectedID.value = '';";
@@ -1499,7 +1485,7 @@ class DataList{
 	function getTVButtons($print = false) {
 		$buttons = '';
 
-		if($print) return $this->templateTranslate(
+		if($print) return parseTemplate(
 			'<button class="btn btn-primary" type="button" id="sendToPrinter" onClick="window.print();"><i class="glyphicon glyphicon-print"></i> <%%TRANSLATION(Print)%%></button>' .
 			'<button class="btn btn-default cancel-print" type="submit"><i class="glyphicon glyphicon-remove-circle"></i> <%%TRANSLATION(Cancel Printing)%%></button>'
 		);
@@ -1510,24 +1496,24 @@ class DataList{
 
 		// display Print icon
 		if($this->AllowPrinting)
-			$buttons .= '<button onClick="document.myform.NoDV.value=1; <%%RESET_SELECTION%%> return true;" type="submit" name="Print_x" id="Print" value="1" class="btn btn-default"><i class="glyphicon glyphicon-print"></i> <%%TRANSLATION(Print Preview)%%></button>';
+			$buttons .= '<button onClick="document.myform.NoDV.value = 1; <%%RESET_SELECTION%%> return true;" type="submit" name="Print_x" id="Print" value="1" class="btn btn-default"><i class="glyphicon glyphicon-print"></i> <%%TRANSLATION(Print Preview)%%></button>';
 
 		// display CSV icon
 		if($this->AllowCSV)
-			$buttons .= '<button onClick="document.myform.NoDV.value=1; <%%RESET_SELECTION%%> return true;" type="submit" name="CSV_x" id="CSV" value="1" class="btn btn-default"><i class="glyphicon glyphicon-download-alt"></i> <%%TRANSLATION(CSV)%%></button>';
+			$buttons .= '<button onClick="document.myform.NoDV.value = 1; <%%RESET_SELECTION%%> return true;" type="submit" name="CSV_x" id="CSV" value="1" class="btn btn-default"><i class="glyphicon glyphicon-download-alt"></i> <%%TRANSLATION(CSV)%%></button>';
 
 		// display Filter icon
 		if($this->AllowFilters)
-			$buttons .= '<button onClick="document.myform.NoDV.value=1; <%%RESET_SELECTION%%> return true;" type="submit" name="Filter_x" id="Filter" value="1" class="btn btn-default"><i class="glyphicon glyphicon-filter"></i> <%%TRANSLATION(filter)%%></button>';
+			$buttons .= '<button onClick="document.myform.NoDV.value = 1; <%%RESET_SELECTION%%> return true;" type="submit" name="Filter_x" id="Filter" value="1" class="btn btn-default"><i class="glyphicon glyphicon-filter"></i> <%%TRANSLATION(filter)%%></button>';
 
 		// display Show All icon
 		if(($this->AllowFilters))
-			$buttons .= '<button onClick="document.myform.NoDV.value=1; <%%RESET_SELECTION%%> return true;" type="submit" name="NoFilter_x" id="NoFilter" value="1" class="btn btn-default"><i class="glyphicon glyphicon-remove-circle"></i> <%%TRANSLATION(Reset Filters)%%></button>';
+			$buttons .= '<button onClick="document.myform.NoDV.value = 1; <%%RESET_SELECTION%%> return true;" type="submit" name="NoFilter_x" id="NoFilter" value="1" class="btn btn-default"><i class="glyphicon glyphicon-remove-circle"></i> <%%TRANSLATION(Reset Filters)%%></button>';
 
 		return str_replace(
 			'<%%RESET_SELECTION%%>', 
 			$this->resetSelection(), 
-			$this->templateTranslate($buttons)
+			parseTemplate($buttons)
 		);
 	}
 

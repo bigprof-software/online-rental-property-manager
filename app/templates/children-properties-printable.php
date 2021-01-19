@@ -1,8 +1,7 @@
 <?php if(!isset($Translation)) die('No direct access allowed.'); ?>
 <?php $current_table = 'properties'; ?>
 <?php
-	$cleaner = new CI_Input();
-	$cleaner->charset = datalist_db_encoding;
+	$cleaner = new CI_Input(datalist_db_encoding);
 ?>
 <script>
 	<?php echo $current_table; ?>GetChildrenRecordsList = function(command) {
@@ -102,7 +101,7 @@
 					<?php if(is_array($records)) foreach($records as $pkValue => $record) { ?>
 					<tr data-id="<?php echo html_attr($pkValue); ?>">
 						<td class="<?php echo "{$parameters['ChildTable']}-{$config['display-field-names'][1]}"; ?>" id="<?php echo "{$parameters['ChildTable']}-{$config['display-field-names'][1]}-" . html_attr($record[$config['child-primary-key-index']]); ?>"><?php echo safe_html($record[1]); ?></td>
-						<td class="<?php echo "{$parameters['ChildTable']}-{$config['display-field-names'][2]}"; ?>" id="<?php echo "{$parameters['ChildTable']}-{$config['display-field-names'][2]}-" . html_attr($record[$config['child-primary-key-index']]); ?>"><a href="<?php echo $Translation['ImageFolder'] . urlencode($record[2]); ?>" data-lightbox="properties-photo"><img src="thumbnail.php?i=<?php echo urlencode($record[2]); ?>&t=properties&f=photo&v=tv" class="img-thumbnail"></a></td>
+						<td class="<?php echo "{$parameters['ChildTable']}-{$config['display-field-names'][2]}"; ?>" id="<?php echo "{$parameters['ChildTable']}-{$config['display-field-names'][2]}-" . html_attr($record[$config['child-primary-key-index']]); ?>"><a href="<?php echo getUploadDir('') . urlencode($record[2]); ?>" data-lightbox="properties-photo"><img src="thumbnail.php?i=<?php echo urlencode($record[2]); ?>&t=properties&f=photo&v=tv" class="img-thumbnail"></a></td>
 						<td class="<?php echo "{$parameters['ChildTable']}-{$config['display-field-names'][3]}"; ?>" id="<?php echo "{$parameters['ChildTable']}-{$config['display-field-names'][3]}-" . html_attr($record[$config['child-primary-key-index']]); ?>"><?php echo safe_html($record[3]); ?></td>
 						<td class="<?php echo "{$parameters['ChildTable']}-{$config['display-field-names'][4]}"; ?>" id="<?php echo "{$parameters['ChildTable']}-{$config['display-field-names'][4]}-" . html_attr($record[$config['child-primary-key-index']]); ?>"><?php echo safe_html($record[4]); ?></td>
 						<td class="<?php echo "{$parameters['ChildTable']}-{$config['display-field-names'][5]}"; ?>" id="<?php echo "{$parameters['ChildTable']}-{$config['display-field-names'][5]}-" . html_attr($record[$config['child-primary-key-index']]); ?>"><?php echo safe_html($record[5]); ?></td>

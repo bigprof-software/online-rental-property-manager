@@ -82,7 +82,7 @@
 						<?php if(!$groupMembersCount) { ?>
 								<a href="pageDeleteGroup.php?groupID=<?php echo $row[0]; ?>" 
 								   title="<?php echo $Translation['delete group'] ; ?>" 
-								   onClick="return confirm('<?php echo $Translation['confirm delete group'] ; ?>');">
+								   onClick="return confirm('<?php echo addslashes($Translation['confirm delete group']); ?>');">
 									<i class="glyphicon glyphicon-trash text-danger"></i>
 								</a>
 						<?php } else { ?>

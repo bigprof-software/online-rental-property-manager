@@ -124,13 +124,13 @@
 							<div class="col-sm-6">
 								<div class="form-group">
 									<label for="password" class="control-label"><?php echo $Translation['password']; ?></label>
-									<input class="form-control" type="password" required="" placeholder="<?php echo $Translation['password']; ?>" id="password" name="password">
+									<input class="form-control" type="password" autocomplete="new-password" required="" placeholder="<?php echo $Translation['password']; ?>" id="password" name="password">
 								</div>
 							</div>
 							<div class="col-sm-6">
 								<div class="form-group">
 									<label for="confirmPassword" class="control-label"><?php echo $Translation['confirm password']; ?></label>
-									<input class="form-control" type="password" required="" placeholder="<?php echo $Translation['confirm password']; ?>" id="confirmPassword" name="confirmPassword">
+									<input class="form-control" type="password" autocomplete="new-password" required="" placeholder="<?php echo $Translation['confirm password']; ?>" id="confirmPassword" name="confirmPassword">
 								</div>
 							</div>
 						</div>
@@ -177,7 +177,7 @@
 		$j(function() {
 			$j('#username').focus();
 
-			$j('#usernameAvailable, #usernameNotAvailable').click(function() { /* */ $j('#username').focus(); });
+			$j('#usernameAvailable, #usernameNotAvailable').click(function() { $j('#username').focus(); });
 			$j('#username').on('keyup blur', checkUser);
 
 			/* password strength feedback */
@@ -215,7 +215,7 @@
 			});
 
 			/* validate form before submitting */
-			$j('#submit').click(function(e) { /* */ if(!jsValidateSignup()) e.preventDefault(); })
+			$j('#submit').click(function(e) { if(!jsValidateSignup()) e.preventDefault(); })
 		});
 
 		var uaro; // user availability request object
@@ -269,18 +269,18 @@
 
 			/* user exists? */
 			if(!$j('#username').parents('.form-group').hasClass('has-success')) {
-				modal_window({ message: '<div class="alert alert-danger"><?php echo html_attr($Translation['username invalid']); ?></div>', title: "<?php echo html_attr($Translation['error:']); ?>", close: function() { /* */ $j('#username').focus(); } });
+				modal_window({ message: '<div class="alert alert-danger"><?php echo html_attr($Translation['username invalid']); ?></div>', title: "<?php echo html_attr($Translation['error:']); ?>", close: function() { $j('#username').focus(); } });
 				return false;
 			}
 
 			/* passwords not matching? */
 			if(p1 != p2) {
-				modal_window({ message: '<div class="alert alert-danger"><?php echo html_attr($Translation['password no match']); ?></div>', title: "<?php echo html_attr($Translation['error:']); ?>", close: function() { /* */ $j('#confirmPassword').focus(); } });
+				modal_window({ message: '<div class="alert alert-danger"><?php echo html_attr($Translation['password no match']); ?></div>', title: "<?php echo html_attr($Translation['error:']); ?>", close: function() { $j('#confirmPassword').focus(); } });
 				return false;
 			}
 
 			if(!validateEmail(email)) {
-				modal_window({ message: '<div class="alert alert-danger"><?php echo html_attr($Translation['email invalid']); ?></div>', title: "<?php echo html_attr($Translation['error:']); ?>", close: function() { /* */ $j('#email').focus(); } });
+				modal_window({ message: '<div class="alert alert-danger"><?php echo html_attr($Translation['email invalid']); ?></div>', title: "<?php echo html_attr($Translation['error:']); ?>", close: function() { $j('#email').focus(); } });
 				return false;
 			}
 

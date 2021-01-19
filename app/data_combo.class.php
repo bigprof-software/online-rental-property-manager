@@ -31,17 +31,17 @@ class DataCombo{
 		$this->Class = 'form-control Lookup';
 		$this->MatchText = '';
 		$this->ListType = 0;
-		$this->ListBoxHeight=10;
-		$this->RadiosPerLine=1;
-		$this->AllowNull=1;
+		$this->ListBoxHeight = 10;
+		$this->RadiosPerLine = 1;
+		$this->AllowNull = 1;
 	}
 
 	function Render() {
 		global $Translation;
 
-		$eo['silentErrors']=true;
+		$eo = ['silentErrors' => true];
 		$result = sql($this->Query . ' limit ' . datalist_auto_complete_size, $eo);
-		if($eo['error']!='') {
+		if(!empty($eo['error'])) {
 			$this->HTML = error_message(html_attr($eo['error']) . "\n\n<!--\n{$Translation['query:']}\n {$this->Query}\n-->\n\n");
 			return;
 		}

@@ -1,8 +1,7 @@
 <?php if(!isset($Translation)) die('No direct access allowed.'); ?>
 <?php $current_table = 'rental_owners'; ?>
 <?php
-	$cleaner = new CI_Input();
-	$cleaner->charset = datalist_db_encoding;
+	$cleaner = new CI_Input(datalist_db_encoding);
 ?>
 <script>
 	<?php echo $current_table; ?>GetChildrenRecordsList = function(command) {
