@@ -162,6 +162,7 @@
 		 * @return  string  full page HTML after translating and wrapping given $html inside header and footer
 		 */
 		private function html($html, $replace = []) {
+			global $Translation;
 			ob_start();
 			@include_once("{$this->appDir}/header.php");
 
