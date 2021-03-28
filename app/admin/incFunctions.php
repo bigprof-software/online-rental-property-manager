@@ -41,7 +41,7 @@
 		html_attr_tags_ok($str) -- same as html_attr, but allowing HTML tags
 		Notification() -- class for providing a standardized html notifications functionality
 		sendmail($mail) -- sends an email using PHPMailer as specified in the assoc array $mail( ['to', 'name', 'subject', 'message', 'debug'] ) and returns true on success or an error message on failure
-		safe_html($str) -- sanitize HTML strings, and apply nl2br() to non-HTML ones
+		safe_html($str, $noBr = false) -- sanitize HTML strings, and apply nl2br() to non-HTML ones (unless optional 2nd param is passed as true)
 		get_tables_info($skip_authentication = false) -- retrieves table properties as a 2D assoc array ['table_name' => ['prop1' => 'val', ..], ..]
 		getLoggedMemberID() -- returns memberID of logged member. If no login, returns anonymous memberID
 		getLoggedGroupID() -- returns groupID of logged member, or anonymous groupID
@@ -76,6 +76,8 @@
 		guessMySQLDateTime($dt) -- if $dt is not already a mysql date/datetime, use mysql_datetime() to convert then return mysql date/datetime. Returns false if $dt invalid or couldn't be detected.
 		pkGivenLookupText($val, $tn, $lookupField, $falseIfNotFound) -- returns corresponding PK value for given $val which is the textual lookup value for given $lookupField in given $tn table. If $val has no corresponding PK value, $val is returned as-is, unless $falseIfNotFound is set to true, in which case false is returned.
 		userCanImport() -- returns true if user (or his group) can import CSV files (through the permission set in the group page in the admin area).
+		bgStyleToClass($html) -- replaces bg color 'style' attr with a class to prevent style loss on xss cleanup.
+		assocArrFilter($arr, $func) -- filters provided array using provided callback function. The callback receives 2 params ($key, $value) and should return a boolean.
 	~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	*/
 	########################################################################
@@ -1633,14 +1635,50 @@
 		}
 	}
 	#########################################################
-	function sendmail($mail) {
-		if(!isset($mail['to'])) return 'No recipient defined';
-		if(!isEmail($mail['to'])) return 'Invalid recipient email';
+	function addMailRecipients(&$pm, $recipients, $type = 'to') {
+		if(empty($recipients)) return;
 
-		$mail['subject'] = isset($mail['subject']) ? $mail['subject'] : '';
-		$mail['message'] = isset($mail['message']) ? $mail['message'] : '';
-		$mail['name'] = isset($mail['name']) ? $mail['name'] : '';
-		$mail['debug'] = isset($mail['debug']) ? min(4, max(0, intval($mail['debug']))) : 0;
+		switch(strtolower($type)) {
+			case 'cc':
+				$func = [$pm, 'addCC'];
+				break;
+			case 'bcc':
+				$func = [$pm, 'addBCC'];
+				break;
+			case 'to':
+				$func = [$pm, 'addAddress'];
+				break;
+		}
+
+		// if recipients is a str, arrayify it!
+		if(is_string($recipients)) $recipients = [[$recipients]];
+		if(!is_array($recipients)) return;
+
+		// if recipients is an array, loop thru and add emails/names
+		foreach ($recipients as $rcpt) {
+			// if rcpt is string, add as email
+			if(is_string($rcpt) && isEmail($rcpt))
+				call_user_func_array($func, [$rcpt]);
+
+			// else if rcpt is array [email, name], or just [email]
+			elseif(is_array($rcpt) && isEmail($rcpt[0]))
+				call_user_func_array($func, [$rcpt[0], empty($rcpt[1]) ? '' : $rcpt[1]]);
+		}
+	}
+	#########################################################
+	function sendmail($mail) {
+		if(empty($mail['to'])) return 'No recipient defined';
+
+		// convert legacy 'to' and 'name' to new format [[to, name]]
+		if(is_string($mail['to']))
+			$mail['to'] = [
+				[
+					$mail['to'], 
+					empty($mail['name']) ? '' : $mail['name']
+				]
+			];
+
+		if(!isEmail($mail['to'][0][0])) return 'Invalid recipient email';
 
 		$cfg = config('adminConfig');
 		$smtp = ($cfg['mail_function'] == 'smtp');
@@ -1656,7 +1694,7 @@
 
 		if($smtp) {
 			$pm->isSMTP();
-			$pm->SMTPDebug = $mail['debug'];
+			$pm->SMTPDebug = isset($mail['debug']) ? min(4, max(0, intval($mail['debug']))) : 0;
 			$pm->Debugoutput = 'html';
 			$pm->Host = $cfg['smtp_server'];
 			$pm->Port = $cfg['smtp_port'];
@@ -1667,14 +1705,25 @@
 		}
 
 		$pm->setFrom($cfg['senderEmail'], $cfg['senderName']);
-		$pm->addAddress($mail['to'], $mail['name']);
-		$pm->Subject = $mail['subject'];
+		$pm->Subject = isset($mail['subject']) ? $mail['subject'] : '';
+
+		// handle recipients
+		addMailRecipients($pm, $mail['to']);
+		if(!empty($mail['cc'])) addMailRecipients($pm, $mail['cc'], 'cc');
+		if(!empty($mail['bcc'])) addMailRecipients($pm, $mail['bcc'], 'bcc');
 
 		/* if message already contains html tags, don't apply nl2br */
+		$mail['message'] = isset($mail['message']) ? $mail['message'] : '';
 		if($mail['message'] == strip_tags($mail['message']))
 			$mail['message'] = nl2br($mail['message']);
 
 		$pm->msgHTML($mail['message'], realpath("{$curr_dir}/.."));
+
+		/*
+		 * pass 'tag' as-is if provided in $mail .. 
+		 * this is useful for passing any desired values to sendmail_handler
+		 */
+		if(!empty($mail['tag'])) $pm->tag = $mail['tag'];
 
 		/* if sendmail_handler(&$pm) is defined (in hooks/__global.php) */
 		if(function_exists('sendmail_handler')) sendmail_handler($pm);
@@ -1684,13 +1733,12 @@
 		return true;
 	}
 	#########################################################
-	function safe_html($str) {
+	function safe_html($str, $noBr = false) {
 		/* if $str has no HTML tags, apply nl2br */
-		if($str == strip_tags($str)) return nl2br($str);
+		if($str == strip_tags($str)) return $noBr ? $str : nl2br($str);
 
 		$hc = new CI_Input(datalist_db_encoding);
-
-		return $hc->xss_clean($str);
+		return $hc->xss_clean(bgStyleToClass($str));
 	}
 	#########################################################
 	function getLoggedGroupID() {
@@ -2435,4 +2483,24 @@
 		if($dir == '') $dir = config('adminConfig')['baseUploadPath'];
 
 		return rtrim($dir, '\\/') . '/';
+	}
+	#########################################################
+	function bgStyleToClass($html) {
+		return preg_replace(
+			'/ style="background-color: rgb\((\d+), (\d+), (\d+)\);"/',
+			' class="nicedit-bg" data-nicedit_r="$1" data-nicedit_g="$2" data-nicedit_b="$3"',
+			$html
+		);
+	}
+	#########################################################
+	function assocArrFilter($arr, $func) {
+		if(!is_array($arr) || !count($arr)) return $arr;
+		if(!is_callable($func)) return false;
+
+		$filtered = [];
+		foreach ($arr as $key => $value)
+			if(call_user_func_array($func, [$key, $value]) === true)
+				$filtered[$key] = $value;
+
+		return $filtered;
 	}

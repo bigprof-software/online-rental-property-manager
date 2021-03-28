@@ -4,6 +4,7 @@
 <div class="panel-heading"><h3 class="panel-title"><strong><%%DETAIL_VIEW_TITLE%%></strong></h3></div>
 
 <div id="rental_owners_dv_container-loading" class="text-center text-info text-bold vspacer-lg"><i class="glyphicon glyphicon-refresh loop-rotate"></i> <%%TRANSLATION(Loading ...)%%></div>
+
 <div class="panel-body hidden" id="rental_owners_dv_container">
 	<!-- child links -->
 	<div class="row vspacer-md">
@@ -208,15 +209,13 @@
 					if($j('textarea#comments').length) new nicEditor({ fullPanel : true }).panelInstance('comments');
 				}
 			});
+
 			/* enable DV action buttons to float on scrolling down the form */
 			enable_dvab_floating();
 
-
-			setTimeout(function() {
-				$j('#rental_owners_dv_container-loading').addClass('hidden');
-				$j('#rental_owners_dv_container').removeClass('hidden');
-				AppGini.focusFormElement('rental_owners', 'first_name');
-			}, 1100);
+			$j('#rental_owners_dv_container-loading').addClass('hidden');
+			$j('#rental_owners_dv_container').removeClass('hidden');
+			if(!$j('.table_view').length || $j('[name=SelectedID]').val().length) AppGini.focusFormElement('rental_owners', 'first_name');
 
 			$j('form').eq(0).change(function() {
 				if($j(this).data('already_changed')) return;
@@ -262,7 +261,7 @@
 				);
 			}
 
-			if(!embedded_mode) {
+			if(true /* !embedded_mode */) {
 				/* add a horizontal spacer to [add new parent] buttons that don't have a spacered element before them */
 				$j('.add_new_parent').prev(':not(.hspacer-md)').next().addClass('hspacer-md');
 
@@ -278,7 +277,7 @@
 							var new_id = localStorage.getItem(pt + '_last_added_id');
 							if(new_id === null) return;
 
-							localStorage.clear(pt + '_last_added_id');
+							localStorage.removeItem(pt + '_last_added_id');
 							AppGini.lookupText({
 								id: new_id,
 								table: 'rental_owners',

@@ -6,14 +6,14 @@
 
 	// process search
 	$memberID = new Request('memberID', 'strtolower');
-	$groupID = max(0, intval($_GET['groupID']));
+	$groupID = max(0, intval($_REQUEST['groupID']));
 	$tableName = new Request('tableName');
-	$page = max(1, intval($_GET['page']));
+	$page = max(1, intval($_REQUEST['page']));
 	$where = [];
 
 	// process sort
-	$sortDir = ($_GET['sortDir'] == 'DESC' ? 'DESC' : '');
-	$sort = makeSafe($_GET['sort']);
+	$sortDir = ($_REQUEST['sortDir'] == 'DESC' ? 'DESC' : '');
+	$sort = makeSafe($_REQUEST['sort']);
 	if($sort != 'dateAdded' && $sort != 'dateUpdated') { // default sort is newly created first
 		$sort = 'dateAdded';
 		$sortDir = 'DESC';
@@ -83,8 +83,8 @@
 						?>
 						<span class="hspacer-md"></span>
 						<?php
-							$arrFields=array('desc', '');
-							$arrFieldCaptions = array( $Translation['newer first'] , $Translation['older first'] );
+							$arrFields = ['DESC', ''];
+							$arrFieldCaptions = [$Translation['newer first'], $Translation['older first']];
 							echo htmlSelect('sortDir', $arrFields, $arrFieldCaptions, $sortDir);
 						?>
 					</div>
@@ -98,8 +98,8 @@
 		<tr>
 			<th>&nbsp;</td>
 			<th><?php echo $Translation['username'] ; ?></th>
-			<th><?php echo $Translation["group"] ; ?></th>
-			<th><?php echo $Translation["table"] ; ?></th>
+			<th><?php echo $Translation['group'] ; ?></th>
+			<th><?php echo $Translation['table'] ; ?></th>
 			<th><?php echo $Translation['created'] ; ?></th>
 			<th><?php echo $Translation['modified'] ; ?></th>
 			<th><?php echo $Translation['data'] ; ?></th>

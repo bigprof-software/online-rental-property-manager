@@ -1453,7 +1453,7 @@ class PHPMailer
             // All other characters have a special meaning in at least one common shell, including = and +.
             // Full stop (.) has a special meaning in cmd.exe, but its impact should be negligible here.
             // Note that this does permit non-Latin alphanumeric characters based on the current locale.
-            if (!ctype_alnum($c) && strpos('@_-.', $c) === false) {
+            if (!preg_match('/^[a-zA-Z0-9]+$/', $c) && strpos('@_-.', $c) === false) {
                 return false;
             }
         }

@@ -131,10 +131,10 @@ jQuery(function() {
 
 	update_action_buttons();
 
-	/* remove empty images and links from TV, TVP */
-	$j('.table a[href="' + AppGini.imgFolder + '"], .table img[src="' + AppGini.imgFolder + '"]').remove();
+	/* remove empty images and links */
+	$j('.table a[href="' + AppGini.imgFolder + '"], img[src="' + AppGini.imgFolder + '"]').remove();
 
-	/* remove empty email links from TV, TVP */
+	/* remove empty email links */
 	$j('a[href="mailto:"]').remove();
 
 	/* Disable action buttons when form is submitted to avoid user re-submission on slow connections */
@@ -215,6 +215,15 @@ jQuery(function() {
 
 	// handle clearing dates
 	AppGini.handleClearingDates();
+
+	// apply nicedit BGs
+	AppGini.once({
+		condition: function() {
+			return $j('.nicedit-bg').length > 0;
+		},
+		action: AppGini.applyNiceditBgColors,
+		timeout: 30000 // stop trying after 30 sec
+	});
 });
 
 /* show/hide TV action buttons based on whether records are selected or not */
@@ -941,7 +950,7 @@ function apply_persisting_children() {
 }
 
 function select2_max_width_decrement() {
-	return ($j('div.container').eq(0).hasClass('theme-compact') ? 99 : 109);
+	return ($j('div.container, div.container-fluid').eq(0).hasClass('theme-compact') ? 99 : 109);
 }
 
 /**
@@ -999,7 +1008,7 @@ AppGini.TVScroll = function() {
 			/* all browsers behave the same on LTR */
 			AppGini._ScrollType = 'LTR:0:100:0';
 
-			if($j('.container').hasClass('theme-rtl')) {
+			if($j('.container').hasClass('theme-rtl') || $j('.container-fluid').hasClass('theme-rtl')) {
 				var definer = $j('<div dir="rtl" style="font-size: 14px; width: 4px; height: 1px; position: absolute; top: -1000px; overflow: scroll">ABCD</div>').appendTo('body')[0];
 
 				AppGini._ScrollType = 'RTL:100:0:0'; // IE
@@ -1256,7 +1265,7 @@ AppGini.TVScroll = function() {
 
 			var imc = $j(
 				'<div id="' + op.id + '" ' +
-					'class="inpage-modal hide ' + $j('.container').eq(0).attr('class') + '" ' + 
+					'class="inpage-modal hide ' + $j('.container, .container-fluid').eq(0).attr('class') + '" ' + 
 					'style="' +
 						'padding-left: 0; padding-right: 0;' +
 						'width: 100% !important;' +
@@ -1339,7 +1348,7 @@ AppGini.TVScroll = function() {
 			if(op.size != 'full') return;
 
 			/* hide main page to avoid all scrolling/panning hell on touch screens! */
-			$j('.container').eq(0).hide();
+			$j('.container, .container-fluid').eq(0).hide();
 		})
 		.on('shown.bs.modal', function() {
 			if(op.size != 'full') return;
@@ -1351,7 +1360,7 @@ AppGini.TVScroll = function() {
 		//.agModal('show')
 		.on('hidden.bs.modal', function() {
 			/* display main page again */
-			if(op.size == 'full') $j('.container').eq(0).show();
+			if(op.size == 'full') $j('.container, .container-fluid').eq(0).show();
 
 			if(typeof(op.close) == 'function') {
 				op.close();
@@ -1695,22 +1704,50 @@ AppGini.repeatUntil = function(config) {
 	})(random_string(20), config.action, config.condition, config.frequency);
 }
 
-/* setInterval alternative that waits until a condition is met then executes an action once */
+/*
+ * setInterval alternative that waits until a condition is met then executes an action once
+ * stops trying after timeout (in msec) if > 0
+ * if doActionOnTimeout is set to true, the action is executed on timeout
+ */
 AppGini.once = function(config) {
 	if(config === undefined) return;
 	if(typeof(config.condition) != 'function') return;
 	if(typeof(config.action) != 'function') return;
+	if(config.timeout === undefined) config.timeout = 0;
+	if(config.doActionOnTimeout === undefined) config.doActionOnTimeout = false;
 
 	AppGini._onceIntervals = AppGini._onceIntervals || {};
 
-	(function(id, action, condition) {
-		AppGini._onceIntervals[id] = setInterval(function() {
-			if(!condition()) return; 
+	(function(id, action, condition, timeout, doActionOnTimeout) {
+		AppGini._onceIntervals[id] = {
+			callback: setInterval(function() {
+				// timeout configured and passed?
+				if(
+					timeout > 0 && 
+					(AppGini.unixTimestamp().msec - AppGini._onceIntervals[id].started) > timeout
+				) {
+					clearInterval(AppGini._onceIntervals[id].callback);
+					delete AppGini._onceIntervals[id];
+					if(doActionOnTimeout) action();
+					return;
+				}
 
-			action();
-			clearInterval(AppGini._onceIntervals[id]);
-		}, 50);
-	})(random_string(20), config.action, config.condition);
+				if(!condition()) return;
+
+				action();
+				clearInterval(AppGini._onceIntervals[id].callback);
+				delete AppGini._onceIntervals[id];
+			}, 50),
+			started: AppGini.unixTimestamp().msec
+		};
+	})(random_string(20), config.action, config.condition, config.timeout, config.doActionOnTimeout);
+}
+
+AppGini.unixTimestamp = function() {
+	return {
+		msec: parseInt(moment().format('x')),
+		sec: parseInt(moment().format('X'))
+	};
 }
 
 /* function to trigger form change event for contenteditable elements */
@@ -1799,7 +1836,7 @@ AppGini.focusFormElement = function(tn, fn) {
 		'select[id=' + fn + ']',
 		'input[type=text][id=' + fn + ']',
 		'input[type=file][id=' + fn + ']',
-		'input[type=radio][id=' + fn + '0]',
+		'input[type=radio][name=' + fn + ']',
 		'input[type=checkbox][id=' + fn + ']',
 		'textarea[id=' + fn + ']',
 		'.' + tn + '-' + fn  + ' .nicEdit-main'    
@@ -2123,11 +2160,11 @@ AppGini.defineHighlightClass = function() {
 	if(AppGini._defineHighlightClassOk != undefined) return;
 
 	AppGini._defineHighlightClassOk = true;
-	$j('<div class="bg-warning defineHighlightClass">.</div>').appendTo('.container');
+	$j('<div class="bg-warning defineHighlightClass">.</div>').appendTo('.container, .container-fluid');
 	var bgColor = $j('.bg-warning').css('background-color'), textColor = $j('.bg-warning').css('color');
 	$j('.defineHighlightClass').remove();
 	$j('<style>.highlighted-record { background-color: ' + bgColor + ' !important; color: ' + textColor + ' !important; }</style>')
-		.appendTo('.container');
+		.appendTo('.container, .container-fluid');
 }
 
 /* return true if a non-empty input has focus */
@@ -2155,3 +2192,17 @@ AppGini.handleClearingDates = function() {
 	})
 }
 
+AppGini.applyNiceditBgColors = function() {
+	$j('.nicedit-bg').each(function() {
+		var e = $j(this);
+		if(e.hasClass('nicedit-bg-applied')) return;
+
+		e.addClass('nicedit-bg-applied').css({ backgroundColor: 'rgb(' + 
+			[
+				e.data('nicedit_r'),
+				e.data('nicedit_g'),
+				e.data('nicedit_b')
+			].join(',') +
+		')' });
+	})
+}

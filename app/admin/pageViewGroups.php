@@ -75,7 +75,7 @@
 				?>
 				<tr>
 					<td><a href="pageEditGroup.php?groupID=<?php echo $row[0]; ?>"><?php echo $row[1]; ?></a></td>
-					<td><?php echo thisOr($row[2]); ?></td>
+					<td><?php echo htmlspecialchars(thisOr($row[2])); ?></td>
 					<td class="text-right"><?php echo $groupMembersCount; ?></td>
 					<td class="text-center">
 						<a href="pageEditGroup.php?groupID=<?php echo $row[0]; ?>" title="<?php echo $Translation['Edit group']; ?>"><i class="glyphicon glyphicon-pencil"></i></a>

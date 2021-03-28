@@ -63,7 +63,7 @@
 							childTable: param.ChildTable,
 							childId: localStorage.getItem(param.ChildTable + '_last_added_id')
 						});
-						localStorage.clear(param.ChildTable + '_last_added_id');
+						localStorage.removeItem(param.ChildTable + '_last_added_id');
 						<?php echo $current_table; ?>GetChildrenRecordsList({ Verb: 'reload' });
 						AppGini.scrollTo('children-tabs');
 					},

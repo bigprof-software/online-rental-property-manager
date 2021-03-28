@@ -4,6 +4,7 @@
 <div class="panel-heading"><h3 class="panel-title"><strong><%%DETAIL_VIEW_TITLE%%></strong></h3></div>
 
 <div id="residence_and_rental_history_dv_container-loading" class="text-center text-info text-bold vspacer-lg"><i class="glyphicon glyphicon-refresh loop-rotate"></i> <%%TRANSLATION(Loading ...)%%></div>
+
 <div class="panel-body hidden" id="residence_and_rental_history_dv_container">
 	<!-- child links -->
 	<div class="row vspacer-md">
@@ -151,15 +152,29 @@
 					if($j('textarea#notes').length) new nicEditor({ fullPanel : true }).panelInstance('notes');
 				}
 			});
+
 			/* enable DV action buttons to float on scrolling down the form */
 			enable_dvab_floating();
 
-
-			setTimeout(function() {
+			if(!$j('.table_view').length || $j('[name=SelectedID]').val().length) {
+				AppGini.once({
+					condition: function() {
+						return $j('.form-group.residence_and_rental_history-tenant')
+									.find('.nicEdit-main, .select2-container, input[type=radio]')
+									.length > 0;
+					},
+					action: function() {
+						$j('#residence_and_rental_history_dv_container-loading').addClass('hidden');
+						$j('#residence_and_rental_history_dv_container').removeClass('hidden');
+						AppGini.focusFormElement('residence_and_rental_history', 'tenant');
+					},
+					timeout:  5000,
+					doActionOnTimeout:  true
+				});
+			} else {
 				$j('#residence_and_rental_history_dv_container-loading').addClass('hidden');
 				$j('#residence_and_rental_history_dv_container').removeClass('hidden');
-				AppGini.focusFormElement('residence_and_rental_history', 'tenant');
-			}, 1100);
+			}
 
 			$j('form').eq(0).change(function() {
 				if($j(this).data('already_changed')) return;
@@ -173,7 +188,7 @@
 			$j('a[href="<%%BASE_UPLOAD_PATH%%>"]').click(function() { return false; });
 
 
-			if(!embedded_mode) {
+			if(true /* !embedded_mode */) {
 				/* add a horizontal spacer to [add new parent] buttons that don't have a spacered element before them */
 				$j('.add_new_parent').prev(':not(.hspacer-md)').next().addClass('hspacer-md');
 
@@ -189,7 +204,7 @@
 							var new_id = localStorage.getItem(pt + '_last_added_id');
 							if(new_id === null) return;
 
-							localStorage.clear(pt + '_last_added_id');
+							localStorage.removeItem(pt + '_last_added_id');
 							AppGini.lookupText({
 								id: new_id,
 								table: 'residence_and_rental_history',

@@ -28,6 +28,9 @@
 		/* make sure there is always a space before mysql words */
 		$def = preg_replace('/(\S)(unsigned|not null|binary|zerofill|auto_increment|default)/i', '$1 $2', $def);
 
+		/* ignore 'not null' for auto_increment fields */
+		$def = preg_replace('/\s+not\s+null\s+(.*?)\s+auto_increment/i', ' $1 auto_increment', $def);
+
 		/* treat 0.000.. same as 0 */
 		$def = preg_replace('/([0-9])*\.0+/', '$1', $def);
 
@@ -179,7 +182,7 @@
 
 	<tbody>
 	<?php foreach($schema as $tn => $fields) { ?>
-		<tr class="text-info"><td colspan="5"><h4 data-placement="left" data-toggle="tooltip" title="<?php echo str_replace ( "<TABLENAME>" , $tn , $Translation['table name title']) ; ?>"><i class="glyphicon glyphicon-th-list"></i> <?php echo $table_captions[$tn]; ?></h4></td></tr>
+		<tr class="text-info"><td colspan="5"><h4 data-placement="auto top" data-toggle="tooltip" title="<?php echo str_replace ( "<TABLENAME>" , $tn , $Translation['table name title']) ; ?>"><i class="glyphicon glyphicon-th-list"></i> <?php echo $table_captions[$tn]; ?></h4></td></tr>
 		<?php foreach($fields as $fn => $fd) { ?>
 			<?php $diff = ((prepare_def($fd['appgini']) == prepare_def($fd['db'])) ? false : true); ?>
 			<?php $no_db = ($fd['db'] ? false : true); ?>
@@ -190,9 +193,9 @@
 				<td class="<?php echo ($diff ? 'bold text-danger' : ''); ?>"><?php echo thisOr("<samp>{$fd['db']}</samp>", $Translation['does not exist']); ?></td>
 				<td>
 					<?php if($diff && $no_db) { ?>
-						<a href="pageRebuildFields.php?t=<?php echo $tn; ?>&f=<?php echo $fn; ?>" class="btn btn-success btn-xs btn_create" data-toggle="tooltip" data-placement="top" title="<?php echo $Translation['create field'] ; ?>"><i class="glyphicon glyphicon-plus"></i> <?php echo $Translation['create it'] ; ?></a>
+						<a href="pageRebuildFields.php?t=<?php echo $tn; ?>&f=<?php echo $fn; ?>" class="btn btn-success btn-xs btn_create" data-toggle="tooltip" data-placement="auto top" title="<?php echo $Translation['create field'] ; ?>"><i class="glyphicon glyphicon-plus"></i> <?php echo $Translation['create it'] ; ?></a>
 					<?php } elseif($diff) { ?>
-						<a href="pageRebuildFields.php?t=<?php echo $tn; ?>&f=<?php echo $fn; ?>" class="btn btn-warning btn-xs btn_update" data-toggle="tooltip" title="<?php echo $Translation['fix field'] ; ?>"><i class="glyphicon glyphicon-cog"></i> <?php echo $Translation['fix it'] ; ?></a>
+						<a href="pageRebuildFields.php?t=<?php echo $tn; ?>&f=<?php echo $fn; ?>" class="btn btn-warning btn-xs btn_update" data-toggle="tooltip" data-placement="auto top" title="<?php echo $Translation['fix field'] ; ?>"><i class="glyphicon glyphicon-cog"></i> <?php echo $Translation['fix it'] ; ?></a>
 					<?php } ?>
 				</td>
 			</tr>
@@ -204,7 +207,7 @@
 
 <style>
 	.bold{ font-weight: bold; }
-	[data-toggle="tooltip"]{ display: block !important; }
+	[data-toggle="tooltip"]{ display: inline-block !important; }
 </style>
 
 <script>
