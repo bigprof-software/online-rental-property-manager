@@ -2111,6 +2111,8 @@ class SummaryReport {
 	}
 	
 	private function valid_app_date($date, $default = false) {
+		// only allow digits, a, p, m, whitespace and valid separators (.,-/) and strip everything else
+		$date = trim(preg_replace('/[^\d\s-\.,\/apm:]/i', '', $date));
 		return $this->date_to_ts($date) ? $date : $default;
 	}
 	
