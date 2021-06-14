@@ -402,4 +402,7 @@ img.help-shortcuts-launcher {
 /* fix nicedit components' dimensions */
 .has-nicedit > div { width: 100% !important; }
 .has-nicedit .nicEdit-main { width: 99% !important; }
-.nicEdit-main { height: 6em; }
+.nicEdit-main { min-height: 6em; /* overflow: auto !important; */ }
+
+/* hide empty email links */
+a[href="mailto:"] { display: none; }

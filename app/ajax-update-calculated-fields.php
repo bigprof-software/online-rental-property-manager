@@ -29,7 +29,7 @@
 	$caluclations_made = [];
 	if(is_array($id)) {
 		foreach ($id as $singleId) {
-			if(!strlen($singleId)) cotinue;
+			if(!strlen($singleId)) continue;
 			$caluclations_made[] = update_calc_fields($table, $singleId, $calc[$table]);
 			update_parents($table, $singleId, $calc, $caluclations_made);
 		}

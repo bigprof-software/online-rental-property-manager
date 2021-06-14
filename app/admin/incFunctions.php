@@ -8,8 +8,8 @@
 		createThumbnail($img, $specs) -- $specs is an array as returned by getThumbnailSpecs(). Returns true on success, false on failure.
 		makeSafe($string)
 		checkPermissionVal($pvn)
-		sql($statment, $o)
-		sqlValue($statment)
+		sql($statement, $o)
+		sqlValue($statement)
 		getLoggedAdmin()
 		checkUser($username, $password)
 		logOutUser()
@@ -331,6 +331,8 @@
 	function makeSafe($string, $is_gpc = true) {
 		static $cached = []; /* str => escaped_str */
 
+		if(!strlen($string)) return '';
+
 		if(!db_link()) sql("SELECT 1+1", $eo);
 
 		// if this is a previously escaped string, return from cached
@@ -354,115 +356,191 @@
 		}
 	}
 	########################################################################
-	if(!function_exists('sql')) {
-		function sql($statment, &$o) {
+	function dieErrorPage($error) {
+		global $Translation;
 
-			/*
-				Supported options that can be passed in $o options array (as array keys):
-				'silentErrors': If true, errors will be returned in $o['error'] rather than displaying them on screen and exiting.
-			*/
+		$header = (defined('ADMIN_AREA') ? __DIR__ . '/incHeader.php' : __DIR__ . '/../header.php');
+		$footer = (defined('ADMIN_AREA') ? __DIR__ . '/incFooter.php' : __DIR__ . '/../footer.php');
 
-			global $Translation;
-			static $connected = false, $db_link;
+		ob_start();
 
-			$dbServer = config('dbServer');
-			$dbUsername = config('dbUsername');
-			$dbPassword = config('dbPassword');
-			$dbDatabase = config('dbDatabase');
+		@include_once($header);
+		echo Notification::placeholder();
+		echo Notification::show([
+			'message' => $error,
+			'class' => 'danger',
+			'dismiss_seconds' => 7200
+		]);
+		@include_once($footer);
 
-			$admin_dir = dirname(__FILE__);
-			$header = (defined('ADMIN_AREA') ? "{$admin_dir}/incHeader.php" : "{$admin_dir}/../header.php");
-			$footer = (defined('ADMIN_AREA') ? "{$admin_dir}/incFooter.php" : "{$admin_dir}/../footer.php");
+		echo ob_get_clean();
+		exit;
+	}
+	########################################################################
+	function openDBConnection(&$o) {
+		static $connected = false, $db_link;
 
-			ob_start();
+		$dbServer = config('dbServer');
+		$dbUsername = config('dbUsername');
+		$dbPassword = config('dbPassword');
+		$dbDatabase = config('dbDatabase');
 
-			if(!$connected) {
-				/****** Connect to MySQL ******/
-				if(!extension_loaded('mysql') && !extension_loaded('mysqli')) {
-					$o['error'] = 'PHP is not configured to connect to MySQL on this machine. Please see <a href="https://www.php.net/manual/en/ref.mysql.php">this page</a> for help on how to configure MySQL.';
-					if($o['silentErrors']) return false;
+		if($connected) return $db_link;
 
-					@include_once($header);
-					echo Notification::placeholder();
-					echo Notification::show(array(
-						'message' => $o['error'],
-						'class' => 'danger',
-						'dismiss_seconds' => 7200
-					));
-					@include_once($footer);
-					echo ob_get_clean();
-					exit;
-				}
+		/****** Check that MySQL module is enabled ******/
+		if(!extension_loaded('mysql') && !extension_loaded('mysqli')) {
+			$o['error'] = 'PHP is not configured to connect to MySQL on this machine. Please see <a href="https://www.php.net/manual/en/ref.mysql.php">this page</a> for help on how to configure MySQL.';
+			if($o['silentErrors']) return false;
 
-				if(!($db_link = @db_connect($dbServer, $dbUsername, $dbPassword))) {
-					$o['error'] = db_error($db_link, true);
-					if($o['silentErrors']) return false;
-
-					@include_once($header);
-					echo Notification::placeholder();
-					echo Notification::show(array(
-						'message' => $o['error'],
-						'class' => 'danger',
-						'dismiss_seconds' => 7200
-					));
-					@include_once($footer);
-					echo ob_get_clean();
-					exit;
-				}
-
-				/****** Select DB ********/
-				if(!db_select_db($dbDatabase, $db_link)) {
-					$o['error'] = db_error($db_link);
-					if($o['silentErrors']) return false;
-
-					@include_once($header);
-					echo Notification::placeholder();
-					echo Notification::show(array(
-						'message' => $o['error'],
-						'class' => 'danger',
-						'dismiss_seconds' => 7200
-					));
-					@include_once($footer);
-					echo ob_get_clean();
-					exit;
-				}
-
-				$connected = true;
-			}
-
-			if(!$result = @db_query($statment, $db_link)) {
-				if(!stristr($statment, "show columns")) {
-					// retrieve error codes
-					$errorNum = db_errno($db_link);
-					$errorMsg = htmlspecialchars(db_error($db_link));
-
-					if(getLoggedAdmin()) $errorMsg .= "<pre class=\"ltr\">{$Translation['query:']}\n" . htmlspecialchars($statment) . "</pre><p><i class=\"text-right\">{$Translation['admin-only info']}</i></p><p>{$Translation['try rebuild fields']}</p>";
-
-					if($o['silentErrors']) { $o['error'] = $errorMsg; return false; }
-
-					@include_once($header);
-					echo Notification::placeholder();
-					echo Notification::show(array(
-						'message' => $errorMsg,
-						'class' => 'danger',
-						'dismiss_seconds' => 7200
-					));
-					@include_once($footer);
-					echo ob_get_clean();
-					exit;
-				}
-			}
-
-			ob_end_clean();
-			return $result;
+			dieErrorPage($o['error']);
 		}
+
+		/****** Connect to MySQL ******/
+		if(!($db_link = @db_connect($dbServer, $dbUsername, $dbPassword))) {
+			$o['error'] = db_error($db_link, true);
+			if($o['silentErrors']) return false;
+
+			dieErrorPage($o['error']);
+		}
+
+		/****** Select DB ********/
+		if(!db_select_db($dbDatabase, $db_link)) {
+			$o['error'] = db_error($db_link);
+			if($o['silentErrors']) return false;
+
+			dieErrorPage($o['error']);
+		}
+
+		$connected = true;
+		return $db_link;
+	}
+	########################################################################
+	function sql($statement, &$o) {
+
+		/*
+			Supported options that can be passed in $o options array (as array keys):
+			'silentErrors': If true, errors will be returned in $o['error'] rather than displaying them on screen and exiting.
+			'noSlowQueryLog': don't log slow query if true
+			'noErrorQueryLog': don't log error query if true
+		*/
+
+		global $Translation;
+
+		$db_link = openDBConnection($o);
+
+		/*
+		 if openDBConnection() fails, it would abort execution unless 'silentErrors' is true,
+		 in which case, we should return false from sql() without further action since
+		 $o['error'] would be already set by openDBConnection()
+		*/
+		if(!$db_link) return false;
+
+		$t0 = microtime(true);
+
+		if(!$result = @db_query($statement, $db_link)) {
+			if(!stristr($statement, "show columns")) {
+				// retrieve error codes
+				$errorNum = db_errno($db_link);
+				$o['error'] = htmlspecialchars(db_error($db_link));
+
+				if(empty($o['noErrorQueryLog']))
+					logErrorQuery($statement, $o['error']);
+
+				if(getLoggedAdmin())
+					$o['error'] .= "<pre class=\"ltr\">{$Translation['query:']}\n" . htmlspecialchars($statement) . "</pre><p><i class=\"text-right\">{$Translation['admin-only info']}</i></p><p>{$Translation['try rebuild fields']}</p>";
+
+				if($o['silentErrors']) return false;
+
+				dieErrorPage($o['error']);
+			}
+		}
+
+		/* log slow queries that take more than 1 sec */
+		$t1 = microtime(true);
+		if($t1 - $t0 > 1.0 && empty($o['noSlowQueryLog']))
+			logSlowQuery($statement, $t1 - $t0);
+
+		return $result;
+	}
+	########################################################################
+	function logSlowQuery($statement, $duration) {
+		if(!createQueryLogTable()) return;
+
+		$o = [
+			'silentErrors' => true,
+			'noSlowQueryLog' => true,
+			'noErrorQueryLog' => true
+		];
+		$statement = makeSafe($statement);
+		$duration = floatval($duration);
+		$memberID = makeSafe(getLoggedMemberID());
+		$uri = makeSafe($_SERVER['REQUEST_URI']);
+
+		sql("INSERT INTO `appgini_query_log` SET
+			`statement`='$statement',
+			`duration`=$duration,
+			`memberID`='$memberID',
+			`uri`='$uri'
+		", $o);
+	}
+	########################################################################
+	function logErrorQuery($statement, $error) {
+		if(!createQueryLogTable()) return;
+
+		$o = [
+			'silentErrors' => true,
+			'noSlowQueryLog' => true,
+			'noErrorQueryLog' => true
+		];
+		$statement = makeSafe($statement);
+		$error = makeSafe($error);
+		$memberID = makeSafe(getLoggedMemberID());
+		$uri = makeSafe($_SERVER['REQUEST_URI']);
+
+		sql("INSERT INTO `appgini_query_log` SET
+			`statement`='$statement',
+			`error`='$error',
+			`memberID`='$memberID',
+			`uri`='$uri'
+		", $o);
 	}
 
 	########################################################################
-	function sqlValue($statment, &$error = NULL) {
-		// executes a statment that retreives a single data value and returns the value retrieved
+	function createQueryLogTable() {
+		static $created = false;
+		if($created) return true;
+
+		$o = [
+			'silentErrors' => true,
+			'noSlowQueryLog' => true,
+			'noErrorQueryLog' => true
+		];
+
+		sql("CREATE TABLE IF NOT EXISTS `appgini_query_log` (
+			`datetime` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+			`statement` LONGTEXT,
+			`duration` DECIMAL(10,2) UNSIGNED DEFAULT 0.0,
+			`error` TEXT,
+			`memberID` VARCHAR(200),
+			`uri` VARCHAR(200)
+		) CHARSET " . mysql_charset, $o);
+
+		// check if table created
+		//$o2 = $o;
+		//$o2['error'] = '';
+		//sql("SELECT COUNT(1) FROM 'appgini_query_log'", $o2);
+
+		//$created = empty($o2['error']);
+
+		$created = true;
+		return $created;
+	}
+
+	########################################################################
+	function sqlValue($statement, &$error = NULL) {
+		// executes a statement that retreives a single data value and returns the value retrieved
 		$eo = ['silentErrors' => true];
-		if(!$res = sql($statment, $eo)) { $error = $eo['error']; return false; }
+		if(!$res = sql($statement, $eo)) { $error = $eo['error']; return false; }
 		if(!$row = db_fetch_row($res)) return false;
 		return $row[0];
 	}

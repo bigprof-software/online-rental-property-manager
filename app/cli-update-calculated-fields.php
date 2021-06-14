@@ -43,7 +43,7 @@
 	$args = [];
 	for($i = 0; $i < count($argv); $i += 2) {
 		if(!in_array($argv[$i], $allowed_args)) continue;
-		$args[$argv[$i]] = array_map(trim, explode(',', $argv[$i + 1]));
+		$args[$argv[$i]] = array_map('trim', explode(',', $argv[$i + 1]));
 	}
 
 	$calc = calculated_fields();

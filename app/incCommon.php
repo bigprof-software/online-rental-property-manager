@@ -481,14 +481,14 @@
 						<ul class="nav navbar-nav navbar-right hidden-xs" style="min-width: 330px;">
 							<a class="btn navbar-btn btn-default" href="<?php echo PREPEND_PATH; ?>index.php?signOut=1"><i class="glyphicon glyphicon-log-out"></i> <?php echo $Translation['sign out']; ?></a>
 
-							<p class="navbar-text">
-								<?php echo $Translation['signed as']; ?> <strong><a href="<?php echo PREPEND_PATH; ?>membership_profile.php" class="navbar-link"><?php echo $mi['username']; ?></a></strong>
+							<p class="navbar-text signed-in-as">
+								<?php echo $Translation['signed as']; ?> <strong><a href="<?php echo PREPEND_PATH; ?>membership_profile.php" class="navbar-link username"><?php echo $mi['username']; ?></a></strong>
 							</p>
 						</ul>
 						<ul class="nav navbar-nav visible-xs">
 							<a class="btn navbar-btn btn-default btn-lg visible-xs" href="<?php echo PREPEND_PATH; ?>index.php?signOut=1"><i class="glyphicon glyphicon-log-out"></i> <?php echo $Translation['sign out']; ?></a>
-							<p class="navbar-text text-center">
-								<?php echo $Translation['signed as']; ?> <strong><a href="<?php echo PREPEND_PATH; ?>membership_profile.php" class="navbar-link"><?php echo $mi['username']; ?></a></strong>
+							<p class="navbar-text text-center signed-in-as">
+								<?php echo $Translation['signed as']; ?> <strong><a href="<?php echo PREPEND_PATH; ?>membership_profile.php" class="navbar-link username"><?php echo $mi['username']; ?></a></strong>
 							</p>
 						</ul>
 						<script>

@@ -230,8 +230,7 @@
 					type: 'GET',
 					data: { 'memberID': $j('#username').val() },
 					success: function(resp) {
-						var ua=resp;
-						if(ua.match(/\<!-- AVAILABLE --\>/)) {
+						if(resp.indexOf('username-available') > -1) {
 							reset_username_status('success');
 						} else {
 							reset_username_status('error');

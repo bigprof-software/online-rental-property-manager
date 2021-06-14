@@ -157,6 +157,8 @@ class DataList{
 		if(isset($_REQUEST['record_selector']) && is_array($_REQUEST['record_selector']))
 			$record_selector = $_REQUEST['record_selector'];
 
+		$this->applyPermissionsToQuery($DisplayRecords);
+
 		if($SelectedID && !$Embedded && $this->AllowDVNavigation) {
 			$setSelectedIDPreviousPage = !empty($_REQUEST['setSelectedIDPreviousPage']);
 			$setSelectedIDNextPage = !empty($_REQUEST['setSelectedIDNextPage']) && !$setSelectedIDPreviousPage;
@@ -461,7 +463,6 @@ class DataList{
 
 		// TV code, only if user has view permission
 		if($this->Permissions['view']) {
-			$QueryHasCustomWhere = (strlen($this->QueryWhere) > 0);
 
 			// apply lookup filterers to the query
 			foreach($this->filterers as $filterer => $caption) {
@@ -477,26 +478,27 @@ class DataList{
 
 			// apply quick search to the query
 			if($SearchString != '') {
-				if($Search_x != '') { $FirstRecord = 1; }
-
-				if($this->QueryWhere == '')
-					$this->QueryWhere = "where ";
-				else
-					$this->QueryWhere .= " and ";
+				if($Search_x != '') $FirstRecord = 1;
 
 				foreach($this->QueryFieldsQS as $fName => $fCaption)
-					if(strpos($fName, '<img') === false)
+					if(stripos($fName, '<img') === false)
 						$this->QuerySearchableFields[$fName] = $fCaption;
 
-				$this->QueryWhere .= '(' . implode(" LIKE '%" . makeSafe($SearchString) . "%' or ", array_keys($this->QuerySearchableFields)) . " LIKE '%" . makeSafe($SearchString) . "%')";
+				$sss = makeSafe($SearchString); // safe search string
+
+				if(count($this->QuerySearchableFields)) 
+					$this->QueryWhere .= ' AND (' .
+						implode(
+							" LIKE '%{$sss}%' OR ", 
+							array_keys($this->QuerySearchableFields)
+						) . " LIKE '%{$sss}%'" .
+					')';
 			}
 
 
 			// set query filters
-			// $this->QueryWhere might be empty or might contain a clause (starting with WHERE) to retrieve only user/group data
-			$QueryHasWhere = preg_match('/^WHERE\s+/i', $this->QueryWhere);
 
-			$WhereNeedsClosing = 0;
+			$filterGroups = [];
 			for($i = 1; $i <= (datalist_filters_count * $FiltersPerGroup); $i += $FiltersPerGroup) { // Number of filters allowed
 				// test current filter group
 				$GroupHasFilters = 0;
@@ -515,63 +517,78 @@ class DataList{
 					}
 				}
 
-				if($GroupHasFilters) {
-					if(stripos($this->QueryWhere, 'where ') === false)
-						$this->QueryWhere = 'WHERE (';
-					elseif($QueryHasWhere) {
-						$this->QueryWhere .= ' and (';
-						$QueryHasWhere = 0;
-					}
+				if(!$GroupHasFilters) continue;
 
-					$this->QueryWhere .= " <FilterGroup> " . $FilterAnd[$i] . " (";
+				$filterGroups[] = [
+					'join' => '', 
+					'filters' => [ /* one or more strings, each describing a filter */ ]
+				];
+				$currentGroup =& $filterGroups[count($filterGroups) - 1];
 
-					for($j = 0; $j < $FiltersPerGroup; $j++) {
-						$ij = $i + $j;
-						if($FilterField[$ij] != '' && $this->QueryFieldsIndexed[($FilterField[$ij])] != '' && $FilterOperator[$ij] != '' && ($FilterValue[$ij] != '' || strpos($FilterOperator[$ij], 'empty'))) {
-							if($FilterAnd[$ij] == '') {
-								$FilterAnd[$ij] = 'and';
-							}
-							// test for date/time fields
-							$tries = 0; $isDateTime = $isDate = false;
-							$fieldName = str_replace('`', '', $this->QueryFieldsIndexed[($FilterField[$ij])]);
-							list($tn, $fn) = explode('.', $fieldName);
-							while(!($res = sql("SHOW COLUMNS FROM `{$tn}` LIKE '{$fn}'", $eo)) && $tries < 2) {
-								$tn = substr($tn, 0, -1);
-								$tries++;
-							}
-							if($res !== false && $row = @db_fetch_array($res)) {
-								$isDateTime = in_array($row['Type'], array('date', 'time', 'datetime'));
-								$isDate = in_array($row['Type'], ['date', 'datetime']);
-							}
-							// end of test
-							if($FilterOperator[$ij] == 'is-empty' && !$isDateTime) {
-								$this->QueryWhere .= ' <FilterItem> ' . $FilterAnd[$ij] . ' (' . $this->QueryFieldsIndexed[($FilterField[$ij])] . "='' or " . $this->QueryFieldsIndexed[($FilterField[$ij])] . ' is NULL) </FilterItem>';
-							} elseif($FilterOperator[$ij] == 'is-not-empty' && !$isDateTime) {
-								$this->QueryWhere .= ' <FilterItem> ' . $FilterAnd[$ij] . " " . $this->QueryFieldsIndexed[($FilterField[$ij])] . "!='' </FilterItem>";
-							} elseif($FilterOperator[$ij] == 'is-empty' && $isDateTime) {
-								$this->QueryWhere .= " <FilterItem> " . $FilterAnd[$ij] . " (" . $this->QueryFieldsIndexed[($FilterField[$ij])] . "=0 or " . $this->QueryFieldsIndexed[($FilterField[$ij])] . " is NULL) </FilterItem>";
-							} elseif($FilterOperator[$ij] == 'is-not-empty' && $isDateTime) {
-								$this->QueryWhere .= " <FilterItem> " . $FilterAnd[$ij] . " " . $this->QueryFieldsIndexed[($FilterField[$ij])] . "!=0 </FilterItem>";
-							} elseif($FilterOperator[$ij] == 'like' && !strstr($FilterValue[$ij], "%") && !strstr($FilterValue[$ij], "_")) {
-								$this->QueryWhere .= " <FilterItem> " . $FilterAnd[$ij] . " " . $this->QueryFieldsIndexed[($FilterField[$ij])] . " like '%" . makeSafe($FilterValue[$ij]) . "%' </FilterItem>";
-							} elseif($FilterOperator[$ij] == 'not-like' && !strstr($FilterValue[$ij], "%") && !strstr($FilterValue[$ij], "_")) {
-								$this->QueryWhere .= " <FilterItem> " . $FilterAnd[$ij] . " " . $this->QueryFieldsIndexed[($FilterField[$ij])] . " not like '%" . makeSafe($FilterValue[$ij]) . "%' </FilterItem>";
-							} elseif($isDate) {
-								$dateValue = mysql_datetime($FilterValue[$ij]);
-								$this->QueryWhere .= " <FilterItem> " . $FilterAnd[$ij] . " " . $this->QueryFieldsIndexed[($FilterField[$ij])] . " " . $GLOBALS['filter_operators'][$FilterOperator[$ij]] . " '$dateValue' </FilterItem>";
-							} else {
-								$this->QueryWhere .= " <FilterItem> " . $FilterAnd[$ij] . " " . $this->QueryFieldsIndexed[($FilterField[$ij])] . " " . $GLOBALS['filter_operators'][$FilterOperator[$ij]] . " '" . makeSafe($FilterValue[$ij]) . "' </FilterItem>";
-							}
-						}
-					}
+				for($j = 0; $j < $FiltersPerGroup; $j++) {
+					$ij = $i + $j;
 
-					$this->QueryWhere .= ") </FilterGroup>";
-					$WhereNeedsClosing = 1;
+					// not a valid filter?
+					if(
+						!$FilterField[$ij] || 
+						!$this->QueryFieldsIndexed[($FilterField[$ij])] ||
+						!$FilterOperator[$ij] ||
+						(!$FilterValue[$ij] && strpos($FilterOperator[$ij], 'empty') === false)
+					) continue;
+
+					if($FilterAnd[$ij] == '') $FilterAnd[$ij] = 'and';
+					$currentGroup['filters'][] = '';
+					$currentFilter =& $currentGroup['filters'][count($currentGroup['filters']) - 1];
+
+					// always use the 1st FilterAnd of the group as the group's join
+					if(empty($currentGroup['join'])) $currentGroup['join'] = thisOr($FilterAnd[$i], 'and');
+
+					// if this is NOT the first filter in the group, add its FilterAnd, else ignore
+					if(count($currentGroup['filters']) > 1)
+						$currentFilter = $FilterAnd[$ij] . ' ';
+
+					list($isDate, $isDateTime) = $this->fieldIsDateTime($FilterField[$ij]);
+
+					if($FilterOperator[$ij] == 'is-empty' && !$isDateTime)
+						$currentFilter .= '(' . $this->QueryFieldsIndexed[($FilterField[$ij])] . "='' OR " . $this->QueryFieldsIndexed[($FilterField[$ij])] . ' IS NULL)';
+
+					elseif($FilterOperator[$ij] == 'is-not-empty' && !$isDateTime)
+						$currentFilter .= $this->QueryFieldsIndexed[($FilterField[$ij])] . "!=''";
+
+					elseif($FilterOperator[$ij] == 'is-empty' && $isDateTime)
+						$currentFilter .= '(' . $this->QueryFieldsIndexed[($FilterField[$ij])] . "=0 OR " . $this->QueryFieldsIndexed[($FilterField[$ij])] . ' IS NULL)';
+
+					elseif($FilterOperator[$ij] == 'is-not-empty' && $isDateTime)
+						$currentFilter .= $this->QueryFieldsIndexed[($FilterField[$ij])] . "!=0";
+
+					elseif($FilterOperator[$ij] == 'like' && !strstr($FilterValue[$ij], "%") && !strstr($FilterValue[$ij], "_"))
+						$currentFilter .= $this->QueryFieldsIndexed[($FilterField[$ij])] . " LIKE '%" . makeSafe($FilterValue[$ij]) . "%'";
+
+					elseif($FilterOperator[$ij] == 'not-like' && !strstr($FilterValue[$ij], "%") && !strstr($FilterValue[$ij], "_"))
+						$currentFilter .= $this->QueryFieldsIndexed[($FilterField[$ij])] . " NOT LIKE '%" . makeSafe($FilterValue[$ij]) . "%'";
+
+					elseif($isDate) {
+						$dateValue = mysql_datetime($FilterValue[$ij]);
+						$currentFilter .= $this->QueryFieldsIndexed[($FilterField[$ij])] . ' ' . $GLOBALS['filter_operators'][$FilterOperator[$ij]] . " '$dateValue'";
+
+					} else
+						$currentFilter .= $this->QueryFieldsIndexed[($FilterField[$ij])] . ' ' . $GLOBALS['filter_operators'][$FilterOperator[$ij]] . " '" . makeSafe($FilterValue[$ij]) . "'";
+
 				}
 			}
 
-			if($WhereNeedsClosing && !$QueryHasCustomWhere)
-				$this->QueryWhere .= ")";
+			// construct filters from $filterGroups
+			$filtersWhere = '';
+			foreach($filterGroups as $fg) {
+				if(empty($fg['filters'])) continue;
+
+				// ignore 1st join (i.e. use it only if filtersWhere already populated)
+				if($filtersWhere) $filtersWhere .= " {$fg['join']} ";
+
+				$filtersWhere .= '(' . implode(' ', $fg['filters']) . ')';
+			}
+
+			if($filtersWhere) $this->QueryWhere .= " AND ($filtersWhere)";
 
 			// set query sort
 			if(!stristr($this->QueryOrder, "order by ") && $SortField != '' && $this->AllowSorting) {
@@ -580,22 +597,12 @@ class DataList{
 					$actualSortField = str_replace(" $fieldNum ", " $fieldSort ", " $actualSortField ");
 					$actualSortField = str_replace(",$fieldNum ", ",$fieldSort ", " $actualSortField ");
 				}
-				$this->QueryOrder = "order by $actualSortField $SortDirection";
+				$this->QueryOrder = "ORDER BY $actualSortField $SortDirection";
 			}
-
-			// clean up query
-			$this->QueryWhere = str_replace('( <FilterGroup> and ', '( ', $this->QueryWhere);
-			$this->QueryWhere = str_replace('( <FilterGroup> or ', '( ', $this->QueryWhere);
-			$this->QueryWhere = str_replace('( <FilterItem> and ', '( ', $this->QueryWhere);
-			$this->QueryWhere = str_replace('( <FilterItem> or ', '( ', $this->QueryWhere);
-			$this->QueryWhere = str_replace('<FilterGroup>', '', $this->QueryWhere);
-			$this->QueryWhere = str_replace('</FilterGroup>', '', $this->QueryWhere);
-			$this->QueryWhere = str_replace('<FilterItem>', '', $this->QueryWhere);
-			$this->QueryWhere = str_replace('</FilterItem>', '', $this->QueryWhere);
 
 			// if no 'order by' clause found, apply default sorting if specified
 			if($this->DefaultSortField != '' && $this->QueryOrder == '') {
-				$this->QueryOrder = "order by {$this->DefaultSortField} {$this->DefaultSortDirection}";
+				$this->QueryOrder = "ORDER BY {$this->DefaultSortField} {$this->DefaultSortDirection}";
 			}
 
 			// Output CSV on request
@@ -1187,7 +1194,12 @@ class DataList{
 				);
 
 				if($dvCode) {
-					$this->HTML .= "\n\t<div data-table=\"{$this->TableName}\" class=\"col-xs-12 table-{$this->TableName} detail_view {$this->DVClasses}\">{$tv_dv_separator}<div class=\"panel panel-default\">{$dvCode}</div></div>";
+					$this->HTML .= sprintf(
+						'<div data-table="%s" class="col-xs-12 table-%s detail_view %s">%s<div class="%s">%s</div></div>',
+						$this->TableName, $this->TableName, $this->DVClasses, $tv_dv_separator,
+						$dvCode == $this->translation['tableAccessDenied'] ? 'alert alert-danger' : 'panel panel-default',
+						$dvCode
+					);
 					$this->ContentType = 'detailview';
 					$dvShown = true;
 				}
@@ -1210,7 +1222,7 @@ class DataList{
 
 				// handle the case were user has no view access and has just inserted a record
 				// by redirecting to tablename_view.php (which should redirect them to insert form)
-				if(!$this->Permissions['view'] && !$dvCode && $SelectedID && isset($_REQUEST['record-added-ok'])) {
+				if(!$this->Permissions['view'] && (!$dvCode || $dvCode == $this->translation['tableAccessDenied']) && $SelectedID && isset($_REQUEST['record-added-ok'])) {
 					ob_start();
 					?><script>
 						setTimeout(function() {
@@ -1261,8 +1273,6 @@ class DataList{
 		$this->HTML .= "</form>";
 		$this->HTML .= '</div><div class="col-xs-1 md-hidden lg-hidden"></div></div>';
 
-		// $this->HTML .= '<font face="garamond">'.html_attr($tvQuery).'</font>';  // uncomment this line for debugging the table view query
-
 		if($dvShown && $tvShown) $this->ContentType = 'tableview+detailview';
 		if($dvprint_x != '') $this->ContentType = 'print-detailview';
 		if($Print_x != '') $this->ContentType = 'print-tableview';
@@ -1276,6 +1286,48 @@ class DataList{
 
 		return;
 	}
+	function applyPermissionsToQuery($DisplayRecords = 'all') {
+
+		$perm = getTablePermissions($this->TableName);
+
+		// if QueryWhere is empty or invalid, add a default WHERE
+		if(!preg_match('/^\s*WHERE\s+/i', $this->QueryWhere))
+			$this->QueryWhere = 'WHERE 1=1';
+
+		// no view permissions?
+		if($perm['view'] == 0) {
+			$this->QueryFields = ['Not enough permissions' => 'NEP'];
+			$this->QueryFrom = $this->TableName;
+			$this->QueryWhere = 'WHERE 1=0';
+			$this->DefaultSortField = '';
+			return;
+		}
+
+		$restriction = '';
+
+		// view only own records?
+		if(
+			$perm['view'] == 1 || 
+			($perm['view'] > 1 && $DisplayRecords == 'user' && !$_REQUEST['NoFilter_x'])
+		) $restriction = "LCASE(`membership_userrecords`.`memberID`)='" . makeSafe(getLoggedMemberID()) . "'";
+
+		// view only group records?
+		if(
+			$perm['view'] == 2 || 
+			($perm['view'] > 2 && $DisplayRecords == 'group' && !$_REQUEST['NoFilter_x'])
+		) $restriction = "`membership_userrecords`.`groupID`='" . intval(getLoggedGroupID()) . "'";
+
+		// the following will be executed only in case view owner/group but not view all
+		if($restriction) {
+			$this->QueryFrom .= 'LEFT JOIN `membership_userrecords` ON ' .
+				"{$this->PrimaryKey}=`membership_userrecords`.`pkValue` AND " .
+				"`membership_userrecords`.`tableName`='{$this->TableName}' AND $restriction";
+			$this->QueryWhere .= " AND $restriction";
+		}
+
+		return;
+	}
+
 
 	function validate_filters($req, $FiltersPerGroup = 4, $is_gpc = true) {
 		$fand = (isset($req['FilterAnd']) && is_array($req['FilterAnd']) ? $req['FilterAnd'] : []);
@@ -1438,8 +1490,8 @@ class DataList{
 				$j('.table_view th').each(function() {
 					var th = $j(this);
 
-					/* ignore the record selector column */
-					if(th.find('#select_all_records').length > 0) return;
+					/* ignore the record selector and sum columns */
+					if(th.find('#select_all_records').length > 0 || th.hasClass('sum')) return;
 
 					var col_class = th.attr('class');
 					var label = $j.trim(th.text());
@@ -1742,6 +1794,31 @@ class DataList{
 		$dvCode .= ob_get_clean();
 
 		return $this->console($dvCode, compact('id', 'pks', 'firstPage', 'lastPage', 'index', 'lastIndex', 'btnPrev', 'btnNext', 'actionPrev', 'actionNext'), true);
+	}
+
+	// cacheable test for date/time fields
+	private function fieldIsDateTime($fieldIndex) {
+		static $cache = [];
+
+		if(empty($this->QueryFieldsIndexed[$fieldIndex])) return [false, false];
+		if(isset($cache[$fieldIndex])) return $cache[$fieldIndex];
+
+		$tries = 0; $isDateTime = $isDate = false;
+		$fieldName = str_replace('`', '', $this->QueryFieldsIndexed[$fieldIndex]);
+		list($tn, $fn) = array_map('makeSafe', explode('.', $fieldName));
+
+		while(!($res = sql("SHOW COLUMNS FROM `{$tn}` LIKE '{$fn}'", $eo)) && $tries < 2) {
+			$tn = substr($tn, 0, -1); // this is to strip # from table alias: 'table1' becomes 'table'
+			$tries++;
+		}
+
+		if($res !== false && $row = @db_fetch_array($res)) {
+			$isDateTime = in_array($row['Type'], ['date', 'time', 'datetime']);
+			$isDate = in_array($row['Type'], ['date', 'datetime']);
+		}
+
+		$cache[$fieldIndex] = [$isDate, $isDateTime];
+		return $cache[$fieldIndex];
 	}
 
 }

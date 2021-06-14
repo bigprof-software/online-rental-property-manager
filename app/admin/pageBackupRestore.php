@@ -129,7 +129,7 @@
 		 */
 		protected function get_specified_backup_file() {
 			$md5_hash = $this->request['md5_hash'];
-			if(!preg_match('/^[a-f0-9]{32}$/i', $md5_hash)) return false;
+			if(!preg_match('/^[a-f0-9]{17,32}$/i', $md5_hash)) return false;
 
 			$bfile = "{$this->curr_dir}/backups/{$md5_hash}.sql";
 			if(!is_file($bfile)) return false;
@@ -361,10 +361,10 @@
 			$list = [];
 
 			while(false !== ($entry = $d->read())) {
-				if(!preg_match('/^[a-f0-9]{32}\.sql$/i', $entry)) continue;
+				if(!preg_match('/^[a-f0-9]{17,32}\.sql$/i', $entry)) continue;
 				$fts = @filemtime("{$bdir}/{$entry}");
 				$list[$fts] = array(
-					'md5_hash' => substr($entry, 0, 32),
+					'md5_hash' => substr($entry, 0, -4),
 					'datetime' => date($dtf, $fts),
 					'size' => number_format(@filesize("{$bdir}/{$entry}") / 1024)
 				);
@@ -388,7 +388,7 @@
 			$config = ['dbServer' => '', 'dbUsername' => '', 'dbPassword' => '', 'dbDatabase' => ''];
 			foreach($config as $k => $v) $config[$k] = escapeshellarg(config($k));
 
-			$dump_file = escapeshellarg(normalize_path($this->curr_dir)) . '/backups/' . md5(microtime()) . '.sql';
+			$dump_file = escapeshellarg(normalize_path($this->curr_dir)) . '/backups/' . substr(md5(microtime() . rand(0, 100000)), -17) . '.sql';
 			$pass_param = ($config['dbPassword'] ? "-p{$config['dbPassword']}" : '');
 			$this->cmd = "(mysqldump --no-tablespaces -u{$config['dbUsername']} {$pass_param} -h{$config['dbServer']} {$config['dbDatabase']} -r {$dump_file}) 2>&1";
 

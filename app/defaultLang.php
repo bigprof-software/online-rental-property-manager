@@ -770,4 +770,16 @@ $TranslationEn = [
 	'Mail' => 'Mail',
 	'Preconfigured users and groups' => 'Preconfigured users and groups',
 	'Application' => 'Application',
+
+	// Added in 5.97
+	'Query logs' => 'Query logs',
+	'Query log table does not exist' => 'There was an error while attempting to create appgini_query_log table. Please make sure the database user has CREATE TABLE privilege.',
+	'slow queries' => 'Slow queries',
+	'error queries' => 'Error queries',
+	'date/time' => 'Date/time',
+	'duration (sec)' => 'Duration (sec)',
+	'page address' => 'Page address',
+	'query' => 'Query',
+	'page x of y' => 'Page <x> of <y>',
+	'total # queries' => 'Total # queries.',
 ];

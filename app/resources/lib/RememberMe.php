@@ -324,14 +324,14 @@
 			if($val == '') $expiry_ts -= 2 * self::$_expiry; // expiry in the past
 			
 			/* set the 'rememberme' cookie */
-			@setcookie(
-				$cookie_name,                   /* name */
-				$val,                           /* value */
-				$expiry_ts,                     /* expiry timestamp */
-				'/' . application_uri() . '/',  /* path */
-				'',                             /* domain */
-				false,                          /* secure-only */
-				true                            /* http-only, no js access */
+			$appUri = trim(application_uri(), '/');
+			if(!$appUri) $appUri = '/'; else $appUri = "/{$appUri}/";
+
+			@header("Set-Cookie:" .
+				" {$cookie_name}=" . urlencode($val) . 
+				"; Max-Age=" . ($val ? self::$_expiry : -1) . 
+				"; path=" . urlencode($appUri) . 
+				"; samesite=Lax; HttpOnly"
 			);
 			
 			// also update $_COOKIE for any upcoming queries in the same request

@@ -383,7 +383,7 @@
 							.parents('.form-group').removeClass('has-error has-success');
 					},
 					success: function(resp) {
-						if(resp.match(/\<!-- AVAILABLE --\>/)) {
+						if(resp.indexOf('username-available') > -1) {
 							$j('#username-available')
 								.removeClass('hidden')
 								.parents('.form-group').addClass('has-success');

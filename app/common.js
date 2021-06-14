@@ -194,15 +194,13 @@ jQuery(function() {
 
 	// in table view, hide unnecessary page elements if no records are displayed
 	if($j('.table_view').length) {
-		setInterval(function() {
-			if($j('tfoot .alert-warning').length) {
-				$j('#Print, #CSV, #tv-tools, thead, tr.success').addClass('hidden');
-				$j('.tv-toggle').parent().addClass('hidden');
-				return;
-			}
+		var tvHasWarning = $j('.table_view tfoot .alert-warning').length > 0;
 
-			$j('#Print, #CSV, #tv-tools, thead, tr.success').removeClass('hidden');
-			$j('.tv-toggle').parent().removeClass('hidden');       
+		setInterval(function() {
+			$j('#Print, #CSV, #tv-tools, .table_view thead, .table_view tr.success')
+				.toggleClass('hidden', tvHasWarning);
+
+			$j('.tv-toggle').parent().toggleClass('hidden', tvHasWarning);
 		}, 100);
 	}
 

@@ -16,13 +16,13 @@
 	<div class="alert alert-success">
 		<i class="glyphicon glyphicon-ok"></i>
 		<?php echo str_replace('<MemberID>', "<b>{$username}</b>", $Translation['user available']); ?>
-		<!-- AVAILABLE -->
+		<span data-result="username-available"></span>
 	</div>
 <?php } else { ?>
 	<div class="alert alert-danger">
 		<i class="glyphicon glyphicon-warning-sign"></i>
 		<?php echo str_replace('<MemberID>', '<b>' . html_attr($_REQUEST['memberID']) . '</b>', $Translation['username invalid']); ?>
-		<!-- NOT AVAILABLE -->
+		<span data-result="username-unavailable"></span>
 	</div>
 <?php } ?>
 

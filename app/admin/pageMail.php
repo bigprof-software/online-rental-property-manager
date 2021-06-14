@@ -84,7 +84,7 @@
 		}
 
 		// save mail queue
-		$queueFile = md5(microtime());
+		$queueFile = substr(md5(microtime() . rand(0, 100000)), -17);
 		$currDir = dirname(__FILE__);
 		if(!($fp = fopen("{$currDir}/{$queueFile}.php", 'w'))) {
 			echo Notification::show(array(
