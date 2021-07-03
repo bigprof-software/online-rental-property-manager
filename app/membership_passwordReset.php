@@ -1,7 +1,6 @@
 <?php
-	$currDir=dirname(__FILE__);
-	include_once("$currDir/lib.php");
-	include_once("$currDir/header.php");
+	include_once(__DIR__ . '/lib.php');
+	include_once(__DIR__ . '/header.php');
 
 	$adminConfig = config('adminConfig');
 
@@ -22,7 +21,7 @@
 				</div>
 				<?php
 
-				include_once("$currDir/footer.php");
+				include_once(__DIR__ . '/footer.php');
 				exit;
 			}
 
@@ -45,7 +44,7 @@
 			<?php
 		}
 
-		include_once("$currDir/footer.php");
+		include_once(__DIR__ . '/footer.php');
 		exit;
 	}
 #_______________________________________________________________________________
@@ -82,7 +81,7 @@
 							</div>
 						</div>
 
-						<input type="hidden" name="key" value="<?php echo $_GET['key']; ?>">
+						<input type="hidden" name="key" value="<?php echo html_attr($_GET['key']); ?>">
 					</form>
 				</div>
 			</div>
@@ -95,7 +94,7 @@
 			<?php
 		}
 
-		include_once("$currDir/footer.php");
+		include_once(__DIR__ . '/footer.php');
 		exit;
 	}
 #_______________________________________________________________________________
@@ -151,7 +150,7 @@
 		</div>
 		<?php
 
-		include_once("$currDir/footer.php");
+		include_once(__DIR__ . '/footer.php');
 		exit;
 	}
 
@@ -199,4 +198,4 @@
 		});
 	</script>
 
-<?php include_once("$currDir/footer.php"); ?>
+<?php include_once(__DIR__ . '/footer.php');

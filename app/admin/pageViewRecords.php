@@ -120,7 +120,7 @@
 		<tr>
 			<td class="text-center">
 				<a href="pageEditOwnership.php?recID=<?php echo $row[0]; ?>" title="<?php echo $Translation['change record ownership'] ; ?>"><i class="glyphicon glyphicon-user"></i></a>
-				<a href="pageDeleteRecord.php?recID=<?php echo $row[0]; ?>" onClick="return confirm('<?php echo addslashes($Translation['sure delete record']); ?>');" title="<?php echo $Translation['delete record']; ?>"><i class="glyphicon glyphicon-trash text-danger"></i></a>
+				<a href="pageDeleteRecord.php?recID=<?php echo $row[0]; ?>&csrf_token=<?php echo urlencode(csrf_token(false, true)); ?>" onClick="return confirm('<?php echo addslashes($Translation['sure delete record']); ?>');" title="<?php echo $Translation['delete record']; ?>"><i class="glyphicon glyphicon-trash text-danger"></i></a>
 			</td>
 			<td><?php echo $row[1]; ?></td>
 			<td><?php echo $row[2]; ?></td>

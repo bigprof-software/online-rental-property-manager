@@ -139,7 +139,7 @@
 	} elseif($_GET['groupID'] != '') {
 		// show the form for adding a new member, and pre-select the provided group
 		$groupID = intval($_GET['groupID']);
-		$group_name = sqlValue("select name from membership_groups where groupID='$groupID'");
+		$group_name = strip_tags(sqlValue("select name from membership_groups where groupID='$groupID'"));
 		if($group_name)
 			$addend = " to '{$group_name}'";
 	}

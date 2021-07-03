@@ -19,7 +19,7 @@
 	$anonGroupID = sqlValue("select groupID from membership_groups where lcase(name)='" . strtolower(makeSafe($anonymousGroup)) . "'");
 	$adminGroupID = sqlValue("select groupID from membership_groups where name='Admins'");
 	$groupID = sqlValue("select groupID from membership_users where lcase(memberID)='{$memberID->sql}'");
-	$group = sqlValue("select name from membership_groups where groupID='{$groupID}'");
+	$group = strip_tags(sqlValue("select name from membership_groups where groupID='{$groupID}'"));
 	if($groupID == $anonGroupID || $memberID->raw == $anonymousMember || !$groupID || $groupID == $adminGroupID || $memberID->raw == $adminConfig['adminUsername']) {
 		// error in request. redirect to members page.
 		redirect('admin/pageViewMembers.php');

@@ -1216,7 +1216,9 @@
 				`comments` TEXT, 
 				`pass_reset_key` VARCHAR(100),
 				`pass_reset_expiry` INT UNSIGNED,
+				`flags` TEXT,
 				`allowCSVImport` TINYINT NOT NULL DEFAULT '0', 
+				`data` LONGTEXT,
 				PRIMARY KEY (`memberID`),
 				INDEX `groupID` (`groupID`)
 			) CHARSET " . mysql_charset,
@@ -1229,6 +1231,7 @@
 		sql("ALTER TABLE `{$tn}` ADD INDEX `groupID` (`groupID`)", $eo);
 		sql("ALTER TABLE `{$tn}` ADD COLUMN `flags` TEXT", $eo);
 		sql("ALTER TABLE `{$tn}` ADD COLUMN `allowCSVImport` TINYINT NOT NULL DEFAULT '0'", $eo);
+		sql("ALTER TABLE `{$tn}` ADD COLUMN `data` LONGTEXT", $eo);
 	}
 	########################################################################
 	function update_membership_userrecords() {
@@ -1582,7 +1585,7 @@
 	function html_attr_tags_ok($str) {
 		// use this instead of html_attr() if you don't want html tags to be escaped
 		$new_str = html_attr($str);
-		return str_replace(array('&lt;', '&gt;'), array('<', '>'), $new_str);
+		return str_replace(['&lt;', '&gt;'], ['<', '>'], $new_str);
 	}
 	#########################################################
 	class Notification{
@@ -2581,4 +2584,40 @@
 				$filtered[$key] = $value;
 
 		return $filtered;
+	}
+	#########################################################
+	function setUserData($key, $value = null) {
+		$data = [];
+
+		$user = makeSafe(getMemberInfo()['username']);
+		if(!$user) return false;
+
+		$dataJson = sqlValue("SELECT `data` FROM `membership_users` WHERE `memberID`='$user'");
+		if($dataJson) {
+			$data = @json_decode($dataJson, true);
+			if(!$data) $data = [];
+		}
+
+		$data[$key] = $value;
+
+		return update(
+			'membership_users', 
+			['data' => @json_encode($data, JSON_PARTIAL_OUTPUT_ON_ERROR)], 
+			['memberID' => $user]
+		);
+	}
+	#########################################################
+	function getUserData($key) {
+		$user = makeSafe(getMemberInfo()['username']);
+		if(!$user) return null;
+
+		$dataJson = sqlValue("SELECT `data` FROM `membership_users` WHERE `memberID`='$user'");
+		if(!$dataJson) return null;
+
+		$data = @json_decode($dataJson, true);
+		if(!$data) return null;
+
+		if(!isset($data[$key])) return null;
+
+		return $data[$key];
 	}

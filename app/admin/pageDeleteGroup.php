@@ -5,6 +5,8 @@
 	// validate input
 	$groupID = intval($_GET['groupID']);
 
+	if(!csrf_token(true)) die($Translation['csrf token expired or invalid']);
+
 	// make sure group has no members
 	if(sqlValue("select count(1) from membership_users where groupID='{$groupID}'")) {
 		errorMsg($Translation["can not delete group remove members"]);

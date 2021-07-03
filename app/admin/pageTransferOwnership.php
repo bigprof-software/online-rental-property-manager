@@ -213,7 +213,7 @@
 						<span class="pull-right text-success">
 							<i class="glyphicon glyphicon-ok"></i> 
 							<?php echo $Translation['source member']; ?>:
-							<b><?php echo $sourceMemberID; ?></b>
+							<b><?php echo strip_tags($sourceMemberID); ?></b>
 						</span>
 					<?php } ?>
 				</h3>

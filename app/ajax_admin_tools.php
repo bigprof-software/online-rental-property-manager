@@ -209,7 +209,7 @@
 			$rec_info['dateAdded'] = date($admin_config['PHPDateTimeFormat'], $rec_info['dateAdded']);
 			$rec_info['dateUpdated'] = date($admin_config['PHPDateTimeFormat'], $rec_info['dateUpdated']);
 
-			return @json_encode($rec_info);
+			return @json_encode(array_map('strip_tags', $rec_info));
 		}
 
 		/**

@@ -14,13 +14,14 @@
 
 			<div class="panel-heading">
 				<h1 class="panel-title"><strong><?php echo $Translation['sign in here']; ?></strong></h1>
-				<?php if(sqlValue("select count(1) from membership_groups where allowSignup=1")) { ?>
-					<a class="btn btn-success pull-right" href="membership_signup.php"><?php echo $Translation['sign up']; ?></a>
-				<?php } ?>
-				<div class="clearfix"></div>
 			</div>
 
 			<div class="panel-body">
+				<?php if(sqlValue("SELECT COUNT(1) from `membership_groups` WHERE `allowSignup`=1")) { ?>
+					<a class="btn btn-success btn-lg pull-right" href="membership_signup.php"><?php echo $Translation['sign up']; ?></a>
+					<div class="clearfix"></div>
+				<?php } ?>
+
 				<form method="post" action="index.php">
 					<div class="form-group">
 						<label class="control-label" for="username"><?php echo $Translation['username']; ?></label>

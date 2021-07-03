@@ -213,6 +213,7 @@
 							<li><a href="pageBackupRestore.php"><i class="glyphicon menu-item-icon text-info glyphicon-tasks"></i> <?php echo $Translation['database backups']; ?></a></li>
 							<li><a href="pageUploadCSV.php"><i class="glyphicon menu-item-icon text-info glyphicon-upload"></i> <?php echo $Translation['import CSV']; ?></a></li>
 							<li><a href="pageQueryLogs.php"><i class="glyphicon menu-item-icon text-info glyphicon-book"></i> <?php echo $Translation['Query logs']; ?></a></li>
+							<li><a href="pageSQL.php"><i class="glyphicon menu-item-icon text-danger glyphicon-console"></i> <?php echo $Translation['Interactive SQL queries tool']; ?></a></li>
 							<li class="divider"></li>
 							<li><a href="https://forums.appgini.com" target="_blank"><i class="glyphicon menu-item-icon text-info glyphicon-new-window"></i> <?php echo $Translation['AppGini forum']; ?></a></li>
 						</ul>

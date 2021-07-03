@@ -139,7 +139,7 @@
 		<label class="col-sm-4 col-md-3 col-lg-2 col-lg-offset-2 control-label"><?php echo $Translation["from"]; ?></label>
 		<div class="col-sm-8 col-md-9 col-lg-6">
 			<p class="form-control-static">
-				<?php echo "{$adminConfig['senderName']} &lt;{$adminConfig['senderEmail']}&gt;"; ?>
+				<?php echo strip_tags($adminConfig['senderName']) . " &lt;{$adminConfig['senderEmail']}&gt;"; ?>
 				<div>
 					<a href="pageSettings.php?search-settings=smtp" class="btn btn-default">
 						<i class="glyphicon glyphicon-pencil"></i>

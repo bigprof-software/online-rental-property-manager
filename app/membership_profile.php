@@ -133,13 +133,13 @@
 					<fieldset id="profile">
 						<div class="form-group">
 							<label for="email"><?php echo $Translation['email']; ?></label>
-							<input type="email" id="email" name="email" value="<?php echo $mi['email']; ?>" class="form-control">
+							<input type="email" id="email" name="email" value="<?php echo html_attr($mi['email']); ?>" class="form-control">
 						</div>
 
 						<?php for($i=1; $i<5; $i++) { ?>
 							<div class="form-group">
 								<label for="custom<?php echo $i; ?>"><?php echo $adminConfig['custom'.$i]; ?></label>
-								<input type="text" id="custom<?php echo $i; ?>" name="custom<?php echo $i; ?>" value="<?php echo $mi['custom'][$i-1]; ?>" class="form-control">
+								<input type="text" id="custom<?php echo $i; ?>" name="custom<?php echo $i; ?>" value="<?php echo html_attr($mi['custom'][$i-1]); ?>" class="form-control">
 							</div>
 						<?php } ?>
 

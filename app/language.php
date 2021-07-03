@@ -809,4 +809,17 @@ $Translation = [
 	'query' => 'Query',
 	'page x of y' => 'Page <x> of <y>',
 	'total # queries' => 'Total # queries.',
+
+	// Added in 6.0
+	'Interactive SQL queries tool' => 'Interactive SQL queries tool',
+	'Enter SQL query' => 'Enter SQL query',
+	'Query must start with select' => 'Query must start with %s',
+	'Display results' => 'Display results',
+	'Update results as you type' => 'Update results as you type',
+	'Use cache' => 'Use cache',
+	'results truncated' => 'Results below might have been truncated to a limit of %s records for performance purposes.',
+	'Results will be displayed here' => 'Results will be displayed here.',
+	'Bookmark this query' => 'Bookmark this query',
+	'Query name' => 'Query name',
+	'Manage bookmarked queries' => 'Manage bookmarked queries',
 ];

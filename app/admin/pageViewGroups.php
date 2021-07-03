@@ -74,13 +74,13 @@
 				$groupMembersCount = sqlValue("select count(1) from membership_users where groupID='$row[0]'");
 				?>
 				<tr>
-					<td><a href="pageEditGroup.php?groupID=<?php echo $row[0]; ?>"><?php echo $row[1]; ?></a></td>
+					<td><a href="pageEditGroup.php?groupID=<?php echo $row[0]; ?>"><?php echo htmlspecialchars($row[1]); ?></a></td>
 					<td><?php echo htmlspecialchars(thisOr($row[2])); ?></td>
 					<td class="text-right"><?php echo $groupMembersCount; ?></td>
 					<td class="text-center">
 						<a href="pageEditGroup.php?groupID=<?php echo $row[0]; ?>" title="<?php echo $Translation['Edit group']; ?>"><i class="glyphicon glyphicon-pencil"></i></a>
 						<?php if(!$groupMembersCount) { ?>
-								<a href="pageDeleteGroup.php?groupID=<?php echo $row[0]; ?>" 
+								<a href="pageDeleteGroup.php?groupID=<?php echo $row[0]; ?>&csrf_token=<?php echo urlencode(csrf_token(false, true)); ?>" 
 								   title="<?php echo $Translation['delete group'] ; ?>" 
 								   onClick="return confirm('<?php echo addslashes($Translation['confirm delete group']); ?>');">
 									<i class="glyphicon glyphicon-trash text-danger"></i>

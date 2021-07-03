@@ -1222,17 +1222,7 @@ EOT;
 		$dir = getUploadDir($dir);
 
 		/* get php.ini upload_max_filesize in bytes */
-		$php_upload_size_limit = trim(ini_get('upload_max_filesize'));
-		$last = strtolower($php_upload_size_limit[strlen($php_upload_size_limit) - 1]);
-		switch($last) {
-			case 'g':
-				$php_upload_size_limit *= 1024;
-			case 'm':
-				$php_upload_size_limit *= 1024;
-			case 'k':
-				$php_upload_size_limit *= 1024;
-		}
-
+		$php_upload_size_limit = toBytes(ini_get('upload_max_filesize'));
 		$MaxSize = min($MaxSize, $php_upload_size_limit);
 
 		if($f['size'] > $MaxSize || $f['error']) {
