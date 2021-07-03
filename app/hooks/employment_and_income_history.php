@@ -75,6 +75,8 @@
 	}
 
 	function employment_and_income_history_before_insert(&$data, $memberInfo, &$args){
+		// can current user view this parent?
+		if(!check_record_permission('applicants_and_tenants', $data['tenant'])) return false;
 
 		return TRUE;
 	}
@@ -85,6 +87,8 @@
 	}
 
 	function employment_and_income_history_before_update(&$data, $memberInfo, &$args){
+		// can current user view this parent?
+		if(!check_record_permission('applicants_and_tenants', $data['tenant'])) return false;
 
 		return TRUE;
 	}
