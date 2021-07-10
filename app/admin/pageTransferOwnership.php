@@ -46,8 +46,8 @@
 		}
 
 		// get group names
-		$sourceGroup=sqlValue("select name from membership_groups where groupID='$sourceGroupID'");
-		$destinationGroup=sqlValue("select name from membership_groups where groupID='$destinationGroupID'");
+		$sourceGroup = htmlspecialchars(sqlValue("SELECT `name` FROM `membership_groups` WHERE `groupID`='$sourceGroupID'"));
+		$destinationGroup = htmlspecialchars(sqlValue("SELECT `name` FROM `membership_groups` WHERE `groupID`='$destinationGroupID'"));
 
 		// begin transfer
 		if($moveMembers && $sourceMemberID != -1) {
@@ -170,7 +170,7 @@
 					<span class="pull-right text-success">
 						<i class="glyphicon glyphicon-ok"></i> 
 						<?php echo $Translation['source group']; ?>:
-						<b><?php echo sqlValue("select name from membership_groups where groupID='{$sourceGroupID}'"); ?></b>
+						<b><?php echo htmlspecialchars(sqlValue("SELECT `name` FROM `membership_groups` WHERE `groupID`='{$sourceGroupID}'")); ?></b>
 					</span>
 				<?php } ?>
 			</h3>
@@ -266,7 +266,7 @@
 						<span class="pull-right text-success">
 							<i class="glyphicon glyphicon-ok"></i> 
 							<?php echo $Translation['destination group']; ?>:
-							<b><?php echo sqlValue("select name from membership_groups where groupID='{$destinationGroupID}'"); ?></b>
+							<b><?php echo htmlspecialchars(sqlValue("SELECT `name` FROM `membership_groups` WHERE `groupID`='{$destinationGroupID}'")); ?></b>
 						</span>
 					<?php } ?>
 				</h3>
