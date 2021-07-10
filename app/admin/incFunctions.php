@@ -1819,7 +1819,12 @@
 		if($str == strip_tags($str)) return $noBr ? $str : nl2br($str);
 
 		$hc = new CI_Input(datalist_db_encoding);
-		return $hc->xss_clean(bgStyleToClass($str));
+		$str = $hc->xss_clean(bgStyleToClass($str));
+
+		// sandbox iframes
+		$str = preg_replace('/(<|&lt;)iframe(.*?)(>|&gt;)/i', '$1iframe sandbox $2$3', $str);
+
+		return $str;
 	}
 	#########################################################
 	function getLoggedGroupID() {

@@ -9,3 +9,4 @@ app/images
 *.log
 *.cache
 *.zip
+test*.php
