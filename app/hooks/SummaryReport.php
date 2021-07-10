@@ -835,7 +835,7 @@ class SummaryReport {
 						?>
 						<tr>
 							<td class="text-right hidden row-number"><?php echo ++$row_number; ?></th>		
-							<td class="text-left item-label"><?php echo $item['label']; ?></td>
+							<td class="text-left item-label"><?php echo safe_html($item['label']); ?></td>
 
 							<td class="text-right item-value"><?php echo $value1; ?></td>
 							<?php if(isset($this->date_field)) { ?>
