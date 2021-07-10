@@ -882,8 +882,11 @@
 		return '';
 	}
 	########################################################################
-	function isEmail($email) {
-		return filter_var(trim($email), FILTER_VALIDATE_EMAIL);
+	function isEmail($email){
+		if(preg_match('/^([*+!.&#$¦\'\\%\/0-9a-z^_`{}=?~:-]+)@(([0-9a-z-]+\.)+[0-9a-z]{2,30})$/i', $email))
+			return $email;
+
+		return false;
 	}
 	########################################################################
 	function notifyMemberApproval($memberID) {
