@@ -111,7 +111,7 @@
 	include_once("$currDir/header.php"); ?>
 
 	<div class="page-header">
-		<h1><?php echo sprintf($Translation['Hello user'], $mi['username']); ?></h1>
+		<h1><?php echo sprintf($Translation['Hello user'], htmlspecialchars($mi['username'])); ?></h1>
 	</div>
 	<div id="notify" class="alert alert-success" style="display: none;"></div>
 	<div id="loader" style="display: none;"><i class="glyphicon glyphicon-refresh"></i> <?php echo $Translation['Loading ...']; ?></div>
@@ -223,7 +223,7 @@
 				<div class="panel-body">
 					<div class="form-group">
 						<label><?php echo $Translation['group']; ?></label>
-						<div class="form-control-static"><?php echo $mi['group']; ?></div>
+						<div class="form-control-static"><?php echo htmlspecialchars($mi['group']); ?></div>
 					</div>
 				</div>
 			</div>
