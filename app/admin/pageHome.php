@@ -66,7 +66,11 @@
 		if($j(this).hasClass('locked_active') || $j(this).hasClass('unlocked_inactive')) {
 			if(confirm('<?php echo html_attr($Translation['enable maintenance mode?']); ?>')) {
 				$j.ajax({
-					url: 'ajax-maintenance-mode.php?status=on', 
+					url: 'ajax-maintenance-mode.php', 
+					data: {
+						status: 'on',
+						csrf_token: '<?php echo csrf_token(false, true); ?>'
+					},
 					complete: function() {
 						location.reload();
 					}
@@ -75,7 +79,11 @@
 		} else {
 			if(confirm('<?php echo html_attr($Translation['disable maintenance mode?']); ?>')) {
 				$j.ajax({
-					url: 'ajax-maintenance-mode.php?status=off', 
+					url: 'ajax-maintenance-mode.php', 
+					data: {
+						status: 'off',
+						csrf_token: '<?php echo csrf_token(false, true); ?>'
+					},
 					complete: function() {
 						location.reload();
 					}

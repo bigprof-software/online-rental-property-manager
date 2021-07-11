@@ -1,8 +1,9 @@
 <?php
-	$currDir = dirname(__FILE__);
-	require("{$currDir}/incCommon.php");
+	require(__DIR__ . '/incCommon.php');
 
 	if(!getLoggedAdmin()) exit;
+
+	if(!csrf_token(true)) exit;
 
 	$status = $_REQUEST['status'];
 	if($status == 'on') maintenance_mode(true);

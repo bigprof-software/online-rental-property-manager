@@ -306,7 +306,7 @@
 	<?php for($cust = 1; $cust <= 4; $cust++) { ?>
 		<?php if($adminConfig["custom{$cust}"] != '') { ?>
 			<div class="form-group">
-				<label for="custom<?php echo $cust; ?>" class="label-classes control-label"><?php echo $adminConfig["custom{$cust}"]; ?></label>
+				<label for="custom<?php echo $cust; ?>" class="label-classes control-label"><?php echo htmlspecialchars($adminConfig["custom{$cust}"]); ?></label>
 				<div class="input-classes">
 					<input class="form-control" type="text" name="custom<?php echo $cust; ?>" id="custom<?php echo $cust; ?>" value="<?php echo $customs[$cust]; ?>" >
 				</div>

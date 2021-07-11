@@ -138,7 +138,7 @@
 
 						<?php for($i=1; $i<5; $i++) { ?>
 							<div class="form-group">
-								<label for="custom<?php echo $i; ?>"><?php echo $adminConfig['custom'.$i]; ?></label>
+								<label for="custom<?php echo $i; ?>"><?php echo htmlspecialchars($adminConfig['custom'.$i]); ?></label>
 								<input type="text" id="custom<?php echo $i; ?>" name="custom<?php echo $i; ?>" value="<?php echo html_attr($mi['custom'][$i-1]); ?>" class="form-control">
 							</div>
 						<?php } ?>
