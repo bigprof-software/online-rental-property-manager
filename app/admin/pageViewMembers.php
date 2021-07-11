@@ -189,7 +189,7 @@
 					}
 					printf(
 						'<th><span class="sort-link" data-sort="%s" data-sortdir="%s">%s</span>%s</th>', 
-						$i, $nextSortDir, $title, $sortIcon
+						$i, $nextSortDir, htmlspecialchars($title), $sortIcon
 					);
 				}
 			?>
