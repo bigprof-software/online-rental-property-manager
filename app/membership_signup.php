@@ -152,8 +152,8 @@
 									if($adminConfig['custom'.$cf] != '') {
 										?>
 										<div class="row form-group">
-										   <div class="col-sm-3"><label class="control-label" for="custom<?php echo $cf; ?>"><?php echo $adminConfig['custom'.$cf]; ?></label></div>
-										   <div class="col-sm-9"><input class="form-control" type="text" placeholder="<?php echo $adminConfig['custom'.$cf]; ?>" id="custom<?php echo $cf; ?>" name="custom<?php echo $cf; ?>"></div>
+										   <div class="col-sm-3"><label class="control-label" for="custom<?php echo $cf; ?>"><?php echo htmlspecialchars($adminConfig['custom'.$cf]); ?></label></div>
+										   <div class="col-sm-9"><input class="form-control" type="text" placeholder="<?php echo htmlspecialchars($adminConfig['custom'.$cf]); ?>" id="custom<?php echo $cf; ?>" name="custom<?php echo $cf; ?>"></div>
 										</div>
 										<?php
 									}
