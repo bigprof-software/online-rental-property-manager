@@ -57,8 +57,8 @@
 		}
 
 		protected function process_request($request) {
-			/* action must be a valid controller, else set to default (main) */
-			$controller = isset($request['action']) ? $request['action'] : false;
+			/* action must be a valid controller, and CSRF token valid, else set to default (main) */
+			$controller = isset($request['action']) && csrf_token(true) ? $request['action'] : false;
 			if(!in_array($controller, $this->controllers())) $request['action'] = 'main';
 
 			$this->request = $request;
@@ -159,6 +159,8 @@
 			</script>
 
 			<?php
+				echo csrf_token();
+
 				echo Notification::show(array(
 					'message' => '<i class="glyphicon glyphicon-info-sign"></i> ' . $this->lang['about backups'],
 					'class' => 'info',
@@ -217,7 +219,7 @@
 						var display_backups = function() {
 							$j.ajax({
 								url: page,
-								data: { action: 'get_backup_files' },
+								data: { action: 'get_backup_files', csrf_token: $j('#csrf_token').val() },
 								success: function(resp) {
 									try{
 										var list = JSON.parse(resp);
@@ -251,7 +253,7 @@
 
 								$j.ajax({
 									url: page,
-									data: { action: 'restore', md5_hash: $j(this).data('md5_hash') },
+									data: { action: 'restore', md5_hash: $j(this).data('md5_hash'), csrf_token: $j('#csrf_token').val() },
 									success: function() {
 										show_notification({
 											message: backup_restored,
@@ -275,7 +277,7 @@
 
 								$j.ajax({
 									url: page,
-									data: { action: 'delete', md5_hash: $j(this).data('md5_hash') },
+									data: { action: 'delete', md5_hash: $j(this).data('md5_hash'), csrf_token: $j('#csrf_token').val() },
 									success: function() {
 										show_notification({
 											message: backup_deleted,
@@ -309,7 +311,7 @@
 							btn.addClass('btn-warning').prop('disabled', true).html('<i class="glyphicon glyphicon-hourglass"></i> ' + please_wait);
 							$j.ajax({
 								url: page,
-								data: { action: 'create_backup' },
+								data: { action: 'create_backup', csrf_token: $j('#csrf_token').val() },
 								success: function() {
 									btn.removeClass('btn-warning btn-primary').addClass('btn-success').html('<i class="glyphicon glyphicon-ok"></i> ' + finished);
 								},
