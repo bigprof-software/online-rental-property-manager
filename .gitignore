@@ -10,3 +10,4 @@ app/images
 *.cache
 *.zip
 test*.php
+app/admin/backups

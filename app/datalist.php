@@ -240,6 +240,9 @@ class DataList{
 		}
 
 		elseif($insert_x != '') {
+			// insert only if either a csrf or jwt token is provided
+			if(!csrf_token(true) && !jwt_check_login()) die($this->translation['csrf token expired or invalid']);
+
 			$error_message = '';
 			$SelectedID = call_user_func_array(
 				$this->TableName . '_insert', 
@@ -290,6 +293,9 @@ class DataList{
 		}
 
 		elseif($delete_x != '') {
+			// delete only if either a csrf or jwt token is provided
+			if(!csrf_token(true) && !jwt_check_login()) die($this->translation['csrf token expired or invalid']);
+
 			$delete_res = call_user_func_array($this->TableName.'_delete', array($SelectedID, $this->AllowDeleteOfParents, $SkipChecks));
 			// handle ajax delete requests
 			if(is_ajax()) {
@@ -314,6 +320,9 @@ class DataList{
 		}
 
 		elseif($update_x != '') {
+			// update only if either a csrf or jwt token is provided
+			if(!csrf_token(true) && !jwt_check_login()) die($this->translation['csrf token expired or invalid']);
+
 			$error_message = '';
 			$updated = call_user_func_array(
 				$this->TableName . '_update', 
