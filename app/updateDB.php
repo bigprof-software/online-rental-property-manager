@@ -45,7 +45,7 @@
 				`end_date` DATE NULL,
 				`recurring_charges_frequency` VARCHAR(40) NOT NULL DEFAULT 'Monthly',
 				`next_due_date` DATE NULL,
-				`rent` DECIMAL(8,2) NULL,
+				`rent` DECIMAL(10,2) NULL,
 				`security_deposit` DECIMAL(15,2) NULL,
 				`security_deposit_date` DATE NULL,
 				`emergency_contact` VARCHAR(100) NULL,
@@ -65,7 +65,7 @@
 				`address` VARCHAR(40) NULL,
 				`landlord_or_manager_name` VARCHAR(100) NULL,
 				`landlord_or_manager_phone` VARCHAR(15) NULL,
-				`monthly_rent` DECIMAL(6,2) NULL,
+				`monthly_rent` DECIMAL(10,2) NULL,
 				`duration_of_residency_from` DATE NULL,
 				`to` DATE NULL,
 				`reason_for_leaving` VARCHAR(40) NULL,
@@ -176,9 +176,9 @@
 				`rooms` VARCHAR(40) NULL,
 				`bathroom` DECIMAL(15,0) NULL,
 				`features` TEXT NULL,
-				`market_rent` DECIMAL(15,0) NULL,
-				`rental_amount` DECIMAL(6,2) NULL,
-				`deposit_amount` DECIMAL(6,2) NULL,
+				`market_rent` DECIMAL(15,2) NULL,
+				`rental_amount` DECIMAL(10,2) NULL,
+				`deposit_amount` DECIMAL(10,2) NULL,
 				`description` TEXT NULL
 			) CHARSET utf8"
 		);

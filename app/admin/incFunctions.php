@@ -1172,7 +1172,7 @@
 						],
 					],
 					'rent' => [
-						'appgini' => "DECIMAL(8,2) NULL",
+						'appgini' => "DECIMAL(10,2) NULL",
 						'info' => [
 							'caption' => 'Rental amount',
 							'description' => '',
@@ -1258,7 +1258,7 @@
 						],
 					],
 					'monthly_rent' => [
-						'appgini' => "DECIMAL(6,2) NULL",
+						'appgini' => "DECIMAL(10,2) NULL",
 						'info' => [
 							'caption' => 'Monthly rent',
 							'description' => '',
@@ -1718,21 +1718,21 @@
 						],
 					],
 					'market_rent' => [
-						'appgini' => "DECIMAL(15,0) NULL",
+						'appgini' => "DECIMAL(15,2) NULL",
 						'info' => [
 							'caption' => 'Market rent',
 							'description' => '',
 						],
 					],
 					'rental_amount' => [
-						'appgini' => "DECIMAL(6,2) NULL",
+						'appgini' => "DECIMAL(10,2) NULL",
 						'info' => [
 							'caption' => 'Rental amount',
 							'description' => '',
 						],
 					],
 					'deposit_amount' => [
-						'appgini' => "DECIMAL(6,2) NULL",
+						'appgini' => "DECIMAL(10,2) NULL",
 						'info' => [
 							'caption' => 'Deposit amount',
 							'description' => '',
