@@ -1,6 +1,5 @@
 <?php
-	$currDir = dirname(__FILE__);
-	require("{$currDir}/incCommon.php");
+	require(__DIR__ . '/incCommon.php');
 
 	$GLOBALS['DEBUG_MODE'] = false;
 	$csv = new CSV($_REQUEST);
@@ -18,7 +17,7 @@
 		public function __construct($request = []) {
 			global $Translation;
 
-			$this->curr_dir = dirname(__FILE__);
+			$this->curr_dir = __DIR__;
 			$this->curr_page = basename(__FILE__);
 			$this->max_batch_size = 500;
 			$this->max_data_length = 0.5 * 1024 * 1024;
@@ -34,7 +33,7 @@
 
 			/* process request to retrieve $this->request, and then execute the requested action */
 			$this->process_request($request);          
-			call_user_func_array(array($this, $this->request['action']), []);
+			call_user_func_array([$this, $this->request['action']], []);
 		}
 
 		protected function debug($msg, $html = true) {
@@ -81,7 +80,7 @@
 
 			/* prepare tables drop-down */
 			$tables = getTableList();
-			$tables_dropdown = htmlSelect('table', array_keys($tables), array_values($tables), '');
+			$tables_dropdown = htmlSelect('table', array_keys($tables), array_map(function($t) { return $t[0]; }, array_values($tables)), '');
 			$tables_dropdown = str_replace('<select ', '<select class="form-control input-lg" ', $tables_dropdown);
 			$tables_dropdown = preg_replace('/(<select .*?>)/i', "\$1<option value=\"\">{$this->lang['select a table']}</option>", $tables_dropdown);
 
@@ -312,7 +311,7 @@
 			$csv = $this->get_csv();
 			if($csv && @unlink($csv_folder . $csv)) $deleted = true;           
 
-			echo json_encode(array('deleted' => $deleted));
+			echo json_encode(['deleted' => $deleted]);
 		}
 
 		private function csv_files($dir) {
@@ -450,7 +449,7 @@
 			$fields = $this->table_fields($table);
 
 			/* retrieve and open requested csv file */
-			$csv = $this->get_csv(array('htmlpage' => true));
+			$csv = $this->get_csv(['htmlpage' => true]);
 			if(!$csv) return;
 			$csv_fp = fopen("{$this->curr_dir}/csv/{$csv}", 'r');
 			if(!$csv_fp) return;
@@ -896,12 +895,12 @@
 		  */
 		public function import() {
 			@header('Content-type: application/json');
-			$res = array(
+			$res = [
 				'imported' => 0,
 				'failed' => 0,
 				'remaining' => 0,
-				'logs' => []
-			);
+				'logs' => [],
+			];
 
 			$csv_status = $this->start();
 			if(isset($csv_status['error'])) {
@@ -993,15 +992,15 @@
 			static $settings = [];
 			if(!empty($settings)) return $settings; // cache to avoid reprocessing
 
-			$settings = array(
+			$settings = [
 				'backup_table' => (bool) $this->request_or('backup_table', true),
 				'update_pk' => (bool) $this->request_or('update_pk', false),
 				'has_titles' => (bool) $this->request_or('has_titles', false),
 				'ignore_lines' => max(0, (int) $this->request_or('ignore_lines', 0)),
 				'field_separator' => $this->request_or('field_separator', ','),
 				'field_delimiter' => $this->request_or('field_delimiter', '"'),
-				'mappings' => $this->request_or('mappings', [])
-			);
+				'mappings' => $this->request_or('mappings', []),
+			];
 
 			if(!$settings['field_delimiter']) $settings['field_delimiter'] = '"';
 			if(!$settings['field_separator']) $settings['field_separator'] = ',';
@@ -1090,27 +1089,27 @@
 			if(!$settings['backup_table']) return []; // no backup requested
 
 			$table = $this->get_table(true);
-			if($table === false) return array('error' => $this->lang['no table name provided'] . $this->debug(__LINE__, false));
+			if($table === false) return ['error' => $this->lang['no table name provided'] . $this->debug(__LINE__, false)];
 
 			$stable = makeSafe($table);
 			if(!sqlValue("select count(1) from `{$stable}`")) // nothing to backup!
-				return array('status' => str_replace('<TABLE>', $table, $this->lang['table backup not done']));
+				return ['status' => str_replace('<TABLE>', $table, $this->lang['table backup not done'])];
 
 			$btn = $stable . '_backup_' . @date('YmdHis');
 			$eo = [];
 			sql("DROP TABLE IF EXISTS `{$btn}`", $eo);
 			if(!sql("CREATE TABLE IF NOT EXISTS `{$btn}` LIKE `{$stable}`", $eo))
-				return array('error' => str_replace('<TABLE>', $table, $this->lang['error backing up table'] . $this->debug(__LINE__, false)));
+				return ['error' => str_replace('<TABLE>', $table, $this->lang['error backing up table'] . $this->debug(__LINE__, false))];
 			if(!sql("insert `{$btn}` select * from `{$stable}`", $eo))
-				return array('error' => str_replace('<TABLE>', $table, $this->lang['error backing up table'] . $this->debug(__LINE__, false)));
+				return ['error' => str_replace('<TABLE>', $table, $this->lang['error backing up table'] . $this->debug(__LINE__, false))];
 
-			return array(
+			return [
 				'status' => str_replace(
 					array('<TABLE>', '<TABLENAME>'),
 					array($table, $btn),
 					$this->lang['table backed up']
 				)
-			);
+			];
 		}
 
 		protected function no_bom($str) {
@@ -1241,13 +1240,13 @@
 		 *  get/set the next start of current csv file
 		 *  
 		 *  @param $start optional, new start value to save into status file
-		 *  @return array('error' => error message) or array('start' => start line)
+		 *  @return ['error' => error message] or ['start' => start line]
 		 */
 		protected function start($new_start = false) {
 			$csv = $this->get_csv();
 			if(!$csv) {
 				/* invalid csv file specified */
-				return array('error' => $this->debug(__LINE__, false) . $this->lang['csv file upload error']);
+				return ['error' => $this->debug(__LINE__, false) . $this->lang['csv file upload error']];
 			}
 
 			/*
@@ -1264,16 +1263,16 @@
 
 			if($new_start !== false && intval($new_start) >= 0) {
 				@file_put_contents($status_file, intval($new_start));
-				return array('start' => intval($new_start));
+				return ['start' => intval($new_start)];
 			}
 
 			$start = @file_get_contents($status_file);
 			if(false === $start) {
 				/* can't read file */
-				return array('error' => $this->debug(__LINE__, false) . $this->lang['csv file upload error']);
+				return ['error' => $this->debug(__LINE__, false) . $this->lang['csv file upload error']];
 			}
 
-			return array('start' => intval($start));
+			return ['start' => intval($start)];
 		}
 
 		/**
@@ -1432,20 +1431,16 @@
 			ob_start();
 			$GLOBALS['page_title'] = $Translation['importing CSV data'];
 			include("{$this->curr_dir}/incHeader.php");
-			$out = ob_get_contents();
-			ob_end_clean();
 
-			return $out;
+			return ob_get_clean();
 		}
 
 		protected function footer() {
 			$Translation = $this->lang;
 			ob_start();
 			include("{$this->curr_dir}/incFooter.php");
-			$out = ob_get_contents();
-			ob_end_clean();
 
-			return $out;
+			return ob_get_clean();
 		}
 
 		/**

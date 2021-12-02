@@ -1,7 +1,6 @@
 <?php
-	$currDir = dirname(__FILE__);
-	require("{$currDir}/incCommon.php");
-	require("{$currDir}/incHeader.php");
+	require(__DIR__ . '/incCommon.php');
+	require(__DIR__ . '/incHeader.php');
 ?>
 
 	<style>
@@ -10,21 +9,21 @@
 
 <?php
 
-	$recID = intval($_GET['recID']);
+	$recID = intval(Request::val('recID'));
 	if(!$recID) {
 		// no record provided
-		include("{$currDir}/incFooter.php");
+		include(__DIR__ . '/incFooter.php');
 	}
 
 	// fetch record data to fill in the form below
 	$res = sql("select * from membership_userrecords where recID='$recID'", $eo);
 	if(!($row = db_fetch_assoc($res))) {
-		echo Notification::show(array(
-			'message' => $Translation["record not found error"],
+		echo Notification::show([
+			'message' => $Translation['record not found error'],
 			'class' => 'danger',
 			'dismiss_seconds' => 3600
-		));
-		include("{$currDir}/incFooter.php");
+		]);
+		include(__DIR__ . '/incFooter.php');
 	}
 
 	// get record data
@@ -40,12 +39,12 @@
 
 	$res = sql("select * from `{$tableName}` where `{$pkField}`='" . makeSafe($pkValue, false) . "'", $eo);
 	if(!($row = db_fetch_assoc($res))) {
-		echo Notification::show(array(
-			'message' => $Translation["record not found error"],
+		echo Notification::show([
+			'message' => $Translation['record not found error'],
 			'class' => 'danger',
 			'dismiss_seconds' => 3600
-		));
-		include("{$currDir}/incFooter.php");
+		]);
+		include(__DIR__ . '/incFooter.php');
 	}
 
 	?>
@@ -65,7 +64,7 @@
 		<?php
 			foreach($row as $fn => $fv) {
 				$op = html_attr($fv);
-				if(@is_file("{$currDir}/../" . getUploadDir('') . $fv)) {
+				if(@is_file(__DIR__ . '/../' . getUploadDir('') . $fv)) {
 					$op = "<a href=\"../" . getUploadDir('') . "{$fv}\" target=\"_blank\">" . html_attr($fv) . "</a>";
 				}
 
@@ -91,6 +90,4 @@
 		})
 	</script>
 
-<?php
-	include("{$currDir}/incFooter.php");
-?>
+<?php include(__DIR__ . '/incFooter.php');

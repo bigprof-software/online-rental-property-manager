@@ -1,8 +1,8 @@
 <?php
-$currDir = dirname(__FILE__);
-require("{$currDir}/incCommon.php");
+require(__DIR__ . '/incCommon.php');
 
 // get groupID of anonymous group
+$groupID = $name = $description = $allowCSVImport = $visitorSignup = null;
 $anon_safe = makeSafe($adminConfig['anonymousGroup'], false);
 $anonGroupID = sqlValue("SELECT `groupID` FROM `membership_groups` WHERE `name`='{$anon_safe}'");
 
@@ -11,17 +11,17 @@ $table_list = getTableList();
 $perm = [];
 
 // request to save changes?
-if($_POST['saveChanges'] != '') {
+if(Request::val('saveChanges')) {
 	// csrf check
 	if(!csrf_token(true)) die(str_replace('pageSettings.php', 'pageViewGroups.php', $Translation['invalid security token']));
 
 	// validate data
-	$name = makeSafe($_POST['name']);
-	$description = makeSafe($_POST['description']);
-	$allowCSVImport = ($_POST['allowCSVImport'] ? 1 : 0);
+	$name = makeSafe(Request::val('name'));
+	$description = makeSafe(Request::val('description'));
+	$allowCSVImport = (Request::val('allowCSVImport') ? 1 : 0);
 
-	$allowSignup = !$_POST['visitorSignup'] ? 0 : 1;
-	$needsApproval = $_POST['visitorSignup'] == 2 ? 0 : 1;
+	$allowSignup = (Request::val('visitorSignup') ? 1 : 0);
+	$needsApproval = (Request::val('visitorSignup') == 2 ? 0 : 1);
 
 	foreach($table_list as $tn => $tc) {
 		$perm["{$tn}_insert"] = checkPermissionVal("{$tn}_insert");
@@ -32,11 +32,11 @@ if($_POST['saveChanges'] != '') {
 
 	// new group or old?
 	$new_group = false;
-	if($_POST['groupID'] == '') { // new group
+	if(!Request::val('groupID')) { // new group
 		// make sure group name is unique
 		if(sqlValue("SELECT COUNT(1) FROM `membership_groups` WHERE `name`='{$name}'")) {
 			echo "<div class=\"alert alert-danger text-center\">{$Translation['group exists error']}</div>";
-			include("{$currDir}/incFooter.php");
+			include(__DIR__ . '/incFooter.php');
 		}
 
 		// add group
@@ -50,7 +50,7 @@ if($_POST['saveChanges'] != '') {
 		$new_group = true;
 	} else { // old group
 		// validate groupID
-		$groupID = intval($_POST['groupID']);
+		$groupID = intval(Request::val('groupID'));
 
 		/* force configured name and no signup for anonymous group */
 		if($groupID == $anonGroupID) {
@@ -63,7 +63,7 @@ if($_POST['saveChanges'] != '') {
 		// make sure group name is unique
 		if(sqlValue("SELECT COUNT(1) FROM `membership_groups` WHERE `name`='{$name}' AND `groupID`!='{$groupID}'")) {
 			echo "<div class=\"alert alert-danger text-center\">{$Translation['group exists error']}</div>";
-			include("{$currDir}/incFooter.php");
+			include(__DIR__ . '/incFooter.php');
 		}
 
 		// update group
@@ -94,13 +94,13 @@ if($_POST['saveChanges'] != '') {
 
 	// redirect to group editing page
 	redirect("admin/pageEditGroup.php?groupID={$groupID}&msg=" . ($new_group ? 'added' : 'saved'));
-} elseif($_GET['groupID'] != '') {
+} elseif(Request::val('groupID')) {
 	// we have an edit request for a group
-	$groupID = intval($_GET['groupID']);
+	$groupID = intval(Request::val('groupID'));
 }
 
 $GLOBALS['page_title'] = $Translation['view groups'];
-include("{$currDir}/incHeader.php");
+include(__DIR__ . '/incHeader.php');
 
 if($groupID != '') {
 	// fetch group data to fill in the form below
@@ -129,14 +129,14 @@ if($groupID != '') {
 }
 ?>
 
-<?php if($_GET['msg'] == 'added'){ ?>
+<?php if(Request::val('msg') == 'added'){ ?>
 	<div id="added-group-confirmation" class="alert alert-success alert-dismissible text-center">
 		<?php echo $Translation['group added successfully']; ?>
 		<button type="button" class="close" data-dismiss="alert">&times;</button>
 	</div>
 <?php } ?>
 
-<?php if($_GET['msg'] == 'saved'){ ?>
+<?php if(Request::val('msg') == 'saved'){ ?>
 	<div id="saved-group-confirmation" class="alert alert-success alert-dismissible text-center">
 		<?php echo $Translation['group updated successfully']; ?>
 		<button type="button" class="close" data-dismiss="alert">&times;</button>
@@ -333,7 +333,7 @@ if($groupID != '') {
 					<!-- <?php echo $tn; ?> table -->
 					<tr id="<?php echo $tn; ?>-table-permissions" data-table="<?php echo $tn; ?>">
 						<th>
-							<?php echo $tc; ?>
+							<?php echo $tc[0]; ?>
 							<div class="btn-group always-shown-inline-block hspacer-sm">
 								<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
 									<i class="glyphicon glyphicon-ok"></i> <span class="caret"></span>
@@ -451,4 +451,4 @@ if($groupID != '') {
 	th, td.insert-permission { vertical-align: middle !important; text-align: center !important; }
 </style>
 
-<?php include("{$currDir}/incFooter.php");
+<?php include(__DIR__ . '/incFooter.php');

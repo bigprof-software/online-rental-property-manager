@@ -1,6 +1,5 @@
 <?php
-	$curr_dir = dirname(__FILE__);
-	include_once("{$curr_dir}/lib.php");
+	include_once(__DIR__ . '/lib.php');
 
 	$admin_tools = new AdminTools($_REQUEST);
 
@@ -15,7 +14,7 @@
 
 			/* process request to retrieve $this->request, and then execute the requested action */
 			$this->process_request($request);          
-			echo call_user_func_array(array($this, $this->request['action']), []);
+			echo call_user_func_array([$this, $this->request['action']], []);
 		}
 
 		protected function process_request($request) {
@@ -103,10 +102,8 @@
 			</style>
 
 			<?php
-			$html = ob_get_contents();
-			ob_end_clean();
 
-			return $html;
+			return ob_get_clean();
 		}
 
 		/**
@@ -188,10 +185,8 @@
 				update_record_info(record_info);
 			})
 			<?php
-			$js = ob_get_contents();
-			ob_end_clean();
 
-			return $js;
+			return ob_get_clean();
 		}
 
 		public function get_record_info() {

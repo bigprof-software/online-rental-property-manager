@@ -1,8 +1,7 @@
 <?php
-	$currDir = dirname(__FILE__);
-	require("{$currDir}/incCommon.php");
+	require(__DIR__ . '/incCommon.php');
 	$GLOBALS['page_title'] = $Translation['done!'];
-	include("{$currDir}/incHeader.php");
+	include(__DIR__ . '/incHeader.php');
 	$mailsPerBatch = 5;
 
 	?>
@@ -11,25 +10,30 @@
 	</style>
 	<?php
 
-	$queue = $_REQUEST['queue'];
-	$simulate = (isset($_REQUEST['simulate']) ? true : false);
+	$queue = Request::val('queue');
+	$simulate = (Request::val('simulate') ? true : false);
 	if(!preg_match('/^[a-f0-9]{17,32}$/i', $queue)) {
 		echo "<div class=\"alert alert-danger\">{$Translation['invalid mail queue']}</div>";
-		include("{$currDir}/incFooter.php");
+		include(__DIR__ . '/incFooter.php');
 	}
 
-	$queueFile = "{$currDir}/{$queue}.php";
+	$queueFile = __DIR__ . "/{$queue}.php";
 	if(!is_file($queueFile)) {
 		echo "<div class=\"alert alert-danger\">{$Translation['invalid mail queue']}</div>";
-		include("{$currDir}/incFooter.php");
+		include(__DIR__ . '/incFooter.php');
 	}
 
+	$mailMessage = $mailSubject = $to = null;
 	include($queueFile);
+	if(!$mailMessage || !$to) {
+		echo "<div class=\"alert alert-danger\">{$Translation['invalid mail queue']}</div>";
+		include(__DIR__ . '/incFooter.php');
+	}
 
 	// escape new lines in message and remove them in subject
 	$escaped_mailMessage = strip_tags($mailMessage);
 	$escaped_mailSubject = str_replace(
-		array("\n", "\r"),
+		["\n", "\r"],
 		'',
 		strip_tags($mailSubject)
 	);
@@ -39,7 +43,7 @@
 		echo '<pre>' . htmlspecialchars($escaped_mailMessage) . '</pre>';
 	}
 
-	$fLog = @fopen("{$currDir}/{$queue}.log", "a");
+	$fLog = @fopen(__DIR__ . "/{$queue}.log", 'a');
 	// send a batch of up to $mailsPerBatch messages
 	$i = 0;
 	echo '<pre id="sendmail-debug" style="display: none;">';
@@ -49,12 +53,12 @@
 
 		$mail_status = (rand(1, 10) % 3 ? true : false);
 		if(!$simulate) {
-			$mail_status = sendmail(array(
+			$mail_status = sendmail([
 				'to' => $email, 
 				'subject' => $escaped_mailSubject, 
 				'message' => nl2br($escaped_mailMessage),
 				'debug' => ($_SESSION["debug_{$queue}"] ? 2 : 0)
-			));
+			]);
 		}
 
 		$mail_log = str_replace("<EMAIL>", $email, $Translation['sending message ok']);
@@ -72,7 +76,7 @@
 		// no more emails in queue, so delete queue and unset showDebug
 		@unlink($queueFile);
 
-		$mail_log = @file_get_contents("{$currDir}/{$queue}.log");
+		$mail_log = @file_get_contents(__DIR__ . "/{$queue}.log");
 		?>
 		<div class="page-header">
 			<h1><?php echo  $Translation['done!'] ; ?></h1>
@@ -92,9 +96,9 @@
 		<?php } ?>
 
 		<?php
-		@unlink("{$currDir}/{$queue}.log");
+		@unlink(__DIR__ . "/{$queue}.log");
 		unset($_SESSION["debug_{$queue}"]);
-		include("{$currDir}/incFooter.php");
+		include(__DIR__ . '/incFooter.php');
 	}
 
 	while($i--) { array_shift($to); }
@@ -102,10 +106,10 @@
 	if(!$fp = fopen($queueFile, "w")) {
 		?>
 		<div class="alert alert-danger">
-			<?php echo str_replace("<CURRDIR>", $currDir, $Translation["mail queue not saved"]); ?>
+			<?php echo str_replace("<CURRDIR>", __DIR__, $Translation['mail queue not saved']); ?>
 		</div>
 		<?php
-		include("{$currDir}/incFooter.php");
+		include(__DIR__ . '/incFooter.php');
 	}
 
 	fwrite($fp, '<' . "?php\n");
@@ -124,5 +128,4 @@
 		echo "<a href=\"pageSender.php?queue={$queue}&simulate=1\">{$Translation['next']}</a>";
 	}
 
-	include("{$currDir}/incFooter.php");
-?>
+	include(__DIR__ . '/incFooter.php');

@@ -1,25 +1,24 @@
 <?php
-	$currDir = dirname(__FILE__);
-	require("{$currDir}/incCommon.php");
+	require(__DIR__ . '/incCommon.php');
 	$GLOBALS['page_title'] = $Translation['data records'];
-	include("{$currDir}/incHeader.php");
+	include(__DIR__ . '/incHeader.php');
 
 	// process search
 	$memberID = new Request('memberID', 'strtolower');
-	$groupID = max(0, intval($_REQUEST['groupID']));
+	$groupID = max(0, intval(Request::val('groupID')));
 	$tableName = new Request('tableName');
-	$page = max(1, intval($_REQUEST['page']));
+	$page = max(1, intval(Request::val('page')));
 	$where = [];
 
 	// process sort
-	$sortDir = ($_REQUEST['sortDir'] == 'DESC' ? 'DESC' : '');
-	$sort = makeSafe($_REQUEST['sort']);
+	$sortDir = (Request::val('sortDir') == 'DESC' ? 'DESC' : '');
+	$sort = makeSafe(Request::val('sort'));
 	if($sort != 'dateAdded' && $sort != 'dateUpdated') { // default sort is newly created first
 		$sort = 'dateAdded';
 		$sortDir = 'DESC';
 	}
 
-	if($sort) $sortClause = "ORDER BY {$sort} {$sortDir}";
+	$sortClause = $sort ? "ORDER BY {$sort} {$sortDir}" : '';
 
 	if($memberID->sql == '{none}')
 		$where[] = "NOT LENGTH(r.memberID)";
@@ -68,7 +67,10 @@
 					<div class="form-group">
 						<label for="tableName" class="control-label"><?php echo $Translation['show records'] ; ?></label>
 						<?php
-							$tables = array_merge(array('' => $Translation['all tables']), getTableList(true));
+							$tables = array_merge(
+								['' => $Translation['all tables']],
+								array_map(function($t) { return $t[0]; }, getTableList(true))
+							);
 							$arrFields = array_keys($tables);
 							$arrFieldCaptions = array_values($tables);
 							echo htmlSelect('tableName', $arrFields, $arrFieldCaptions, $tableName->raw);
@@ -77,8 +79,8 @@
 					<div class="form-group">
 						<label for="sort" class="control-label"><?php echo $Translation['sort records'] ; ?></label>
 						<?php
-							$arrFields = array('dateAdded', 'dateUpdated');
-							$arrFieldCaptions = array( $Translation['date created'] , $Translation['date modified'] );
+							$arrFields = ['dateAdded', 'dateUpdated'];
+							$arrFieldCaptions = [$Translation['date created'], $Translation['date modified']];
 							echo htmlSelect('sort', $arrFields, $arrFieldCaptions, $sort);
 						?>
 						<span class="hspacer-md"></span>
@@ -150,8 +152,8 @@
 							<?php
 								$record1 = $start + 1;
 								$record2 = $start + db_num_rows($res);
-								$originalValues =  array('<RECORDNUM1>', '<RECORDNUM2>', '<RECORDS>');
-								$replaceValues = array($record1, $record2, $numRecords);
+								$originalValues = ['<RECORDNUM1>', '<RECORDNUM2>', '<RECORDS>'];
+								$replaceValues = [$record1, $record2, $numRecords];
 								echo str_replace($originalValues, $replaceValues, $Translation['displaying records']);
 							?>
 						</th>
@@ -202,4 +204,4 @@
 </script>
 
 <?php
-	include("{$currDir}/incFooter.php");
+	include(__DIR__ . '/incFooter.php');

@@ -1,5 +1,7 @@
 <?php
 	include_once(__DIR__ . '/lib.php');
+	if(MULTI_TENANTS) redirect(SaaS::passResetUrl(), true);
+
 	include_once(__DIR__ . '/header.php');
 
 	$adminConfig = config('adminConfig');
@@ -9,12 +11,12 @@
 #_______________________________________________________________________________
 # Step 4: Final step; change the password
 #_______________________________________________________________________________
-	if($_POST['changePassword'] && $_POST['key']) {
+	if(Request::val('changePassword') && Request::val('key')) {
 		$expiry_limit = time() - $reset_expiry - 900; // give an extra tolerence of 15 minutes
-		$res = sql("select * from membership_users where pass_reset_key='" . makeSafe($_POST['key']) . "' and pass_reset_expiry>$expiry_limit limit 1", $eo);
+		$res = sql("select * from membership_users where pass_reset_key='" . makeSafe(Request::val('key')) . "' and pass_reset_expiry>$expiry_limit limit 1", $eo);
 
 		if($row = db_fetch_assoc($res)) {
-			if($_POST['newPassword'] != $_POST['confirmPassword'] || !$_POST['newPassword']) {
+			if(Request::val('newPassword') != Request::val('confirmPassword') || !Request::val('newPassword')) {
 				?>
 				<div class="alert alert-danger">
 					<?php echo $Translation['password no match']; ?>
@@ -25,7 +27,7 @@
 				exit;
 			}
 
-			sql("update membership_users set passMD5='" . password_hash($_POST['newPassword'], PASSWORD_DEFAULT) . "', pass_reset_expiry=NULL, pass_reset_key=NULL where lcase(memberID)='" . makeSafe($row['memberID'], false) . "'", $eo);
+			sql("update membership_users set passMD5='" . password_hash(Request::val('newPassword'), PASSWORD_DEFAULT) . "', pass_reset_expiry=NULL, pass_reset_key=NULL where lcase(memberID)='" . makeSafe($row['memberID'], false) . "'", $eo);
 			?>
 			<div class="row">
 				<div class="col-md-6 col-md-offset-3">
@@ -51,9 +53,9 @@
 # Step 3: This is the special link that came to the member by email. This is
 #         where the member enters his new password.
 #_______________________________________________________________________________
-	if($_GET['key'] != '') {
+	if(Request::val('key')) {
 		$expiry_limit = time() - $reset_expiry;
-		$res = sql("select * from membership_users where pass_reset_key='" . makeSafe($_GET['key']) . "' and pass_reset_expiry>$expiry_limit limit 1", $eo);
+		$res = sql("select * from membership_users where pass_reset_key='" . makeSafe(Request::val('key')) . "' and pass_reset_expiry>$expiry_limit limit 1", $eo);
 
 		if($row = db_fetch_assoc($res)) {
 			?>
@@ -81,7 +83,7 @@
 							</div>
 						</div>
 
-						<input type="hidden" name="key" value="<?php echo html_attr($_GET['key']); ?>">
+						<input type="hidden" name="key" value="<?php echo html_attr(Request::val('key')); ?>">
 					</form>
 				</div>
 			</div>
@@ -100,9 +102,9 @@
 #_______________________________________________________________________________
 # Step 2: Send email to member containing the reset link
 #_______________________________________________________________________________
-	if($_POST['reset']) {
-		$username = makeSafe(strtolower(trim($_POST['username'])));
-		$email = isEmail(trim($_POST['email']));
+	if(Request::val('reset')) {
+		$username = makeSafe(strtolower(trim(Request::val('username'))));
+		$email = isEmail(trim(Request::val('email')));
 
 		if(!$username && !$email) redirect('membership_passwordReset.php?emptyData=1');
 
@@ -131,11 +133,11 @@
 			$ResetLink = application_url("membership_passwordReset.php?key={$key}");
 
 			// send reset instructions
-			sendmail(array(
+			sendmail([
 				'to' => $row['email'],
 				'subject' => $Translation['password reset subject'],
-				'message' => nl2br(str_replace('<ResetLink>', $ResetLink, $Translation['password reset message']))
-			));
+				'message' => nl2br(str_replace('<ResetLink>', $ResetLink, $Translation['password reset message'])),
+			]);
 		}
 
 		// display confirmation
@@ -192,7 +194,7 @@
 	<script>
 		jQuery(function() {
 			jQuery('#username').focus();
-			<?php  if($_GET['emptyData']) { ?>
+			<?php  if(Request::val('emptyData')) { ?>
 				jQuery('#username, #email').parent().addClass('has-error');
 			<?php } ?>
 		});

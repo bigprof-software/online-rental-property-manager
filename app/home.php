@@ -1,13 +1,12 @@
 <?php 
 	if(!isset($Translation)) { @header('Location: index.php'); exit; } 
 
-	$currDir = dirname(__FILE__);
-	include_once("{$currDir}/header.php");
-	@include("{$currDir}/hooks/links-home.php");
+	include_once(__DIR__ . '/header.php');
+	@include(__DIR__ . '/hooks/links-home.php');
 
-	if(is_file("{$currDir}/hooks/home-custom.php")) {
-		include("{$currDir}/hooks/home-custom.php");
-		include_once("{$currDir}/footer.php");
+	if(is_file(__DIR__ . '/hooks/home-custom.php')) {
+		include(__DIR__ . '/hooks/home-custom.php');
+		include_once(__DIR__ . '/footer.php');
 		exit;
 	}
 
@@ -75,11 +74,11 @@
 		foreach($tg as $tn => $tgroup) {
 			$tc = $arrTables[$tn];
 			/* is the current table filter-first? */
-			$tChkFF = array_search($tn, array());
+			$tChkFF = array_search($tn, []);
 			/* hide current table in homepage? */
-			$tChkHL = array_search($tn, array('residence_and_rental_history','employment_and_income_history','references','property_photos','unit_photos'));
+			$tChkHL = array_search($tn, ['residence_and_rental_history','employment_and_income_history','references','property_photos','unit_photos']);
 			/* allow homepage 'add new' for current table? */
-			$tChkAHAN = array_search($tn, array('applicants_and_tenants','applications_leases','rental_owners','properties','units'));
+			$tChkAHAN = array_search($tn, ['applicants_and_tenants','applications_leases','rental_owners','properties','units']);
 
 			/* homepageShowCount for current table? */
 			$count_badge = '';
@@ -211,4 +210,4 @@
 	});
 </script>
 
-<?php include_once("$currDir/footer.php"); ?>
+<?php include_once(__DIR__ . '/footer.php');

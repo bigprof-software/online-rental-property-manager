@@ -51,12 +51,12 @@ class JWT {
 	 * @return string A JWT
 	 */
 	public static function encode($payload, $key, $algo = 'HS256') {
-		$header = array('typ' => 'JWT', 'alg' => $algo);
+		$header = ['typ' => 'JWT', 'alg' => $algo];
 
 		// default expiry is 15 minutes if not provided
 		if(empty($payload['exp'])) $payload['exp'] = time() + 15 * 60;
 
-		$segments = array();
+		$segments = [];
 		$segments[] = JWT::urlsafeB64Encode(JWT::jsonEncode($header));
 		$segments[] = JWT::urlsafeB64Encode(JWT::jsonEncode($payload));
 		$signing_input = implode('.', $segments);
@@ -75,11 +75,11 @@ class JWT {
 	 * @return string An encrypted message
 	 */
 	public static function sign($msg, $key, $method = 'HS256') {
-		$methods = array(
+		$methods = [
 			'HS256' => 'sha256',
 			'HS384' => 'sha384',
 			'HS512' => 'sha512',
-		);
+		];
 
 		// Algorithm not supported?
 		if(empty($methods[$method])) return false;

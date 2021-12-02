@@ -1,12 +1,11 @@
 <?php
-	$currDir = dirname(__FILE__);
-	require("{$currDir}/incCommon.php");
+	require(__DIR__ . '/incCommon.php');
 
 	// tables list
 	$tables = getTableList();
 
 	// ensure that a memberID is provided
-	if(!isset($_REQUEST['memberID'])) {
+	if(!Request::has('memberID')) {
 		// error in request. redirect to members page.
 		redirect('admin/pageViewMembers.php');
 	}
@@ -26,7 +25,7 @@
 	}
 
 	// request to save changes?
-	if(isset($_POST['saveChanges'])) {
+	if(Request::has('saveChanges')) {
 		// csrf check
 		if(!csrf_token(true)) die($Translation['invalid security token']);
 
@@ -57,14 +56,14 @@
 
 		// redirect to member permissions page
 		redirect("admin/pageEditMemberPermissions.php?saved=1&memberID=" . $memberID->url);
-	} elseif(isset($_POST['resetPermissions'])) {
+	} elseif(Request::has('resetPermissions')) {
 		sql("delete from membership_userpermissions where lcase(memberID)='{$memberID->sql}'", $eo);
 		// redirect to member permissions page
 		redirect("admin/pageEditMemberPermissions.php?reset=1&memberID=" . $memberID->url);
 	}
 
 	$GLOBALS['page_title'] = $Translation['user table permissions'];
-	include("{$currDir}/incHeader.php");
+	include(__DIR__ . '/incHeader.php');
 
 	// fetch group permissions to fill in the form below in case user has no special permissions
 	$res1 = sql("select * from membership_grouppermissions where groupID='{$groupID}'", $eo);
@@ -97,18 +96,18 @@
 
 <!-- show notifications -->
 <?php
-	if(isset($_GET['saved'])) {
-		echo Notification::show(array(
+	if(Request::has('saved')) {
+		echo Notification::show([
 			'message' => "<i class=\"glyphicon glyphicon-ok\"></i> {$Translation['member permissions saved']}",
 			'class' => 'success',
 			'dismiss_seconds' => 10
-		));
-	} elseif(isset($_GET['reset'])) {
-		echo Notification::show(array(
+		]);
+	} elseif(Request::has('reset')) {
+		echo Notification::show([
 			'message' => "<i class=\"glyphicon glyphicon-ok\"></i> {$Translation['member permissions reset']}",
 			'class' => 'success',
 			'dismiss_seconds' => 10
-		));
+		]);
 	}
 ?>
 
@@ -132,11 +131,11 @@
 	<div class="text-right" style="margin: 2em 0;">
 		<?php
 			if(!db_num_rows($res2)) {
-				echo Notification::show(array(
+				echo Notification::show([
 					'message' => '<i class="glyphicon glyphicon-user"></i> ' . $Translation["no member permissions"],
 					'class' => 'info',
 					'dismiss_seconds' => 3600
-				));
+				]);
 			} else {
 				?>
 					<button type="submit" name="resetPermissions" value="1" class="btn btn-warning btn-lg reset-permissions">
@@ -147,8 +146,8 @@
 			}
 
 			// permissions arrays common to the radio groups below
-			$arrPermVal = array(0, 1, 2, 3);
-			$arrPermText = array($Translation["no"], $Translation["owner"], $Translation["group"], $Translation["all"]);
+			$arrPermVal = [0, 1, 2, 3];
+			$arrPermText = [$Translation['no'], $Translation['owner'], $Translation['group'], $Translation['all']];
 		?>
 		<button type="submit" name="saveChanges" value="1" class="btn btn-primary btn-lg"><i class="glyphicon glyphicon-ok"></i> <?php echo $Translation["save changes"]; ?></button>
 	</div>
@@ -172,9 +171,9 @@
 						$edit = "{$t}_edit";
 						$delete = "{$t}_delete";
 						?>
-						<!-- <?php echo $tc; ?> table -->
+						<!-- <?php echo $tc[0]; ?> table -->
 						<tr>
-							<th valign="top"><?php echo $tc; ?></th>
+							<th valign="top"><?php echo $tc[0]; ?></th>
 							<td valign="top" class="text-center">
 								<input type="checkbox" name="<?php echo $t; ?>_insert" value="1" <?php echo ($$insert ? "checked" : ""); ?>>
 							</td>
@@ -224,6 +223,4 @@
 	});
 </script>
 
-<?php
-include("{$currDir}/incFooter.php");
-?>
+<?php include(__DIR__ . '/incFooter.php');

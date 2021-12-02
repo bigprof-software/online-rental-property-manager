@@ -42,7 +42,7 @@
 					<hr class="hidden-md hidden-lg">
 					<label class="control-label col-lg-3" for="property_name">Property Name<span class="text-danger"><%%TRANSLATION(*)%%></span></label>
 					<div class="col-lg-9">
-						<input type="text" class="form-control" name="property_name" id="property_name" value="<%%VALUE(property_name)%%>" required>
+						<input maxlength="100" type="text" class="form-control" name="property_name" id="property_name" value="<%%VALUE(property_name)%%>" required>
 					</div>
 				</div>
 
@@ -293,6 +293,11 @@
 								close: function() {
 									var field_id = $j('#' + pt + '_view_parent').prevAll('input:hidden').eq(0).attr('id');
 									$j('#' + field_id + '-container').select2('focus').select2('focus');
+
+									// in case the parent record was updated, we should update auto-fills
+									var updaterName = field_id + '_update_autofills';
+									if(typeof(window[updaterName]) == 'function')
+										window[updaterName]();
 								},
 								size: 'full',
 								title: $j(this).attr('title')

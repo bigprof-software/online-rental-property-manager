@@ -1,6 +1,5 @@
 <?php
-	$currDir = dirname(__FILE__);
-	include_once("$currDir/lib.php");
+	include_once(__DIR__ . '/lib.php');
 
 	// upload paths
 	$p = [
@@ -29,9 +28,9 @@
 	];
 
 	// receive user input
-	$t = $_GET['t']; // table name
-	$f = $_GET['f']; // field name
-	$i = makeSafe($_GET['i']); // id
+	$t = Request::val('t'); // table name
+	$f = Request::val('f'); // field name
+	$i = makeSafe(Request::val('i')); // id
 
 	// validate input
 	if(!in_array($t, array_keys($p))) getLink();
@@ -39,7 +38,7 @@
 	if(!$i && !$dL[$t][$f]) getLink();
 
 	// user has view access to the requested table?
-	if(!check_record_permission($t, $_GET['i'])) getLink();
+	if(!check_record_permission($t, Request::val('i'))) getLink();
 
 	// send default link if no id provided, e.g. new record
 	if(!$i) {
@@ -66,7 +65,7 @@
 
 		if(preg_match('/^(http|ftp)/i', $link)) {    // if the link points to an external url, don't prepend path
 			$path = '';
-		} elseif(!is_file(dirname(__FILE__) . "/{$path}{$link}")) {    // if the file doesn't exist in the given path, try to find it without the path
+		} elseif(!is_file(__DIR__ . "/{$path}{$link}")) {    // if the file doesn't exist in the given path, try to find it without the path
 			$path = '';
 		}
 

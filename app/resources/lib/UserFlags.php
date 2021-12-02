@@ -29,7 +29,7 @@
 			if(!is_array($flags)) return false;
 			$flags_json_safe = makeSafe(json_encode($flags));
 
-			$eo = array('silentErrors' => true);
+			$eo = ['silentErrors' => true];
 
 			return sql("UPDATE `membership_users` SET `flags`='{$flags_json_safe}' WHERE `memberID`='{$this->safe_username}'", $eo);
 		}
@@ -48,14 +48,14 @@
 		public function get($read = null) {
 			// $read: true or false, default is all
 			$flags_json = sqlValue("SELECT `flags` FROM `membership_users` WHERE `memberID`='{$this->safe_username}'");
-			if(!$flags_json) return array();
+			if(!$flags_json) return [];
 
 			$flags = json_decode($flags_json, true);
-			if(!$flags) return array();
+			if(!$flags) return [];
 
 			if($read === null) return $flags;
 
-			$ret_flags = array(); // to be populated by flags to return
+			$ret_flags = []; // to be populated by flags to return
 			foreach ($flags as $flag) {
 				if($flag['read'] == $read) $ret_flags[] = $flag;
 			}

@@ -13,12 +13,12 @@
 			if($pl['title'] == 'Search Page Maker') $spm_installed = true;
 		}
 
-		if(!$spm_installed) echo Notification::show(array(
+		if(!$spm_installed) echo Notification::show([
 			'message' => '<i class="glyphicon glyphicon-info-sign"></i> Wish to offer your users an easier, more-tailored search experience? <a href="https://bigprof.com/appgini/applications/search-page-maker-plugin-discount" target="_blank" class="alert-link"><i class="glyphicon glyphicon-hand-right"></i> Click here to learn how Search Page Maker plugin can help</a>.',
 			'dismiss_days' => 30,
 			'class' => 'success',
-			'id' => 'spm_notification'
-		));
+			'id' => 'spm_notification',
+		]);
 	}
 ?>
 
@@ -26,8 +26,8 @@
 <?php
 	foreach($this->filterers as $filterer => $caption) {
 		$fltrr_name = 'filterer_' . $filterer;
-		$fltrr_val = $_REQUEST[$fltrr_name];
-		if($fltrr_val != '') {
+		$fltrr_val = Request::val($fltrr_name);
+		if(strlen($fltrr_val)) {
 			?>
 			<div class="row">
 				<div class="col-md-offset-3 col-md-7">
@@ -41,7 +41,7 @@
 								jQuery.ajax({
 									url: 'ajax_combo.php',
 									dataType: 'json',
-									data: <?php echo json_encode(array('id' => to_utf8($fltrr_val), 't' => $this->TableName, 'f' => $filterer, 'o' => 0)); ?>
+									data: <?php echo json_encode(['id' => to_utf8($fltrr_val), 't' => $this->TableName, 'f' => $filterer, 'o' => 0]); ?>
 								}).done(function(resp) {
 									jQuery('#<?php echo $fltrr_name; ?>_display_value').html(resp.results[0].text);
 								});
@@ -73,8 +73,8 @@
 
 		if(($i % $FiltersPerGroup == 1) && $i != 1) {
 			$seland = new Combo;
-			$seland->ListItem = array($Translation["or"], $Translation["and"]);
-			$seland->ListData = array("or", "and");
+			$seland->ListItem = [$Translation['or'], $Translation['and']];
+			$seland->ListData = ['or', 'and'];
 			$seland->SelectName = "FilterAnd[$i]";
 			$seland->SelectedData = $FilterAnd[$i];
 			$seland->Render();
@@ -98,8 +98,8 @@
 					// And, Or select
 					if($i % $FiltersPerGroup != 1) {
 						$seland = new Combo;
-						$seland->ListItem = array($Translation["and"], $Translation["or"]);
-						$seland->ListData = array("and", "or");
+						$seland->ListItem = [$Translation['and'], $Translation['or']];
+						$seland->ListData = ['and', 'or'];
 						$seland->SelectName = "FilterAnd[$i]";
 						$seland->SelectedData = $FilterAnd[$i];
 						$seland->Render();
@@ -123,8 +123,8 @@
 				<?php
 					// Operators list
 					$selop = new Combo;
-					$selop->ListItem = array($Translation["equal to"], $Translation["not equal to"], $Translation["greater than"], $Translation["greater than or equal to"], $Translation["less than"], $Translation["less than or equal to"] , $Translation["like"] , $Translation["not like"], $Translation["is empty"], $Translation["is not empty"]);
-					$selop->ListData = array_keys($GLOBALS['filter_operators']);
+					$selop->ListItem = [$Translation['equal to'], $Translation['not equal to'], $Translation['greater than'], $Translation['greater than or equal to'], $Translation['less than'], $Translation['less than or equal to'] , $Translation['like'] , $Translation['not like'], $Translation['is empty'], $Translation['is not empty']];
+					$selop->ListData = array_keys(FILTER_OPERATORS);
 					$selop->SelectName = "FilterOperator[$i]";
 					$selop->SelectedData = $FilterOperator[$i];
 					$selop->Render();
@@ -172,8 +172,8 @@
 
 	// sort direction
 	$sortDirs = new Combo;
-	$sortDirs->ListItem = array($Translation['ascending'], $Translation['descending']);
-	$sortDirs->ListData = array('asc', 'desc');
+	$sortDirs->ListItem = [$Translation['ascending'], $Translation['descending']];
+	$sortDirs->ListData = ['asc', 'desc'];
 	$num_rules = min(maxSortBy, count($this->ColCaption));
 
 	for($i = 0; $i < $num_rules; $i++) {
@@ -293,7 +293,7 @@
 		if(jQuery('#FilterAnd_' + (    FiltersPerGroup + 1) + '_').val()) { filterGroupDisplay(2); }
 		if(jQuery('#FilterAnd_' + (2 * FiltersPerGroup + 1) + '_').val()) { filterGroupDisplay(3); }
 
-		var DisplayRecords = <?php echo json_encode($_REQUEST['DisplayRecords']); ?>;
+		var DisplayRecords = <?php echo json_encode(Request::val('DisplayRecords')); ?>;
 
 		switch(DisplayRecords) {
 			case 'user':

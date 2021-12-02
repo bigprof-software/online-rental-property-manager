@@ -1,30 +1,25 @@
 <?php
-	$currDir = dirname(__FILE__);
-	require("{$currDir}/incCommon.php");
+	require(__DIR__ . '/incCommon.php');
+
+	if(!csrf_token(true)) die($Translation['csrf token expired or invalid']);
 
 	// validate input
-	$memberID = makeSafe(strtolower($_GET['memberID']));
-	$unban = ($_GET['unban'] == 1 ? 1 : 0);
-	$approve = ($_GET['approve'] == 1 ? 1 : 0);
-	$ban = ($_GET['ban'] == 1 ? 1 : 0);
+	$memberID = makeSafe(strtolower(Request::val('memberID')));
+	$unban = (Request::val('unban') == 1 ? 1 : 0);
+	$approve = (Request::val('approve') == 1 ? 1 : 0);
+	$ban = (Request::val('ban') == 1 ? 1 : 0);
 
-	if($unban) {
-		sql("update membership_users set isBanned=0 where lcase(memberID)='{$memberID}'", $eo);
-	}
+	$eo = ['silentErrors' => true];
 
-	if($approve) {
-		sql("update membership_users set isBanned=0, isApproved=1 where lcase(memberID)='{$memberID}'", $eo);
+	if($unban)
+		sql("UPDATE `membership_users` SET `isBanned`=0 WHERE LCASE(`memberID`)='{$memberID}'", $eo);
+	elseif($approve) {
+		sql("UPDATE `membership_users` SET `isBanned`=0, `isApproved`=1 WHERE LCASE(`memberID`)='{$memberID}'", $eo);
 		notifyMemberApproval($memberID);
-	}
+	} elseif($ban)
+		sql("UPDATE `membership_users` SET `isBanned`=1, `isApproved`=1 WHERE LCASE(`memberID`)='{$memberID}'", $eo);
 
-	if($ban) {
-		sql("update membership_users set isBanned=1, isApproved=1 where lcase(memberID)='{$memberID}'", $eo);
-	}
-
-	if($_SERVER['HTTP_REFERER']) {
+	if($_SERVER['HTTP_REFERER'])
 		redirect($_SERVER['HTTP_REFERER'], true);
-	} else {
+	else
 		redirect("admin/pageViewMembers.php");
-	}
-
-?>

@@ -1,7 +1,8 @@
 <?php if(!isset($Translation)) { @header('Location: index.php?signIn=1'); exit; } ?>
-<?php include_once("$currDir/header.php"); ?>
+<?php if(MULTI_TENANTS) redirect(SaaS::loginUrl(), true); ?>
+<?php include_once(__DIR__ . '/header.php'); ?>
 
-<?php if($_GET['loginFailed']) { ?>
+<?php if(Request::val('loginFailed')) { ?>
 	<div class="alert alert-danger"><?php echo $Translation['login failed']; ?></div>
 <?php } ?>
 
@@ -58,4 +59,4 @@
 </div>
 
 <script>document.getElementById('username').focus();</script>
-<?php include_once("$currDir/footer.php"); ?>
+<?php include_once(__DIR__ . '/footer.php');

@@ -5,7 +5,7 @@
 
 	if(!csrf_token(true)) exit;
 
-	$status = $_REQUEST['status'];
+	$status = Request::val('status');
 	if($status == 'on') maintenance_mode(true);
 	if($status == 'off') maintenance_mode(false);
 

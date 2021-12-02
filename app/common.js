@@ -1,5 +1,7 @@
 var AppGini = AppGini || {};
 
+AppGini.version = 5.98;
+
 /* initials and fixes */
 jQuery(function() {
 	AppGini.count_ajaxes_blocking_saving = 0;
@@ -1553,6 +1555,7 @@ AppGini.calculatedFields = {
 		$j.ajax({
 			url: 'ajax-update-calculated-fields.php',
 			data: { table: table, id: id },
+			type: 'POST',
 			success: function(resp) {
 				if(resp.data == undefined || resp.error == undefined) return;
 

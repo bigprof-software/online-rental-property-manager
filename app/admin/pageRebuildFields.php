@@ -1,8 +1,14 @@
 <?php
-	$currDir = dirname(__FILE__);
-	require("{$currDir}/incCommon.php");
+	require(__DIR__ . '/incCommon.php');
 	$GLOBALS['page_title'] = $Translation['view or rebuild fields'];
-	include("{$currDir}/incHeader.php");
+	include(__DIR__ . '/incHeader.php');
+
+	/* delete setup.md5 and force creating any missing tables */
+	if(empty($_GET)) {
+		$tenantId = Authentication::tenantIdPadded();
+		@unlink(__DIR__ . "/../setup{$tenantId}.md5");
+		@include(__DIR__ . '/../updateDB.php');
+	}
 
 	/*
 		$schema: [ tablename => [ fieldname => [ appgini => '...', 'db' => '...'], ... ], ... ]
@@ -52,7 +58,8 @@
 
 		$def = $schema[$fix_table][$fix_field];
 		$field_added = $field_updated = false;
-		$eo['silentErrors'] = true;
+		$eo = ['silentErrors' => true];
+		$qry = '';
 
 		// field exists?
 		$res = sql("SHOW COLUMNS FROM `{$fix_table}` LIKE '{$fix_field}'", $eo);
@@ -104,15 +111,16 @@
 	}
 
 	/* process requested fixes */
-	$fix_table = (isset($_GET['t']) ? $_GET['t'] : false);
-	$fix_field = (isset($_GET['f']) ? $_GET['f'] : false);
-	$fix_all = (isset($_GET['all']) ? true : false);
+	$fix_table = Request::val('t', false);
+	$fix_field = Request::val('f', false);
+	$fix_all = Request::val('all', false);
+	$fix_status = $qry = null;
 
 	if($fix_field && $fix_table) $fix_status = fix_field($fix_table, $fix_field, $schema, $qry);
 
 	/* retrieve actual db schema */
 	foreach($table_captions as $tn => $tc) {
-		$eo['silentErrors'] = true;
+		$eo = ['silentErrors' => true];
 		$res = sql("SHOW COLUMNS FROM `{$tn}`", $eo);
 		if($res) {
 			while($row = db_fetch_assoc($res)) {
@@ -154,9 +162,9 @@
 		<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
 		<i class="glyphicon glyphicon-info-sign"></i>
 		<?php 
-			$originalValues = array('<ACTION>', '<FIELD>', '<TABLE>', '<QUERY>');
+			$originalValues = ['<ACTION>', '<FIELD>', '<TABLE>', '<QUERY>'];
 			$action = ($fix_status == 2 ? 'create' : 'update');
-			$replaceValues = array($action, $fix_field, $fix_table, $qry);
+			$replaceValues = [$action, $fix_field, $fix_table, $qry];
 			echo str_replace($originalValues, $replaceValues, $Translation['create or update table']);
 		?>
 	</div>
@@ -182,7 +190,7 @@
 
 	<tbody>
 	<?php foreach($schema as $tn => $fields) { ?>
-		<tr class="text-info"><td colspan="5"><h4 data-placement="auto top" data-toggle="tooltip" title="<?php echo str_replace ( "<TABLENAME>" , $tn , $Translation['table name title']) ; ?>"><i class="glyphicon glyphicon-th-list"></i> <?php echo $table_captions[$tn]; ?></h4></td></tr>
+		<tr class="text-info"><td colspan="5"><h4 data-placement="auto top" data-toggle="tooltip" title="<?php echo str_replace ( "<TABLENAME>" , $tn , $Translation['table name title']) ; ?>"><i class="glyphicon glyphicon-th-list"></i> <?php echo $table_captions[$tn][0]; ?></h4></td></tr>
 		<?php foreach($fields as $fn => $fd) { ?>
 			<?php $diff = ((prepare_def($fd['appgini']) == prepare_def($fd['db'])) ? false : true); ?>
 			<?php $no_db = ($fd['db'] ? false : true); ?>
@@ -254,6 +262,4 @@
 	});
 </script>
 
-<?php
-	include("{$currDir}/incFooter.php");
-?>
+<?php include(__DIR__ . '/incFooter.php');

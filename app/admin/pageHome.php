@@ -1,8 +1,7 @@
 <?php
-	$currDir = dirname(__FILE__);
-	require("{$currDir}/incCommon.php");
+	require(__DIR__ . '/incCommon.php');
 	$GLOBALS['page_title'] = $Translation['membership management homepage'];
-	include("{$currDir}/incHeader.php");
+	include(__DIR__ . '/incHeader.php');
 
 	$eo = ['silentErrors' => true];
 
@@ -264,8 +263,4 @@
 	})
 </script>
 
-
-<?php
-	include("{$currDir}/incFooter.php");
-?>
-
+<?php include(__DIR__ . '/incFooter.php');

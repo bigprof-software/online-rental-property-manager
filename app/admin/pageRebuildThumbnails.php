@@ -1,8 +1,7 @@
 <?php
-	$currDir = dirname(__FILE__);
-	require("{$currDir}/incCommon.php");
+	require(__DIR__ . '/incCommon.php');
 	$GLOBALS['page_title'] = $Translation['rebuild thumbnails'];
-	include("{$currDir}/incHeader.php");
+	include(__DIR__ . '/incHeader.php');
 
 	// image paths
 	$p = [
@@ -23,7 +22,7 @@
 	if(!count($p)) exit;
 
 	// validate input
-	$t = $_GET['table'];
+	$t = Request::val('table');
 	if(!in_array($t, array_keys($p))) {
 		?>
 		<div class="page-header"><h1><?php echo $Translation['rebuild thumbnails']; ?></h1></div>
@@ -37,7 +36,7 @@
 
 
 		<?php
-		include("{$currDir}/incFooter.php");
+		include(__DIR__ . '/incFooter.php');
 		exit;
 	}
 
@@ -83,5 +82,4 @@
 		}
 	</script>
 
-<?php
-	include("{$currDir}/incFooter.php");
+<?php include(__DIR__ . '/incFooter.php');

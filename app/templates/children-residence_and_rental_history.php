@@ -1,7 +1,8 @@
-<?php if(!isset($Translation)) die('No direct access allowed.'); ?>
-<?php $current_table = 'residence_and_rental_history'; ?>
 <?php
+	if(!isset($Translation)) die('No direct access allowed.');
+	$current_table = 'residence_and_rental_history';
 	$cleaner = new CI_Input(datalist_db_encoding);
+	$firstRecord = null;
 ?>
 <script>
 	<?php echo $current_table; ?>GetChildrenRecordsList = function(command) {
@@ -174,7 +175,7 @@
 								<?php if($config['show-page-progress']) { ?>
 									<span style="margin: 10px;">
 										<?php $firstRecord = ($parameters['Page'] - 1) * $config['records-per-page'] + 1; ?>
-										<?php echo str_replace(array('<FirstRecord>', '<LastRecord>', '<RecordCount>'), array($firstRecord, $firstRecord + count($records) - 1, $totalMatches), $Translation['records x to y of z']); ?>
+										<?php echo str_replace(['<FirstRecord>', '<LastRecord>', '<RecordCount>'], [$firstRecord, $firstRecord + count($records) - 1, $totalMatches], $Translation['records x to y of z']); ?>
 									</span>
 								<?php } ?>
 							<?php } else { ?>

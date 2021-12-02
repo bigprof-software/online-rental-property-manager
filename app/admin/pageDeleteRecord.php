@@ -2,7 +2,7 @@
 	require(__DIR__ . '/incCommon.php');
 
 	// validate input
-	$recID = intval($_GET['recID']);
+	$recID = intval(Request::val('recID'));
 
 	if(!csrf_token(true)) die($Translation['csrf token expired or invalid']);
 

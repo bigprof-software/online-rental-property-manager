@@ -4,34 +4,34 @@
 		 *  Separator string used in 'rememberme' cookie
 		 */
 		private static $_separator = ';;';
-		
+
 		/**
 		 *  Number of seconds for 'rememberme' session expiry
 		 */
 		private static $_expiry = 2592000; // 30 days * 86400 seconds per day
-		
+
 		/**
 		 *  Number of seconds for token to be considered 'fresh' and needs no renewal
 		 */
 		private static $_renewal_window = 1200;
-		
+
 		/**
 		 *  If logging is enabled, all method calls in this class will be logged to RememberMe.log
 		 *  in the same folder as this class file.
 		 */
 		private static $_logging = false;
-		
+
 		/**
 		 *  Token will not be updated in case the request script is one of these.
 		 *  See the note in ::check()
 		 */
-		private static $_exception_requests = array(
+		private static $_exception_requests = [
 			'link.php',
 			'thumbnail.php',
 			'pageUploadCSV.php',
 			'pageRebuildFields.php'
-		);
-		
+		];
+
 		/**
 		 *  @brief Checks if current user has a valid 'rememberme' cookie. Should be called if no login session detected for current user.
 		 *  @return boolean indicating whether user should be signed in or not
@@ -65,7 +65,7 @@
 				case 0: // not found
 					$last_check_call = false;
 					break;
-				
+
 				case -1: // invalid -- session theft?
 					self::logout(true); // remove all remember-me sessions and all cookies
 					self::_flag($session['user']);
@@ -82,17 +82,17 @@
 		 */
 		public static function login($user) {
 			self::_log('RememberMe::login("' . $user . '")');
-			$session = array(
+			$session = [
 				'user' => $user,
 				'token' => self::_random(),
 				'agent' => self::_random()
-			);
-			
+			];
+
 			self::_store($session);
 			self::_cookie(self::_to_string($session));
 			self::_cleanup();
 		}
-		
+
 		/**
 		 *  @brief clears current user's 'rememberme' session for current client or all clients.
 		 *  @param [in] $all boolean. If set to true, clears all 'rememberme' sessions of current user
@@ -102,7 +102,7 @@
 			$session = self::_from_string(self::_cookie());
 			if( $all) self::_remove_all($session);
 			if(!$all) self::_remove($session);
-			
+
 			self::_cookie('');
 			self::_clear_server_session();
 		}
@@ -126,7 +126,7 @@
 			self::_remove($session);			
 			self::_cookie('');
 		}
-		
+
 		private static function _exception_request($session) {
 			/* see the comment in ::check() */
 			return 
@@ -153,7 +153,7 @@
 			}
 			return $string;
 		}
-		
+
 		private static function _validate_session($session) {
 			self::_log('RememberMe::_validate_session(' . json_encode($session) . ')');
 			// $session: ['user', 'token', 'agent']
@@ -162,10 +162,10 @@
 				empty($session['token']) || 
 				empty($session['agent'])
 			) return false;
-			
+
 			return true;
 		}
-		
+
 		/**
 		 *  @return boolean indicating if session token is fresh (generated less than _renewal_window seconds ago) or not.
 		 */
@@ -194,7 +194,7 @@
 			self::_log('RememberMe::_find(' . json_encode($session) . ')');
 			// returns: 1 if valid, 0 if not found, -1 if invalid token
 			if(!self::_validate_session($session)) return 0;
-			
+
 			$session = array_map('makeSafe', $session);
 			$ts = time();
 			$expiry_ts = sqlValue("
@@ -205,25 +205,25 @@
 			");
 			if($expiry_ts >= $ts) return 1; // found non-expired session
 			if($expiry_ts) return 0; // found expired session = not found
-			
+
 			$stolen = sqlValue("
 				SELECT `expiry_ts` FROM `membership_usersessions` WHERE
 					`memberID`='{$session['user']}' AND
 					`agent`='{$session['agent']}'
 			");
 			if(!$stolen) return 0; // not found
-			
+
 			return -1; // user and agent ok, but token not found = stolen cookie!
 		}
-		
+
 		private static function _store($session) {
 			self::_log('RememberMe::_store(' . json_encode($session) . ')');
 			if(!self::_validate_session($session)) return false;
 
 			$session = array_map('makeSafe', $session);
 			$expiry_ts = time() + self::$_expiry;
-			
-			$eo = array();
+
+			$eo = [];
 			return sql("
 				INSERT INTO `membership_usersessions` SET
 					`memberID`='{$session['user']}',
@@ -232,15 +232,15 @@
 					`expiry_ts`='{$expiry_ts}'
 			", $eo);
 		}
-		
+
 		private static function _update($session) {
 			self::_log('RememberMe::_update(' . json_encode($session) . ')');
 			if(!self::_validate_session($session)) return false;
 
 			$session = array_map('makeSafe', $session);
 			$expiry_ts = time() + self::$_expiry;
-			
-			$eo = array();
+
+			$eo = [];
 			return sql("
 				UPDATE `membership_usersessions` SET
 					`token`='{$session['token']}',
@@ -250,52 +250,53 @@
 					`agent`='{$session['agent']}'
 			", $eo);
 		}
-		
+
 		private static function _remove($session) {
 			self::_log('RememberMe::_remove(' . json_encode($session) . ')');
 			// only user and agent are used .. token ignored
 			if(!self::_validate_session($session)) return false;
 
 			$session = array_map('makeSafe', $session);
-			$eo = array();
+			$eo = [];
 			return sql("
 				DELETE FROM `membership_usersessions` WHERE
 					`memberID`='{$session['user']}' AND
 					`agent`='{$session['agent']}'
 			", $eo);
 		}
-		
+
 		private static function _remove_all($session) {
 			self::_log('RememberMe::_remove_all(' . json_encode($session) . ')');
 			// only user is used from session .. others ignored
 			if(!self::_validate_session($session)) return false;
 
 			$session = array_map('makeSafe', $session);
-			$eo = array();
+			$eo = [];
 			return sql("DELETE FROM `membership_usersessions` WHERE `memberID`='{$session['user']}'", $eo);
 		}
-		
+
 		private static function _cleanup() {
 			self::_log('RememberMe::_cleanup()');
 			// remove all expired entries
-			$eo = array();
+			$eo = [];
 			$ts = time();
 			return sql("DELETE FROM `membership_usersessions` WHERE `expiry_ts`<{$ts}", $eo);
 		}
-		
+
 		private static function _from_string($str) {
 			self::_log('RememberMe::_from_string("' . $str . '")');
 			// returns ['user', 'token', 'agent'] or false if invalid
 			// cookie is assumed to be formatted as: user;;token;;agent
-			$parts = explode(self::$_separator, $str);
+			$parts = explode(self::$_separator, urldecode($str));
 			if(count($parts) < 3) return false;
-			return array(
+
+			return [
 				'user' => $parts[0],
 				'token' => $parts[1],
 				'agent' => $parts[2]
-			);
+			];
 		}
-		
+
 		private static function _to_string($session) {
 			self::_log('RememberMe::_to_string(' . json_encode($session) . ')');
 			// returns string suitable for sending as cookie or false if invalid session
@@ -307,22 +308,22 @@
 				$session['token'] . self::$_separator .
 				$session['agent'];
 		}
-		
+
 		private static function _cookie($val = null) {
 			self::_log('RememberMe::_cookie(' . ($val === null ? '' : "'{$val}'") . ')');
 			$cookie_name = session_name() . '_remember_me';
-			
+
 			// returns 'rememberme' cookie value if no value provided or sets cookie value if provided
 			if($val === null) {
 				if(empty($_COOKIE[$cookie_name])) return '';
-				
+
 				return $_COOKIE[$cookie_name];
 			}
-			
+
 			/* set expiry ahead, or in the past if removing the cookie */
 			$expiry_ts = time() + self::$_expiry;
 			if($val == '') $expiry_ts -= 2 * self::$_expiry; // expiry in the past
-			
+
 			/* set the 'rememberme' cookie */
 			$appUri = trim(application_uri(), '/');
 			if(!$appUri) $appUri = '/'; else $appUri = "/{$appUri}/";
@@ -333,7 +334,7 @@
 				"; path=" . urlencode($appUri) . 
 				"; samesite=Lax; HttpOnly"
 			);
-			
+
 			// also update $_COOKIE for any upcoming queries in the same request
 			$_COOKIE[$cookie_name] = $val;
 
@@ -342,7 +343,7 @@
 
 		private static function _clear_server_session() {
 			self::_log('RememberMe::_clear_server_session()');
-			$_SESSION = array();
+			$_SESSION = [];
 
 			$params = session_get_cookie_params();
 			@setcookie(
@@ -355,25 +356,24 @@
 				$params['httponly']
 			);
 		}
-		
+
 		private static function _flag($user) {
 			self::_log('RememberMe::_flag("' . $user . '")');
 			global $Translation;
 
 			$uf = new UserFlags($user);
-			return $uf->add(array(
+			return $uf->add([
 				'message' => $Translation['account token theft warning'],
 				'severity' => 'danger'
-			));
+			]);
 		}
-		
+
 		private static function _log($msg) {
 			if(!self::$_logging) return;
-			
+
 			$dt = date('Y-m-d H:i:s');
-			$log_file = dirname(__FILE__) . '/RememberMe.log';
+			$log_file = APP_DIR . '/RememberMe.log';
 			$script = $_SERVER['PHP_SELF'];
 			@file_put_contents($log_file, "{$dt} | {$script} | {$msg}\n", FILE_APPEND);
 		}
 	}
-	

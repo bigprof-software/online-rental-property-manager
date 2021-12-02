@@ -1,10 +1,11 @@
 <?php
-	$app_name = 'rental property manager';
-	$currDir = dirname(__FILE__);
-	include_once("{$currDir}/lib.php");
-	include_once("{$currDir}/header.php");
+	include_once(__DIR__ . '/lib.php');
+	if(MULTI_TENANTS) redirect(SaaS::signupUrl(), true);
+
+	include_once(__DIR__ . '/header.php');
 
 	$adminConfig = config('adminConfig');
+	$app_name = APP_TITLE;
 
 	if(!$cg = sqlValue("select count(1) from membership_groups where allowSignup=1")) {
 		$noSignup = true;
@@ -12,17 +13,17 @@
 		exit;
 	}
 
-	if($_POST['signUp'] != '') {
+	if(Request::val('signUp')) {
 		// receive data
-		$memberID = is_allowed_username($_POST['newUsername']);
-		$email = isEmail($_POST['email']);
-		$password = $_POST['password'];
-		$confirmPassword = $_POST['confirmPassword'];
-		$groupID = intval($_POST['groupID']);
-		$custom1 = makeSafe($_POST['custom1']);
-		$custom2 = makeSafe($_POST['custom2']);
-		$custom3 = makeSafe($_POST['custom3']);
-		$custom4 = makeSafe($_POST['custom4']);
+		$memberID = is_allowed_username(Request::val('newUsername'));
+		$email = isEmail(Request::val('email'));
+		$password = Request::val('password');
+		$confirmPassword = Request::val('confirmPassword');
+		$groupID = intval(Request::val('groupID'));
+		$custom1 = makeSafe(Request::val('custom1'));
+		$custom2 = makeSafe(Request::val('custom2'));
+		$custom3 = makeSafe(Request::val('custom3'));
+		$custom4 = makeSafe(Request::val('custom4'));
 
 		// validate data
 		if(!$memberID) {
@@ -65,19 +66,18 @@
 			($adminConfig['custom4'] ? "{$adminConfig['custom4']}: {$custom4}\n" : '')
 		);
 
-		if($adminConfig['notifyAdminNewMembers'] == 2 && !$needsApproval) {
-			sendmail(array(
+		if($adminConfig['notifyAdminNewMembers'] == 2 && !$needsApproval)
+			sendmail([
 				'to' => $adminConfig['senderEmail'],
 				'subject' => "[{$app_name}] New member signup",
-				'message' => $message
-			));
-		} elseif($adminConfig['notifyAdminNewMembers'] >= 1 && $needsApproval) {
-			sendmail(array(
+				'message' => $message,
+			]);
+		elseif($adminConfig['notifyAdminNewMembers'] >= 1 && $needsApproval)
+			sendmail([
 				'to' => $adminConfig['senderEmail'],
 				'subject' => "[{$app_name}] New member awaiting approval",
-				'message' => $message
-			));
-		}
+				'message' => $message,
+			]);
 
 		// hook: member_activity
 		if(function_exists('member_activity')) {
@@ -115,8 +115,8 @@
 						<div class="form-group">
 							<label for="username" class="control-label"><?php echo $Translation['username']; ?></label>
 							<input class="form-control input-lg" type="text" required="" placeholder="<?php echo $Translation['username']; ?>" id="username" name="newUsername">
-							<span id="usernameAvailable" class="help-block hidden pull-left"><i class="glyphicon glyphicon-ok"></i> <?php echo str_ireplace(array("'", '"', '<memberid>'), '', $Translation['user available']); ?></span>
-							<span id="usernameNotAvailable" class="help-block hidden pull-left"><i class="glyphicon glyphicon-remove"></i> <?php echo str_ireplace(array("'", '"', '<memberid>'), '', $Translation['username invalid']); ?></span>
+							<span id="usernameAvailable" class="help-block hidden pull-left"><i class="glyphicon glyphicon-ok"></i> <?php echo str_ireplace(["'", '"', '<memberid>'], '', $Translation['user available']); ?></span>
+							<span id="usernameNotAvailable" class="help-block hidden pull-left"><i class="glyphicon glyphicon-remove"></i> <?php echo str_ireplace(["'", '"', '<memberid>'], '', $Translation['username invalid']); ?></span>
 							<div class="clearfix"></div>
 						</div>
 
@@ -293,4 +293,4 @@
 
 <?php } ?>
 
-<?php include_once("{$currDir}/footer.php"); ?>
+<?php include_once(__DIR__ . '/footer.php');

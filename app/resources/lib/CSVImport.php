@@ -30,7 +30,7 @@
 
 		public function __destruct() {
 			if(self::DEBUG)
-				@file_put_contents("{$this->appDir}/CSVImport.log", json_encode([
+				@file_put_contents(APP_DIR . '/CSVImport.log', json_encode([
 					'datetime' => date('Y-m-d H:i:s'),
 					'_REQUEST' => $_REQUEST,
 					'_SERVER' => $_SERVER,
@@ -44,7 +44,6 @@
 			@ini_set('auto_detect_line_endings', '1');
 
 			$this->memberInfo = getMemberInfo();
-			$this->appDir = realpath(dirname(__FILE__) . '/../..');
 
 			// initial setup and cleanup if needed
 			$this->setupDirs();
@@ -307,7 +306,7 @@
 				$affectedRows = min(count($rows), db_affected_rows());
 
 				if(!$res) {
-					$error = $this->memberInfo['admin'] && $eo['error'] ? ", error: {$eo['error']}" : $eo['error'] ? ', error: db error' : '';
+					$error = $this->memberInfo['admin'] && $eo['error'] ? ", error: {$eo['error']}" : ($eo['error'] ? ', error: db error' : '');
 					$action = $affectedRows > 0 ? 'inserted' : 'skipped';
 					$this->logs[] = "csv-index: {$this->config['cleanIndex']}{$error}, action: {$action}.";
 					$this->saveJob();
@@ -543,7 +542,7 @@
 			$affectedRows = db_affected_rows(); // 0 = no action, 1 = insert, 2 = update
 			$action = (!$affectedRows ? 'skipped' : ($affectedRows == 1 ? 'inserted' : 'updated'));
 
-			$error = $this->memberInfo['admin'] && $eo['error'] ? ", error: {$eo['error']}" : $eo['error'] ? ', error: db error' : '';
+			$error = $this->memberInfo['admin'] && $eo['error'] ? ", error: {$eo['error']}" : ($eo['error'] ? ', error: db error' : '');
 			$this->logs[] = "csv-index: {$this->config['cleanIndex']}, action: {$action}{$error}";
 
 			if($action == 'skipped') {
@@ -650,7 +649,7 @@
 			 Related configs:
 			 csvFile: the full path to the original csv file
 			 cleanCsvFile: determined here the first time, then loaded from stored config later
-			 				includes path, $this->appDir . '/' . self::CLEAN_CSV_DIR
+			 				includes path, APP_DIR . '/' . self::CLEAN_CSV_DIR
 			 	>>> index of last line read from csvFile should be stored somewhere:
 			 	>>> a flag to indicate if cleanCsvFile is ready for importing
 			 */
@@ -804,7 +803,7 @@
 		}
 
 		private function newCleanCsvFile() {
-			$cleanDir = $this->appDir . '/' . self::CLEAN_CSV_DIR;
+			$cleanDir = APP_DIR . '/' . self::CLEAN_CSV_DIR;
 			if(!is_dir($cleanDir)) {
 				$this->error = 'clean csv dir error';
 				return false;
@@ -911,7 +910,7 @@
 		}
 
 		private function setupDirs() {
-			$cleanDir = $this->appDir . '/' . self::CLEAN_CSV_DIR;
+			$cleanDir = APP_DIR . '/' . self::CLEAN_CSV_DIR;
 			if(is_dir($cleanDir)) return;
 
 			@mkdir($cleanDir);
@@ -948,7 +947,7 @@
 
 			// clean up old csv files
 			// 1st, get list of clean CSV files
-			$cleanDir = $this->appDir . '/' . self::CLEAN_CSV_DIR;
+			$cleanDir = APP_DIR . '/' . self::CLEAN_CSV_DIR;
 			$cleanCSVs = array_diff(
 				@scandir($cleanDir),
 				['.', '..', '.htaccess', 'index.html'] // exclude these from list

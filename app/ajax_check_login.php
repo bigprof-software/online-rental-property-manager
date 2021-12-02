@@ -1,6 +1,5 @@
 <?php
-	$curr_dir = dirname(__FILE__);
-	include_once("{$curr_dir}/lib.php");
+	include_once(__DIR__ . '/lib.php');
 
 	/* check access */
 	$mi = getMemberInfo();

@@ -54,7 +54,6 @@
 			$this->filterFunctions = $filterFunctions;
 			$this->uri = $uri;
 			$this->T = $Translation;
-			$this->appDir = realpath(dirname(__FILE__) . '/../..');
 			$this->validateRequest($request);
 
 			$this->exec();
@@ -164,14 +163,14 @@
 		private function html($html, $replace = []) {
 			global $Translation;
 			ob_start();
-			@include_once("{$this->appDir}/header.php");
+			@include_once(APP_DIR . '/header.php');
 
 			// Apply translation to %%xxx%% placeholders
 			echo preg_replace_callback('/%%(.*?)%%/', function($m) {
 				return isset($this->T[$m[1]]) ? $this->T[$m[1]] : $m[1];
 			}, $html);
 
-			@include_once("{$this->appDir}/footer.php");
+			@include_once(APP_DIR . '/footer.php');
 
 			// perform replacements if provided
 			if(count($replace))
@@ -1469,7 +1468,7 @@
 		}
 
 		private function prepCSVDir() {
-			$dir = $this->appDir . '/' . self::CSV_DIR;
+			$dir = APP_DIR . '/' . self::CSV_DIR;
 			if(is_dir($dir)) return $dir;
 
 			@mkdir($dir);

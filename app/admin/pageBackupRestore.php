@@ -1,23 +1,22 @@
 <?php
-	$admin_dir = dirname(__FILE__);
-	require("{$admin_dir}/incCommon.php");
+	require(__DIR__ . '/incCommon.php');
 
-	$GLOBALS['DEBUG_MODE'] = false;
 	$csv = new Backup($_REQUEST);
 
 	class Backup{
 		private $curr_dir,
-				$curr_page,
-				$lang, /* translation text */
-				$request, /* assoc array that stores $_REQUEST */
-				$error_back_link,
-				$backup_log,
-				$initial_ts; /* initial timestamp */
+				$cmd = '',
+				$curr_page = '',
+				$lang = [], /* translation text */
+				$request = [], /* assoc array that stores $_REQUEST */
+				$error_back_link = '',
+				$backup_log = '',
+				$initial_ts = 0; /* initial timestamp */
 
 		public function __construct($request = []) {
 			global $Translation;
 
-			$this->curr_dir = dirname(__FILE__);
+			$this->curr_dir = __DIR__;
 			$this->curr_page = basename(__FILE__);
 			$this->initial_ts = microtime(true);
 			$this->lang = $Translation;
@@ -37,7 +36,7 @@
 
 			/* process request to retrieve $this->request, and then execute the requested action */
 			$this->process_request($request);
-			$out = call_user_func_array(array($this, $this->request['action']), []);
+			$out = call_user_func_array([$this, $this->request['action']], []);
 			if($out === true || $out === false) {
 				echo $this->cmd . "\n\n" . $this->backup_log;
 				if(!$out) @header("{$_SERVER['SERVER_PROTOCOL']} 500 Internal Server Error");
@@ -47,8 +46,8 @@
 		}
 
 		protected function debug($msg, $html = true) {
-			if($GLOBALS['DEBUG_MODE'] && $html) return "<pre>DEBUG: {$msg}</pre>";
-			if($GLOBALS['DEBUG_MODE']) return " [DEBUG: {$msg}] ";
+			if(DEBUG_MODE && $html) return "<pre>DEBUG: {$msg}</pre>";
+			if(DEBUG_MODE) return " [DEBUG: {$msg}] ";
 			return '';
 		}
 
@@ -90,20 +89,16 @@
 			ob_start();
 			$GLOBALS['page_title'] = $Translation['database backups'];
 			include("{$this->curr_dir}/incHeader.php");
-			$out = ob_get_contents();
-			ob_end_clean();
 
-			return $out;
+			return ob_get_clean();
 		}
 
 		protected function footer() {
 			$Translation = $this->lang;
 			ob_start();
 			include("{$this->curr_dir}/incFooter.php");
-			$out = ob_get_contents();
-			ob_end_clean();
 
-			return $out;
+			return ob_get_clean();
 		}
 
 		/**
@@ -161,19 +156,19 @@
 			<?php
 				echo csrf_token();
 
-				echo Notification::show(array(
+				echo Notification::show([
 					'message' => '<i class="glyphicon glyphicon-info-sign"></i> ' . $this->lang['about backups'],
 					'class' => 'info',
 					'dismiss_days' => 30,
 					'id' => 'info-about-backups'
-				));
+				]);
 
 				if(!$can_backup) {
-					echo Notification::show(array(
+					echo Notification::show([
 						'message' => $this->lang['cant create backup folder'],
 						'class' => 'danger',
 						'dismiss_seconds' => 900
-					));
+					]);
 				}
 			?>
 
@@ -365,11 +360,11 @@
 			while(false !== ($entry = $d->read())) {
 				if(!preg_match('/^[a-f0-9]{17,32}\.sql$/i', $entry)) continue;
 				$fts = @filemtime("{$bdir}/{$entry}");
-				$list[$fts] = array(
+				$list[$fts] = [
 					'md5_hash' => substr($entry, 0, -4),
 					'datetime' => date($dtf, $fts),
 					'size' => number_format(@filesize("{$bdir}/{$entry}") / 1024)
-				);
+				];
 			}
 
 			$d->close();
@@ -418,7 +413,7 @@
 			$bfile = $this->get_specified_backup_file();
 			if(!$bfile) return false;
 
-			$config = array('dbServer' => '', 'dbUsername' => '', 'dbPassword' => '', 'dbDatabase' => '');
+			$config = ['dbServer' => '', 'dbUsername' => '', 'dbPassword' => '', 'dbDatabase' => ''];
 			foreach($config as $k => $v) $config[$k] = escapeshellarg(config($k));
 
 			$out = $ret = null;

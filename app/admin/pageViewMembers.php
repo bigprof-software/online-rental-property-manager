@@ -1,8 +1,7 @@
 <?php
-	$currDir = dirname(__FILE__);
-	require("{$currDir}/incCommon.php");
+	require(__DIR__ . '/incCommon.php');
 	$GLOBALS['page_title'] = $Translation['members'];
-	include("{$currDir}/incHeader.php");
+	include(__DIR__ . '/incHeader.php');
 
 	// fields of memebers view
 	$df = makeSafe($adminConfig['MySQLDateFormat'], false);
@@ -21,27 +20,27 @@
 	$sort = 2; // default sorting by signupDate
 	$sortDir = 'DESC'; // default sorting direction
 
-	if(isset($_GET['sort'])) {
+	if(Request::has('sort')) {
 		// make sure requested sort is a valid index of mviewFields. fallback to default sort index
-		$rSort = intval($_GET['sort']);
+		$rSort = intval(Request::val('sort'));
 		if(!isset($mviewFields[$rSort])) $rSort = $sort;
 
 		// make sure requested sortDir is valid. fallback to default sortDir
 		$rSortDir = $sortDir;
-		if(!empty($_GET['sortDir']) && in_array(strtoupper($rSortDir), ['DESC', 'ASC']))
-			$rSortDir = strtoupper($_GET['sortDir']);
+		if(Request::val('sortDir') && in_array(strtoupper($rSortDir), ['DESC', 'ASC']))
+			$rSortDir = strtoupper(Request::val('sortDir'));
 
 		$sort = $rSort;
 		$sortDir = $rSortDir;
 	}
 
 	// process search
-	if($_GET['searchMembers'] != "") {
-		$searchSQL = makeSafe($_GET['searchMembers']);
-		$searchHTML = html_attr($_GET['searchMembers']);
-		$searchURL = urlencode($_GET['searchMembers']);
-		$searchField = intval($_GET['searchField']);
-		$searchFieldName = array_search($searchField, array(
+	if(Request::val('searchMembers')) {
+		$searchSQL = makeSafe(Request::val('searchMembers'));
+		$searchHTML = html_attr(Request::val('searchMembers'));
+		$searchURL = urlencode(Request::val('searchMembers'));
+		$searchField = intval(Request::val('searchField'));
+		$searchFieldName = array_search($searchField, [
 			'm.memberID' => 1,
 			'g.name' => 2,
 			'm.email' => 3,
@@ -50,7 +49,7 @@
 			'm.custom3' => 6,
 			'm.custom4' => 7,
 			'm.comments' => 8
-		));
+		]);
 		if(!$searchFieldName) { // = search all fields
 			$where = "where (m.memberID like '%{$searchSQL}%' or g.name like '%{$searchSQL}%' or m.email like '%{$searchSQL}%' or m.custom1 like '%{$searchSQL}%' or m.custom2 like '%{$searchSQL}%' or m.custom3 like '%{$searchSQL}%' or m.custom4 like '%{$searchSQL}%' or m.comments like '%{$searchSQL}%')";
 		} else { // = search a specific field
@@ -65,7 +64,7 @@
 	}
 
 	// process groupID filter
-	$groupID = intval($_GET['groupID']);
+	$groupID = intval(Request::val('groupID'));
 	if($groupID) {
 		if($where != '') {
 			$where .= " and (g.groupID='{$groupID}')";
@@ -75,7 +74,7 @@
 	}
 
 	// process status filter
-	$status = intval($_GET['status']); // 1=waiting approval, 2=active, 3=banned, 0=any
+	$status = intval(Request::val('status')); // 1=waiting approval, 2=active, 3=banned, 0=any
 	if($status) {
 		switch($status) {
 			case 1:
@@ -106,12 +105,14 @@
 		$noResults = false;
 	}
 
-	$page = max(1, intval($_GET['page']));
+	$page = max(1, intval(Request::val('page')));
 	if($page > ceil($numMembers / $adminConfig['membersPerPage']) && !$noResults) {
 		redirect("admin/pageViewMembers.php?page=" . ceil($numMembers/$adminConfig['membersPerPage']));
 	}
 
 	$start = ($page - 1) * $adminConfig['membersPerPage'];
+
+	$urlCsrfToken = 'csrf_token=' . urlencode(csrf_token(false, true));
 
 ?>
 <div class="page-header">
@@ -138,10 +139,10 @@
 					<?php 
 						$originalValues =  array ('<SEARCH>','<HTMLSELECT>');
 						$searchValue = '<input class="form-control" type="text" name="searchMembers" value="' . $searchHTML . '">';
-						$arrFields = array(0, 1, 2, 3, 4, 5, 6, 7, 8);
-						$arrFieldCaptions = array($Translation['all fields'], $Translation['username'], $Translation["group"], $Translation["email"], $adminConfig['custom1'], $adminConfig['custom2'], $adminConfig['custom3'], $adminConfig['custom4'], $Translation["comments"]);
+						$arrFields = [0, 1, 2, 3, 4, 5, 6, 7, 8];
+						$arrFieldCaptions = [$Translation['all fields'], $Translation['username'], $Translation['group'], $Translation['email'], $adminConfig['custom1'], $adminConfig['custom2'], $adminConfig['custom3'], $adminConfig['custom4'], $Translation['comments']];
 						$htmlSelect = htmlSelect('searchField', $arrFields, $arrFieldCaptions, $searchField);
-						$replaceValues = array($searchValue, $htmlSelect);
+						$replaceValues = [$searchValue, $htmlSelect];
 						echo str_replace($originalValues, $replaceValues, $Translation['search members']);
 					?>
 				</div>
@@ -154,9 +155,9 @@
 				<div class="form-group">
 					<label for="" class="control-label"><?php echo $Translation["Status"]; ?></label>
 					<?php
-						$arrFields = array(0, 1, 2, 3);
-						$arrFieldCaptions = array($Translation['any'], $Translation['waiting approval'], $Translation['active'], $Translation['Banned']);
-						echo htmlSelect("status", $arrFields, $arrFieldCaptions, $status);
+						$arrFields = [0, 1, 2, 3];
+						$arrFieldCaptions = [$Translation['any'], $Translation['waiting approval'], $Translation['active'], $Translation['Banned']];
+						echo htmlSelect('status', $arrFields, $arrFieldCaptions, $status);
 					?>
 				</div>
 
@@ -256,15 +257,15 @@
 					<i class="glyphicon glyphicon-trash text-muted"></i>
 					<i class="glyphicon glyphicon-ban-circle text-muted"></i>
 				<?php } else { ?>
-					<a href="pageDeleteMember.php?memberID=<?php echo urlencode($row[0]); ?>&csrf_token=<?php echo urlencode(csrf_token(false, true)); ?>" onClick="return confirm('<?php echo addslashes(str_replace('<USERNAME>', $row[0], $Translation['sure delete user'])); ?>');"><i class="glyphicon glyphicon-trash text-danger" title="<?php echo $Translation['delete member']; ?>"></i></a>
+					<a href="pageDeleteMember.php?memberID=<?php echo urlencode($row[0]); ?>&<?php echo $urlCsrfToken; ?>" onClick="return confirm('<?php echo addslashes(str_replace('<USERNAME>', $row[0], $Translation['sure delete user'])); ?>');"><i class="glyphicon glyphicon-trash text-danger" title="<?php echo $Translation['delete member']; ?>"></i></a>
 					<?php
 						if(!$row[9]) { // if member is not approved, display approve link
-							?><a href="pageChangeMemberStatus.php?memberID=<?php echo urlencode($row[0]); ?>&approve=1"><i class="glyphicon glyphicon-ok text-success" title="<?php echo $Translation["unban this member"]; ?>" title="<?php echo $Translation["approve this member"]; ?>"></i></a><?php
+							?><a href="pageChangeMemberStatus.php?memberID=<?php echo urlencode($row[0]); ?>&approve=1&<?php echo $urlCsrfToken; ?>"><i class="glyphicon glyphicon-ok text-success" title="<?php echo $Translation["unban this member"]; ?>" title="<?php echo $Translation["approve this member"]; ?>"></i></a><?php
 						} else {
 							if($row[8]) { // if member is banned, display unban link
-								?><a href="pageChangeMemberStatus.php?memberID=<?php echo urlencode($row[0]); ?>&unban=1"><i class="glyphicon glyphicon-ok text-success" title="<?php echo $Translation["unban this member"]; ?>"></i></a><?php
+								?><a href="pageChangeMemberStatus.php?memberID=<?php echo urlencode($row[0]); ?>&unban=1&<?php echo $urlCsrfToken; ?>"><i class="glyphicon glyphicon-ok text-success" title="<?php echo $Translation["unban this member"]; ?>"></i></a><?php
 							} else { // if member is not banned, display ban link
-								?><a href="pageChangeMemberStatus.php?memberID=<?php echo urlencode($row[0]); ?>&ban=1"><i class="glyphicon glyphicon-ban-circle text-danger" title="<?php echo $Translation["ban this member"]; ?>"></i></a><?php
+								?><a href="pageChangeMemberStatus.php?memberID=<?php echo urlencode($row[0]); ?>&ban=1&<?php echo $urlCsrfToken; ?>"><i class="glyphicon glyphicon-ban-circle text-danger" title="<?php echo $Translation["ban this member"]; ?>"></i></a><?php
 							}
 						}
 					?>
@@ -344,6 +345,4 @@
 	})
 </script>
 
-
-<?php
-	include("{$currDir}/incFooter.php");
+<?php include(__DIR__ . '/incFooter.php');

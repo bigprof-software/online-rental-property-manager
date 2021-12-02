@@ -43,7 +43,7 @@
 				var photoSrc1<%%RND1%%>='<%%BASE_UPLOAD_PATH%%><%%VALUE(photo)%%>';
 				var photoSrc2<%%RND1%%>='thumbnail.php?t=units&f=photo&i=<%%VALUE(photo)%%>&v=dv'
 			</script>
-			<a href="#" onclick="$('photoImg<%%RND1%%>').src=($('photoImg<%%RND1%%>').src.search(/thumbnail\.php/) != -1 && photoSrc1<%%RND1%%> != '<%%BASE_UPLOAD_PATH%%>' ? photoSrc1<%%RND1%%> : photoSrc2<%%RND1%%>); return false;"><img id="photoImg<%%RND1%%>" src="thumbnail.php?t=units&f=photo&i=<%%VALUE(photo)%%>&v=dv" class="img-thumbnail"></a></div>
+			<a href="#" onclick="$j('#photoImg<%%RND1%%>').attr('src', ($j('#photoImg<%%RND1%%>').attr('src').search(/thumbnail\.php/) != -1 && photoSrc1<%%RND1%%> != '<%%BASE_UPLOAD_PATH%%>' ? photoSrc1<%%RND1%%> : photoSrc2<%%RND1%%>)); return false;"><img id="photoImg<%%RND1%%>" src="thumbnail.php?t=units&f=photo&i=<%%VALUE(photo)%%>&v=dv" class="img-thumbnail"></a></div>
 			</div>
 		</div>
 		<!-- Field: Status -->

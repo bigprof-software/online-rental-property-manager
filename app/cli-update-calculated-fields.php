@@ -1,12 +1,11 @@
 <?php
-	$app_dir = dirname(__FILE__);
-	include_once("{$app_dir}/lib.php");
+	include_once(__DIR__ . '/lib.php');
 
 	// this script can run only in CLI mode
 	if(php_sapi_name() != "cli") die('this script can run only in CLI mode');
 
 	$fn = basename(__FILE__);
-	$help = implode("\n", array(
+	$help = implode("\n", [
 		'Updates calculated fields.',
 		'',
 		'Supported arguments:',
@@ -29,7 +28,7 @@
 		"php {$fn} -u bob",
 		'  Updates all records of all tables as user bob.',
 		'',
-	));
+	]);
 
 	// if -h argument is provided, show the help message and quit
 	if(in_array('-h', $argv)) die($help);

@@ -1,8 +1,7 @@
 <?php
-	$currDir = dirname(__FILE__);
-	require("{$currDir}/incCommon.php");
+	require(__DIR__ . '/incCommon.php');
 	$GLOBALS['page_title'] = $Translation['ownership batch transfer'];
-	include("{$currDir}/incHeader.php");
+	include(__DIR__ . '/incHeader.php');
 
 	/* we need the following variables:
 		$sourceGroupID
@@ -15,15 +14,15 @@
 	*/
 
 	// validate input vars
-	$sourceGroupID = intval($_GET['sourceGroupID']);
-	$sourceMemberID = makeSafe(strtolower($_GET['sourceMemberID']));
-	$destinationGroupID = intval($_GET['destinationGroupID']);
-	$destinationMemberID = makeSafe(strtolower($_GET['destinationMemberID']));
-	$moveMembers = intval($_GET['moveMembers']);
+	$sourceGroupID = intval(Request::val('sourceGroupID'));
+	$sourceMemberID = makeSafe(strtolower(Request::val('sourceMemberID')));
+	$destinationGroupID = intval(Request::val('destinationGroupID'));
+	$destinationMemberID = makeSafe(strtolower(Request::val('destinationMemberID')));
+	$moveMembers = intval(Request::val('moveMembers'));
 	$statuses = [];
 
 	// transfer operations
-	if($sourceGroupID && $sourceMemberID && $destinationGroupID && ($destinationMemberID || $moveMembers) && isset($_GET['beginTransfer'])) {
+	if($sourceGroupID && $sourceMemberID && $destinationGroupID && ($destinationMemberID || $moveMembers) && Request::has('beginTransfer')) {
 
 		// csrf check
 		if(!csrf_token(true)) die(str_replace('pageSettings.php', basename(htmlspecialchars($_SERVER['PHP_SELF'])), $Translation['invalid security token']));
@@ -35,13 +34,13 @@
 		if(!sqlValue("select count(1) from membership_users where lcase(memberID)='$sourceMemberID' and groupID='$sourceGroupID'")) {
 			if($sourceMemberID!=-1) {
 				errorMsg($Translation['invalid source member']);
-				include("{$currDir}/incFooter.php");
+				include(__DIR__ . '/incFooter.php');
 			}
 		}
 		if(!$moveMembers) {
 			if(!sqlValue("select count(1) from membership_users where lcase(memberID)='$destinationMemberID' and groupID='$destinationGroupID'")) {
 				errorMsg($Translation['invalid destination member']);
-				include("{$currDir}/incFooter.php");
+				include(__DIR__ . '/incFooter.php');
 			}
 		}
 
@@ -51,8 +50,8 @@
 
 		// begin transfer
 		if($moveMembers && $sourceMemberID != -1) {
-			$originalValues = array('<MEMBERID>', '<SOURCEGROUP>', '<DESTINATIONGROUP>');
-			$replaceValues = array($sourceMemberID, $sourceGroup, $destinationGroup);
+			$originalValues = ['<MEMBERID>', '<SOURCEGROUP>', '<DESTINATIONGROUP>'];
+			$replaceValues = [$sourceMemberID, $sourceGroup, $destinationGroup];
 			$statuses[] = str_replace($originalValues, $replaceValues, $Translation['moving member']);
 
 			// change source member group
@@ -64,13 +63,13 @@
 			$dataRecs = sqlValue("select count(1) from membership_userrecords where lcase(memberID)='$sourceMemberID' and groupID='$destinationGroupID'");
 
 			// status
-			$originalValues =  array('<MEMBERID>', '<NEWGROUP>', '<DATARECORDS>');
-			$replaceValues = array($sourceMemberID, $newGroup, $dataRecs);
+			$originalValues =  ['<MEMBERID>', '<NEWGROUP>', '<DATARECORDS>'];
+			$replaceValues = [$sourceMemberID, $newGroup, $dataRecs];
 			$statuses[] = str_replace($originalValues, $replaceValues, $Translation['data records transferred']);
 
 		} elseif(!$moveMembers && $sourceMemberID != -1) {
-			$originalValues = array('<SOURCEMEMBER>', '<SOURCEGROUP>', '<DESTINATIONMEMBER>', '<DESTINATIONGROUP>');
-			$replaceValues = array($sourceMemberID, $sourceGroup, $destinationMemberID, $destinationGroup);
+			$originalValues = ['<SOURCEMEMBER>', '<SOURCEGROUP>', '<DESTINATIONMEMBER>', '<DESTINATIONGROUP>'];
+			$replaceValues = [$sourceMemberID, $sourceGroup, $destinationMemberID, $destinationGroup];
 			$statuses[] = str_replace($originalValues, $replaceValues, $Translation['moving data']);
 
 			// change group and owner of source member's data
@@ -79,14 +78,14 @@
 			$srcDataRecsAft = sqlValue("select count(1) from membership_userrecords where lcase(memberID)='$sourceMemberID' and groupID='$sourceGroupID'");
 
 			// status
-			$originalValues = array('<SOURCEMEMBER>', '<SOURCEGROUP>', '<DATABEFORE>','<TRANSFERSTATUS>', '<DESTINATIONMEMBER>', '<DESTINATIONGROUP>');
+			$originalValues = ['<SOURCEMEMBER>', '<SOURCEGROUP>', '<DATABEFORE>','<TRANSFERSTATUS>', '<DESTINATIONMEMBER>', '<DESTINATIONGROUP>'];
 			$transferStatus = ($srcDataRecsAft>0 ? "No records were transferred" : "These records now belong");
-			$replaceValues = array($sourceMemberID, $sourceGroup, $srcDataRecsBef, $transferStatus ,$destinationMemberID, $destinationGroup);
+			$replaceValues = [$sourceMemberID, $sourceGroup, $srcDataRecsBef, $transferStatus ,$destinationMemberID, $destinationGroup];
 			$statuses[] = str_replace ($originalValues, $replaceValues, $Translation['member records status']);
 
 		} elseif($moveMembers) {
-			$originalValues =  array('<SOURCEGROUP>', '<DESTINATIONGROUP>');
-			$replaceValues = array(  $sourceGroup ,$destinationGroup);
+			$originalValues = ['<SOURCEGROUP>', '<DESTINATIONGROUP>'];
+			$replaceValues = [$sourceGroup, $destinationGroup];
 			$statuses[] = str_replace($originalValues, $replaceValues, $Translation['moving all group members']);
 
 			// change source members group
@@ -94,15 +93,16 @@
 			$srcGroupMembers=sqlValue("select count(1) from membership_users where groupID='$sourceGroupID'");
 
 			// change group of source member's data
+			$dataRecsBef = $dataRecsAft = null;
 			if(!$srcGroupMembers) {
-				$dataRecsBef=sqlValue("select count(1) from membership_userrecords where groupID='$sourceGroupID'");
+				$dataRecsBef = sqlValue("select count(1) from membership_userrecords where groupID='$sourceGroupID'");
 				sql("update membership_userrecords set groupID='$destinationGroupID' where groupID='$sourceGroupID'", $eo);
-				$dataRecsAft=sqlValue("select count(1) from membership_userrecords where groupID='$sourceGroupID'");
+				$dataRecsAft = sqlValue("select count(1) from membership_userrecords where groupID='$sourceGroupID'");
 			}
 
 			// status
-			$originalValues =  array('<SOURCEGROUP>', '<DESTINATIONGROUP>');
-			$replaceValues = array($sourceGroup ,$destinationGroup);
+			$originalValues = ['<SOURCEGROUP>', '<DESTINATIONGROUP>'];
+			$replaceValues = [$sourceGroup ,$destinationGroup];
 			if($srcGroupMembers) {
 				$statuses[] = str_replace($originalValues, $replaceValues, $Translation['failed transferring group members']);
 			} else {
@@ -116,9 +116,9 @@
 			}
 
 		} else {
-			$originalValues =  array('<SOURCEGROUP>', '<DESTINATIONMEMBER>', '<DESTINATIONGROUP>');
-			$replaceValues = array(  $sourceGroup, $destinationMemberID, $destinationGroup);
-			$statuses[] = str_replace ($originalValues, $replaceValues, $Translation['moving group data to member']);
+			$originalValues = ['<SOURCEGROUP>', '<DESTINATIONMEMBER>', '<DESTINATIONGROUP>'];
+			$replaceValues = [$sourceGroup, $destinationMemberID, $destinationGroup];
+			$statuses[] = str_replace($originalValues, $replaceValues, $Translation['moving group data to member']);
 
 			// change group of source member's data
 			$recsBef = sqlValue("select count(1) from membership_userrecords where lcase(memberID)='$destinationMemberID'");
@@ -126,24 +126,24 @@
 			$recsAft = sqlValue("select count(1) from membership_userrecords where lcase(memberID)='$destinationMemberID'");
 
 			// status
-			$originalValues =  array( '<NUMBER>', '<SOURCEGROUP>', '<DESTINATIONMEMBER>', '<DESTINATIONGROUP>');
+			$originalValues =  ['<NUMBER>', '<SOURCEGROUP>', '<DESTINATIONMEMBER>', '<DESTINATIONGROUP>'];
 			$recordsNumber = intval($recsAft-$recsBef);
-			$replaceValues = array($recordsNumber,  $sourceGroup, $destinationMemberID, $destinationGroup);
+			$replaceValues = [$recordsNumber,  $sourceGroup, $destinationMemberID, $destinationGroup];
 			$statuses[] = str_replace($originalValues, $replaceValues, $Translation['moving group data to member status']);
 		}
 
 		// display status and a batch bookmark for later instant reuse of the wizard
 		$status = implode('<br>', $statuses);
-		echo Notification::show(array(
+		echo Notification::show([
 			'message' => "<b>{$Translation['status']}</b><br>{$status}",
 			'class' => 'info',
 			'dismiss_seconds' => 3600
-		));
+		]);
 		?>
 		<div>
 			<?php 
-				$originalValues =  array('<SOURCEGROUP>', '<SOURCEMEMBER>', '<DESTINATIONGROUP>', '<DESTINATIONMEMBER>', '<MOVEMEMBERS>');
-				$replaceValues = array($sourceGroupID, urlencode($sourceMemberID), $destinationGroupID, urlencode($destinationMemberID), $moveMembers);
+				$originalValues = ['<SOURCEGROUP>', '<SOURCEMEMBER>', '<DESTINATIONGROUP>', '<DESTINATIONMEMBER>', '<MOVEMEMBERS>'];
+				$replaceValues = [$sourceGroupID, urlencode($sourceMemberID), $destinationGroupID, urlencode($destinationMemberID), $moveMembers];
 				echo str_replace ($originalValues, $replaceValues, $Translation['batch transfer link']);
 			?>
 		</div>
@@ -153,7 +153,7 @@
 		<?php
 
 		// quit
-		include("{$currDir}/incFooter.php");
+		include(__DIR__ . '/incFooter.php');
 	}
 ?>
 
@@ -185,10 +185,10 @@
 						<span class="help-block text-info">
 							<i class="glyphicon glyphicon-info-sign"></i> 
 							<?php 
-								$originalValues =  array( '<MEMBERS>', '<RECORDS>');
+								$originalValues =  ['<MEMBERS>', '<RECORDS>'];
 								$membersNum = sqlValue("select count(1) from membership_users where groupID='$sourceGroupID'"); 
 								$recordsNum = sqlValue("select count(1) from membership_userrecords where groupID='$sourceGroupID'");
-								$replaceValues = array($membersNum, $recordsNum);
+								$replaceValues = [$membersNum, $recordsNum];
 								echo str_replace($originalValues, $replaceValues, $Translation['group statistics']);
 							?>
 						</span>
@@ -224,10 +224,8 @@
 					<label for="sourceGroupID" class="control-label col-sm-2"><?php echo $Translation['source member'] ; ?></label>
 					<div class="col-sm-6 col-md-4">
 						<?php
-							$arrVal[] = '';
-							$arrCap[] = '';
-							$arrVal[] = '-1';
-							$arrCap[] = str_replace ('<GROUPNAME>', html_attr(sqlValue("select name from membership_groups where groupID='$sourceGroupID'")), $Translation['all group members']);
+							$arrVal = ['', '-1'];
+							$arrCap = ['', str_replace ('<GROUPNAME>', html_attr(sqlValue("select name from membership_groups where groupID='$sourceGroupID'")), $Translation['all group members'])];
 							if($res = sql("select lcase(memberID), lcase(memberID) from membership_users where groupID='$sourceGroupID' order by memberID", $eo)) {
 								while($row = db_fetch_row($res)) {
 									$arrVal[] = $row[0];
@@ -400,6 +398,4 @@
 	})
 </script>
 
-<?php
-	include("{$currDir}/incFooter.php");
-?>
+<?php include(__DIR__ . '/incFooter.php');

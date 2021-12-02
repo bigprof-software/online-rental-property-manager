@@ -1,10 +1,9 @@
 <?php
-	$currDir = dirname(__FILE__);
-	include_once("{$currDir}/lib.php");
-	include_once("{$currDir}/header.php");
+	include_once(__DIR__ . '/lib.php');
+	include_once(__DIR__ . '/header.php');
 
-	$current_user = isset($_REQUEST['currentUser']) ? $_REQUEST['currentUser'] : false;
-	$username = is_allowed_username($_REQUEST['memberID'], $current_user);
+	$current_user = Request::val('currentUser', false);
+	$username = is_allowed_username(Request::val('memberID'), $current_user);
 ?>
 
 <style>
@@ -21,7 +20,7 @@
 <?php } else { ?>
 	<div class="alert alert-danger">
 		<i class="glyphicon glyphicon-warning-sign"></i>
-		<?php echo str_replace('<MemberID>', '<b>' . html_attr($_REQUEST['memberID']) . '</b>', $Translation['username invalid']); ?>
+		<?php echo str_replace('<MemberID>', '<b>' . html_attr(Request::val('memberID')) . '</b>', $Translation['username invalid']); ?>
 		<span data-result="username-unavailable"></span>
 	</div>
 <?php } ?>
@@ -30,4 +29,4 @@
 	<input type="button" value="Close" onClick="window.close();" autofocus class="btn btn-default btn-lg">
 </div>
 
-<?php include_once("{$currDir}/footer.php"); ?>
+<?php include_once(__DIR__ . '/footer.php');

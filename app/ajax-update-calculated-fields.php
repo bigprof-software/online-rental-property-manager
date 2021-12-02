@@ -1,7 +1,6 @@
 <?php
 	define('PREPEND_PATH', '');
-	$app_dir = dirname(__FILE__);
-	include_once("{$app_dir}/lib.php");
+	include_once(__DIR__ . '/lib.php');
 
 	/*
 	 * calculated fields configuration array, $calc:
@@ -63,10 +62,10 @@
 
 	/* get and validate params */
 	function get_params() {
-		$ret_error = array(false, false);
+		$ret_error = [false, false];
 
-		$table = $_REQUEST['table'];
-		$id = $_REQUEST['id'];
+		$table = Request::val('table');
+		$id = Request::val('id');
 		if(!get_sql_from($table)) return $ret_error;
 
 		if(is_array($id)) {
@@ -78,12 +77,12 @@
 			if(!check_record_permission($table, $id)) return $ret_error;
 		}
 
-		return array($table, $id);
+		return [$table, $id];
 	}
 
 	function return_json($data = [], $error = '') {
 		@header('Content-type: application/json');
-		die(json_encode(array('data' => $data, 'error' => $error)));
+		die(json_encode(['data' => $data, 'error' => $error]));
 	}
 
 	function cleanup_calc_fields(&$calc) {

@@ -1,6 +1,6 @@
 <?php
-	$currDir=dirname(__FILE__);
-	include_once("$currDir/lib.php");
+	include_once(__DIR__ . '/lib.php');
+	if(MULTI_TENANTS) redirect(SaaS::profileUrl(), true);
 
 	$adminConfig = config('adminConfig');
 
@@ -11,23 +11,23 @@
 	}
 
 	/* save profile */
-	if($_POST['action'] == 'saveProfile') {
+	if(Request::val('action') == 'saveProfile') {
 		if(!csrf_token(true)) {
 			echo $Translation['error:'];
 			exit;
 		}
 
 		/* process inputs */
-		$email=isEmail($_POST['email']);
-		$custom1=makeSafe($_POST['custom1']);
-		$custom2=makeSafe($_POST['custom2']);
-		$custom3=makeSafe($_POST['custom3']);
-		$custom4=makeSafe($_POST['custom4']);
+		$email = isEmail(Request::val('email'));
+		$custom1 = makeSafe(Request::val('custom1'));
+		$custom2 = makeSafe(Request::val('custom2'));
+		$custom3 = makeSafe(Request::val('custom3'));
+		$custom4 = makeSafe(Request::val('custom4'));
 
 		/* validate email */
 		if(!$email) {
 			echo "{$Translation['error:']} {$Translation['email invalid']}";
-			echo "<script>$$('label[for=\"email\"]')[0].pulsate({ pulses: 10, duration: 4 }); $j('#email').focus();</script>";
+			echo "<script>\$j('label[for=\"email\"]')[0].pulsate({ pulses: 10, duration: 4 }); \$j('#email').focus();</script>";
 			exit;
 		}
 
@@ -45,15 +45,15 @@
 	}
 
 	/* change password */
-	if($_POST['action'] == 'changePassword' && $mi['username'] != $adminConfig['adminUsername']) {
+	if(Request::val('action') == 'changePassword' && $mi['username'] != $adminConfig['adminUsername']) {
 		if(!csrf_token(true)) {
 			echo $Translation['error:'];
 			exit;
 		}
 
 		/* process inputs */
-		$oldPassword=$_POST['oldPassword'];
-		$newPassword=$_POST['newPassword'];
+		$oldPassword = Request::val('oldPassword');
+		$newPassword = Request::val('newPassword');
 
 		/* validate password */
 		$hash = sqlValue("SELECT `passMD5` FROM `membership_users` WHERE memberID='{$mi['username']}'");
@@ -108,7 +108,7 @@
 	}
 
 	/* the profile page view */
-	include_once("$currDir/header.php"); ?>
+	include_once(__DIR__ . '/header.php'); ?>
 
 	<div class="page-header">
 		<h1><?php echo sprintf($Translation['Hello user'], htmlspecialchars($mi['username'])); ?></h1>
@@ -280,7 +280,7 @@
 			<?php
 				/* Is there a notification to display? */
 				$notify = '';
-				if(isset($_GET['notify'])) $notify = addslashes(strip_tags($_GET['notify']));
+				if(Request::has('notify')) $notify = addslashes(strip_tags(Request::val('notify')));
 			?>
 			<?php if($notify) { ?> notify('<?php echo $notify; ?>'); <?php } ?>
 
@@ -294,12 +294,12 @@
 			});
 
 			<?php if($mi['username'] != $adminConfig['adminUsername']) { ?>
-				$('update-password').observe('click', function() {
+				$j('#update-password').on('click', function() {
 					/* make sure passwords match */
 					if($j('#new-password').val() != $j('#confirm-password').val()) {
 						$j('#notify').addClass('alert-danger');
 						notify('<?php echo "{$Translation['error:']} ".addslashes($Translation['password no match']); ?>');
-						$$('label[for="confirm-password"]')[0].pulsate({ pulses: 10, duration: 4 });
+						$j('label[for="confirm-password"]')[0].pulsate({ pulses: 10, duration: 4 });
 						$j('#confirm-password').focus();
 						return false;
 					}
@@ -357,4 +357,4 @@
 		}
 	?>
 
-	<?php include_once("$currDir/footer.php"); ?>
+	<?php include_once(__DIR__ . '/footer.php'); ?>

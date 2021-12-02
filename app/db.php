@@ -1,22 +1,10 @@
 <?php
 
 	/*
-		You can implement a new db driver in this file by uncommenting the line below
-		and replacing 'mssql' with the desired driver name, then adding cases for the
-		that driver in each function below ...
+		To implement a new db driver you should change the value of
+		the DATABASE cnonstant in definitions.php to the desired driver name, for example 'mssql'.
+		then adding cases for the that driver in each function below ...
 	*/
-	// define('DATABASE', 'mssql'); 
-
-
-
-
-	if(!defined('DATABASE')) {
-		if(function_exists('mysqli_connect')) {
-			define('DATABASE', 'mysqli');
-		} else {
-			define('DATABASE', 'mysql');
-		}
-	}
 
 
 	function db_link($link = NULL) {
@@ -172,6 +160,11 @@
 				if($dbname === NULL) $dbname = "";
 				if($port === NULL) $port = ini_get("mysqli.default_port");
 				if($socket === NULL) $socket = ini_get("mysqli.default_socket");
+
+				// revert PHP 8.1 mysql error reporting behavior
+				// @see https://php.watch/versions/8.1/mysqli-error-mode
+				@mysqli_report(MYSQLI_REPORT_OFF);
+
 				$link = mysqli_connect($host, $username, $passwd, $dbname, $port, $socket);
 				if(!$link) return false;
 				db_link($link); /* db_link() can now be used to retrieve the db link from anywhere */

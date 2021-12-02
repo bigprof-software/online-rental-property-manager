@@ -8,7 +8,7 @@
 
 		/* data for selected record, or defaults if none is selected */
 		var data = {
-			property: <?php echo json_encode(array('id' => $rdata['property'], 'value' => $rdata['property'], 'text' => $jdata['property'])); ?>,
+			property: <?php echo json_encode(['id' => $rdata['property'], 'value' => $rdata['property'], 'text' => $jdata['property']]); ?>,
 			country: <?php echo json_encode($jdata['country']); ?>,
 			street: <?php echo json_encode($jdata['street']); ?>,
 			city: <?php echo json_encode($jdata['city']); ?>,

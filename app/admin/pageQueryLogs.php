@@ -1,5 +1,5 @@
 <?php
-	require(__DIR__ . "/incCommon.php");
+	require(__DIR__ . '/incCommon.php');
 
 	// Retrieve request (type, page)
 		$queryTypes = [
@@ -7,10 +7,10 @@
 			'error' => 'CHAR_LENGTH(COALESCE(`error`, \'\')) > 0',
 		];
 
-		$type = $_REQUEST['type'];
+		$type = Request::val('type');
 		if(!in_array($type, array_keys($queryTypes))) $type = 'slow';
 
-		$page = intval($_REQUEST['page']);
+		$page = intval(Request::val('page'));
 		if($page < 1) $page = 1;
 
 	// Starting record from $page (page is 1-based, while firstRecord is 0-based)
@@ -25,13 +25,15 @@
 		$eo = ['silentErrors' => true];
 		sql("DELETE FROM `appgini_query_log` WHERE `datetime` < DATE_SUB(NOW(), INTERVAL 2 MONTH)", $eo);
 
-	// build the WHERE clause
-		$where = "WHERE {$queryTypes[$type]}";
-		/* future work: allow filtering by user, date period, ... etc, and allow sorting */
+	/* TODO future work: allow filtering by user, date period, ... etc, and allow sorting */
 
-	// how many records and pages in total do we have?
-		$totalRecords = sqlValue("SELECT COUNT(1) FROM `appgini_query_log` $where");
-		$lastPage = ceil($totalRecords / $recordsPerPage);
+	// get count of each type
+		$counts = [];
+		foreach ($queryTypes as $qt => $where)
+			$counts[$qt] = sqlValue("SELECT COUNT(1) FROM `appgini_query_log` WHERE $where");
+
+	// how many pages in total do we have?
+		$lastPage = ceil($counts[$type] / $recordsPerPage);
 
 	// adjust $page and $firstRecord if needed
 		$page = max(1, min($page, $lastPage));
@@ -43,7 +45,7 @@
 	// retrieve requested logs
 		$records = [];
 		$res = sql("SELECT * FROM `appgini_query_log`
-			$where
+			WHERE {$queryTypes[$type]}
 			ORDER BY `datetime` DESC
 			LIMIT $firstRecord, $recordsPerPage", $eo);
 		while($row = db_fetch_assoc($res)) {
@@ -51,18 +53,22 @@
 			$records[] = $row;
 		}
 
-	include(__DIR__ . "/incHeader.php");
+	include(__DIR__ . '/incHeader.php');
 ?>
 
 <!-- Page content -->
 	<div class="page-header"><h1><?php echo $Translation['Query logs']; ?></h1></div>
 
-	<div class="btn-group">
-		<button type="button" class="btn btn-warning btn-lg query-type slow"><?php echo $Translation['slow queries']; ?></button>
-		<button type="button" class="btn btn-danger btn-lg query-type error"><?php echo $Translation['error queries']; ?></button>
-	</div>
-
-	<hr>
+	<ul class="nav nav-tabs" style="margin-bottom: 2em;">
+		<li class="query-type slow"><a href="#" class="text-warning bg-warning">
+			<span class="label label-warning"><?php echo $counts['slow']; ?></span>      
+			<?php echo $Translation['slow queries']; ?>
+		</a></li>
+		<li class="query-type error"><a href="#" class="text-danger bg-danger">
+			<span class="label label-danger"><?php echo $counts['error']; ?></span>      
+			<?php echo $Translation['error queries']; ?>
+		</a></li>
+	</ul>
 
 	<div class="alert alert-success hidden" id="noMatches">
 		<i class="glyphicon glyphicon-ok"></i> 
@@ -108,7 +114,7 @@
 							<div class="col-xs-4 text-center">
 								<?php echo str_replace(
 									['#', '<x>', '<y>'],
-									[$totalRecords, $page, $lastPage],
+									[$counts[$type], $page, $lastPage],
 									$Translation['total # queries'] . ' ' . $Translation['page x of y']
 								); ?>
 							</div>
@@ -149,7 +155,8 @@
 				$j('#queryLogs .error').toggleClass('hidden', type == 'slow');
 
 			// handle clicking query-type buttons
-				$j('.query-type:not(.active)').click(function() {
+				$j('.query-type:not(.active)').click(function(e) {
+					e.preventDefault();
 					location.href = 'pageQueryLogs.php?type=' + (type == 'slow' ? 'error' : 'slow');
 				})
 
@@ -174,4 +181,4 @@
 		})
 	</script>
 
-<?php include(__DIR__ . "/incFooter.php");
+<?php include(__DIR__ . '/incFooter.php');

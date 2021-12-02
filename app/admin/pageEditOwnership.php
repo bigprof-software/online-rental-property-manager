@@ -1,24 +1,23 @@
 <?php
-	$currDir = dirname(__FILE__);
-	require("{$currDir}/incCommon.php");
+	require(__DIR__ . '/incCommon.php');
 
-	$recID = 0;
+	$recID = $tableName = $pkValue = null;
 
 	// request to save changes?
-	if(isset($_REQUEST['saveChanges'])) {
+	if(Request::val('saveChanges')) {
 		// csrf check
 		if(!csrf_token(true)) die($Translation['invalid security token']);
 
 		// validate data
-		$recID = intval($_REQUEST['recID']);
-		$memberID = makeSafe(strtolower($_REQUEST['memberID']));
-		$groupID = intval($_REQUEST['groupID']);
+		$recID = intval(Request::val('recID'));
+		$memberID = makeSafe(strtolower(Request::val('memberID')));
+		$groupID = intval(Request::val('groupID'));
 		###############################
 
 		/* for ajax requests coming from the users' area, get the recID */
 		if(is_ajax()) {
-			$tableName = $_REQUEST['t'];
-			$pkValue = $_REQUEST['pkValue'];
+			$tableName = Request::val('t');
+			$pkValue = Request::val('pkValue');
 
 			if(!in_array($tableName, array_keys(getTableList()))) die($Translation['invalid table']);
 
@@ -46,9 +45,9 @@
 		// redirect to member editing page
 		redirect("admin/pageEditOwnership.php?recID={$recID}");
 		exit;
-	} elseif(isset($_GET['recID'])) {
+	} elseif(Request::has('recID')) {
 		// we have an edit request for a member
-		$recID = intval($_GET['recID']);
+		$recID = intval(Request::val('recID'));
 	}
 
 	if(!$recID) {
@@ -57,7 +56,7 @@
 	}
 
 	$GLOBALS['page_title'] = $Translation['edit Record Ownership'];
-	include("{$currDir}/incHeader.php");
+	include(__DIR__ . '/incHeader.php');
 
 	// fetch record data to fill in the form below
 	$res = sql("select * from membership_userrecords where recID='{$recID}'", $eo);
@@ -198,7 +197,7 @@
 								<?php
 									foreach ($row as $field_name => $field_value) {
 										$field_link = false;
-										if(@is_file("{$currDir}/../" . getUploadDir('') . $field_value)) {
+										if(@is_file(__DIR__ . '/../' . getUploadDir('') . $field_value)) {
 										   $field_value = "<a href=\"../" . getUploadDir('') . "{$field_value}\" target=\"_blank\">" . html_attr($field_value) . "</a>";
 										   $field_link = true;
 										}
@@ -234,6 +233,4 @@
 	.form-control{ width: 100% !important; }
 </style>
 
-<?php
-include("{$currDir}/incFooter.php");
-?>
+<?php include(__DIR__ . '/incFooter.php');

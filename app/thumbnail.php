@@ -1,6 +1,5 @@
 <?php
-	$currDir = dirname(__FILE__);
-	include_once("$currDir/lib.php");
+	include_once(__DIR__ . '/lib.php');
 
 	handle_maintenance();
 
@@ -23,10 +22,10 @@
 	if(!count($p)) exit;
 
 	// receive user input
-	$t = $_GET['t']; // table name
-	$f = $_GET['f']; // field name
-	$v = $_GET['v']; // thumbnail view type: 'tv' or 'dv'
-	$i = $_GET['i']; // original image file name
+	$t = Request::val('t'); // table name
+	$f = Request::val('f'); // field name
+	$v = Request::val('v'); // thumbnail view type: 'tv' or 'dv'
+	$i = Request::val('i'); // original image file name
 
 	// validate input
 	if(!in_array($t, array_keys($p)))  getImage();

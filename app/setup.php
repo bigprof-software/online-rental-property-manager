@@ -1,59 +1,26 @@
 <?php
 	/* initial preps and includes */
 	define('APPGINI_SETUP', true); /* needed in included files to tell that this is the setup script */
-	error_reporting(E_ERROR /*| E_WARNING*/ | E_PARSE);
-	$curr_dir = dirname(__FILE__);
-	include_once("$curr_dir/settings-manager.php");
 
-	include_once("$curr_dir/defaultLang.php");
-	include_once("$curr_dir/language.php");
-	$Translation = array_merge($TranslationEn, $Translation);
-
-	include_once("$curr_dir/db.php");
+	include_once(__DIR__ . '/settings-manager.php');
+	if(MULTI_TENANTS) denyAccess('Access denied');
 
 	/*
 		Determine execution scenario ...
 		this script is called in 1 of 5 scenarios:
-			1. to display the setup instructions no $_GET['show-form']
-			2. to display the setup form $_GET['show-form'], no $_POST['test'], no $_POST['submit']
-			3. to test the db info, $_POST['test'] no $_POST['submit']
-			4. to save setup data, $_POST['submit']
-			5. to show final success message, $_GET['finish']
+			1. to display the setup instructions no Request::val('show-form')
+			2. to display the setup form Request::val('show-form'), no Request::val('test'), no Request::val('submit')
+			3. to test the db info, Request::val('test') no Request::val('submit')
+			4. to save setup data, Request::val('submit')
+			5. to show final success message, Request::val('finish')
 		below here, we determine which scenario is being called
 	*/
 	$submit = $test = $form = $finish = false; 
-	(isset($_POST['submit'])   ? $submit = true :
-	(isset($_POST['test'])     ?   $test = true :
-	(isset($_GET['show-form']) ?   $form = true :
-	(isset($_GET['finish'])    ? $finish = true :
+	(Request::has('submit')    ? $submit = true :
+	(Request::has('test')      ?   $test = true :
+	(Request::has('show-form') ?   $form = true :
+	(Request::has('finish')    ? $finish = true :
 		false))));
-
-	function isEmail($email){
-		if(preg_match('/^([*+!.&#$¦\'\\%\/0-9a-z^_`{}=?~:-]+)@(([0-9a-z-]+\.)+[0-9a-z]{2,30})$/i', $email))
-			return $email;
-
-		return false;
-	}
-
-	function setup_allowed_username($username) {
-		$username = trim(strtolower($username));
-		if(!preg_match('/^[a-z0-9][a-z0-9 _.@]{3,100}$/', $username) || preg_match('/(@@|  |\.\.|___)/', $username)) return false;
-		return $username;
-	}
-
-	if(!function_exists('latest_jquery')) {
-		function latest_jquery() {
-			$jquery_dir = dirname(__FILE__) . '/resources/jquery/js';
-
-			$files = scandir($jquery_dir, SCANDIR_SORT_DESCENDING);
-			foreach($files as $entry) {
-				if(preg_match('/^jquery[-0-9\.]*\.min\.js$/i', $entry))
-					return $entry;
-			}
-
-			return '';
-		}
-	}
 
 	/* if config file already exists, no need to continue */
 	if(!$finish && detect_config(false)) {
@@ -62,29 +29,28 @@
 	}
 
 
+	Authentication::initSession();
 
 	/* include page header, unless we're testing db connection (ajax) */
-	if(session_id()) { @session_write_close(); }
-	@session_name('rental_property_manager');
-	@session_start();
 	$_REQUEST['Embedded'] = 1; /* to prevent displaying the navigation bar */
 	$x = new StdClass;
 	$x->TableTitle = $Translation['Setup Data']; /* page title */
-	if(!$test) include_once("$curr_dir/header.php");
+	if(!$test) include_once(__DIR__ . '/header.php');
 
 	if($submit || $test) {
 
 		/* receive posted data */
 		if($submit) {
-			$username = setup_allowed_username($_POST['username']);
-			$email = isEmail($_POST['email']);
-			$password = $_POST['password'];
-			$confirmPassword = $_POST['confirmPassword'];
+			$username = Request::val('username');
+			if(!Authentication::validUsername($username)) $username = false;
+			$email = isEmail(Request::val('email'));
+			$password = Request::val('password');
+			$confirmPassword = Request::val('confirmPassword');
 		}
-		$db_name = str_replace('`', '', $_POST['db_name']);
-		$db_password = $_POST['db_password'];
-		$db_server = $_POST['db_server'];
-		$db_username = $_POST['db_username'];
+		$db_name = str_replace('`', '', Request::val('db_name'));
+		$db_password = Request::val('db_password');
+		$db_server = Request::val('db_server');
+		$db_username = Request::val('db_username');
 
 		/* validate data */
 		$errors = [];
@@ -132,7 +98,7 @@
 					</div>
 				</div>
 			<?php
-			include_once("$curr_dir/footer.php");
+			include_once(__DIR__ . '/footer.php');
 			exit;
 		}
 
@@ -143,9 +109,9 @@
 		}
 
 		/* create database tables */
-		$silent = false;
-		include_once("$curr_dir/updateDB.php");
+		include_once(__DIR__ . '/updateDB.php');
 
+		$defCfg = default_config();
 
 		/* attempt to save db config file */
 		$new_config = [
@@ -159,41 +125,14 @@
 			'adminConfig' => [
 				'adminUsername' => $username,
 				'adminPassword' => password_hash($password, PASSWORD_DEFAULT),
-				'notifyAdminNewMembers' => false,
-				'defaultSignUp' => 1,
-				'anonymousGroup' => 'anonymous',
-				'anonymousMember' => 'guest',
-				'groupsPerPage' => 10,
-				'membersPerPage' => 10,
-				'recordsPerPage' => 10,
-				'custom1' => 'Full Name',
-				'custom2' => 'Address',
-				'custom3' => 'City',
-				'custom4' => 'State',
-				'MySQLDateFormat' => '%m/%d/%Y',
-				'PHPDateFormat' => 'n/j/Y',
-				'PHPDateTimeFormat' => 'm/d/Y, h:i a',
-				'senderName' => 'Membership management',
 				'senderEmail' => $email,
-				'approvalSubject' => 'Your membership is now approved',
-				'approvalMessage' => "Dear member,\n\nYour membership is now approved by the admin. You can log in to your account here:\nhttp://{$_SERVER['HTTP_HOST']}" . rtrim(dirname($_SERVER['PHP_SELF']), '/\\') . "\n\nRegards,\nAdmin",
-				'hide_twitter_feed' => false,
-				'maintenance_mode_message' => '<b>Our website is currently down for maintenance</b><br>\r\nWe expect to be back in a couple hours. Thanks for your patience.',
-				'mail_function' => 'mail',
-				'smtp_server' => '',
-				'smtp_encryption' => '',
-				'smtp_port' => 25,
-				'smtp_user' => '',
-				'smtp_pass' => '',
-				'googleAPIKey' => '',
-				'baseUploadPath' => 'images',
-			]
+			] + $defCfg['adminConfig'],
 		];
 
 		$save_result = save_config($new_config);
 		if($save_result !== true) {
 			// display instructions for manually creating them if saving not successful
-			$folder_path_formatted = '<strong>' . dirname(__FILE__) . '</strong>';
+			$folder_path_formatted = '<strong>' . __DIR__ . '</strong>';
 			?>
 				<div class="row">
 					<div class="col-md-8 col-md-offset-2 col-lg-6 col-lg-offset-3">
@@ -209,10 +148,7 @@
 
 
 		/* sign in as admin if everything went ok */
-		$_SESSION['adminUsername'] = $username;
-		$_SESSION['memberID'] = $username;
-		$_SESSION['memberGroupID'] = 2; // this should work fine in most cases
-
+		Authentication::signInAsAdmin();
 
 
 		/* redirect to finish page using javascript */
@@ -232,17 +168,15 @@
 		<?php
 
 		// exit
-		include_once("$curr_dir/footer.php");
+		include_once(__DIR__ . '/footer.php');
 		exit;
 	} elseif($finish) {
 		detect_config();
-		@include("$curr_dir/config.php");
 	}
 ?>
 
 	<div class="row"><div class="col-md-8 col-md-offset-2 col-lg-6 col-lg-offset-3">
-	<?php
-		if(!$form && !$finish) { /* show checks and instructions */
+	<?php if(!$form && !$finish) { /* show checks and instructions */
 
 			/* initial checks */
 			$checks = []; /* populate with ['class' => 'warning|danger', 'message' => 'error message'] */
@@ -277,13 +211,13 @@
 					'message' => 'PHP is not configured to use mbstring extension on this machine. This will prevent some app functions. If you\'re using a Windows server, make sure to enable mbstring extension in <code>php.ini</code>. If you\'re using a Linux server, you should install the appropriate <code>php-mbstring</code> package for your Linux flavor and PHP version.'
 				];
 
-			if(!@is_writable("{$curr_dir}/images"))
+			if(!@is_writable(__DIR__ . '/images'))
 				$checks[] = [
 					'class' => 'warning',
-					'message' => '<dfn><abbr title="' . dirname(__FILE__) . '/images">images</abbr></dfn> folder is not writeable (or doesn\'t exist). This will prevent file uploads from working correctly. Please create or set that folder as writeable.<br><br>For example, you might need to <code>chmod 777</code> using FTP, or if this is a linux system and you have shell access, better try using <code>chown -R www-data:www-data ' . dirname(__FILE__) . '</code>, replacing <i>www-data</i> with the actual username running the server process if necessary.'
+					'message' => '<dfn><abbr title="' . __DIR__ . '/images">images</abbr></dfn> folder is not writeable (or doesn\'t exist). This will prevent file uploads from working correctly. Please create or set that folder as writeable.<br><br>For example, you might need to <code>chmod 777</code> using FTP, or if this is a linux system and you have shell access, better try using <code>chown -R www-data:www-data ' . __DIR__ . '</code>, replacing <i>www-data</i> with the actual username running the server process if necessary.'
 				];
 
-			if(count($checks) && !isset($_POST['test'])) {
+			if(count($checks) && !Request::has('test')) {
 				$stop_setup = false;
 				?>
 				<div class="panel panel-warning vspacer-lg">
@@ -445,7 +379,7 @@
 
 		<?php
 			// make sure this is an admin
-			if(!$_SESSION['adminUsername']) {
+			if(Authentication::getAdmin() === false) {
 				?>
 				<div id="manual-redir" style="width: 400px; margin: 10px auto;">If not redirected automatically, <a href="index.php">click here</a>!</div>
 				<script>
@@ -478,11 +412,11 @@
 	<script>
 	<?php if(!$form && !$finish) { ?>
 		$j(function() {
-			$('show-intro2').observe('click', function() {
-				$('intro1').hide();
-				$('intro2').appear({ duration: 2 });
+			$j('#show-intro2').on('click', function() {
+				$j('#intro1').addClass('hidden');
+				$j('#intro2')[0].appear({ duration: 2 });
 			});
-			$('show-login-form').observe('click', function() {
+			$j('#show-login-form').on('click', function() {
 				var a = window.location.href;
 				window.location = a + '?show-form=1';
 			});
@@ -495,13 +429,13 @@
 
 				if(ps == 'strong') {
 					$j('#password').parents('.form-group').removeClass('has-error has-warning').addClass('has-success');
-					$('password').title = '<?php echo htmlspecialchars($Translation['Password strength: strong']); ?>';
+					$j('#password').attr('title', '<?php echo htmlspecialchars($Translation['Password strength: strong']); ?>');
 				} else if(ps == 'good') {
 					$j('#password').parents('.form-group').removeClass('has-error has-success').addClass('has-warning');
-					$('password').title = '<?php echo htmlspecialchars($Translation['Password strength: good']); ?>';
+					$j('#password').attr('title', '<?php echo htmlspecialchars($Translation['Password strength: good']); ?>');
 				} else {
 					$j('#password').parents('.form-group').removeClass('has-success has-warning').addClass('has-error');
-					$('password').title = '<?php echo htmlspecialchars($Translation['Password strength: weak']); ?>';
+					$j('#password').attr('title', '<?php echo htmlspecialchars($Translation['Password strength: weak']); ?>');
 				}
 			});
 
@@ -541,8 +475,8 @@
 				return false;
 			}
 
-			/* user exists? */
-			if($('usernameNotAvailable').visible()) {
+			/* user invalid? */
+			if(!/^\w[\w\. @]{3,100}$/.test(user) || /(@@|  |\.\.|___)/.test(user) || user.toLowerCase() == 'guest') {
 				modal_window({ message: '<div class="alert alert-danger"><?php echo addslashes($Translation['username invalid']); ?></div>', title: "<?php echo addslashes($Translation['error:']); ?>", close: function() { jQuery('#username').focus(); } });
 				return false;
 			}
@@ -593,7 +527,6 @@
 
 	<style>
 		legend{ font-weight: bold; }
-		#usernameAvailable,#usernameNotAvailable{ cursor: pointer; }
 
 		.instructions{
 			padding: 30px;
@@ -611,5 +544,4 @@
 		ul#next-actions { padding: 2em;     }
 	</style>
 
-<?php include_once("$curr_dir/footer.php"); ?>
-
+<?php include_once(__DIR__ . '/footer.php');

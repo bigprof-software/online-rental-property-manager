@@ -1,9 +1,8 @@
 <?php
-	$currDir = dirname(__FILE__);
-	include_once("{$currDir}/lib.php");
-	include_once("{$currDir}/header.php");
+	include_once(__DIR__ . '/lib.php');
+	include_once(__DIR__ . '/header.php');
 
-	if($_GET['redir'] == 1) {
+	if(Request::val('redir') == 1) {
 		echo '<META HTTP-EQUIV="Refresh" CONTENT="5;url=index.php?signIn=1">';
 	}
 ?>
@@ -19,4 +18,4 @@
 	<div><?php echo $Translation['sign in wait approval']; ?></div>
 </div>
 
-<?php include_once("$currDir/footer.php");
+<?php include_once(__DIR__ . '/footer.php');

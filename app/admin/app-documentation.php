@@ -1,19 +1,16 @@
 <?php
-	$currDir = dirname(__FILE__);
-	require("{$currDir}/incCommon.php");
+	require(__DIR__ . '/incCommon.php');
 
 	$GLOBALS['page_title'] = $Translation['app documentation'];
-	include("{$currDir}/incHeader.php");
-
-	$app_title = 'Rental Property Manager';
+	include(__DIR__ . '/incHeader.php');
 ?>
-<div class="page-header"><h1><?php echo $app_title . ' ' . $Translation['app documentation']; ?></h1></div>
+<div class="page-header"><h1><?php echo APP_TITLE . ' ' . $Translation['app documentation']; ?></h1></div>
 <div class="row">
 	<div class="col-md-3 col-lg-2" id="toc-section">
 		<nav class="hidden-print hidden-xs hidden-sm affix">
 			<ul class="nav">
 				<li>
-					<a href="#content-section"><?php echo $app_title; ?></a>
+					<a href="#content-section"><?php echo APP_TITLE; ?></a>
 					<ul class="nav">
 					</ul>
 				</li>
@@ -50,4 +47,4 @@
 </script>
 
 <?php
-	include("{$currDir}/incFooter.php");
+	include(__DIR__ . '/incFooter.php');

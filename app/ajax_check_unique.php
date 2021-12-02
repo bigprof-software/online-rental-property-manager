@@ -7,8 +7,7 @@
 	 * @param value the value to be checked for being a duplicate
 	 * @returns json result: { "result": "ok" } or { "result": "error" }
 	 */
-	$currDir=dirname(__FILE__);
-	include_once("$currDir/lib.php");
+	include_once(__DIR__ . '/lib.php');
 
 	/* maintenance mode */
 	handle_maintenance();

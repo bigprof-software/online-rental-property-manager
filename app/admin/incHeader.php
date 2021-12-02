@@ -1,5 +1,8 @@
-<?php if(function_exists('set_headers')) { set_headers(); } ?><!DOCTYPE html>
-<?php if(!defined('PREPEND_PATH')) define('PREPEND_PATH', '../'); ?>
+<?php
+	if(function_exists('set_headers')) { set_headers(); }
+	if(!defined('PREPEND_PATH')) define('PREPEND_PATH', '../');
+	$adminConfig = config('adminConfig');
+	?><!DOCTYPE html>
 <!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
 <!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
 <!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
@@ -9,7 +12,7 @@
 		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 		<meta name="description" content="">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
-		<title>Rental Property Manager | <?php echo $Translation['admin area']; ?><?php echo html_attr(isset($GLOBALS['page_title']) ? " | {$GLOBALS['page_title']}" : ''); ?></title>
+		<title><?php echo APP_TITLE . ' | ' . $Translation['admin area'] . (isset($GLOBALS['page_title']) ? html_attr(" | {$GLOBALS['page_title']}") : ''); ?></title>
 
 		<link id="browser_favicon" rel="shortcut icon" href="<?php echo PREPEND_PATH; ?>resources/table_icons/administrator.png">
 
@@ -213,7 +216,6 @@
 							<li><a href="pageBackupRestore.php"><i class="glyphicon menu-item-icon text-info glyphicon-tasks"></i> <?php echo $Translation['database backups']; ?></a></li>
 							<li><a href="pageUploadCSV.php"><i class="glyphicon menu-item-icon text-info glyphicon-upload"></i> <?php echo $Translation['import CSV']; ?></a></li>
 							<li><a href="pageQueryLogs.php"><i class="glyphicon menu-item-icon text-info glyphicon-book"></i> <?php echo $Translation['Query logs']; ?></a></li>
-							<li><a href="pageSQL.php"><i class="glyphicon menu-item-icon text-danger glyphicon-console"></i> <?php echo $Translation['Interactive SQL queries tool']; ?></a></li>
 							<li class="divider"></li>
 							<li><a href="https://forums.appgini.com" target="_blank"><i class="glyphicon menu-item-icon text-info glyphicon-new-window"></i> <?php echo $Translation['AppGini forum']; ?></a></li>
 						</ul>

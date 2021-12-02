@@ -42,7 +42,7 @@
 					<hr class="hidden-md hidden-lg">
 					<label class="control-label col-lg-3" for="employer_name">Employer name</label>
 					<div class="col-lg-9">
-						<input maxlength="15" type="text" class="form-control" name="employer_name" id="employer_name" value="<%%VALUE(employer_name)%%>">
+						<input maxlength="100" type="text" class="form-control" name="employer_name" id="employer_name" value="<%%VALUE(employer_name)%%>">
 					</div>
 				</div>
 
@@ -51,7 +51,7 @@
 					<hr class="hidden-md hidden-lg">
 					<label class="control-label col-lg-3" for="city">City</label>
 					<div class="col-lg-9">
-						<input maxlength="20" type="text" class="form-control" name="city" id="city" value="<%%VALUE(city)%%>">
+						<input maxlength="100" type="text" class="form-control" name="city" id="city" value="<%%VALUE(city)%%>">
 					</div>
 				</div>
 
@@ -237,6 +237,11 @@
 								close: function() {
 									var field_id = $j('#' + pt + '_view_parent').prevAll('input:hidden').eq(0).attr('id');
 									$j('#' + field_id + '-container').select2('focus').select2('focus');
+
+									// in case the parent record was updated, we should update auto-fills
+									var updaterName = field_id + '_update_autofills';
+									if(typeof(window[updaterName]) == 'function')
+										window[updaterName]();
 								},
 								size: 'full',
 								title: $j(this).attr('title')

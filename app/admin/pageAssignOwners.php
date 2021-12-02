@@ -1,13 +1,14 @@
 <?php
 	@set_time_limit(0);
-	$currDir = dirname(__FILE__);
-	require("{$currDir}/incCommon.php");
+	require(__DIR__ . '/incCommon.php');
 	$GLOBALS['page_title'] = $Translation['data ownership assign'];
-	include("{$currDir}/incHeader.php");
+	include(__DIR__ . '/incHeader.php');
 
 	// get a list of tables
 	$arrTables = getTableList();
 	$arrTablesNoOwners = [];
+	$insert = '';
+	$status = '';
 
 	// get a list of tables with records that have no owners
 	foreach($arrTables as $tn => $tc) {
@@ -26,8 +27,8 @@
 
 		ignore_user_abort();
 		foreach($arrTablesNoOwners as $tn => $tc) {
-			$groupID = intval($_POST["ownerGroup_$tn"]);
-			$memberID = makeSafe(strtolower($_POST["ownerMember_$tn"]));
+			$groupID = intval(Request::val("ownerGroup_$tn"));
+			$memberID = makeSafe(strtolower(Request::val("ownerMember_$tn")));
 			$pkf = getPKFieldName($tn);
 
 			if($groupID) {
@@ -70,14 +71,13 @@
 		}
 
 		// refresh the list of tables with records that have no owners
-		unset($arrTablesNoOwners);
-		foreach($arrTables as $tn=>$tc) {
-			$countOwned=sqlValue("select count(1) from membership_userrecords where tableName='$tn'");
-			$countAll=sqlValue("select count(1) from `$tn`");
+		$arrTablesNoOwners = [];
+		foreach($arrTables as $tn => $tc) {
+			$countOwned = sqlValue("select count(1) from membership_userrecords where tableName='$tn'");
+			$countAll = sqlValue("select count(1) from `$tn`");
 
-			if($countAll>$countOwned) {
-				$arrTablesNoOwners[$tn]=($countAll-$countOwned);
-			}
+			if($countAll > $countOwned)
+				$arrTablesNoOwners[$tn] = ($countAll - $countOwned);
 		}
 
 	}
@@ -89,59 +89,53 @@
 <?php
 
 	// if all records of all tables have owners, no need to continue
-	if(!is_array($arrTablesNoOwners)) {
+	if(empty($arrTablesNoOwners)) {
 		echo "<div class=\"alert alert-success\"><i class=\"glyphicon glyphicon-ok\"></i> {$Translation['records ownership done']}</div>";
-		include("$currDir/incFooter.php");
+		include(__DIR__ . '/incFooter.php');
 		exit;
 	}
 
 	// show status of previous assignments
-	if($status!='') {
+	if($status != '')
 		echo "<div class=\"alert alert-info\">$status</div>";
-	}
 
 	// compose groups drop-down
-	$htmlGroups="<option value=\"0\">--- {$Translation['select group']} ---</option>";
-	$res=sql("select groupID, name from membership_groups order by name", $eo);
-	while($row=db_fetch_row($res)) {
-		$htmlGroups.="<option value=\"$row[0]\">$row[1]</option>";
-	}
-	$htmlGroups.="</select>";
+	$htmlGroups = "<option value=\"0\">--- {$Translation['select group']} ---</option>";
+	$res = sql("SELECT `groupID`, `name` FROM `membership_groups` ORDER BY `name`", $eo);
+	while($row = db_fetch_row($res))
+		$htmlGroups .= "<option value=\"$row[0]\">$row[1]</option>";
+	$htmlGroups .= '</select>';
 ?>
 
 <script>
-	var members=new Array();
+	var members = [];
 	<?php
-		$res=sql("select groupID, lcase(memberID) from membership_users order by groupID, memberID", $eo);
-		while($row=db_fetch_row($res)) {
-			$members[$row[0]].="'".$row[1]."',";
-		}
+		$members = [];
+		$res = sql("select groupID, lcase(memberID) from membership_users order by groupID, memberID", $eo);
+		while($row = db_fetch_row($res))
+			$members[$row[0]] .= "'" . $row[1] . "',";
 
-		foreach($members as $groupID=>$members) {
-			echo "\n\tmembers[$groupID]=[".substr($members, 0, -1)."];";
-		}
+		foreach($members as $groupID => $groupMembers)
+			echo "\n\tmembers[$groupID] = [" . substr($groupMembers, 0, -1) . "];";
 	?>
 
 	function populateMembers(memberSelect, groupSelect) {
-		var m=document.getElementsByName(memberSelect)[0];
-		var g=document.getElementsByName(groupSelect)[0];
+		var m = document.getElementsByName(memberSelect)[0];
+		var g = document.getElementsByName(groupSelect)[0];
 
-		if(m.options.length>0) {
-			var mc=m.options.length;
-			for(var i=0; i<mc; i++) {
-				m.options[0]=null;
-			}
+		if(m.options.length > 0) {
+			var mc = m.options.length;
+			for(var i = 0; i < mc; i++)
+				m.options[0] = null;
 		}
 
-		var gval=g.options[g.selectedIndex].value;
+		var gval = g.options[g.selectedIndex].value;
 
-		if(gval==0 || members[gval] == undefined) {
+		if(gval == 0 || members[gval] == undefined)
 			return 0;
-		}
 
-		for(var j=0; j<members[gval].length; j++) {
-			m.options[j]=new Option(members[gval][j], members[gval][j], false, false);
-		}
+		for(var j = 0; j < members[gval].length; j++)
+			m.options[j] = new Option(members[gval][j], members[gval][j], false, false);
 
 		return 0;
 	}
@@ -167,7 +161,7 @@
 	foreach($arrTablesNoOwners as $tn=>$countNoOwners) {
 		?>
 		<tr>
-			<td><?php echo $arrTables[$tn]; ?></td>
+			<td><?php echo $arrTables[$tn][0]; ?></td>
 			<td align="right"><?php echo number_format($countNoOwners); ?>&nbsp;</td>
 			<td><select onchange="populateMembers('ownerMember_<?php echo $tn; ?>', 'ownerGroup_<?php echo $tn; ?>');" name="ownerGroup_<?php echo $tn; ?>"><?php echo $htmlGroups; ?></td>
 			<td><select style="width: 120px;" name="ownerMember_<?php echo $tn; ?>"></select></td>
@@ -182,9 +176,7 @@
 		</tbody>
 		</table></div>
 
-		<p><?php echo  $Translation["if no owner member assigned"] ; ?></p>
+		<p><?php echo  $Translation['if no owner member assigned'] ; ?></p>
 	</form>
 
-<?php
-	include("$currDir/incFooter.php");
-?>
+<?php include(__DIR__ . '/incFooter.php');

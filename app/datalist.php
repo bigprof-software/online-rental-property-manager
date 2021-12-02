@@ -1,21 +1,6 @@
 <?php
 
-define('datalist_filters_count', 20);
-define('datalist_image_uploads_exist', true);
-define('datalist_max_records_multi_selection', 1000);
-define('datalist_max_page_lump', 50);
-define('datalist_max_records_dv_print', 100);
-define('datalist_auto_complete_size', 1000);
-define('datalist_date_separator', '/');
-define('datalist_date_format', 'mdY');
-define('datalist_max_records_per_page', 2000);
-
-$curr_dir = dirname(__FILE__);
-require_once($curr_dir . '/combo.class.php');
-require_once($curr_dir . '/data_combo.class.php');
-require_once($curr_dir . '/date_combo.class.php');
-
-class DataList{
+class DataList {
 	// this class generates the data table ...
 
 	var $QueryFieldsTV,
@@ -124,46 +109,48 @@ class DataList{
 
 		$current_view = ''; /* TV, DV, TVDV, TVP, DVP, Filters */
 
-		$Embedded = intval($_REQUEST['Embedded']);
-		$AutoClose = intval($_REQUEST['AutoClose']);
+		$Embedded = intval(Request::val('Embedded'));
+		$AutoClose = intval(Request::val('AutoClose'));
 
-		$SortField = $_REQUEST['SortField'];
-		$SortDirection = $_REQUEST['SortDirection'];
-		$FirstRecord = intval($_REQUEST['FirstRecord']);
-		$Previous_x = $_REQUEST['Previous_x'];
-		$Next_x = $_REQUEST['Next_x'];
-		$Filter_x = $_REQUEST['Filter_x'];
-		$SaveFilter_x = $_REQUEST['SaveFilter_x'];
-		$NoFilter_x = $_REQUEST['NoFilter_x'];
-		$CancelFilter = $_REQUEST['CancelFilter'];
-		$ApplyFilter = $_REQUEST['ApplyFilter'];
-		$Search_x = $_REQUEST['Search_x'];
-		$SearchString = $_REQUEST['SearchString'];
-		$CSV_x = $_REQUEST['CSV_x'];
-		$Print_x = $_REQUEST['Print_x'];
-		$PrintTV = $_REQUEST['PrintTV'];
-		$PrintDV = $_REQUEST['PrintDV'];
-		$SelectedID = $_REQUEST['SelectedID'];
-		$insert_x = $_REQUEST['insert_x'];
-		$update_x = $_REQUEST['update_x'];
-		$delete_x = $_REQUEST['delete_x'];
-		$SkipChecks = $_REQUEST['confirmed'];
-		$deselect_x = $_REQUEST['deselect_x'];
-		$addNew_x = $_REQUEST['addNew_x'];
-		$dvprint_x = $_REQUEST['dvprint_x'];
-		$DisplayRecords = (in_array($_REQUEST['DisplayRecords'], ['user', 'group']) ? $_REQUEST['DisplayRecords'] : 'all');
-		list($FilterAnd, $FilterField, $FilterOperator, $FilterValue) = $this->validate_filters($_REQUEST, $FiltersPerGroup);
+		$SortField = Request::val('SortField');
+		$SortDirection = Request::val('SortDirection');
+		$FirstRecord = intval(Request::val('FirstRecord'));
+		$Previous_x = Request::val('Previous_x');
+		$Next_x = Request::val('Next_x');
+		$Filter_x = Request::val('Filter_x');
+		$SaveFilter_x = Request::val('SaveFilter_x');
+		$NoFilter_x = Request::val('NoFilter_x');
+		$CancelFilter = Request::val('CancelFilter');
+		$ApplyFilter = Request::val('ApplyFilter');
+		$Search_x = Request::val('Search_x');
+		$SearchString = Request::val('SearchString');
+		$CSV_x = Request::val('CSV_x');
+		$Print_x = Request::val('Print_x');
+		$PrintTV = Request::val('PrintTV');
+		$PrintDV = Request::val('PrintDV');
+		$SelectedID = Request::val('SelectedID');
+		$insert_x = Request::val('insert_x');
+		$update_x = Request::val('update_x');
+		$delete_x = Request::val('delete_x');
+		$SkipChecks = Request::val('confirmed');
+		$deselect_x = Request::val('deselect_x');
+		$addNew_x = Request::val('addNew_x');
+		$dvprint_x = Request::val('dvprint_x');
+		$DisplayRecords = (in_array(Request::val('DisplayRecords'), ['user', 'group']) ? Request::val('DisplayRecords') : 'all');
+		list($this->FilterAnd, $this->FilterField, $this->FilterOperator, $this->FilterValue) = $this->validate_filters($_REQUEST, $FiltersPerGroup);
 		$record_selector = [];
-		if(isset($_REQUEST['record_selector']) && is_array($_REQUEST['record_selector']))
-			$record_selector = $_REQUEST['record_selector'];
+		if(is_array(Request::val('record_selector')))
+			$record_selector = Request::val('record_selector');
 
 		$this->applyPermissionsToQuery($DisplayRecords);
 
+		$setSelectedIDPreviousPage = $setSelectedIDNextPage = $previousRecordDV = $nextRecordDV = null;
+
 		if($SelectedID && !$Embedded && $this->AllowDVNavigation) {
-			$setSelectedIDPreviousPage = !empty($_REQUEST['setSelectedIDPreviousPage']);
-			$setSelectedIDNextPage = !empty($_REQUEST['setSelectedIDNextPage']) && !$setSelectedIDPreviousPage;
-			$previousRecordDV = !empty($_REQUEST['previousRecordDV']) && !$setSelectedIDPreviousPage && !$setSelectedIDNextPage;
-			$nextRecordDV = !empty($_REQUEST['nextRecordDV']) && !$previousRecordDV && !$setSelectedIDPreviousPage && !$setSelectedIDNextPage;
+			$setSelectedIDPreviousPage = !empty(Request::val('setSelectedIDPreviousPage'));
+			$setSelectedIDNextPage = !empty(Request::val('setSelectedIDNextPage')) && !$setSelectedIDPreviousPage;
+			$previousRecordDV = !empty(Request::val('previousRecordDV')) && !$setSelectedIDPreviousPage && !$setSelectedIDNextPage;
+			$nextRecordDV = !empty(Request::val('nextRecordDV')) && !$previousRecordDV && !$setSelectedIDPreviousPage && !$setSelectedIDNextPage;
 		}
 
 		$mi = getMemberInfo();
@@ -224,7 +211,7 @@ class DataList{
 		$this->HTML .= '   return false;';
 		$this->HTML .= '}';
 		$this->HTML .= '</script>';
-		$this->HTML .= '<input id="EnterAction" type="submit" style="position: absolute; left: 0px; top: -250px;" onclick="return enterAction();">';
+		$this->HTML .= '<input id="EnterAction" type="submit" style="position: fixed; left: 0px; top: -250px;" onclick="return enterAction();">';
 
 		$this->ContentType = 'tableview'; // default content type
 
@@ -234,15 +221,14 @@ class DataList{
 		}
 
 		// handle user commands ...
+		$filtersGET = null;
+
 		if($deselect_x != '') {
 			$SelectedID = '';
 			$this->showTV();
 		}
 
 		elseif($insert_x != '') {
-			// insert only if either a csrf or jwt token is provided
-			if(!csrf_token(true) && !jwt_check_login()) die($this->translation['csrf token expired or invalid']);
-
 			$error_message = '';
 			$SelectedID = call_user_func_array(
 				$this->TableName . '_insert', 
@@ -259,11 +245,11 @@ class DataList{
 
 			// compose filters and sorting
 			foreach($this->filterers as $filterer => $caption) {
-				if($_REQUEST['filterer_' . $filterer] != '') $filtersGET .= '&filterer_' . $filterer . '=' . urlencode($_REQUEST['filterer_' . $filterer]);
+				if(Request::val('filterer_' . $filterer) != '') $filtersGET .= '&filterer_' . $filterer . '=' . urlencode(Request::val('filterer_' . $filterer));
 			}
 			for($i = 1; $i <= (datalist_filters_count * $FiltersPerGroup); $i++) { // Number of filters allowed
-				if($FilterField[$i] != '' && $FilterOperator[$i] != '' && ($FilterValue[$i] != '' || strpos($FilterOperator[$i], 'empty'))) {
-					$filtersGET .= "&FilterAnd[{$i}]={$FilterAnd[$i]}&FilterField[{$i}]={$FilterField[$i]}&FilterOperator[{$i}]={$FilterOperator[$i]}&FilterValue[{$i}]=" . urlencode($FilterValue[$i]);
+				if($this->isValidFilter($i)) {
+					$filtersGET .= "&FilterAnd[{$i}]={$this->FilterAnd[$i]}&FilterField[{$i}]={$this->FilterField[$i]}&FilterOperator[{$i}]={$this->FilterOperator[$i]}&FilterValue[{$i}]=" . urlencode($this->FilterValue[$i]);
 				}
 			}
 			if($Embedded) $filtersGET .= '&Embedded=1&SelectedID=' . urlencode($SelectedID);
@@ -296,7 +282,7 @@ class DataList{
 			// delete only if either a csrf or jwt token is provided
 			if(!csrf_token(true) && !jwt_check_login()) die($this->translation['csrf token expired or invalid']);
 
-			$delete_res = call_user_func_array($this->TableName.'_delete', array($SelectedID, $this->AllowDeleteOfParents, $SkipChecks));
+			$delete_res = call_user_func_array($this->TableName.'_delete', [$SelectedID, $this->AllowDeleteOfParents, $SkipChecks]);
 			// handle ajax delete requests
 			if(is_ajax()) {
 				die($delete_res ? $delete_res : 'OK');
@@ -320,9 +306,6 @@ class DataList{
 		}
 
 		elseif($update_x != '') {
-			// update only if either a csrf or jwt token is provided
-			if(!csrf_token(true) && !jwt_check_login()) die($this->translation['csrf token expired or invalid']);
-
 			$error_message = '';
 			$updated = call_user_func_array(
 				$this->TableName . '_update', 
@@ -336,11 +319,11 @@ class DataList{
 
 			// compose filters and sorting
 			foreach($this->filterers as $filterer => $caption) {
-				if($_REQUEST['filterer_' . $filterer] != '') $filtersGET .= '&filterer_' . $filterer . '=' . urlencode($_REQUEST['filterer_' . $filterer]);
+				if(Request::val('filterer_' . $filterer) != '') $filtersGET .= '&filterer_' . $filterer . '=' . urlencode(Request::val('filterer_' . $filterer));
 			}
 			for($i = 1; $i <= (datalist_filters_count * $FiltersPerGroup); $i++) { // Number of filters allowed
-				if($FilterField[$i] != '' && $FilterOperator[$i] != '' && ($FilterValue[$i] != '' || strpos($FilterOperator[$i], 'empty'))) {
-					$filtersGET .= "&FilterAnd[{$i}]={$FilterAnd[$i]}&FilterField[{$i}]={$FilterField[$i]}&FilterOperator[{$i}]={$FilterOperator[$i]}&FilterValue[{$i}]=" . urlencode($FilterValue[$i]);
+				if($this->isValidFilter($i)) {
+					$filtersGET .= "&FilterAnd[{$i}]={$this->FilterAnd[$i]}&FilterField[{$i}]={$this->FilterField[$i]}&FilterOperator[{$i}]={$this->FilterOperator[$i]}&FilterValue[{$i}]=" . urlencode($this->FilterValue[$i]);
 				}
 			}
 			$filtersGET .= "&SortField={$SortField}&SortDirection={$SortDirection}&FirstRecord={$FirstRecord}&Embedded={$Embedded}";
@@ -369,14 +352,14 @@ class DataList{
 		elseif($SaveFilter_x != '' && $this->AllowSavingFilters) {
 			$filter_link = $_SERVER['HTTP_REFERER'] . '?SortField=' . urlencode($SortField) . '&SortDirection=' . $SortDirection . '&';
 			for($i = 1; $i <= (datalist_filters_count * $FiltersPerGroup); $i++) { // Number of filters allowed
-				if(($FilterField[$i] != '' || $i == 1) && $FilterOperator[$i] != '' && ($FilterValue[$i] != '' || strpos($FilterOperator[$i], 'empty'))) {
-					$filter_link .= urlencode("FilterAnd[$i]") . '=' . urlencode($FilterAnd[$i]) . '&';
-					$filter_link .= urlencode("FilterField[$i]") . '=' . urlencode($FilterField[$i]) . '&';
-					$filter_link .= urlencode("FilterOperator[$i]") . '=' . urlencode($FilterOperator[$i]) . '&';
-					$filter_link .= urlencode("FilterValue[$i]") . '=' . urlencode($FilterValue[$i]) . '&';
-				} elseif(($i % $FiltersPerGroup == 1) && in_array($FilterAnd[$i], array('and', 'or'))) {
+				if($this->isValidFilter($i)) {
+					$filter_link .= urlencode("FilterAnd[$i]") . '=' . urlencode($this->FilterAnd[$i]) . '&';
+					$filter_link .= urlencode("FilterField[$i]") . '=' . urlencode($this->FilterField[$i]) . '&';
+					$filter_link .= urlencode("FilterOperator[$i]") . '=' . urlencode($this->FilterOperator[$i]) . '&';
+					$filter_link .= urlencode("FilterValue[$i]") . '=' . urlencode($this->FilterValue[$i]) . '&';
+				} elseif(($i % $FiltersPerGroup == 1) && in_array($this->FilterAnd[$i], ['and', 'or'])) {
 					/* always include the and/or at the beginning of each group */
-					$filter_link .= urlencode("FilterAnd[$i]") . '=' . urlencode($FilterAnd[$i]) . '&';
+					$filter_link .= urlencode("FilterAnd[$i]") . '=' . urlencode($this->FilterAnd[$i]) . '&';
 				}
 			}
 			$filter_link = substr($filter_link, 0, -1); /* trim last '&' */
@@ -408,7 +391,7 @@ class DataList{
 			}
 
 			// check if magic filter files exist
-			$hooksDir = dirname(__FILE__) . '/hooks';
+			$hooksDir = APP_DIR . '/hooks';
 			$uff = "{$hooksDir}/{$this->TableName}.filters.{$mi['username']}.php"; // user-specific filter file
 			$gff = "{$hooksDir}/{$this->TableName}.filters.{$mi['group']}.php"; // group-specific filter file
 			$tff = "{$hooksDir}/{$this->TableName}.filters.php"; // table-specific filter file
@@ -434,6 +417,10 @@ class DataList{
 
 			if($this->FilterPage != '') {
 				$Translation = &$this->translation;
+				$FilterAnd = &$this->FilterAnd;
+				$FilterField = &$this->FilterField;
+				$FilterOperator = &$this->FilterOperator;
+				$FilterValue = &$this->FilterValue;
 				ob_start();
 				@include($this->FilterPage);
 				$this->HTML .= ob_get_clean();
@@ -452,9 +439,9 @@ class DataList{
 		elseif($NoFilter_x != '') {
 			// clear all filters ...
 			for($i = 1; $i <= (datalist_filters_count * $FiltersPerGroup); $i++) { // Number of filters allowed
-				$FilterField[$i] = '';
-				$FilterOperator[$i] = '';
-				$FilterValue[$i] = '';
+				$this->FilterField[$i] = '';
+				$this->FilterOperator[$i] = '';
+				$this->FilterValue[$i] = '';
 			}
 			$DisplayRecords = 'all';
 			$SearchString = '';
@@ -475,18 +462,18 @@ class DataList{
 
 			// apply lookup filterers to the query
 			foreach($this->filterers as $filterer => $caption) {
-				if($_REQUEST['filterer_' . $filterer] != '') {
+				if(Request::val('filterer_' . $filterer) != '') {
 					if($this->QueryWhere == '')
 						$this->QueryWhere = "where ";
 					else
 						$this->QueryWhere .= " and ";
-					$this->QueryWhere .= "`{$this->TableName}`.`$filterer`='" . makeSafe($_REQUEST['filterer_' . $filterer]) . "' ";
+					$this->QueryWhere .= "`{$this->TableName}`.`$filterer`='" . makeSafe(Request::val('filterer_' . $filterer)) . "' ";
 					break; // currently, only one filterer can be applied at a time
 				}
 			}
 
 			// apply quick search to the query
-			if($SearchString != '') {
+			if(strlen($SearchString)) {
 				if($Search_x != '') $FirstRecord = 1;
 
 				foreach($this->QueryFieldsQS as $fName => $fCaption)
@@ -513,14 +500,7 @@ class DataList{
 				$GroupHasFilters = 0;
 				for($j = 0; $j < $FiltersPerGroup; $j++) {
 					$ij = $i + $j;
-					if(
-						$FilterField[$ij] != '' && 
-						$this->QueryFieldsIndexed[($FilterField[$ij])] != '' && 
-						$FilterOperator[$ij] != '' && (
-							$FilterValue[$ij] != '' || 
-							strpos($FilterOperator[$ij], 'empty') !== false
-						)
-					) {
+					if($this->isValidFilter($ij)) {
 						$GroupHasFilters = 1;
 						break;
 					}
@@ -538,50 +518,45 @@ class DataList{
 					$ij = $i + $j;
 
 					// not a valid filter?
-					if(
-						!$FilterField[$ij] || 
-						!$this->QueryFieldsIndexed[($FilterField[$ij])] ||
-						!$FilterOperator[$ij] ||
-						(!$FilterValue[$ij] && strpos($FilterOperator[$ij], 'empty') === false)
-					) continue;
+					if(!$this->isValidFilter($ij)) continue;
 
-					if($FilterAnd[$ij] == '') $FilterAnd[$ij] = 'and';
+					if($this->FilterAnd[$ij] == '') $this->FilterAnd[$ij] = 'and';
 					$currentGroup['filters'][] = '';
 					$currentFilter =& $currentGroup['filters'][count($currentGroup['filters']) - 1];
 
 					// always use the 1st FilterAnd of the group as the group's join
-					if(empty($currentGroup['join'])) $currentGroup['join'] = thisOr($FilterAnd[$i], 'and');
+					if(empty($currentGroup['join'])) $currentGroup['join'] = thisOr($this->FilterAnd[$i], 'and');
 
 					// if this is NOT the first filter in the group, add its FilterAnd, else ignore
 					if(count($currentGroup['filters']) > 1)
-						$currentFilter = $FilterAnd[$ij] . ' ';
+						$currentFilter = $this->FilterAnd[$ij] . ' ';
 
-					list($isDate, $isDateTime) = $this->fieldIsDateTime($FilterField[$ij]);
+					list($isDate, $isDateTime) = $this->fieldIsDateTime($this->FilterField[$ij]);
 
-					if($FilterOperator[$ij] == 'is-empty' && !$isDateTime)
-						$currentFilter .= '(' . $this->QueryFieldsIndexed[($FilterField[$ij])] . "='' OR " . $this->QueryFieldsIndexed[($FilterField[$ij])] . ' IS NULL)';
+					if($this->FilterOperator[$ij] == 'is-empty' && !$isDateTime)
+						$currentFilter .= '(' . $this->QueryFieldsIndexed[($this->FilterField[$ij])] . "='' OR " . $this->QueryFieldsIndexed[($this->FilterField[$ij])] . ' IS NULL)';
 
-					elseif($FilterOperator[$ij] == 'is-not-empty' && !$isDateTime)
-						$currentFilter .= $this->QueryFieldsIndexed[($FilterField[$ij])] . "!=''";
+					elseif($this->FilterOperator[$ij] == 'is-not-empty' && !$isDateTime)
+						$currentFilter .= $this->QueryFieldsIndexed[($this->FilterField[$ij])] . "!=''";
 
-					elseif($FilterOperator[$ij] == 'is-empty' && $isDateTime)
-						$currentFilter .= '(' . $this->QueryFieldsIndexed[($FilterField[$ij])] . "=0 OR " . $this->QueryFieldsIndexed[($FilterField[$ij])] . ' IS NULL)';
+					elseif($this->FilterOperator[$ij] == 'is-empty' && $isDateTime)
+						$currentFilter .= '(' . $this->QueryFieldsIndexed[($this->FilterField[$ij])] . "=0 OR " . $this->QueryFieldsIndexed[($this->FilterField[$ij])] . ' IS NULL)';
 
-					elseif($FilterOperator[$ij] == 'is-not-empty' && $isDateTime)
-						$currentFilter .= $this->QueryFieldsIndexed[($FilterField[$ij])] . "!=0";
+					elseif($this->FilterOperator[$ij] == 'is-not-empty' && $isDateTime)
+						$currentFilter .= $this->QueryFieldsIndexed[($this->FilterField[$ij])] . "!=0";
 
-					elseif($FilterOperator[$ij] == 'like' && !strstr($FilterValue[$ij], "%") && !strstr($FilterValue[$ij], "_"))
-						$currentFilter .= $this->QueryFieldsIndexed[($FilterField[$ij])] . " LIKE '%" . makeSafe($FilterValue[$ij]) . "%'";
+					elseif($this->FilterOperator[$ij] == 'like' && !strstr($this->FilterValue[$ij], "%") && !strstr($this->FilterValue[$ij], "_"))
+						$currentFilter .= $this->QueryFieldsIndexed[($this->FilterField[$ij])] . " LIKE '%" . makeSafe($this->FilterValue[$ij]) . "%'";
 
-					elseif($FilterOperator[$ij] == 'not-like' && !strstr($FilterValue[$ij], "%") && !strstr($FilterValue[$ij], "_"))
-						$currentFilter .= $this->QueryFieldsIndexed[($FilterField[$ij])] . " NOT LIKE '%" . makeSafe($FilterValue[$ij]) . "%'";
+					elseif($this->FilterOperator[$ij] == 'not-like' && !strstr($this->FilterValue[$ij], "%") && !strstr($this->FilterValue[$ij], "_"))
+						$currentFilter .= $this->QueryFieldsIndexed[($this->FilterField[$ij])] . " NOT LIKE '%" . makeSafe($this->FilterValue[$ij]) . "%'";
 
 					elseif($isDate) {
-						$dateValue = mysql_datetime($FilterValue[$ij]);
-						$currentFilter .= $this->QueryFieldsIndexed[($FilterField[$ij])] . ' ' . $GLOBALS['filter_operators'][$FilterOperator[$ij]] . " '$dateValue'";
+						$dateValue = mysql_datetime($this->FilterValue[$ij]);
+						$currentFilter .= $this->QueryFieldsIndexed[($this->FilterField[$ij])] . ' ' . FILTER_OPERATORS[$this->FilterOperator[$ij]] . " '$dateValue'";
 
 					} else
-						$currentFilter .= $this->QueryFieldsIndexed[($FilterField[$ij])] . ' ' . $GLOBALS['filter_operators'][$FilterOperator[$ij]] . " '" . makeSafe($FilterValue[$ij]) . "'";
+						$currentFilter .= $this->QueryFieldsIndexed[($this->FilterField[$ij])] . ' ' . FILTER_OPERATORS[$this->FilterOperator[$ij]] . " '" . makeSafe($this->FilterValue[$ij]) . "'";
 
 				}
 			}
@@ -669,6 +644,7 @@ class DataList{
 
 			$tvRecords = $this->getTVRevords($FirstRecord);
 			$fieldCountTV = count($this->QueryFieldsTV);
+			$indexOfSelectedID = null;
 
 			if($SelectedID && count($tvRecords) && !$Embedded) {
 				if($setSelectedIDPreviousPage)
@@ -725,44 +701,44 @@ class DataList{
 				$selected_records_more = [];
 
 				if($this->AllowPrintingDV) {
-					$selected_records_more[] = array(
+					$selected_records_more[] = [
 						'function' => ($this->SeparateDV ? 'print_multiple_dv_sdv' : 'print_multiple_dv_tvdv'),
 						'title' => $this->translation['Print Preview Detail View'],
 						'icon' => 'print'
-					);
+					];
 				}
 
 				/* if user can mass-delete selected records, add action to 'More' menu */
 				if($this->AllowMassDelete && $this->AllowDelete) {
-					$selected_records_more[] = array(
+					$selected_records_more[] = [
 						'function' => 'mass_delete',
 						'title' => $this->translation['Delete'],
 						'icon' => 'trash',
 						'class' => 'text-danger'
-					);
+					];
 				}
 
 				/* if user is admin, add 'Change owner' action to 'More' menu */
 				/* also, add help link for adding more actions */
 				if(getLoggedAdmin() !== false) {
-					$selected_records_more[] = array(
+					$selected_records_more[] = [
 						'function' => 'mass_change_owner',
 						'title' => $this->translation['Change owner'],
 						'icon' => 'user'
-					);
-					$selected_records_more[] = array(
+					];
+					$selected_records_more[] = [
 						'function' => 'add_more_actions_link',
 						'title' => $this->translation['Add more actions'],
 						'icon' => 'question-sign',
 						'class' => 'text-info'
-					);
+					];
 				}
 
 				/* user-defined actions ... should be set in the {tablename}_batch_actions() function in hooks/{tablename}.php */
 				$user_actions = [];
 				if(function_exists($this->TableName.'_batch_actions')) {
 					$args = [];
-					$user_actions = call_user_func_array($this->TableName . '_batch_actions', array(&$args));
+					$user_actions = call_user_func_array($this->TableName . '_batch_actions', [&$args]);
 					if(is_array($user_actions) && count($user_actions)) {
 						$selected_records_more = array_merge($selected_records_more, $user_actions);
 					}
@@ -840,7 +816,7 @@ class DataList{
 
 				// script for focusing into the search box on loading the page
 				// and for declaring record action handlers
-				$this->HTML .= '<script>jQuery(function() { ' . (!isset($_REQUEST['noQuickSearchFocus']) ? 'jQuery("input[name=SearchString]").focus();' : '') . '' . $more_menu_js . ' });</script>';
+				$this->HTML .= '<script>jQuery(function() { ' . (!Request::val('noQuickSearchFocus') ? 'jQuery("input[name=SearchString]").focus();' : '') . '' . $more_menu_js . ' });</script>';
 
 			}
 
@@ -865,7 +841,7 @@ class DataList{
 				$selrowTemplate = parseTemplate($selrowTemplate);
 				// End of templates
 
-				// $this->ccffv: map $FilterField values to field captions as stored in ColCaption
+				// $this->ccffv: map $this->FilterField values to field captions as stored in ColCaption
 				$this->ccffv = [];
 				foreach($this->ColCaption as $captionIndex => $caption) {
 					$ffv = 1;
@@ -898,9 +874,9 @@ class DataList{
 						}
 
 						/* Filtering icon and hint */
-						if($this->AllowFilters && is_array($FilterField)) {
+						if($this->AllowFilters && is_array($this->FilterField)) {
 							// check to see if there is any filter applied on the current field
-							if(isset($this->ccffv[$i]) && in_array($this->ccffv[$i], $FilterField)) {
+							if(isset($this->ccffv[$i]) && in_array($this->ccffv[$i], $this->FilterField)) {
 								// render filter icon
 								$filterHint = '&nbsp;<button type="submit" class="btn btn-default btn-xs' . ($current_view == 'TVP' ? ' disabled' : '') . '" name="Filter_x" value="1" title="'.html_attr($this->translation['filtered field']).'"><i class="glyphicon glyphicon-filter"></i></button>';
 							}
@@ -1120,7 +1096,7 @@ class DataList{
 				$this->HTML .= "</table></div>\n";
 
 				/* highlight quick search matches */
-				if($SearchString != '' && $RecordCount) $this->HTML .= '<script>$j(function() { $j(".table-responsive td:not([colspan])").mark("' . html_attr($SearchString) . '", { className: "text-bold bg-warning", diacritics: false }); })</script>';
+				if(strlen($SearchString) && $RecordCount) $this->HTML .= '<script>$j(function() { $j(".table-responsive td:not([colspan])").mark("' . html_attr($SearchString) . '", { className: "text-bold bg-warning", diacritics: false }); })</script>';
 
 				if($Print_x == '' && $i) { // TV
 					$this->HTML .= '<div class="row pagination-section">';
@@ -1145,8 +1121,8 @@ class DataList{
 
 		// hidden variables ....
 		foreach($this->filterers as $filterer => $caption) {
-			if($_REQUEST['filterer_' . $filterer] != '') {
-				$this->HTML .= "<input name=\"filterer_{$filterer}\" value=\"" . html_attr($_REQUEST['filterer_' . $filterer]) . "\" type=\"hidden\">";
+			if(Request::val('filterer_' . $filterer) != '') {
+				$this->HTML .= "<input name=\"filterer_{$filterer}\" value=\"" . html_attr(Request::val('filterer_' . $filterer)) . "\" type=\"hidden\">";
 				break; // currently, only one filterer can be applied at a time
 			}
 		}
@@ -1164,15 +1140,15 @@ class DataList{
 		// hidden variables: filters ...
 		$FiltersCode = '';
 		for($i = 1; $i <= (datalist_filters_count * $FiltersPerGroup); $i++) { // Number of filters allowed
-			if($i%$FiltersPerGroup == 1 && $i != 1 && $FilterAnd[$i] != '') {
-				$FiltersCode .= "<input name=\"FilterAnd[$i]\" value=\"$FilterAnd[$i]\" type=\"hidden\">\n";
+			if($i % $FiltersPerGroup == 1 && $i != 1 && $this->FilterAnd[$i] != '') {
+				$FiltersCode .= "<input name=\"FilterAnd[$i]\" value=\"{$this->FilterAnd[$i]}\" type=\"hidden\">\n";
 			}
-			if($FilterField[$i] != '' && $FilterOperator[$i] != '' && ($FilterValue[$i] != '' || strpos($FilterOperator[$i], 'empty'))) {
+			if($this->isValidFilter($i)) {
 				if(!strstr($FiltersCode, "<input name=\"FilterAnd[{$i}]\" value="))
-					$FiltersCode .= "<input name=\"FilterAnd[{$i}]\" value=\"{$FilterAnd[$i]}\" type=\"hidden\">\n";
-				$FiltersCode .= "<input name=\"FilterField[{$i}]\" value=\"{$FilterField[$i]}\" type=\"hidden\">\n";
-				$FiltersCode .= "<input name=\"FilterOperator[{$i}]\" value=\"{$FilterOperator[$i]}\" type=\"hidden\">\n";
-				$FiltersCode .= "<input name=\"FilterValue[{$i}]\" value=\"" . html_attr($FilterValue[$i]) . "\" type=\"hidden\">\n";
+					$FiltersCode .= "<input name=\"FilterAnd[{$i}]\" value=\"{$this->FilterAnd[$i]}\" type=\"hidden\">\n";
+				$FiltersCode .= "<input name=\"FilterField[{$i}]\" value=\"{$this->FilterField[$i]}\" type=\"hidden\">\n";
+				$FiltersCode .= "<input name=\"FilterOperator[{$i}]\" value=\"{$this->FilterOperator[$i]}\" type=\"hidden\">\n";
+				$FiltersCode .= "<input name=\"FilterValue[{$i}]\" value=\"" . html_attr($this->FilterValue[$i]) . "\" type=\"hidden\">\n";
 			}
 		}
 		$FiltersCode .= "<input name=\"DisplayRecords\" value=\"$DisplayRecords\" type=\"hidden\">";
@@ -1218,7 +1194,7 @@ class DataList{
 				// if we're in embedded mode and a new record has just been inserted,
 				// save its ID to localStorage in order to be used in child DV to
 				// auto-select the new parent
-				if(isset($_REQUEST['record-added-ok']) && $Embedded && $SelectedID) {
+				if(Request::val('record-added-ok') && $Embedded && $SelectedID) {
 					ob_start();
 					?><script>
 						localStorage.setItem(
@@ -1231,7 +1207,7 @@ class DataList{
 
 				// handle the case were user has no view access and has just inserted a record
 				// by redirecting to tablename_view.php (which should redirect them to insert form)
-				if(!$this->Permissions['view'] && (!$dvCode || $dvCode == $this->translation['tableAccessDenied']) && $SelectedID && isset($_REQUEST['record-added-ok'])) {
+				if(!$this->Permissions['view'] && (!$dvCode || $dvCode == $this->translation['tableAccessDenied']) && $SelectedID && Request::val('record-added-ok')) {
 					ob_start();
 					?><script>
 						setTimeout(function() {
@@ -1250,8 +1226,8 @@ class DataList{
 
 			// hidden vars
 			foreach($this->filterers as $filterer => $caption) {
-				if($_REQUEST['filterer_' . $filterer] != '') {
-					$this->HTML .= "<input name=\"filterer_{$filterer}\" value=\"" . html_attr($_REQUEST['filterer_' . $filterer]) . "\" type=\"hidden\">";
+				if(Request::val('filterer_' . $filterer) != '') {
+					$this->HTML .= "<input name=\"filterer_{$filterer}\" value=\"" . html_attr(Request::val('filterer_' . $filterer)) . "\" type=\"hidden\">";
 					break; // currently, only one filterer can be applied at a time
 				}
 			}
@@ -1265,7 +1241,7 @@ class DataList{
 
 			if($selectedRecords && $selectedRecords <= datalist_max_records_dv_print) { // if records selected > {datalist_max_records_dv_print} don't show DV preview to avoid db performance issues.
 				foreach($record_selector as $id) {
-					$dvCode .= call_user_func_array($this->TableName . '_form', array($id, 0, 0, 0, 1, $this->TemplateDV, $this->TemplateDVP));
+					$dvCode .= call_user_func_array($this->TableName . '_form', [$id, 0, 0, 0, 1, $this->TemplateDV, $this->TemplateDVP]);
 				}
 
 				if($dvCode != '') {
@@ -1288,7 +1264,7 @@ class DataList{
 		if($PrintDV != '') $this->ContentType = 'print-detailview';
 
 		// call detail view javascript hook file if found
-		$dvJSHooksFile = dirname(__FILE__) . '/hooks/' . $this->TableName . '-dv.js';
+		$dvJSHooksFile = APP_DIR . '/hooks/' . $this->TableName . '-dv.js';
 		if(is_file($dvJSHooksFile) && ($this->ContentType == 'detailview' || $this->ContentType == 'tableview+detailview')) {
 			$this->HTML .= "\n<script src=\"hooks/{$this->TableName}-dv.js\"></script>\n";
 		}
@@ -1317,13 +1293,13 @@ class DataList{
 		// view only own records?
 		if(
 			$perm['view'] == 1 || 
-			($perm['view'] > 1 && $DisplayRecords == 'user' && !$_REQUEST['NoFilter_x'])
+			($perm['view'] > 1 && $DisplayRecords == 'user' && !Request::val('NoFilter_x'))
 		) $restriction = "LCASE(`membership_userrecords`.`memberID`)='" . makeSafe(getLoggedMemberID()) . "'";
 
 		// view only group records?
 		if(
 			$perm['view'] == 2 || 
-			($perm['view'] > 2 && $DisplayRecords == 'group' && !$_REQUEST['NoFilter_x'])
+			($perm['view'] > 2 && $DisplayRecords == 'group' && !Request::val('NoFilter_x'))
 		) $restriction = "`membership_userrecords`.`groupID`='" . intval(getLoggedGroupID()) . "'";
 
 		// the following will be executed only in case view owner/group but not view all
@@ -1357,7 +1333,7 @@ class DataList{
 		/* validate FilterOperator */
 		foreach($fop as $i => $f) {
 			$fop[$i] = trim($f);
-			if($f && !in_array(trim($f), array_keys($GLOBALS['filter_operators']))) {
+			if($f && !in_array(trim($f), array_keys(FILTER_OPERATORS))) {
 				$fop[$i] = '';
 			}
 		}
@@ -1367,7 +1343,7 @@ class DataList{
 		for($i = 1; $i <= datalist_filters_count * $FiltersPerGroup; $i++) {
 			if(!isset($fand[$i]) && !isset($ffield[$i]) && !isset($fop[$i]) && !isset($fvalue[$i])) continue;
 
-			if(($fvalue[$i] == '' && !in_array($fop[$i], array('is-empty', 'is-not-empty'))) || !$ffield[$i]) {
+			if(($fvalue[$i] == '' && !in_array($fop[$i], ['is-empty', 'is-not-empty'])) || !$ffield[$i]) {
 				unset($ffield[$i], $fop[$i], $fvalue[$i]);
 				if($i % $FiltersPerGroup != 1) unset($fand[$i]);
 			} else {
@@ -1392,7 +1368,7 @@ class DataList{
 			if(!$fand[$i]) $fand[$i] = 'and';
 		}
 
-		return array($fand, $ffield, $fop, $fvalue);
+		return [$fand, $ffield, $fop, $fvalue];
 	}
 
 	/**
@@ -1637,7 +1613,7 @@ class DataList{
 		// hook: table_csv
 		if(function_exists($this->TableName.'_csv')) {
 			$args = [];
-			$mq = call_user_func_array($this->TableName . '_csv', array($csvQuery, $mi, &$args));
+			$mq = call_user_func_array($this->TableName . '_csv', [$csvQuery, $mi, &$args]);
 			$csvQuery = ($mq ? $mq : $csvQuery);
 		}
 
@@ -1828,6 +1804,18 @@ class DataList{
 
 		$cache[$fieldIndex] = [$isDate, $isDateTime];
 		return $cache[$fieldIndex];
+	}
+
+	private function isValidFilter($index) {
+		return (
+			($this->FilterAnd[$index] != '' || $index == 1)
+			&& $this->FilterField[$index] != ''
+			&& $this->FilterOperator[$index] != ''
+			&& (
+				strlen($this->FilterValue[$index])
+				|| strpos($this->FilterOperator[$index], 'empty') !== false
+			)
+		);     
 	}
 
 }

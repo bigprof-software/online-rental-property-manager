@@ -1,10 +1,9 @@
 <?php
-	$currDir = dirname(__FILE__);
-	require("{$currDir}/incCommon.php");
+	require(__DIR__ . '/incCommon.php');
 	$GLOBALS['page_title'] = $Translation['admin settings'];
-	include("{$currDir}/incHeader.php");
+	include(__DIR__ . '/incHeader.php');
 
-	if(isset($_POST['saveChanges'])) {
+	if(Request::has('saveChanges')) {
 		// csrf check
 		if(!csrf_token(true)) {
 			?>
@@ -12,7 +11,7 @@
 				<?php echo $Translation['invalid security token'] ; ?>
 			</div>
 			<?php
-			include("{$currDir}/incFooter.php");
+			include(__DIR__ . '/incFooter.php');
 		}
 
 		// validate inputs
@@ -20,8 +19,9 @@
 		$post = $_POST;
 
 		// if admin username changed, check if the new username already exists
+		$oldAdmin = $adminConfig['adminUsername'];
 		$adminUsername = makeSafe(strtolower($post['adminUsername']));
-		if($adminConfig['adminUsername'] != strtolower($post['adminUsername']) && sqlValue("select count(1) from membership_users where lcase(memberID)='$adminUsername'")) {
+		if($oldAdmin != strtolower($post['adminUsername']) && sqlValue("select count(1) from membership_users where lcase(memberID)='$adminUsername'")) {
 			$errors[] = $Translation['unique admin username error'] ;
 		}
 
@@ -68,7 +68,7 @@
 				<?php echo $Translation['go back'] ;  ?>
 			</div>
 			<?php
-			include("{$currDir}/incFooter.php");
+			include(__DIR__ . '/incFooter.php');
 		}
 
 		$new_config = [
@@ -102,9 +102,9 @@
 				'approvalMessage' => $post['approvalMessage'],
 				'hide_twitter_feed' => ($post['hide_twitter_feed'] ? true : false),
 				'maintenance_mode_message' => $post['maintenance_mode_message'],
-				'mail_function' => in_array($post['mail_function'], array('smtp', 'mail')) ? $post['mail_function'] : 'mail',
+				'mail_function' => in_array($post['mail_function'], ['smtp', 'mail']) ? $post['mail_function'] : 'mail',
 				'smtp_server' => $post['smtp_server'],
-				'smtp_encryption' => in_array($post['smtp_encryption'], array('ssl', 'tls')) ? $post['smtp_encryption'] : '',
+				'smtp_encryption' => in_array($post['smtp_encryption'], ['ssl', 'tls']) ? $post['smtp_encryption'] : '',
 				'smtp_port' => intval($post['smtp_port']) > 0 ? intval($post['smtp_port']) : 25,
 				'smtp_user' => $post['smtp_user'],
 				'smtp_pass' => $post['smtp_pass'],
@@ -117,20 +117,32 @@
 		$save_result = save_config($new_config);
 		if($save_result === true) {
 			// update admin member
-			$new_comment = str_replace(
+			$newComment = str_replace(
 				'<DATE>', 
 				@date('Y-m-d'), 
 				makeSafe($Translation['record updated automatically'])
 			);
-			sql("UPDATE `membership_users` SET
-					`memberID`='$adminUsername',
-					`passMD5`='$adminPassword',
-					`email`='{$post['senderEmail']}',
-					`comments`=CONCAT_WS('\\n', `comments`, '{$new_comment}')
-				WHERE LCASE(`memberID`)='" . makeSafe(strtolower($adminConfig['adminUsername'])) . "'", 
-			$eo);
 
-			$_SESSION['memberID'] = $_SESSION['adminUsername'] = strtolower($post['adminUsername']);
+			$safeOldAdmin = makeSafe($oldAdmin);
+			$safeNewAdmin = Authentication::safeMemberID($post['adminUsername']);
+			$oldComment = sqlValue("SELECT `comments` FROM `membership_users` WHERE LCASE(`memberID`)='$safeOldAdmin'");
+
+			$err = '';
+			update('membership_users', [
+				'memberID' => $safeNewAdmin,
+				'passMD5' => $adminPassword,
+				'email' => $post['senderEmail'],
+				'comments' => "{$oldComment}\n{$newComment}",
+			], ['memberID' => $safeOldAdmin], $err);
+
+			if(!strlen($err) && $safeNewAdmin != $safeOldAdmin)
+				Authentication::signInAsAdmin();
+
+			// update record ownership if admin username changed
+			// it's OK to run this query if admin username hasn't been changed
+			// as MySQL won't actually make any updates in this case
+			// and the performance cost would be almost zero
+			sql("UPDATE `membership_userrecords` SET `memberID`='{$safeNewAdmin}' WHERE `memberID`='{$safeOldAdmin}'", $eo);
 
 			// update anonymous group name if changed
 			if($adminConfig['anonymousGroup'] != $post['anonymousGroup']) {
@@ -138,8 +150,11 @@
 			}
 
 			// update anonymous username if changed
-			if($adminConfig['anonymousMember'] != $post['anonymousMember']) {
-				sql("UPDATE `membership_users` SET `memberID`='{$anonymousMember}' WHERE `memberID`='" . makeSafe($adminConfig['anonymousMember']) . "'", $eo);
+			$safeOldGuest = Authentication::safeMemberID($adminConfig['anonymousMember']);
+			$safeNewGuest = Authentication::safeMemberID($post['anonymousMember']);
+			if($safeNewGuest != $safeOldGuest) {
+				sql("UPDATE `membership_users` SET `memberID`='{$safeNewGuest}' WHERE `memberID`='{$safeOldGuest}'", $eo);
+				sql("UPDATE `membership_userrecords` SET `memberID`='{$safeNewGuest}' WHERE `memberID`='{$safeOldGuest}'", $eo);
 			}
 
 			// display status
@@ -150,7 +165,7 @@
 		}
 
 		// exit
-		include("{$currDir}/incFooter.php");
+		include(__DIR__ . '/incFooter.php');
 	}
 
 	function setNewPasswordAttribute($html) {
@@ -170,10 +185,8 @@
 			</div>
 		</div>
 		<?php
-		$out = ob_get_contents();
-		ob_end_clean();
 
-		return $out;
+		return ob_get_clean();
 	}
 
 	function settings_textarea($name, $label, $value, $height = 6, $hint = '') {
@@ -182,17 +195,15 @@
 		<div class="form-group">
 			<label for="<?php echo $name; ?>" class="col-sm-4 col-md-3 col-lg-offset-1 control-label"><?php echo str_ireplace('<br>', ' ', $label); ?></label>
 			<div class="col-sm-8 col-md-9 col-lg-6">
-				<textarea rows="<?php echo abs($height); ?>" name="<?php echo $name; ?>" id="<?php echo $name; ?>" class="form-control"><?php echo html_attr(str_replace(array('\r', '\n'), array("", "\n"), $value)); ?></textarea>
+				<textarea rows="<?php echo abs($height); ?>" name="<?php echo $name; ?>" id="<?php echo $name; ?>" class="form-control"><?php echo html_attr(str_replace(['\r', '\n'], ['', "\n"], $value)); ?></textarea>
 				<?php if($hint) { ?>
 					<span class="help-block"><?php echo $hint; ?></span>
 				<?php } ?>
 			</div>
 		</div>
 		<?php
-		$out = ob_get_contents();
-		ob_end_clean();
 
-		return $out;
+		return ob_get_clean();
 	}
 
 	function settings_radiogroup($name, $label, $value, $options) {
@@ -217,10 +228,8 @@
 			</div>
 		</div>
 		<?php
-		$out = ob_get_contents();
-		ob_end_clean();
 
-		return $out;
+		return ob_get_clean();
 	}
 
 	function settings_checkbox($name, $label, $value, $set_value, $hint = '') {
@@ -246,10 +255,8 @@
 			</div>
 		</div>
 		<?php
-		$out = ob_get_contents();
-		ob_end_clean();
 
-		return $out;
+		return ob_get_clean();
 	}
 
 ?>
@@ -511,4 +518,4 @@
 	});
 </script>
 
-<?php include("{$currDir}/incFooter.php");
+<?php include(__DIR__ . '/incFooter.php');

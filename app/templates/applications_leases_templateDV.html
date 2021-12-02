@@ -326,6 +326,11 @@
 								close: function() {
 									var field_id = $j('#' + pt + '_view_parent').prevAll('input:hidden').eq(0).attr('id');
 									$j('#' + field_id + '-container').select2('focus').select2('focus');
+
+									// in case the parent record was updated, we should update auto-fills
+									var updaterName = field_id + '_update_autofills';
+									if(typeof(window[updaterName]) == 'function')
+										window[updaterName]();
 								},
 								size: 'full',
 								title: $j(this).attr('title')

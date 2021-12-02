@@ -1,6 +1,7 @@
 <?php
-	$currDir = dirname(__FILE__);
-	require("{$currDir}/incCommon.php");
+	require(__DIR__ . '/incCommon.php');
+
+	$groupID = $addend = $superadmin = $email = $isApproved = $isBanned = $customs = $comments = null;
 
 	$GLOBALS['page_title'] = $Translation['view members'];
 
@@ -9,51 +10,50 @@
 	$anonGroup = $adminConfig['anonymousGroup'];
 
 	/* no editing of guest user */
-	if(strtolower($_REQUEST['memberID']) == $anonMemberID || strtolower($_REQUEST['oldMemberID']) == $anonMemberID) {
+	if(strtolower(Request::val('memberID')) == $anonMemberID || strtolower(Request::val('oldMemberID')) == $anonMemberID) {
 		redirect('admin/pageViewMembers.php');
 		exit;
 	}
 
-	include("{$currDir}/incHeader.php");
+	include(__DIR__ . '/incHeader.php');
 
 	$memberID = '';
 	// request to save changes?
-	if(isset($_POST['saveChanges'])) {
+	if(Request::has('saveChanges')) {
 		// csrf check
 		if(!csrf_token(true)) {
-			echo Notification::show(array(
+			echo Notification::show([
 				'message' => $Translation['invalid security token'],
 				'class' => 'danger',
 				'dismiss_seconds' => 5000
-			));
-			include("{$currDir}/incFooter.php");
+			]);
+			include(__DIR__ . '/incFooter.php');
 		}
 
 		// validate data
-		$oldMemberID = makeSafe(strtolower($_POST['oldMemberID']));
-		$password = makeSafe($_POST['password']);
-		$email = isEmail($_POST['email']);
-		$groupID = intval($_POST['groupID']);
-		$isApproved = ($_POST['isApproved'] == 1 ? 1 : 0);
-		$isBanned = ($_POST['isBanned'] == 1 ? 1 : 0);
+		$oldMemberID = makeSafe(strtolower(Request::val('oldMemberID')));
+		$password = makeSafe(Request::val('password'));
+		$email = isEmail(Request::val('email'));
+		$groupID = intval(Request::val('groupID'));
+		$isApproved = (Request::val('isApproved') == 1 ? 1 : 0);
+		$isBanned = (Request::val('isBanned') == 1 ? 1 : 0);
 		$customs = [];
-		for($cust = 1; $cust <= 4; $cust++) {
-			$customs[$cust] = makeSafe($_POST["custom{$cust}"]);
-		}
-		$comments = makeSafe($_POST['comments']);
+		for($cust = 1; $cust <= 4; $cust++)
+			$customs[$cust] = makeSafe(Request::val("custom{$cust}"));
+		$comments = makeSafe(Request::val('comments'));
 
 		###############################
 		// new member or old?
 		if(!$oldMemberID) { // new member
 			// make sure member name is unique
-			$memberID = is_allowed_username($_POST['memberID']);
+			$memberID = is_allowed_username(Request::val('memberID'));
 			if(!$memberID) {
-				echo Notification::show(array(
+				echo Notification::show([
 					'message' => $Translation['username error'],
 					'class' => 'danger',
 					'dismiss_seconds' => 5000
-				));
-				include("{$currDir}/incFooter.php");
+				]);
+				include(__DIR__ . '/incFooter.php');
 			}
 
 			// add member
@@ -72,22 +72,22 @@
 			exit;
 		} else { // old member
 			// make sure new member username, if applicable, is valid
-			$memberID = makeSafe(strtolower($_POST['memberID']));
+			$memberID = makeSafe(strtolower(Request::val('memberID')));
 
 			// for super admin user, no username change allowed here
 			$superadmin = (strtolower($adminConfig['adminUsername']) == $oldMemberID);
 			if($superadmin) $memberID = $oldMemberID;
 
 			if($oldMemberID != $memberID)
-				$memberID = is_allowed_username($_POST['memberID']);
+				$memberID = is_allowed_username(Request::val('memberID'));
 
 			if(!$memberID) {
-				echo Notification::show(array(
+				echo Notification::show([
 					'message' => $Translation['username error'],
 					'class' => 'danger',
 					'dismiss_seconds' => 5000
-				));
-				include("{$currDir}/incFooter.php");
+				]);
+				include(__DIR__ . '/incFooter.php');
 			}
 
 			// get current approval state
@@ -132,13 +132,13 @@
 			redirect("admin/pageEditMember.php?saved=1&memberID=" . urlencode($memberID));
 			exit;
 		}
-	} elseif($_GET['memberID'] != '') {
+	} elseif(Request::val('memberID')) {
 		// we have an edit request for a member
-		$memberID = makeSafe(strtolower($_GET['memberID']));
+		$memberID = makeSafe(strtolower(Request::val('memberID')));
 		$superadmin = (strtolower($adminConfig['adminUsername']) == $memberID);
-	} elseif($_GET['groupID'] != '') {
+	} elseif(Request::val('groupID')) {
 		// show the form for adding a new member, and pre-select the provided group
-		$groupID = intval($_GET['groupID']);
+		$groupID = intval(Request::val('groupID'));
 		$group_name = strip_tags(sqlValue("select name from membership_groups where groupID='$groupID'"));
 		if($group_name)
 			$addend = " to '{$group_name}'";
@@ -149,12 +149,12 @@
 		$res = sql("select * from membership_users where lcase(memberID)='{$memberID}'", $eo);
 		if(!($row = db_fetch_assoc($res))) {
 			// no such member exists
-			echo Notification::show(array(
+			echo Notification::show([
 				'message' => $Translation['member not found'],
 				'class' => 'danger',
 				'dismiss_seconds' => 5000
-			));
-			include("{$currDir}/incFooter.php");
+			]);
+			include(__DIR__ . '/incFooter.php');
 		}
 
 		// get member data
@@ -169,18 +169,18 @@
 		$comments = html_attr($row['comments']);
 
 		//display dismissible alert for new members and successful saves
-		if(isset($_GET['new_member'])) {
-			echo Notification::show(array(
+		if(Request::has('new_member')) {
+			echo Notification::show([
 				'message' => str_replace('<USERNAME>', "<b><i>{$memberID}</i></b>", $Translation['member added']),
 				'class' => 'success',
 				'dismiss_seconds' => 20
-			));
-		} elseif(isset($_GET['saved'])) {
-			echo Notification::show(array(
+			]);
+		} elseif(Request::has('saved')) {
+			echo Notification::show([
 				'message' => str_replace('<USERNAME>', "<b><i>{$memberID}</i></b>", $Translation['member updated']),
 				'class' => 'success',
 				'dismiss_seconds' => 20
-			));
+			]);
 		}
 	}
 
@@ -233,8 +233,8 @@
 						<button class="btn btn-default" type="button"><i class="glyphicon glyphicon-pencil"></i></button>
 					</span>
 				</div>
-				<span id="username-available" class="help-block hidden"><i class="glyphicon glyphicon-ok"></i> <?php echo str_ireplace(array("'", '"', '<memberid>'), '', $Translation['user available']); ?></span>
-				<span id="username-not-available" class="help-block hidden"><i class="glyphicon glyphicon-remove"></i> <?php echo str_ireplace(array("'", '"', '<memberid>'), '', $Translation['username invalid']); ?></span>
+				<span id="username-available" class="help-block hidden"><i class="glyphicon glyphicon-ok"></i> <?php echo str_ireplace(["'", '"', '<memberid>'], '', $Translation['user available']); ?></span>
+				<span id="username-not-available" class="help-block hidden"><i class="glyphicon glyphicon-remove"></i> <?php echo str_ireplace(["'", '"', '<memberid>'], '', $Translation['username invalid']); ?></span>
 			</div>
 		</div>
 
@@ -555,4 +555,4 @@
 </script>
 
 <?php
-	include("{$currDir}/incFooter.php");
+	include(__DIR__ . '/incFooter.php');

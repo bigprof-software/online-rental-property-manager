@@ -1,21 +1,21 @@
 <?php
 	// check this file's MD5 to make sure it wasn't called before
-	$prevMD5 = @file_get_contents(dirname(__FILE__) . '/setup.md5');
-	$thisMD5 = md5(@file_get_contents(dirname(__FILE__) . '/updateDB.php'));
+	$tenantId = Authentication::tenantIdPadded();
+	$setupHash = __DIR__ . "/setup{$tenantId}.md5";
 
-	// check if setup already run
+	$prevMD5 = @file_get_contents($setupHash);
+	$thisMD5 = md5_file(__DIR__ . '/updateDB.php');
+
+	// check if this setup file already run
 	if($thisMD5 != $prevMD5) {
-		// $silent is set if this file is included from setup.php
-		if(!isset($silent)) $silent = true;
-
 		// set up tables
 		setupTable(
 			'applicants_and_tenants', " 
 			CREATE TABLE IF NOT EXISTS `applicants_and_tenants` ( 
 				`id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
 				PRIMARY KEY (`id`),
-				`last_name` VARCHAR(15) NULL,
-				`first_name` VARCHAR(15) NULL,
+				`last_name` VARCHAR(40) NULL,
+				`first_name` VARCHAR(40) NULL,
 				`email` VARCHAR(80) NULL,
 				`phone` VARCHAR(15) NULL,
 				`birth_date` DATE NULL,
@@ -27,8 +27,7 @@
 				`assets` DECIMAL(8,2) NULL,
 				`status` VARCHAR(40) NOT NULL DEFAULT 'Applicant',
 				`notes` TEXT NULL
-			) CHARSET utf8",
-			$silent
+			) CHARSET utf8"
 		);
 
 		setupTable(
@@ -53,8 +52,7 @@
 				`co_signer_details` VARCHAR(100) NULL,
 				`notes` TEXT NULL,
 				`agreement` VARCHAR(40) NULL
-			) CHARSET utf8",
-			$silent
+			) CHARSET utf8"
 		);
 		setupIndexes('applications_leases', ['tenants','property','unit',]);
 
@@ -65,15 +63,14 @@
 				PRIMARY KEY (`id`),
 				`tenant` INT UNSIGNED NULL,
 				`address` VARCHAR(40) NULL,
-				`landlord_or_manager_name` VARCHAR(15) NULL,
+				`landlord_or_manager_name` VARCHAR(100) NULL,
 				`landlord_or_manager_phone` VARCHAR(15) NULL,
 				`monthly_rent` DECIMAL(6,2) NULL,
 				`duration_of_residency_from` DATE NULL,
 				`to` DATE NULL,
 				`reason_for_leaving` VARCHAR(40) NULL,
 				`notes` TEXT NULL
-			) CHARSET utf8",
-			$silent
+			) CHARSET utf8"
 		);
 		setupIndexes('residence_and_rental_history', ['tenant',]);
 
@@ -83,15 +80,14 @@
 				`id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
 				PRIMARY KEY (`id`),
 				`tenant` INT UNSIGNED NULL,
-				`employer_name` VARCHAR(15) NULL,
-				`city` VARCHAR(20) NULL,
+				`employer_name` VARCHAR(100) NULL,
+				`city` VARCHAR(100) NULL,
 				`employer_phone` VARCHAR(15) NULL,
 				`employed_from` DATE NULL,
 				`employed_till` DATE NULL,
 				`occupation` VARCHAR(40) NULL,
 				`notes` TEXT NULL
-			) CHARSET utf8",
-			$silent
+			) CHARSET utf8"
 		);
 		setupIndexes('employment_and_income_history', ['tenant',]);
 
@@ -101,10 +97,9 @@
 				`id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
 				PRIMARY KEY (`id`),
 				`tenant` INT UNSIGNED NULL,
-				`reference_name` VARCHAR(15) NULL,
+				`reference_name` VARCHAR(100) NULL,
 				`phone` VARCHAR(15) NULL
-			) CHARSET utf8",
-			$silent
+			) CHARSET utf8"
 		);
 		setupIndexes('references', ['tenant',]);
 
@@ -126,8 +121,7 @@
 				`state` VARCHAR(40) NULL,
 				`zip` DECIMAL(15,0) NULL,
 				`comments` TEXT NULL
-			) CHARSET utf8",
-			$silent
+			) CHARSET utf8"
 		);
 
 		setupTable(
@@ -135,7 +129,7 @@
 			CREATE TABLE IF NOT EXISTS `properties` ( 
 				`id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
 				PRIMARY KEY (`id`),
-				`property_name` TEXT NOT NULL,
+				`property_name` VARCHAR(100) NOT NULL,
 				`photo` VARCHAR(40) NULL,
 				`type` VARCHAR(40) NOT NULL,
 				`number_of_units` DECIMAL(15,0) NULL,
@@ -148,8 +142,7 @@
 				`City` VARCHAR(40) NULL,
 				`State` VARCHAR(40) NULL,
 				`ZIP` DECIMAL(15,0) NULL
-			) CHARSET utf8",
-			$silent
+			) CHARSET utf8"
 		);
 		setupIndexes('properties', ['owner',]);
 
@@ -161,8 +154,7 @@
 				`property` INT UNSIGNED NULL,
 				`photo` VARCHAR(40) NULL,
 				`description` TEXT NULL
-			) CHARSET utf8",
-			$silent
+			) CHARSET utf8"
 		);
 		setupIndexes('property_photos', ['property',]);
 
@@ -188,8 +180,7 @@
 				`rental_amount` DECIMAL(6,2) NULL,
 				`deposit_amount` DECIMAL(6,2) NULL,
 				`description` TEXT NULL
-			) CHARSET utf8",
-			$silent
+			) CHARSET utf8"
 		);
 		setupIndexes('units', ['property',]);
 
@@ -201,15 +192,14 @@
 				`unit` INT UNSIGNED NULL,
 				`photo` VARCHAR(40) NULL,
 				`description` TEXT NULL
-			) CHARSET utf8",
-			$silent
+			) CHARSET utf8"
 		);
 		setupIndexes('unit_photos', ['unit',]);
 
 
 
 		// save MD5
-		@file_put_contents(dirname(__FILE__) . '/setup.md5', $thisMD5);
+		@file_put_contents($setupHash, $thisMD5);
 	}
 
 
@@ -226,7 +216,7 @@
 	}
 
 
-	function setupTable($tableName, $createSQL = '', $silent = true, $arrAlter = '') {
+	function setupTable($tableName, $createSQL = '', $arrAlter = '') {
 		global $Translation;
 		$oldTableName = '';
 		ob_start();
@@ -290,10 +280,24 @@
 					echo '<span class="label label-success">' . $Translation['ok'] . '</span>';
 				}
 			}
+
+			// set Admin group permissions for newly created table if membership_grouppermissions exists
+			if($ro = @db_query("SELECT COUNT(1) FROM `membership_grouppermissions`")) {
+				// get Admins group id
+				$ro = @db_query("SELECT `groupID` FROM `membership_groups` WHERE `name`='Admins'");
+				if($ro) {
+					$adminGroupID = intval(db_fetch_row($ro)[0]);
+					if($adminGroupID) @db_query("INSERT IGNORE INTO `membership_grouppermissions` SET
+						`groupID`='$adminGroupID',
+						`tableName`='$tableName',
+						`allowInsert`=1, `allowView`=1, `allowEdit`=1, `allowDelete`=1
+					");
+				}
+			}
 		}
 
 		echo '</div>';
 
 		$out = ob_get_clean();
-		if(!$silent) echo $out;
+		if(defined('APPGINI_SETUP') && APPGINI_SETUP) echo $out;
 	}

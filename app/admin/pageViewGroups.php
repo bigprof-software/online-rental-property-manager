@@ -1,12 +1,11 @@
 <?php
-	$currDir = dirname(__FILE__);
-	require("{$currDir}/incCommon.php");
+	require(__DIR__ . '/incCommon.php');
 	$GLOBALS['page_title'] = $Translation['groups'];
-	include("{$currDir}/incHeader.php");
+	include(__DIR__ . '/incHeader.php');
 
-	if($_GET['searchGroups'] != "") {
-		$searchSQL = makeSafe($_GET['searchGroups']);
-		$searchHTML = html_attr($_GET['searchGroups']);
+	if(Request::val('searchGroups')) {
+		$searchSQL = makeSafe(Request::val('searchGroups'));
+		$searchHTML = html_attr(Request::val('searchGroups'));
 		$where = "where name like '%{$searchSQL}%' or description like '%{$searchSQL}%'";
 	} else {
 		$searchSQL = '';
@@ -23,7 +22,7 @@
 		$noResults = false;
 	}
 
-	$page = intval($_GET['page']);
+	$page = intval(Request::val('page'));
 	if($page < 1) {
 		$page = 1;
 	} elseif($page > ceil($numGroups / $adminConfig['groupsPerPage']) && !$noResults) {
@@ -145,6 +144,4 @@
 	.form-inline .form-group{ margin: 0.5em 1em; }
 </style>
 
-<?php
-	include("{$currDir}/incFooter.php");
-?>
+<?php include(__DIR__ . '/incFooter.php');
