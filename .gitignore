@@ -11,3 +11,4 @@ app/images
 *.zip
 test*.php
 app/admin/backups
+config.bak.php
