@@ -88,19 +88,23 @@
 	function detect_config($redirectToSetup = true) {
 		$config_exists = is_readable(configFileName());
 
-		if(!$config_exists && $redirectToSetup) {
+		if(!$redirectToSetup) return $config_exists;
+
+		if(!$config_exists) {
+			if(MULTI_TENANTS) redirect(SaaS::loginUrl(), true);
+
 			$url = (request_outside_admin_folder() ? '' : '../') . 'setup.php';
 
-			if(!headers_sent()) {
+			if(!headers_sent())
 				@header("Location: $url");
-			} else {
+			else
 				echo '<META HTTP-EQUIV="Refresh" CONTENT="0;url=' . $url . '">' .
 					 '<script>window.location = "' . $url . '";</script>';
-			}
+
 			exit;
 		}
 
-		if($redirectToSetup) update_config_app_uri();
+		if(!MULTI_TENANTS) update_config_app_uri();
 		return $config_exists;
 	}
 
@@ -141,6 +145,10 @@
 			return ['error' => 'Invalid config array'];
 
 		$new_admin_config = '';
+
+		// make sure super admin username is lower case
+		$config_array['adminConfig']['adminUsername'] = strtolower($config_array['adminConfig']['adminUsername']);
+
 		foreach($config_array['adminConfig'] as $admin_var => $admin_val)
 			$new_admin_config .= "\t\t'" . addslashes($admin_var) . "' => \"" . str_replace(["\n", "\r", '"', '$'], ['\n', '\r', '\"', '\$'], $admin_val) . "\",\n";
 

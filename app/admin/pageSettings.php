@@ -1,5 +1,9 @@
 <?php
 	require(__DIR__ . '/incCommon.php');
+
+	// only super admin can access this page!
+	if(!Authentication::getSuperAdmin()) redirect('admin');
+
 	$GLOBALS['page_title'] = $Translation['admin settings'];
 	include(__DIR__ . '/incHeader.php');
 

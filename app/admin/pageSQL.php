@@ -1,7 +1,6 @@
 <?php
-	$currDir = __DIR__;
-	require("{$currDir}/incCommon.php");
-	require("{$currDir}/incHeader.php");
+	require(__DIR__ . '/incCommon.php');
+	require(__DIR__ . '/incHeader.php');
 
 	// insertable items in SQL query
 	$items = array_merge(
@@ -121,4 +120,4 @@
 	#sql { font-family: monospace; font-size: large; }
 </style>
 
-<?php include("{$currDir}/incFooter.php");
+<?php include(__DIR__ . '/incFooter.php');

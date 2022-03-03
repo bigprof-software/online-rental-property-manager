@@ -318,7 +318,7 @@ if($groupID != '') {
 							<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
 								<i class="glyphicon glyphicon-ok"></i> <span class="caret"></span>
 							</button>
-							<ul class="dropdown-menu">
+							<ul class="dropdown-menu" style="margin-left: -8em;">
 								<li><a href="#" class="set-permission" data-permission="delete" data-value="no"><?php echo str_replace('<x>', "<b>{$Translation['no']}</b>", $Translation['set all to x']); ?></a></li>
 								<li><a href="#" class="set-permission" data-permission="delete" data-value="owner"><?php echo str_replace('<x>', "<b>{$Translation['owner']}</b>", $Translation['set all to x']); ?></a></li>
 								<li><a href="#" class="set-permission" data-permission="delete" data-value="group"><?php echo str_replace('<x>', "<b>{$Translation['group']}</b>", $Translation['set all to x']); ?></a></li>
@@ -360,6 +360,7 @@ if($groupID != '') {
 						</td>
 					</tr>
 				<?php } ?>
+				<tr><td colspan="5" style="height: 7em;"></td></tr>
 			</tbody>
 		</table>
 	</div>

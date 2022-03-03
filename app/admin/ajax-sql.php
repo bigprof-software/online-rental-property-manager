@@ -1,13 +1,12 @@
 <?php
-	$currDir = dirname(__FILE__);
-	require("{$currDir}/incCommon.php");
+	require(__DIR__ . '/incCommon.php');
 
 	if(!csrf_token(true)) {
 		@header('HTTP/1.0 403 Access Denied');
 		die();
 	}
 
-	$sql = trim($_REQUEST['sql']);
+	$sql = trim(Request::val('sql'));
 	if(!preg_match('/^SELECT\s+.*?\s+FROM\s+\S+/i', $sql)) {
 		@header('HTTP/1.0 404 Not Found');
 		die("Invalid query");

@@ -33,7 +33,7 @@
 					<hr class="hidden-md hidden-lg">
 					<label class="control-label col-lg-3" for="tenant" data-parent_link="view_parent_modal">Tenant</label>
 					<div class="col-lg-9">
-						<div class="form-control-static" style="white-space: nowrap; overflow-x: hidden;"><%%COMBO(tenant)%%><%%PLINK(tenant)%%><%%ADDNEW(applicants_and_tenants)%%></div>
+						<div class="lookup-flex"><%%COMBO(tenant)%%><%%PLINK(tenant)%%><%%ADDNEW(applicants_and_tenants)%%></div>
 					</div>
 				</div>
 
@@ -101,7 +101,9 @@
 					condition: function() {
 						return $j('.form-group.references-tenant')
 									.find('.nicEdit-main, .select2-container, input[type=radio]')
-									.length > 0;
+									.length > 0
+								// or read-only DV
+								|| (!$j('#update').length && !$j('#insert').length);
 					},
 					action: function() {
 						$j('#references_dv_container-loading').addClass('hidden');
@@ -126,9 +128,6 @@
 
 
 			if(true /* !embedded_mode */) {
-				/* add a horizontal spacer to [add new parent] buttons that don't have a spacered element before them */
-				$j('.add_new_parent').prev(':not(.hspacer-md)').next().addClass('hspacer-md');
-
 				$j('.add_new_parent').click(function() {
 					var pt = $j(this).attr('id').replace(/_add_new$/, '');
 					modal_window({

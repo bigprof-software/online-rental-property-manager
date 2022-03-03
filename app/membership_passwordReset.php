@@ -185,7 +185,7 @@
 				</div>
 
 				<?php if(is_array(getTableList()) && count(getTableList())) { /* if anon. users can see any tables ... */ ?>
-					<p style="margin-top: 1.5em;"><?php echo $Translation['browse as guest']; ?></p>
+					<p style="margin-top: 1.5em;"><a href="index.php"><i class="glyphicon glyphicon-user text-muted"></i> <?php echo $Translation['continue browsing as guest']; ?></a></p>
 				<?php } ?>
 			</form>
 		</div>

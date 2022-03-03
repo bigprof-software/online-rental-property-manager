@@ -211,7 +211,7 @@ class DataList {
 		$this->HTML .= '   return false;';
 		$this->HTML .= '}';
 		$this->HTML .= '</script>';
-		$this->HTML .= '<input id="EnterAction" type="submit" style="position: fixed; left: 0px; top: -250px;" onclick="return enterAction();">';
+		$this->HTML .= '<input id="EnterAction" type="submit" style="visibility: hidden; position: fixed; left: 0px; top: -250px;" onclick="return enterAction();">';
 
 		$this->ContentType = 'tableview'; // default content type
 
@@ -1088,9 +1088,9 @@ class DataList {
 					if(!$i) $this->HTML .= "\n\t<tfoot><tr><td colspan=".(count($this->ColCaption) + 1). '>' . $this->translation['No matches found!'] . '</td></tr></tfoot>';
 				}
 
-				$this->HTML = str_replace("<FirstRecord>", number_format($FirstRecord), $this->HTML);
-				$this->HTML = str_replace("<LastRecord>", number_format($i), $this->HTML);
-				$this->HTML = str_replace("<RecordCount>", number_format($RecordCount), $this->HTML);
+				$this->HTML = str_replace("<FirstRecord>", '<span class="first-record locale-int">' . $FirstRecord . '</span>', $this->HTML);
+				$this->HTML = str_replace("<LastRecord>", '<span class="last-record locale-int">' . $i . '</span>', $this->HTML);
+				$this->HTML = str_replace("<RecordCount>", '<span class="record-count locale-int">' . $RecordCount . '</span>', $this->HTML);
 				$tvShown = true;
 
 				$this->HTML .= "</table></div>\n";

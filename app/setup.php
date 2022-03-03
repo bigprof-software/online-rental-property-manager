@@ -92,7 +92,7 @@
 			?>
 				<div class="row">
 					<div class="col-md-8 col-md-offset-2 col-lg-6 col-lg-offset-3">
-						<h2 class="text-danger"><?php echo $Translation['The following errors occured']; ?></h2>
+						<h2 class="text-danger"><?php echo $Translation['The following errors occurred']; ?></h2>
 						<div class="alert alert-danger"><ul><li><?php echo implode('</li><li>', $errors); ?></li></ul></div>
 						<a class="btn btn-default btn-lg vspacer-lg" href="#" onclick="history.go(-1); return false;"><i class="glyphicon glyphicon-chevron-left"></i> <?php echo $Translation['< back']; ?></a>
 					</div>

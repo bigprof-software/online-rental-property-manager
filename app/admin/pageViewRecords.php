@@ -174,7 +174,7 @@
 		<div class="modal-content">
 			<button type="button" class="close hspacer-md vspacer-md" data-dismiss="modal">&times;</button>
 			<div class="modal-body" style="-webkit-overflow-scrolling:touch !important; overflow-y: auto;">
-				<iframe width="100%" height="100%" sandbox="allow-forms allow-scripts allow-same-origin allow-popups-to-escape-sandbox" src="" id="view-record-iframe"></iframe>
+				<iframe width="100%" height="100%" sandbox="allow-modals allow-forms allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox allow-downloads" src="" id="view-record-iframe"></iframe>
 			</div>
 		</div>
 	</div>

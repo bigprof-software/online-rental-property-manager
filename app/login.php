@@ -50,7 +50,7 @@
 
 			<?php if(is_array(getTableList()) && count(getTableList())) { /* if anon. users can see any tables ... */ ?>
 				<div class="panel-footer">
-					<?php echo $Translation['browse as guest']; ?>
+					<a href="index.php"><i class="glyphicon glyphicon-user text-muted"></i> <?php echo $Translation['continue browsing as guest']; ?></a>
 				</div>
 			<?php } ?>
 

@@ -90,7 +90,7 @@
 					<hr class="hidden-md hidden-lg">
 					<label class="control-label col-lg-3" for="owner" data-parent_link="view_parent_modal">Owner</label>
 					<div class="col-lg-9">
-						<div class="form-control-static" style="white-space: nowrap; overflow-x: hidden;"><%%COMBO(owner)%%><%%PLINK(owner)%%><%%ADDNEW(rental_owners)%%></div>
+						<div class="lookup-flex"><%%COMBO(owner)%%><%%PLINK(owner)%%><%%ADDNEW(rental_owners)%%></div>
 					</div>
 				</div>
 
@@ -208,7 +208,7 @@
 
 				/* append embedded mode to all links */
 				var append_embedded = function() {
-					$j('a[href]:not([href^="#"]):not([href^="javascript"]):not([href$="Embedded=1"]):not([href*="link.php?t="]):not([href^="mailto:"])').each(
+					$j('a[href]:not([href^="#"]):not([href^="javascript"]):not([href$="Embedded=1"]):not([href*="link.php?t="]):not([href^="mailto:"]):not([href$=".jpg"]):not([href$=".png"]):not([href$=".gif"])').each(
 						function() {
 							$j(this).attr('href', $j(this).attr('href') + '&Embedded=1');
 						}
@@ -236,9 +236,6 @@
 			}
 
 			if(true /* !embedded_mode */) {
-				/* add a horizontal spacer to [add new parent] buttons that don't have a spacered element before them */
-				$j('.add_new_parent').prev(':not(.hspacer-md)').next().addClass('hspacer-md');
-
 				$j('.add_new_parent').click(function() {
 					var pt = $j(this).attr('id').replace(/_add_new$/, '');
 					modal_window({

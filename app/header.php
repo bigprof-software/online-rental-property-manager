@@ -77,7 +77,7 @@
 
 			<?php if(!Request::val('Embedded')) { ?>
 				<?php if(function_exists('htmlUserBar')) echo htmlUserBar(); ?>
-				<div style="height: 70px;" class="hidden-print"></div>
+				<div style="min-height: 70px;" class="hidden-print top-margin-adjuster"></div>
 			<?php } ?>
 
 			<?php if(class_exists('Notification', false)) echo Notification::placeholder(); ?>

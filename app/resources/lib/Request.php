@@ -129,4 +129,10 @@ class Request {
 	public static function checkBox($var, $default = '0') {
 		return self::val($var, $default) ? 1 : 0;
 	}
+
+	public static function oneOf($var, $arrVals, $default = '')	{
+		$val = self::val($var, $default);
+		if(!in_array($val, $arrVals)) return $default;
+		return $val;
+	}
 }

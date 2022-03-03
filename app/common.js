@@ -1,6 +1,6 @@
 var AppGini = AppGini || {};
 
-AppGini.version = 5.98;
+AppGini.version = 22.12;
 
 /* initials and fixes */
 jQuery(function() {
@@ -22,35 +22,18 @@ jQuery(function() {
 		return ( c_width > e_width );
 	};
 
-	var fix_lookup_width = function(field) {
-		var s2 = $j('div.select2-container[id=s2id_' + field + '-container]');
-		if(!s2.length) return;
-
-		var s2new_width = 0, s2view_width = 0, s2parent_width = 0;
-
-		var s2new = s2.parent().find('.add_new_parent:visible');
-		var s2view = s2.parent().find('.view_parent:visible');
-		if(s2new.length) s2new_width = s2new.outerWidth(true);
-		if(s2view.length) s2view_width = s2view.outerWidth(true);
-		s2parent_width = s2.parent().innerWidth();
-
-		s2.css({ width: '100%', 'max-width': (s2parent_width - s2new_width - s2view_width - 1) + 'px' });
-	}
-
 	$j(window).resize(function() {
 		var window_width = $j(window).width();
 		var max_width = $j('body').width() * 0.5;
-
-		$j('.select2-container:not(.option_list)').each(function() {
-			var field = $j(this).attr('id').replace(/^s2id_/, '').replace(/-container$/, '');
-			fix_lookup_width(field);
-		});
 
 		var full_img_factor = 0.9; /* xs */
 		if(window_width >= 992) full_img_factor = 0.6; /* md, lg */
 		else if(window_width >= 768) full_img_factor = 0.9; /* sm */
 
 		$j('.detail_view .img-responsive').css({'max-width' : parseInt($j('.detail_view').width() * full_img_factor) + 'px'});
+
+		/* change height of sizer div below navbar to accomodate navbar height */
+		$j('.top-margin-adjuster').height($j('.navbar-fixed-top:visible').height() ?? 10);
 
 		/* remove labels from truncated buttons, leaving only glyphicons */
 		$j('.btn.truncate:truncated').each(function() {
@@ -66,17 +49,28 @@ jQuery(function() {
 
 	/* don't allow saving detail view when there's an ajax request to a url that matches the following */
 	var ajax_blockers = new RegExp(/(ajax_combo\.php|_autofill\.php|ajax_check_unique\.php)/);
+	var updateBtnHtml = '', insertBtnHtml = '';
 	$j(document).ajaxSend(function(e, r, s) {
 		if(s.url.match(ajax_blockers)) {
 			AppGini.count_ajaxes_blocking_saving++;
 			$j('#update, #insert').prop('disabled', true);
+
+			updateBtnHtml = updateBtnHtml || $j('#update').html();
+			insertBtnHtml = insertBtnHtml || $j('#insert').html();
+			if(updateBtnHtml)
+				$j('#update').html('<i class="glyphicon glyphicon-refresh loop-rotate"></i>');
+			if(insertBtnHtml)
+				$j('#insert').html('<i class="glyphicon glyphicon-refresh loop-rotate"></i>');
 		}
 	});
 	$j(document).ajaxComplete(function(e, r, s) {
 		if(s.url.match(ajax_blockers)) {
 			AppGini.count_ajaxes_blocking_saving = Math.max(AppGini.count_ajaxes_blocking_saving - 1, 0);
-			if(AppGini.count_ajaxes_blocking_saving <= 0)
+			if(AppGini.count_ajaxes_blocking_saving <= 0) {
 				$j('#update:not(.user-locked), #insert').prop('disabled', false);
+				if(updateBtnHtml) $j('#update').html(updateBtnHtml);
+				if(insertBtnHtml) $j('#insert').html(insertBtnHtml);
+			}
 		}
 	});
 
@@ -160,6 +154,24 @@ jQuery(function() {
 	}
 	setInterval(highlightSelectedRows, 100);
 
+	// format .locale-int and .locale-float numbers
+	// to stop it, set AppGini.noLocaleFormatting to true in a hook script in footer-extras.php, .. etc
+	if(!AppGini.noLocaleFormatting) setInterval(() => {
+		$j('.locale-int').each(function() {
+			let i = $j(this).text().trim();
+			if(!/^\d+(\.\d+)?$/.test(i)) return; // already formatted or invalid number
+
+			$j(this).text(parseInt(i).toLocaleString());
+		})
+
+		$j('.locale-float').each(function() {
+			let f = $j(this).text().trim();
+			if(!/^\d+(\.\d+)?$/.test(f)) return; // already formatted or invalid number
+
+			$j(this).text(parseFloat(f).toLocaleString());
+		})
+	}, 100);
+
 	/* update calculated fields */
 	AppGini.calculatedFields.init();
 
@@ -218,12 +230,17 @@ jQuery(function() {
 
 	// apply nicedit BGs
 	AppGini.once({
-		condition: function() {
-			return $j('.nicedit-bg').length > 0;
-		},
+		condition: () => $j('.nicedit-bg').length > 0,
 		action: AppGini.applyNiceditBgColors,
 		timeout: 30000 // stop trying after 30 sec
 	});
+
+	// for read-only lookups in DV, prevent flex layout
+	AppGini.once({
+		condition: () => $j('.lookup-flex .match-text').length > 0,
+		action: () => $j('.lookup-flex .match-text').addClass('rspacer-lg').parents('.lookup-flex').removeClass('lookup-flex').addClass('form-control-static'),
+		timeout: 30000
+	})
 });
 
 /* show/hide TV action buttons based on whether records are selected or not */
@@ -541,7 +558,9 @@ function loadScript(jsUrl, cssUrl, callback) {
  *    id: id attribute of modal window. auto-generated if not provided
  *    title: optional modal window title
  *    size: 'default', 'full'
- *    close: optional function to execute on closing the modal
+ *    noAnimation: optional, default is false. Set to true to disable animation effect while modal is launched
+ *    show: optional function to execute after showing the modal
+ *    close: optional function to execute after closing the modal
  *    footer: optional array of objects describing the buttons to display in the footer.
  *       Each button object can have the following members:
  *          label: string, label of button
@@ -657,6 +676,13 @@ function mass_delete(t, ids) {
 								jQuery('#record_selector_' + ids[itrn])
 									.prop('checked', false).parent().parent().fadeOut(1500);
 								jQuery('#select_all_records').prop('checked', false);
+
+								// decrement record count
+								let recCount = $j('.record-count').text().replace(/\D/g, ''),
+									lastRec =  $j('.last-record').text().replace(/\D/g, '');
+
+								$j('.record-count').text(parseInt(recCount) - 1);
+								$j('.last-record').text(parseInt(lastRec) - 1);
 							},
 							error: function() {
 								jQuery('<li class="text-warning">' + AppGini.Translate._map['Connection error'] + '</li>')
@@ -1226,7 +1252,7 @@ AppGini.TVScroll = function() {
 									'<iframe ' +
 										'width="100%" height="100%" ' +
 										'style="display: block; overflow: scroll !important; -webkit-overflow-scrolling: touch !important;" ' +
-										'sandbox="allow-modals allow-forms allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox" ' +
+										'sandbox="allow-modals allow-forms allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox allow-downloads" ' +
 										'src="' + op.url + '">' +
 									'</iframe>'
 									: op.message
@@ -1303,7 +1329,7 @@ AppGini.TVScroll = function() {
 									'<iframe ' +
 										'width="100%" height="100%" ' +
 										'style="display: block; overflow: scroll !important; -webkit-overflow-scrolling: touch !important;" ' +
-										'sandbox="allow-modals allow-forms allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox" ' +
+										'sandbox="allow-modals allow-forms allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox allow-downloads" ' +
 										'src="' + op.url + '">' +
 									'</iframe>'
 									: op.message
@@ -1356,6 +1382,10 @@ AppGini.TVScroll = function() {
 			var id = op.id, rsz = _resize;
 			rsz(id);
 			$j(window).resize(function() { rsz(id); });
+
+			if(typeof(op.show) == 'function') {
+				op.show();
+			}
 		})
 		//.agModal('show')
 		.on('hidden.bs.modal', function() {

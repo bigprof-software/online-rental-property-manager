@@ -138,7 +138,17 @@
 		 */
 		public static function getAdmin() {
 			$mi = self::getUser();
-			if(!$mi || !$mi['admin']) return false;
+			if(!$mi) return false;
+			if($mi['group'] != 'Admins') return false;
+			if(!$mi['admin'] && !MULTIPLE_SUPER_ADMINS) return false;
+
+			return $mi['username'];
+		}
+
+		public static function getSuperAdmin() {
+			$mi = self::getUser();
+			if(!$mi) return false;
+			if(!$mi['admin']) return false;
 
 			return $mi['username'];
 		}
@@ -428,7 +438,7 @@
 
 			// hook: session_options(), if defined, $options is passed to it by reference
 			// to override default session behavior.
-			// should be defined in hooks/bootstrap.php
+			// should be defined in hooks/__bootstrap.php
 			if(function_exists('session_options')) session_options($options);
 
 			if(session_id()) { session_write_close(); }

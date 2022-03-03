@@ -33,7 +33,7 @@
 					<hr class="hidden-md hidden-lg">
 					<label class="control-label col-lg-3" for="tenants" data-parent_link="view_parent_modal">Applicant/ Tenant</label>
 					<div class="col-lg-9">
-						<div class="form-control-static" style="white-space: nowrap; overflow-x: hidden;"><%%COMBO(tenants)%%><%%PLINK(tenants)%%><%%ADDNEW(applicants_and_tenants)%%></div>
+						<div class="lookup-flex"><%%COMBO(tenants)%%><%%PLINK(tenants)%%><%%ADDNEW(applicants_and_tenants)%%></div>
 					</div>
 				</div>
 
@@ -53,7 +53,7 @@
 					<label class="control-label col-lg-3" for="property" data-parent_link="view_parent_modal">Property <i class="glyphicon glyphicon-info-sign text-info" data-toggle="collapse" data-target="#property-description"></i></label>
 					<div class="col-lg-9">
 						<span class="help-block bspacer-xs collapse" id="property-description"><div class="alert alert-info bspacer-xs">The property containing the unit for which the applicant/tenant is applying for a lease.</div></span>
-						<div class="form-control-static" style="white-space: nowrap; overflow-x: hidden;"><%%COMBO(property)%%><%%PLINK(property)%%><%%ADDNEW(properties)%%></div>
+						<div class="lookup-flex"><%%COMBO(property)%%><%%PLINK(property)%%><%%ADDNEW(properties)%%></div>
 					</div>
 				</div>
 
@@ -62,7 +62,7 @@
 					<hr class="hidden-md hidden-lg">
 					<label class="control-label col-lg-3" for="unit" data-parent_link="view_parent_modal">Unit applied for</label>
 					<div class="col-lg-9">
-						<div class="form-control-static" style="white-space: nowrap; overflow-x: hidden;"><%%COMBO(unit)%%><%%PLINK(unit)%%><%%ADDNEW(units)%%></div>
+						<div class="lookup-flex"><%%COMBO(unit)%%><%%PLINK(unit)%%><%%ADDNEW(units)%%></div>
 					</div>
 				</div>
 
@@ -241,7 +241,9 @@
 					condition: function() {
 						return $j('.form-group.applications_leases-tenants')
 									.find('.nicEdit-main, .select2-container, input[type=radio]')
-									.length > 0;
+									.length > 0
+								// or read-only DV
+								|| (!$j('#update').length && !$j('#insert').length);
 					},
 					action: function() {
 						$j('#applications_leases_dv_container-loading').addClass('hidden');
@@ -269,9 +271,6 @@
 
 
 			if(true /* !embedded_mode */) {
-				/* add a horizontal spacer to [add new parent] buttons that don't have a spacered element before them */
-				$j('.add_new_parent').prev(':not(.hspacer-md)').next().addClass('hspacer-md');
-
 				$j('.add_new_parent').click(function() {
 					var pt = $j(this).attr('id').replace(/_add_new$/, '');
 					modal_window({

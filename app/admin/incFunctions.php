@@ -1973,7 +1973,7 @@
 				return $dir.$n;
 			}
 		}
-		return 'An error occured while uploading the file. Please try again.';
+		return 'An error occurred while uploading the file. Please try again.';
 	}
 	########################################################################
 	function toBytes($val) {
@@ -2099,7 +2099,10 @@
 			2. when validating a submitted form: if(!csrf_token(true)) { reject_submission_somehow(); }
 	*/
 	function csrf_token($validate = false, $token_only = false) {
-		$token_age = 60 * 60;
+		// a long token age is better for UX with SPA and browser back/forward buttons
+		// and it would expire when the session ends anyway
+		$token_age = 86400 * 2;
+
 		/* retrieve token from session */
 		$csrf_token = (isset($_SESSION['csrf_token']) ? $_SESSION['csrf_token'] : false);
 		$csrf_token_expiry = (isset($_SESSION['csrf_token_expiry']) ? $_SESSION['csrf_token_expiry'] : false);
@@ -2195,7 +2198,7 @@
 			* in the main document, initiate notifications support using this PHP code:
 				echo Notification::placeholder();
 
-			* whenever you want to show a notifcation, use this PHP code:
+			* whenever you want to show a notifcation, use this PHP code inside a script tag:
 				echo Notification::show([
 					'message' => 'Notification text to display',
 					'class' => 'danger', // or other bootstrap state cues, 'default' if not provided

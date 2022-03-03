@@ -9,8 +9,7 @@
 	  queries are stored in the membership_users.data field for the current user, under the key 'storedQueries'
 	*/
 
-	$currDir = dirname(__FILE__);
-	require("{$currDir}/incCommon.php");
+	require(__DIR__ . '/incCommon.php');
 
 	if(!csrf_token(true)) {
 		@header('HTTP/1.0 403 Access Denied');
@@ -18,9 +17,8 @@
 	}
 
 	// store queries if provided
-	if(isset($_REQUEST['queries'])) {
-		$queries = $_REQUEST['queries'];
+	$queries = Request::val('queries', null);
+	if($queries !== null)
 		setUserData('storedQueries', $queries);
-	}
 
 	echo getUserData('storedQueries');

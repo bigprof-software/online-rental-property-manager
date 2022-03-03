@@ -76,7 +76,7 @@ This application can be installed on Windows, Linux and MacOS. Before installing
 you should have the following software set up and running:
 
 * A webserver (Apache, IIS, nginx, ... etc)
-* PHP 5.6 or higher.
+* PHP 7.0 or higher.
 * MySQL 5.6 and above; or MariaDB 10 and above.
 
 If you don't have the above software installed, we recommend installing
@@ -106,7 +106,7 @@ For Xampp on Windows, this is usually `C:\xampp\htdocs`
 This application can be installed on both Windows and Linux servers.
 Before installing, make sure your server has the following software:
 
-* PHP 5.6 or higher
+* PHP 7.0 or higher
 * MySQL 5.6 and above; or MariaDB 10 and above.
 	
 Make sure your have access to a MySQL/MariaDB database.

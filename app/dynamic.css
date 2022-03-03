@@ -406,3 +406,29 @@ img.help-shortcuts-launcher {
 
 /* hide empty email links */
 a[href="mailto:"] { display: none; }
+
+/* flex layout for lookup drop-downs and dates */
+.lookup-flex, .date-flex {
+	display: flex;
+	justify-content: space-between;
+	gap: .5em;
+}
+.lookup-flex > .select2-container {
+	flex-grow: 1;
+}
+.lookup-flex > .view_parent,
+.lookup-flex > .add_new_parent {
+	flex-basis: 3em;
+}
+.date-flex > .month-select {
+	flex-grow: 4;
+}
+.date-flex > .year-select {
+	flex-grow: 2;
+}
+.date-flex > .day-select {
+	flex-grow: 1;
+}
+.date-flex > .btn {
+	flex-basis: 2.85em;
+}

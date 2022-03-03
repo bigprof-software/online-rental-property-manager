@@ -519,6 +519,13 @@
 
 	function validMySQLDate($date) {
 		$date = trim($date);
+
+		try {
+			$dtObj = new DateTime($date);
+		} catch(Exception $e) {
+			return false;
+		}
+
 		$parts = explode('-', $date);
 		return (
 			count($parts) == 3
@@ -529,7 +536,6 @@
 			&& intval($parts[1]) <= 12
 			&& intval($parts[2]) >= 1
 			&& intval($parts[2]) <= 31
-			&& strtotime($date) > 0
 		);
 	}
 

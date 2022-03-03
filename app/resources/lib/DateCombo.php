@@ -41,7 +41,7 @@ class DateCombo {
 		$years->SelectName = $this->NamePrefix . 'Year';
 		$years->SelectID = $this->NamePrefix;
 		$years->SelectedData = $xy;
-		$years->Class = "{$this->CSSOptionClass} split-date";
+		$years->Class = 'year-select split-date';
 		$years->SelectedClass = $this->CSSSelectedClass;
 		$years->ApplySelect2 = false;
 		$years->Render();
@@ -56,7 +56,7 @@ class DateCombo {
 		$months->SelectName = $this->NamePrefix . 'Month';
 		$months->SelectID = $this->NamePrefix . '-mm';
 		$months->SelectedData = intval($xm);
-		$months->Class = $this->CSSOptionClass;
+		$months->Class = 'month-select';
 		$months->SelectedClass = $this->CSSSelectedClass;
 		$months->ApplySelect2 = false;
 		$months->Render();
@@ -71,7 +71,7 @@ class DateCombo {
 		$days->SelectName = $this->NamePrefix . 'Day';
 		$days->SelectID = $this->NamePrefix . '-dd';
 		$days->SelectedData = intval($xd);
-		$days->Class = $this->CSSOptionClass;
+		$days->Class = 'day-select';
 		$days->SelectedClass = $this->CSSSelectedClass;
 		$days->ApplySelect2 = false;
 		$days->Render();
@@ -79,35 +79,29 @@ class DateCombo {
 
 		$df = $this->DateFormat; // contains date order 'myd', 'dmy' ... etc
 
-		$read_only_date = ${$df[0]} . datalist_date_separator . ${$df[1]} . datalist_date_separator . ${$df[2]};
-		if($read_only_date == datalist_date_separator.datalist_date_separator) $read_only_date = '';
-		//$read_only_date = '<p class="form-control-static">' . $read_only_date . '</p>';
+		if($readOnly) {
+			if(
+				!intval(${$df[0]})
+				|| !intval(${$df[1]})
+				|| !intval(${$df[2]})
+			) return '';
 
-		$editable_date = '<table style="width: 100%;" class="form-control-static"><tr>';
-		for($i = 0; $i < 3; $i++) {
-			switch($df[$i]) {
-				case 'd':
-					$editable_date .= '<td style="width: 25%;" class="date_combo">' . $d . '</td>';
-					break;
-				case 'm':
-					$editable_date .= '<td style="width: calc(50% - 4em);" class="date_combo">' . $m . '</td>';
-					break;
-				case 'y':
-					$editable_date .= '<td style="width: 25%;" class="date_combo">' . $y . '</td>';
-					break;
-			}
-
-			if($i == 2) $editable_date .= 
-				'<td style="width: 6em;">' .
-					'<div class="btn-group pull-right">' .
-						'<button type="button" class="btn btn-default" id="fd-but-' . $this->NamePrefix . '"><i class="glyphicon glyphicon-th"></i></button>' .
-						'<button type="button" class="btn btn-default fd-date-clearer" data-for="' . $this->NamePrefix . '"><i class="glyphicon glyphicon-trash"></i></button>' .
-					'</div>' .
-					'<div class="clearfix"></div>' .
-				'</td>'; 
+			return ${$df[0]} . datalist_date_separator . ${$df[1]} . datalist_date_separator . ${$df[2]};
 		}
-		$editable_date .= '</tr></table>';
 
-		return ($readOnly ? $read_only_date : $editable_date);
+		$editable_date = '<div class="date-flex">';
+		for($i = 0; $i < 3; $i++)
+			$editable_date .= ${$df[$i]};
+
+		$editable_date .= '' .
+			'<button type="button" class="btn btn-default" id="fd-but-' . $this->NamePrefix . '">' .
+				'<i class="glyphicon glyphicon-calendar"></i>' .
+			'</button>' .
+			'<button type="button" class="btn btn-default fd-date-clearer" data-for="' . $this->NamePrefix . '">' .
+				'<i class="glyphicon glyphicon-trash"></i>' .
+			'</button>' .
+		'</div>';
+
+		return $editable_date;
 	}
 }

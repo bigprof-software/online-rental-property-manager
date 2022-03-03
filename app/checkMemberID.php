@@ -1,9 +1,12 @@
 <?php
 	include_once(__DIR__ . '/lib.php');
-	include_once(__DIR__ . '/header.php');
 
 	$current_user = Request::val('currentUser', false);
 	$username = is_allowed_username(Request::val('memberID'), $current_user);
+
+	if(is_ajax()) exit('username-' . ($username ? 'available' : 'unavailable'));
+
+	include_once(__DIR__ . '/header.php');
 ?>
 
 <style>

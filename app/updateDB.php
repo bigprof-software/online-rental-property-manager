@@ -4,7 +4,7 @@
 	$setupHash = __DIR__ . "/setup{$tenantId}.md5";
 
 	$prevMD5 = @file_get_contents($setupHash);
-	$thisMD5 = md5_file(__DIR__ . '/updateDB.php');
+	$thisMD5 = md5_file(__FILE__);
 
 	// check if this setup file already run
 	if($thisMD5 != $prevMD5) {

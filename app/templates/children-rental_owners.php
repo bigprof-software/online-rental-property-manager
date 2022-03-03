@@ -5,6 +5,9 @@
 	$firstRecord = null;
 ?>
 <script>
+	// show child records count in badge in tab title
+	$j(() => { $j('.child-count-<?php echo $parameters['ChildTable']; ?>-<?php echo $parameters['ChildLookupField']; ?>').text(<?php echo $totalMatches; ?>) });
+
 	<?php echo $current_table; ?>GetChildrenRecordsList = function(command) {
 		var param = {
 			ChildTable: "<?php echo $parameters['ChildTable']; ?>",
@@ -161,8 +164,8 @@
 						<td class="<?php echo "{$parameters['ChildTable']}-{$config['display-field-names'][1]}"; ?>" id="<?php echo "{$parameters['ChildTable']}-{$config['display-field-names'][1]}-" . html_attr($record[$config['child-primary-key-index']]); ?>"><?php echo safe_html($record[1]); ?></td>
 						<td class="<?php echo "{$parameters['ChildTable']}-{$config['display-field-names'][2]}"; ?>" id="<?php echo "{$parameters['ChildTable']}-{$config['display-field-names'][2]}-" . html_attr($record[$config['child-primary-key-index']]); ?>"><?php echo safe_html($record[2]); ?></td>
 						<td class="<?php echo "{$parameters['ChildTable']}-{$config['display-field-names'][3]}"; ?>" id="<?php echo "{$parameters['ChildTable']}-{$config['display-field-names'][3]}-" . html_attr($record[$config['child-primary-key-index']]); ?>"><?php echo safe_html($record[3]); ?></td>
-						<td class="<?php echo "{$parameters['ChildTable']}-{$config['display-field-names'][5]}"; ?>" id="<?php echo "{$parameters['ChildTable']}-{$config['display-field-names'][5]}-" . html_attr($record[$config['child-primary-key-index']]); ?>"><a href="mailto:<?php echo isEmail($record[5]); ?>" class="btn btn-info" title="<?php echo html_attr($record[5]); ?>"><i class="glyphicon glyphicon-envelope"></i></a></td>
-						<td class="<?php echo "{$parameters['ChildTable']}-{$config['display-field-names'][6]}"; ?>" id="<?php echo "{$parameters['ChildTable']}-{$config['display-field-names'][6]}-" . html_attr($record[$config['child-primary-key-index']]); ?>"><a href="mailto:<?php echo isEmail($record[6]); ?>" class="btn btn-info" title="<?php echo html_attr($record[6]); ?>"><i class="glyphicon glyphicon-envelope"></i></a></td>
+						<td class="<?php echo "{$parameters['ChildTable']}-{$config['display-field-names'][5]}"; ?>" id="<?php echo "{$parameters['ChildTable']}-{$config['display-field-names'][5]}-" . html_attr($record[$config['child-primary-key-index']]); ?>"><a href="mailto:<?php echo html_attr($record[5]); ?>" class="btn btn-info" title="<?php echo html_attr($record[5]); ?>"><i class="glyphicon glyphicon-envelope"></i></a></td>
+						<td class="<?php echo "{$parameters['ChildTable']}-{$config['display-field-names'][6]}"; ?>" id="<?php echo "{$parameters['ChildTable']}-{$config['display-field-names'][6]}-" . html_attr($record[$config['child-primary-key-index']]); ?>"><a href="mailto:<?php echo html_attr($record[6]); ?>" class="btn btn-info" title="<?php echo html_attr($record[6]); ?>"><i class="glyphicon glyphicon-envelope"></i></a></td>
 						<td class="<?php echo "{$parameters['ChildTable']}-{$config['display-field-names'][7]}"; ?>" id="<?php echo "{$parameters['ChildTable']}-{$config['display-field-names'][7]}-" . html_attr($record[$config['child-primary-key-index']]); ?>"><?php echo safe_html($record[7]); ?></td>
 						<td class="<?php echo "{$parameters['ChildTable']}-{$config['display-field-names'][8]}"; ?>" id="<?php echo "{$parameters['ChildTable']}-{$config['display-field-names'][8]}-" . html_attr($record[$config['child-primary-key-index']]); ?>"><?php echo safe_html($record[8]); ?></td>
 						<td class="<?php echo "{$parameters['ChildTable']}-{$config['display-field-names'][9]}"; ?>" id="<?php echo "{$parameters['ChildTable']}-{$config['display-field-names'][9]}-" . html_attr($record[$config['child-primary-key-index']]); ?>"><?php echo safe_html($record[9]); ?></td>
@@ -180,7 +183,7 @@
 								<?php if($config['show-page-progress']) { ?>
 									<span style="margin: 10px;">
 										<?php $firstRecord = ($parameters['Page'] - 1) * $config['records-per-page'] + 1; ?>
-										<?php echo str_replace(['<FirstRecord>', '<LastRecord>', '<RecordCount>'], [$firstRecord, $firstRecord + count($records) - 1, $totalMatches], $Translation['records x to y of z']); ?>
+										<?php echo str_replace(['<FirstRecord>', '<LastRecord>', '<RecordCount>'], ['<span class="first-record locale-int">' . $firstRecord . '</span>', '<span class="last-record locale-int">' . ($firstRecord + count($records) - 1) . '</span>', '<span class="record-count locale-int">' . $totalMatches . '</span>'], $Translation['records x to y of z']); ?>
 									</span>
 								<?php } ?>
 							<?php } else { ?>
