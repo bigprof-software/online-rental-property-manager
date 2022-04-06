@@ -375,18 +375,36 @@
 
 				<?php if(!Request::val('signIn') && !Request::val('loginFailed')) { ?>
 					<?php if(!$mi['username'] || $mi['username'] == $adminConfig['anonymousMember']) { ?>
-						<p class="navbar-text navbar-right">&nbsp;</p>
-						<a href="<?php echo PREPEND_PATH; ?>index.php?signIn=1" class="btn btn-success navbar-btn navbar-right"><?php echo $Translation['sign in']; ?></a>
-						<p class="navbar-text navbar-right">
+						<p class="navbar-text navbar-right hidden-xs">&nbsp;</p>
+						<a href="<?php echo PREPEND_PATH; ?>index.php?signIn=1" class="btn btn-success navbar-btn navbar-right hidden-xs"><?php echo $Translation['sign in']; ?></a>
+						<p class="navbar-text navbar-right hidden-xs">
 							<?php echo $Translation['not signed in']; ?>
 						</p>
+						<a href="<?php echo PREPEND_PATH; ?>index.php?signIn=1" class="btn btn-success btn-block btn-lg navbar-btn visible-xs">
+							<?php echo $Translation['not signed in']; ?>
+							<i class="glyphicon glyphicon-chevron-right"></i> 
+							<?php echo $Translation['sign in']; ?>
+						</a>
 					<?php } else { ?>
-						<ul class="nav navbar-nav navbar-right hidden-xs" style="min-width: 330px;">
-							<a class="btn navbar-btn btn-default" href="<?php echo PREPEND_PATH; ?>index.php?signOut=1"><i class="glyphicon glyphicon-log-out"></i> <?php echo $Translation['sign out']; ?></a>
-
-							<p class="navbar-text signed-in-as">
-								<?php echo $Translation['signed as']; ?> <strong><a href="<?php echo PREPEND_PATH; ?>membership_profile.php" class="navbar-link username"><?php echo $mi['username']; ?></a></strong>
-							</p>
+						<ul class="nav navbar-nav navbar-right hidden-xs">
+							<!-- logged user profile menu -->
+							<li class="dropdown" title="<?php echo html_attr("{$Translation['signed as']} {$mi['username']}"); ?>">
+								<a href="#" class="dropdown-toggle profile-menu-icon" data-toggle="dropdown"><i class="glyphicon glyphicon-user"></i></a>
+								<ul class="dropdown-menu">
+									<li>
+										<a href="<?php echo PREPEND_PATH; ?>membership_profile.php"><i class="glyphicon glyphicon-user"></i> <span class="username"><?php echo $mi['username']; ?></span></a>
+									</li>
+									<li class="hidden-xs">
+										<a href="#" class="help-shortcuts-launcher">
+											<img src="<?php echo PREPEND_PATH; ?>resources/images/keyboard.png">
+											<?php echo html_attr($Translation['keyboard shortcuts']); ?>
+										</a>
+									</li>
+									<li>
+										<a href="<?php echo PREPEND_PATH; ?>index.php?signOut=1"><i class="glyphicon glyphicon-log-out"></i> <?php echo $Translation['sign out']; ?></a>
+									</li>
+								</ul>
+							</li>
 						</ul>
 						<ul class="nav navbar-nav visible-xs">
 							<a class="btn navbar-btn btn-default btn-lg visible-xs" href="<?php echo PREPEND_PATH; ?>index.php?signOut=1"><i class="glyphicon glyphicon-log-out"></i> <?php echo $Translation['sign out']; ?></a>
@@ -407,13 +425,6 @@
 						</script>
 					<?php } ?>
 				<?php } ?>
-
-				<p class="navbar-text navbar-right help-shortcuts-launcher-container hidden-xs">
-					<img
-						class="help-shortcuts-launcher" 
-						src="<?php echo PREPEND_PATH; ?>resources/images/keyboard.png" 
-						title="<?php echo html_attr($Translation['keyboard shortcuts']); ?>">
-				</p>
 			</div>
 		</nav>
 		<?php
@@ -1003,6 +1014,7 @@ EOT;
 	function StyleSheet() {
 		if(!defined('PREPEND_PATH')) define('PREPEND_PATH', '');
 		$prepend_path = PREPEND_PATH;
+		$appVersion = (defined('APP_VERSION') ? APP_VERSION : rand());
 
 		$css_links = <<<EOT
 
@@ -1013,7 +1025,7 @@ EOT;
 			<link rel="stylesheet" href="{$prepend_path}resources/lightbox/css/lightbox.css" media="screen">
 			<link rel="stylesheet" href="{$prepend_path}resources/select2/select2.css" media="screen">
 			<link rel="stylesheet" href="{$prepend_path}resources/timepicker/bootstrap-timepicker.min.css" media="screen">
-			<link rel="stylesheet" href="{$prepend_path}dynamic.css">
+			<link rel="stylesheet" href="{$prepend_path}dynamic.css?{$appVersion}">
 EOT;
 
 		return $css_links;

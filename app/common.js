@@ -1,6 +1,6 @@
 var AppGini = AppGini || {};
 
-AppGini.version = 22.12;
+AppGini.version = 22.13;
 
 /* initials and fixes */
 jQuery(function() {
@@ -2024,7 +2024,7 @@ AppGini.newRecord = function(callback, params) {
 
 AppGini.updateKeyboardShortcutsStatus = function() {
 	var shortcutsEnabled = JSON.parse(localStorage.getItem('AppGini.shortcutKeysEnabled')) || false;
-	var img = $j('nav .help-shortcuts-launcher');
+	var img = $j('nav .help-shortcuts-launcher img');
 
 	img.length ? img.attr('src', img.attr('src').replace(/\/keyboard.*/, '/keyboard' + (shortcutsEnabled ? '' : '-disabled') + '.png')) : null;
 }
@@ -2110,7 +2110,8 @@ AppGini.handleKeyboardShortcuts = function() {
 	AppGini._handleKeyboardShortcutsApplied = true;
 }
 
-AppGini.showKeyboardShortcuts = function() {
+AppGini.showKeyboardShortcuts = (e) => {
+	if(e) e.preventDefault();
 	if(AppGini.modalOpen()) return;
 
 	var kmap = AppGini.shortcutKeyMap, keys = [], $t = AppGini.Translate._map;
@@ -2152,7 +2153,7 @@ AppGini.showKeyboardShortcuts = function() {
 
 	var title = '<img style="$style" src="$src"> <span class="text-$color">$title</span> $toggler'
 				.replace('$style', 'height: 1.75em; vertical-align: bottom;')
-				.replace('$src', $j('.help-shortcuts-launcher').attr('src'))
+				.replace('$src', $j('.help-shortcuts-launcher img').attr('src'))
 				.replace('$color', shortcutsEnabled ? 'success' : 'danger')
 				.replace('$title', shortcutsEnabled ? $t['keyboard shortcuts enabled'] : $t['keyboard shortcuts disabled'])
 				.replace('$toggler', toggler)

@@ -312,6 +312,10 @@ td.units-description { white-space: normal !important; max-width: 80px !importan
 	font-size: 14px;
 }
 
+.theme-compact #quick-search {
+	margin: .5em 0;
+}
+
 /* correct arrow directions in RTL pages */
 .theme-rtl #Previous .glyphicon, .theme-rtl #Next .glyphicon {
 	transform: rotate(180deg);
@@ -376,13 +380,10 @@ th:focus {
 	outline: thin dotted;
 }
 
-img.help-shortcuts-launcher {
-	height: 21px;
-	cursor: pointer;
-}
-
-.theme-compact .help-shortcuts-launcher-container {
-	margin: 10px !important;
+.help-shortcuts-launcher img {
+	height: 1.5em;
+	vertical-align: text-bottom;
+	margin-left: -.4em;
 }
 
 /* web and email links in DV */
@@ -432,3 +433,28 @@ a[href="mailto:"] { display: none; }
 .date-flex > .btn {
 	flex-basis: 2.85em;
 }
+.date-flex > select.form-control {
+	width: auto; display: unset;
+}
+
+/* Classes that can be added to .glyphicon to variate icons */
+.flip-horizontal { transform: scaleX(-1); }
+.flip-vertical { transform: scaleY(-1); }
+
+/* profile menu icon */
+.profile-menu-icon {
+	border: solid 1px #ccc; border-radius: 50%; padding: 6px 9px !important; margin: 8px !important;
+}
+.theme-compact .profile-menu-icon { padding: 2px 9px !important; margin: 6px !important; }
+
+.theme-journal .profile-menu-icon { padding: 7px 9px !important; }
+.theme-compact.theme-journal .profile-menu-icon { padding: 5px 9px !important; }
+
+.theme-paper .profile-menu-icon { margin: 15px !important; padding: 6px 11px !important; }
+.theme-compact.theme-paper .profile-menu-icon { padding: 2px 9px !important; margin: 12px !important; }
+
+.theme-readable .profile-menu-icon { margin: 15px !important; }
+.theme-compact.theme-readable .profile-menu-icon { margin: 10px !important; }
+
+.theme-sandstone .profile-menu-icon { padding: 6px 12px !important; }
+.theme-compact.theme-sandstone .profile-menu-icon { padding: 2px 9px !important; }

@@ -1,6 +1,6 @@
 <?php
-	$appgini_version = '22.12.1273';
-	$generated_ts = '3/3/2022 5:52:28 PM';
+	$appgini_version = '22.13.1276';
+	$generated_ts = '7/4/2022 1:07:47 AM';
 
 	require(__DIR__ . '/incCommon.php');
 
@@ -77,10 +77,10 @@
 
 	// MySQL status
 	$db_status = [];
-	$res = sql("show status", $eo);
-	while($row = db_fetch_array($res)) {
-		$db_status[$row[0]] = $row[1];
-	}
+	$res = sql('SHOW STATUS', $eo);
+	while($row = db_fetch_array($res)) $db_status[$row[0]] = $row[1];
+	$res = sql('SHOW VARIABLES', $eo);
+	while($row = db_fetch_array($res)) $db_status[$row[0]] = $row[1];
 ?>
 
 <div class="page-header"><h1><?php echo $Translation['server status']; ?></h1></div>
@@ -128,6 +128,7 @@
 	<div class="col-lg-4">
 		<h3><?php echo $Translation['db status']; ?></h3>
 		<div class="db-status scrollable">
+			<pre>SHOW STATUS; SHOW VARIABLES;</pre>
 			<table class="table table-striped table-hover table-bordered">
 				<?php foreach($db_status as $var => $val) { ?>
 					<tr>

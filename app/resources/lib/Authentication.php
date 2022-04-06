@@ -243,6 +243,10 @@
 			exit;
 		}
 
+		public static function isGuest() {
+			return !self::loggedSessionExists();
+		}
+
 		private static function loggedSessionExists() {
 			self::initSession();
 

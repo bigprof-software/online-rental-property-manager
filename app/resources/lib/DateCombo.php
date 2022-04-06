@@ -41,7 +41,7 @@ class DateCombo {
 		$years->SelectName = $this->NamePrefix . 'Year';
 		$years->SelectID = $this->NamePrefix;
 		$years->SelectedData = $xy;
-		$years->Class = 'year-select split-date';
+		$years->Class = 'year-select split-date form-control';
 		$years->SelectedClass = $this->CSSSelectedClass;
 		$years->ApplySelect2 = false;
 		$years->Render();
@@ -56,7 +56,7 @@ class DateCombo {
 		$months->SelectName = $this->NamePrefix . 'Month';
 		$months->SelectID = $this->NamePrefix . '-mm';
 		$months->SelectedData = intval($xm);
-		$months->Class = 'month-select';
+		$months->Class = 'month-select form-control';
 		$months->SelectedClass = $this->CSSSelectedClass;
 		$months->ApplySelect2 = false;
 		$months->Render();
@@ -71,7 +71,7 @@ class DateCombo {
 		$days->SelectName = $this->NamePrefix . 'Day';
 		$days->SelectID = $this->NamePrefix . '-dd';
 		$days->SelectedData = intval($xd);
-		$days->Class = 'day-select';
+		$days->Class = 'day-select form-control';
 		$days->SelectedClass = $this->CSSSelectedClass;
 		$days->ApplySelect2 = false;
 		$days->Render();

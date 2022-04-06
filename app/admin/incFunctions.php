@@ -856,6 +856,8 @@
 	}
 	########################################################################
 	function setupMembership() {
+		if(empty($_SESSION) || empty($_SESSION['memberID'])) return;
+
 		// run once per session, but force proceeding if not all mem tables created
 		$res = sql("show tables like 'membership_%'", $eo);
 		$num_mem_tables = db_num_rows($res);
@@ -876,6 +878,7 @@
 			'pageRebuildFields.php', 
 			'pageSettings.php',
 			'ajax_check_login.php',
+			'ajax-update-calculated-fields.php',
 		])) return;
 
 		// call each update_membership function
@@ -2424,8 +2427,8 @@
 		$hc = new CI_Input(datalist_db_encoding);
 		$str = $hc->xss_clean(bgStyleToClass($str));
 
-		// sandbox iframes
-		$str = preg_replace('/(<|&lt;)iframe(.*?)(>|&gt;)/i', '$1iframe sandbox $2$3', $str);
+		// sandbox iframes if they aren't already
+		$str = preg_replace('/(<|&lt;)iframe(\s+sandbox)*(.*?)(>|&gt;)/i', '$1iframe sandbox$3$4', $str);
 
 		return $str;
 	}

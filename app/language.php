@@ -833,4 +833,10 @@ $Translation = [
 	'clear error queries' => 'Clear error queries',
 	'confirm clear logs' => 'This will clear specified query logs. Please confirm!',
 	'query logs cleared' => '<TYPE> query logs cleared.',
+
+	// Added in 22.13
+	'unicode error' => 'Unicode misconfiguration',
+	'unicode needs fixing' => 'The unicode encoding for the database and/or some tables needs to be fixed.',
+	'unicode fix details' => 'Tables encoded using the utf8 encoding will be adjusted to the more superior utf8mb4 encoding, which supports all unicode character sets.',
+	'fix unicode' => 'Fix unicode',
 ];

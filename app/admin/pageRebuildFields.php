@@ -114,13 +114,14 @@
 	$fix_table = Request::val('t', false);
 	$fix_field = Request::val('f', false);
 	$fix_all = Request::val('all', false);
+	$fix_utf8 = Request::val('utf8', false);
 	$fix_status = $qry = null;
+	$eo = ['silentErrors' => true];
 
 	if($fix_field && $fix_table) $fix_status = fix_field($fix_table, $fix_field, $schema, $qry);
 
 	/* retrieve actual db schema */
 	foreach($table_captions as $tn => $tc) {
-		$eo = ['silentErrors' => true];
 		$res = sql("SHOW COLUMNS FROM `{$tn}`", $eo);
 		if($res) {
 			while($row = db_fetch_assoc($res)) {
@@ -155,6 +156,47 @@
 		redirect('admin/pageRebuildFields.php');
 		exit;
 	}
+
+	// mysql_charset set to utf8mb4?
+	$collation = '';
+	$dbDatabase = config('dbDatabase');
+	if(mysql_charset == 'utf8mb4') {
+		// check which collation is supported
+		if(db_num_rows(sql("SHOW COLLATION WHERE Charset = 'utf8mb4' AND Collation LIKE 'utf8mb4_unicode_520_ci'", $eo)))
+			$collation = 'utf8mb4_unicode_520_ci';
+		elseif(db_num_rows(sql("SHOW COLLATION WHERE Charset = 'utf8mb4' AND Collation LIKE 'utf8mb4_unicode_ci'", $eo)))
+			$collation = 'utf8mb4_unicode_ci';
+	}
+
+	// handle fix_utf8 request if a utf8mb4 collation is supported
+	if($fix_utf8 && $collation) {
+		sql("ALTER DATABASE `$dbDatabase` CHARACTER SET = utf8mb4 COLLATE = $collation", $eo);
+		foreach($schema as $tn => $ti) {
+			sql("ALTER TABLE `$tn` CONVERT TO CHARACTER SET utf8mb4 COLLATE $collation", $eo);
+			sql("REPAIR TABLE `$tn`", $eo);
+			sql("OPTIMIZE TABLE `$tn`", $eo);
+		}
+	}
+
+	// check db and table utf8 statuses
+	$encodingError = false;
+	if(mysql_charset == 'utf8mb4') {
+		$dbCharset = sqlValue("SELECT default_character_set_name FROM information_schema.SCHEMATA WHERE schema_name='$dbDatabase'");
+		$tableCharset = [];
+		foreach($schema as $tn => $ti)
+			$tableCharset[$tn] = sqlValue(
+				"SELECT c.character_set_name FROM information_schema.`TABLES` t,
+				information_schema.`COLLATION_CHARACTER_SET_APPLICABILITY` c
+				WHERE c.collation_name = t.table_collation
+				AND t.table_schema = '$dbDatabase'
+				AND t.table_name = '$tn'" 
+			);
+
+		$encodingError = (
+			$dbCharset != 'utf8mb4'
+			|| count(array_filter($tableCharset, function($enc) { return $enc != 'utf8mb4'; }))
+		);
+	}
 ?>
 
 <?php if($fix_status == 1 || $fix_status == 2) { ?>
@@ -179,6 +221,31 @@
 <p class="lead"><?php echo $Translation['compare tables page'] ; ?></p>
 
 <div class="alert summary"></div>
+
+<div class="alert alert-warning alert-utf8 alert-dismissable hidden">
+	<button type="button" class="close" data-dismiss="alert">&times;</button>
+	<div class="text-bold"><?php echo $Translation['unicode needs fixing']; ?></div>
+	<div>
+		<?php echo $Translation['unicode fix details']; ?>
+		<small><a class="alert-link" href="https://mathiasbynens.be/notes/mysql-utf8mb4" target="_blank"><?php echo $Translation['more info']; ?></a></small>
+	</div>
+	<button type="button" class="btn btn-warning btn-fix-utf8 tspacer-lg">
+		<i class="glyphicon glyphicon-ok"></i> <?php echo $Translation['fix unicode']; ?>
+	</button>
+</div>
+<script>
+	$j(() => {
+		const encodingError = <?php echo ($encodingError ? 'true' : 'false'); ?>;
+		if(!encodingError) return;
+
+		$j('.alert-utf8').removeClass('hidden');
+		$j('.btn-fix-utf8').click(() => {
+			if(!confirm(<?php echo json_encode($Translation['backup before fix']); ?>)) return;
+			location.href = 'pageRebuildFields.php?utf8=1';
+		});
+	})
+</script>
+
 <table class="table table-responsive table-hover table-striped">
 	<thead><tr>
 		<th></th>
@@ -190,7 +257,12 @@
 
 	<tbody>
 	<?php foreach($schema as $tn => $fields) { ?>
-		<tr class="text-info"><td colspan="5"><h4 data-placement="auto top" data-toggle="tooltip" title="<?php echo str_replace ( "<TABLENAME>" , $tn , $Translation['table name title']) ; ?>"><i class="glyphicon glyphicon-th-list"></i> <?php echo $table_captions[$tn][0]; ?></h4></td></tr>
+		<tr class="text-info"><td colspan="5">
+			<h4 data-placement="auto top" data-toggle="tooltip" title="<?php echo str_replace ( "<TABLENAME>" , $tn , $Translation['table name title']) ; ?>"><img src="../<?php echo $table_captions[$tn][2]; ?>"> <?php echo $table_captions[$tn][0]; ?></h4>
+			<?php if(mysql_charset == 'utf8mb4' && $tableCharset[$tn] != 'utf8mb4') { ?>
+				<span class="label label-danger"><?php echo $Translation['unicode error']; ?></span>
+			<?php } ?>
+		</td></tr>
 		<?php foreach($fields as $fn => $fd) { ?>
 			<?php $diff = ((prepare_def($fd['appgini']) == prepare_def($fd['db'])) ? false : true); ?>
 			<?php $no_db = ($fd['db'] ? false : true); ?>
@@ -208,6 +280,7 @@
 				</td>
 			</tr>
 		<?php } ?>
+		<?php if(count($fields) % 2) { ?><tr class="field_ok"><td colspan="5"></td></tr><?php } ?>
 	<?php } ?>
 	</tbody>
 </table>
