@@ -30,7 +30,7 @@
 	// validate input
 	if(!in_array($t, array_keys($p)))  getImage();
 	if(!in_array($f, array_keys($p[$t])))  getImage();
-	if(!preg_match('/^[a-z0-9_-]+\.(gif|png|jpg|jpeg|jpe)$/i', $i, $m)) getImage();
+	if(!preg_match('/^[a-z0-9_-]+\.(jpg|jpeg|gif|png|webp)$/i', $i, $m)) getImage();
 	if($v != 'tv' && $v != 'dv')   getImage();
 	if($i == 'blank.gif') getImage();
 

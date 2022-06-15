@@ -1,6 +1,6 @@
 var AppGini = AppGini || {};
 
-AppGini.version = 22.13;
+AppGini.version = 22.14;
 
 /* initials and fixes */
 jQuery(function() {
@@ -195,6 +195,17 @@ jQuery(function() {
 			.trigger('change');
 	})
 
+	/* confirm when deleting a record, and prevent form validation */
+	$j('button[id=delete]').on('click', (e) => {
+		if(!confirm(AppGini.Translate._map['are you sure?'])) {
+			e.preventDefault();
+			return false;
+		}
+
+		$j('form').attr('novalidate', 'novalidate')
+		return true;
+	})
+
 	/* select email/web links on uncollapsing in DV */
 	$j('.detail_view').on('click', '.btn[data-toggle="collapse"]', function() {
 		var target = $j($j(this).data('target'));
@@ -211,7 +222,7 @@ jQuery(function() {
 		var tvHasWarning = $j('.table_view tfoot .alert-warning').length > 0;
 
 		setInterval(function() {
-			$j('#Print, #CSV, #tv-tools, .table_view thead, .table_view tr.success')
+			$j('#Print, #CSV, .tv-tools, .table_view thead, .table_view tr.success')
 				.toggleClass('hidden', tvHasWarning);
 
 			$j('.tv-toggle').parent().toggleClass('hidden', tvHasWarning);
@@ -391,7 +402,7 @@ function properties_validateData() {
 	if(!AppGini.Validation.fieldRequired('radio', 'type', 'Type')) return false;
 
 	// check file uploads (file type and size)
-	if($j('#photo').val() && !AppGini.checkFileUpload('photo', 'jpg|jpeg|gif|png', 2048000)) {
+	if($j('#photo').val() && !AppGini.checkFileUpload('photo', 'jpg|jpeg|gif|png|webp', 2048000)) {
 		AppGini.scrollTo('photo');
 		return false;
 	}
@@ -403,7 +414,7 @@ function property_photos_validateData() {
 	var errors = false;
 
 	// check file uploads (file type and size)
-	if($j('#photo').val() && !AppGini.checkFileUpload('photo', 'jpg|jpeg|gif|png', 2048000)) {
+	if($j('#photo').val() && !AppGini.checkFileUpload('photo', 'jpg|jpeg|gif|png|webp', 2048000)) {
 		AppGini.scrollTo('photo');
 		return false;
 	}
@@ -418,7 +429,7 @@ function units_validateData() {
 	if(!AppGini.Validation.fieldRequired('radio', 'status', 'Status')) return false;
 
 	// check file uploads (file type and size)
-	if($j('#photo').val() && !AppGini.checkFileUpload('photo', 'jpg|jpeg|gif|png', 2048000)) {
+	if($j('#photo').val() && !AppGini.checkFileUpload('photo', 'jpg|jpeg|gif|png|webp', 2048000)) {
 		AppGini.scrollTo('photo');
 		return false;
 	}
@@ -430,7 +441,7 @@ function unit_photos_validateData() {
 	var errors = false;
 
 	// check file uploads (file type and size)
-	if($j('#photo').val() && !AppGini.checkFileUpload('photo', 'jpg|jpeg|gif|png', 2048000)) {
+	if($j('#photo').val() && !AppGini.checkFileUpload('photo', 'jpg|jpeg|gif|png|webp', 2048000)) {
 		AppGini.scrollTo('photo');
 		return false;
 	}
@@ -1862,6 +1873,9 @@ AppGini.lockUpdatesOnUserRequest = function() {
 AppGini.focusFormElement = function(tn, fn) {
 	if(AppGini.mobileDevice()) return;
 
+	// if we have a visible alert, don't scroll to focused element
+	const doScroll = ($j('.alert:visible').length == 0);
+
 	var inputElem = $j([
 		'select[id=' + fn + '-mm]',
 		'select[id=' + fn + ']',
@@ -1875,7 +1889,7 @@ AppGini.focusFormElement = function(tn, fn) {
 
 	if(inputElem.length) {
 		inputElem.focus();
-		AppGini.scrollToDOMElement(inputElem[0], -100);
+		if(doScroll) AppGini.scrollToDOMElement(inputElem[0], -100);
 		return;
 	}
 
@@ -1883,7 +1897,7 @@ AppGini.focusFormElement = function(tn, fn) {
 	var linker = $j('[id=' + fn + '-edit-link]');
 	if(linker.length) {
 		linker.click();
-		AppGini.scrollToDOMElement(linker[0], -100);
+		if(doScroll) AppGini.scrollToDOMElement(linker[0], -100);
 		return;
 	}
 
@@ -1891,7 +1905,7 @@ AppGini.focusFormElement = function(tn, fn) {
 	var s2 = $j('[id=' + fn + '-container], [id=s2id_' + fn + ']');
 	if(s2.length) {
 		s2.select2('focus');
-		AppGini.scrollToDOMElement(s2[0], -100);
+		if(doScroll) AppGini.scrollToDOMElement(s2[0], -100);
 		return;
 	}
 }
@@ -2238,3 +2252,64 @@ AppGini.applyNiceditBgColors = function() {
 		')' });
 	})
 }
+/**
+ * Adds a link or a divider to the profile menu.
+ * Examples:
+ *    To append a divider to the menu:
+ *       AppGini.addToProfileMenu('--')
+ * 
+ *    To append a text-only link labeled 'Test link' that opens a page 'test'
+ *    in the same tab: 
+ *       AppGini.addToProfileMenu({ href: 'test', text: 'Test link' })
+ * 
+ *    To append a link labeled 'Test link' with an image
+ *    that opens a page 'test' in the same tab: 
+ *       AppGini.addToProfileMenu({
+ *          href: 'test',
+ *          text: 'Test link',
+ *          img: 'path/to/img'
+ *       })
+ * 
+ *    To append a link labeled 'Test link' with a checkmark glyphicon
+ *    that opens a page 'test' in a new tab: 
+ *       AppGini.addToProfileMenu({
+ *          href: 'test',
+ *          text: 'Test link',
+ *          target: '_blank',
+ *          icon: 'ok'
+ *       })
+ */
+AppGini.addToProfileMenu = (link) => {
+	const li = $j('<li></li>')
+
+	if(link === '--')
+		return li.addClass('divider').appendTo('.profile-menu');
+
+	const linkHtml = $j('<a></a>');
+
+	linkHtml
+		.attr('href', link.href ?? '')
+		.addClass(link.class ?? '')
+		.attr('target', link.target ?? '')
+		.text((link.text ?? '').trim())
+
+	if(link.img ?? false)
+		$j('<img>')
+			.attr('src', link.img)
+			.css({
+				maxHeight: '1.5em',
+				maxWidth: '1.5em',
+				marginLeft: '-0.4em',
+			})
+			.addClass('rspacer-sm')
+			.prependTo(linkHtml)
+
+	else if(link.icon ?? false)
+		$j(`<i></i>`)
+			.addClass(`glyphicon glyphicon-${link.icon} rspacer-md`)
+			.prependTo(linkHtml)
+
+	linkHtml.appendTo(li);
+	li.appendTo('.profile-menu')
+}
+

@@ -37,7 +37,7 @@
 
 		// hook: member_activity
 		if(function_exists('member_activity')) {
-			$args=[];
+			$args = [];
 			member_activity($mi, 'profile', $args);
 		}
 
@@ -87,7 +87,7 @@
 
 		// hook: member_activity
 		if(function_exists('member_activity')) {
-			$args=[];
+			$args = [];
 			member_activity($mi, 'password', $args);
 		}
 

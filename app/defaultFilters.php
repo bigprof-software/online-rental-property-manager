@@ -251,7 +251,7 @@
 	</div>
 	<?php if($this->AllowSavingFilters) { ?>
 		<div class="col-md-3 vspacer-lg">
-			<button type="submit" class="btn btn-default btn-block btn-lg" id="SaveFilter" name="SaveFilter_x" value="1"><i class="glyphicon glyphicon-align-left"></i> <?php echo $Translation['save filters']; ?></button>
+			<button type="submit" class="btn btn-default btn-block btn-lg" id="SaveFilter" name="SaveFilter_x" value="1"><i class="glyphicon glyphicon-bookmark"></i> <?php echo $Translation['save filters']; ?></button>
 		</div>
 	<?php } ?>
 	<div class="col-md-2 vspacer-lg">

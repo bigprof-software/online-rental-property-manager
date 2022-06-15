@@ -276,6 +276,9 @@
 				if(!@db_query($createSQL)) {
 					echo '<span class="label label-danger">' . $Translation['failed'] . '</span>';
 					echo '<div class="text-danger">' . $Translation['mysql said'] . db_error(db_link()) . '</div>';
+
+					// create table with a dummy field
+					@db_query("CREATE TABLE IF NOT EXISTS `$tableName` (`_dummy_deletable_field` TINYINT)");
 				} else {
 					echo '<span class="label label-success">' . $Translation['ok'] . '</span>';
 				}

@@ -1,6 +1,7 @@
 <?php
 	/* initial preps and includes */
 	define('APPGINI_SETUP', true); /* needed in included files to tell that this is the setup script */
+	define('DEFAULT_MYSQL_PORT', ini_get('mysqli.default_port'));
 
 	include_once(__DIR__ . '/settings-manager.php');
 	if(MULTI_TENANTS) denyAccess('Access denied');
@@ -51,6 +52,7 @@
 		$db_password = Request::val('db_password');
 		$db_server = Request::val('db_server');
 		$db_username = Request::val('db_username');
+		$db_port = Request::val('db_port', DEFAULT_MYSQL_PORT);
 
 		/* validate data */
 		$errors = [];
@@ -70,9 +72,15 @@
 		}
 
 		/* test database connection */
-		if(!($connection = @db_connect($db_server, $db_username, $db_password))) {
-			$errors[] = $Translation['Database connection error'];
-		}
+		if(strlen($db_port))
+			if(!($connection = @db_connect($db_server, $db_username, $db_password, NULL, $db_port))) {
+				$errors[] = $Translation['Database connection error'];
+			}
+		else
+			if(!($connection = @db_connect($db_server, $db_username, $db_password))) {
+				$errors[] = $Translation['Database connection error'];
+			}
+
 		if($connection !== false && !@db_select_db($db_name, $connection)) {
 			// attempt to create the database
 			if(!@db_query("CREATE DATABASE IF NOT EXISTS `$db_name`")) {
@@ -85,7 +93,7 @@
 		/* in case of validation errors, output them and exit */
 		if(count($errors)) {
 			if($test) {
-				echo 'ERROR!';
+				http_response_code(406);
 				exit;
 			}
 
@@ -102,11 +110,8 @@
 			exit;
 		}
 
-		/* if db test is successful, output success message and exit */
-		if($test) {
-			echo 'SUCCESS!';
-			exit;
-		}
+		/* if db test is successful, exit with HTTP status 200 OK */
+		if($test) exit;
 
 		/* create database tables */
 		include_once(__DIR__ . '/updateDB.php');
@@ -119,6 +124,7 @@
 			'dbUsername' => $db_username,
 			'dbPassword' => $db_password,
 			'dbDatabase' => $db_name,
+			'dbPort' => $db_port,
 			'appURI' => trim(dirname($_SERVER['SCRIPT_NAME']), '/'),
 			'host' => (isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : $_SERVER['SERVER_NAME'] . ($_SERVER['SERVER_PORT'] == '80' || $_SERVER['SERVER_PORT'] == '443' ? '' : ":{$_SERVER['SERVER_PORT']}")),
 
@@ -314,7 +320,20 @@
 					</div>
 				</div>
 
-				<div id="db_test" class="alert" style="display: none;"></div>
+				<div class="form-group">
+					<label for="db_port" class="control-label col-sm-4"><?php echo $Translation['mysql port']; ?></label>
+					<div class="col-sm-8">
+						<div class="input-group">
+							<input type="number" class="form-control" id="db_port" name="db_port" placeholder="<?php echo htmlspecialchars($Translation['mysql port']); ?>" value="<?php echo htmlspecialchars(DEFAULT_MYSQL_PORT); ?>">
+							<span class="input-group-btn">
+								<button data-toggle="collapse" tabindex="-1" data-target="#db_port-help" class="btn btn-info" type="button"><i class="glyphicon glyphicon-info-sign"></i></button>
+							</span>
+						</div>
+						<span class="help-block collapse" id="db_port-help"><?php printf($Translation['db_port help'], DEFAULT_MYSQL_PORT); ?></span>
+					</div>
+				</div>
+
+				<div id="db_test" class="alert hidden"></div>
 			</fieldset>
 
 			<fieldset class="form-horizontal" id="inputs">
@@ -368,9 +387,12 @@
 				</div>
 			</div>
 
-			<div class="row">
-				<div class="col-sm-offset-3 col-sm-6">
-					<button class="btn btn-primary btn-lg btn-block" value="submit" id="submit" type="submit" name="submit"><?php echo $Translation['Submit']; ?></button>
+			<div class="row" style="margin-top: 2em;">
+				<div class="col-sm-offset-3 col-sm-6 col-lg-offset-4 col-lg-4">
+					<button class="btn btn-primary btn-lg btn-block" value="submit" id="submit" type="submit" name="submit">
+						<i class="glyphicon glyphicon-ok"></i> 
+						<?php echo $Translation['Submit']; ?>
+					</button>
 				</div>
 			</div>
 		</form>
@@ -459,7 +481,8 @@
 
 			$j('#login-form').fadeIn(1000, function() { $j('#db_name').focus(); });
 
-			$j('#db_name, #db_password, #db_server, #db_username').on('change', db_test);
+			$j('#db_name, #db_password, #db_server, #db_username, #db_port')
+				.on('change', () => db_test(true));
 		});
 
 		/* validate data before submitting */
@@ -486,41 +509,51 @@
 
 		/* test db info */
 		var db_test_in_progress = false;
-		function db_test() {
+		function db_test(delay) {
 			if(db_test_in_progress) return;
 
-			if($j('#db_name').val().length && $j('#db_username').val().length && $j('#db_server').val().length && !$j('#db_password:focus').length) {
-				setTimeout(function() {
-					if(db_test_in_progress) return;
+			if(
+				!$j('#db_name').val().length
+				|| !$j('#db_username').val().length
+				|| !$j('#db_server').val().length
+				|| $j('#db_password:focus').length
+			) return;
 
-					new Ajax.Request(
-						'<?php echo basename(__FILE__); ?>', {
-							method: 'post',
-							parameters: {
-								db_name: $j('#db_name').val(),
-								db_server: $j('#db_server').val(),
-								db_password: $j('#db_password').val(),
-								db_username: $j('#db_username').val(),
-								test: 1
-							},
-							onCreate: function() {
-								db_test_in_progress = true;
-							},
-							onSuccess: function(resp) {
-								if(resp.responseText == 'SUCCESS!') {
-									$j('#db_test').removeClass('alert-danger').addClass('alert-success').html('<?php echo addslashes($Translation['Database info is correct']); ?>').fadeIn();
-								} else if(resp.responseText.match(/^ERROR!/)) {
-									$j('#db_test').removeClass('alert-success').addClass('alert-danger').html('<?php echo addslashes($Translation['Database connection error']); ?>').fadeIn();
-									Effect.Shake('db_test');
-								}
-							},
-							onComplete: function() {
-								db_test_in_progress = false;
-							}
-						}
-					);
-				}, 1000);
-			}
+			const testFeedback = $j('#db_test');
+
+			setTimeout(function() {
+				if(db_test_in_progress) return;
+
+				db_test_in_progress = true;
+
+				testFeedback
+					.html(AppGini.Translate._map['checking database info'])
+					.removeClass('alert-danger alert-success hidden')
+					.addClass('alert-warning');
+
+				$j.ajax({
+					url: '<?php echo basename(__FILE__); ?>?test=1',
+					type: 'POST',
+					data: $j('#db_name, #db_server, #db_password, #db_username, #db_port').serialize(),
+					success: (resp) => {
+						testFeedback
+							.addClass('alert-success')
+							.html(AppGini.Translate._map['Database info is correct'])
+					},
+					error: () => {
+						testFeedback
+							.addClass('alert-danger')
+							.html(AppGini.Translate._map['Database connection error'])
+					},
+					complete: () => {
+						db_test_in_progress = false;
+						testFeedback.removeClass('alert-warning');
+						$j('<button type="button" class="btn btn-default btn-alert pull-right"><i class="glyphicon glyphicon-refresh"></i></button>')
+							.on('click', () => db_test())
+							.appendTo(testFeedback)
+					}
+				});
+			}, delay ? 1000 : 50);
 		}
 	<?php } ?>
 	</script>

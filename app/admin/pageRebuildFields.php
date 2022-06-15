@@ -208,6 +208,7 @@
 			$action = ($fix_status == 2 ? 'create' : 'update');
 			$replaceValues = [$action, $fix_field, $fix_table, $qry];
 			echo str_replace($originalValues, $replaceValues, $Translation['create or update table']);
+			echo '<br><a href="' . application_url('admin/pageQueryLogs.php?type=error') . '">' . $Translation['if error persists check query log'] . '</a>';
 		?>
 	</div>
 <?php } ?>

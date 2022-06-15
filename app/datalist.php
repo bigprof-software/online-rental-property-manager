@@ -263,13 +263,19 @@ class DataList {
 				/* if designer specified a redirect-after-insert url */
 				$url .= (strpos($url, '?') !== false ? '&' : '?') . $insert_status;
 				$url .= (strpos($url, $this->ScriptFileName) !== false ? "&{$filtersGET}" : '');
-				$url = str_replace("#ID#", urlencode($SelectedID), $url);
+				$url = str_replace(
+					"#ID#",
+					urlencode($SelectedID),
+					$url
+				);
 			} else {
 				/* if no redirect-after-insert url, use default */
 				$url = "{$this->ScriptFileName}?{$insert_status}&{$filtersGET}";
 
-				/* if DV and TV in same page, select new record */
-				if(!$this->SeparateDV) $url .= '&SelectedID=' . urlencode($SelectedID);
+				// if user has view access
+				// select new record
+				if($this->Permissions['view'])
+					$url .= '&SelectedID=' . urlencode($SelectedID);
 			}
 
 			@header('Location: ' . $url);
@@ -1384,7 +1390,7 @@ class DataList {
 			</div>
 		<?php } ?>
 
-		<div class="pull-right flip btn-group vspacer-md hspacer-md tv-tools">
+		<div class="pull-right flip btn-group vspacer-md hspacer-md tv-tools" style="display: none;">
 			<button title="<?php echo html_attr($this->translation['previous column']); ?>" type="button" class="btn btn-default tv-scroll" onclick="AppGini.TVScroll().less()"><i class="glyphicon glyphicon-step-backward"></i></button>
 			<button title="<?php echo html_attr($this->translation['next column']); ?>" type="button" class="btn btn-default tv-scroll" onclick="AppGini.TVScroll().more()"><i class="glyphicon glyphicon-step-forward"></i></button>
 		</div>

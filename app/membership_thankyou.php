@@ -8,7 +8,7 @@
 ?>
 
 <div style="width: 100%; max-width: 500px; margin: 0 auto; text-align: left;">
-	<h1><?php echo $Translation['thanks']; ?></h1>
+	<h1 class="text-center"><?php echo $Translation['thanks']; ?></h1>
 
 	<img src="handshake.svg">
 

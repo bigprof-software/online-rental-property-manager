@@ -382,12 +382,13 @@
 		 *  @details Uses mysqldump (if available) to create a new backup file
 		 */
 		public function create_backup() {
-			$config = ['dbServer' => '', 'dbUsername' => '', 'dbPassword' => '', 'dbDatabase' => ''];
+			$config = ['dbServer' => '', 'dbUsername' => '', 'dbPassword' => '', 'dbDatabase' => '', 'dbPort' => ''];
 			foreach($config as $k => $v) $config[$k] = escapeshellarg(config($k));
 
 			$dump_file = escapeshellarg(normalize_path($this->curr_dir)) . '/backups/' . substr(md5(microtime() . rand(0, 100000)), -17) . '.sql';
-			$pass_param = ($config['dbPassword'] ? "-p{$config['dbPassword']}" : '');
-			$this->cmd = "(mysqldump --no-tablespaces -u{$config['dbUsername']} {$pass_param} -h{$config['dbServer']} {$config['dbDatabase']} -r {$dump_file}) 2>&1";
+			$pass_param = ($config['dbPassword'] ? " -p{$config['dbPassword']}" : '');
+			$port_param = ($config['dbPort'] && $config['dbPort'] != ini_get('mysqli.default_port') ? " -P {$config['dbPort']}" : '');
+			$this->cmd = "(mysqldump --no-tablespaces -u{$config['dbUsername']}{$pass_param}{$port_param} -h{$config['dbServer']} {$config['dbDatabase']} -r {$dump_file}) 2>&1";
 
 			maintenance_mode(true);
 			$out = []; $ret = 0;
@@ -413,13 +414,14 @@
 			$bfile = $this->get_specified_backup_file();
 			if(!$bfile) return false;
 
-			$config = ['dbServer' => '', 'dbUsername' => '', 'dbPassword' => '', 'dbDatabase' => ''];
+			$config = ['dbServer' => '', 'dbUsername' => '', 'dbPassword' => '', 'dbDatabase' => '', 'dbPort' => ''];
 			foreach($config as $k => $v) $config[$k] = escapeshellarg(config($k));
 
 			$out = $ret = null;
 			maintenance_mode(true);
-			$pass_param = ($config['dbPassword'] ? "-p{$config['dbPassword']}" : '');
-			$cmd = "mysql -u{$config['dbUsername']} {$pass_param} -h{$config['dbServer']} {$config['dbDatabase']} < {$bfile}";
+			$pass_param = ($config['dbPassword'] ? " -p{$config['dbPassword']}" : '');
+			$port_param = ($config['dbPort'] && $config['dbPort'] != ini_get('mysqli.default_port') ? " -P {$config['dbPort']}" : '');
+			$cmd = "mysql -u{$config['dbUsername']}{$pass_param}{$port_param} -h{$config['dbServer']} {$config['dbDatabase']} < {$bfile}";
 			@exec($cmd, $out, $ret);
 			maintenance_mode(false);
 

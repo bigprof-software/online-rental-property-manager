@@ -47,6 +47,7 @@
 			'dbUsername' => '',
 			'dbPassword' => '',
 			'dbDatabase' => '',
+			'dbPort' => '',
 			'appURI' => '',
 			'host' => (isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : $_SERVER['SERVER_NAME'] . ($_SERVER['SERVER_PORT'] == '80' || $_SERVER['SERVER_PORT'] == '443' ? '' : ":{$_SERVER['SERVER_PORT']}")),
 
@@ -117,11 +118,14 @@
 		@include(__DIR__ . '/admin/incConfig.php');
 		@include(configFileName());
 
+		if(empty($dbPort)) $dbPort = ini_get('mysqli.default_port');
+
 		$config_array = [
 			'dbServer' => $dbServer,
 			'dbUsername' => $dbUsername,
 			'dbPassword' => $dbPassword,
 			'dbDatabase' => $dbDatabase,
+			'dbPort' => $dbPort,
 			'adminConfig' => $adminConfig
 		];
 
@@ -157,6 +161,7 @@
 			"\t\$dbUsername = '" . addslashes($config_array['dbUsername']) . "';\n" .
 			"\t\$dbPassword = '" . addslashes($config_array['dbPassword']) . "';\n" .
 			"\t\$dbDatabase = '" . addslashes($config_array['dbDatabase']) . "';\n" .
+			"\t\$dbPort = '" . addslashes($config_array['dbPort']) . "';\n" .
 
 			(isset($config_array['appURI']) ? "\t\$appURI = '" . addslashes($config_array['appURI']) . "';\n" : '') .
 			(isset($config_array['host']) ? "\t\$host = '" . addslashes($config_array['host']) . "';\n" : '') .
@@ -189,10 +194,13 @@
 		if(empty($config) || $force_reload) {
 			@include(configFileName());
 
+			if(empty($dbPort)) $dbPort = ini_get('mysqli.default_port');
+
 			$config['dbServer'] = $dbServer;
 			$config['dbDatabase'] = $dbDatabase;
 			$config['dbPassword'] = $dbPassword;
 			$config['dbUsername'] = $dbUsername;
+			$config['dbPort'] = $dbPort;
 			$config['appURI'] = $appURI;
 			$config['host'] = $host;
 			$config['adminConfig'] = $adminConfig;
@@ -239,6 +247,8 @@
 		@include(configFileName());
 		if(!isset($dbServer)) return;
 
+		if(empty($dbPort)) $dbPort = ini_get('mysqli.default_port');
+
 		// check if appURI and host defined
 		if(isset($appURI) && isset($host)) return;
 
@@ -248,6 +258,7 @@
 			'dbUsername' => $dbUsername,
 			'dbPassword' => $dbPassword,
 			'dbDatabase' => $dbDatabase,
+			'dbPort' => $dbPort,
 			'appURI' => trim(dirname($_SERVER['SCRIPT_NAME']), '/'),
 			'host' => (isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : $_SERVER['SERVER_NAME'] . ($_SERVER['SERVER_PORT'] == '80' || $_SERVER['SERVER_PORT'] == '443' ? '' : ":{$_SERVER['SERVER_PORT']}")),
 			'adminConfig' => $adminConfig

@@ -29,7 +29,7 @@
 		NavMenus($options) -- returns the HTML code for the top navigation menus. $options is not implemented currently.
 		StyleSheet() -- returns the HTML code for included style sheet files to be placed in the <head> section.
 		getUploadDir($dir) -- if dir is empty, returns upload dir configured in defaultLang.php, else returns $dir.
-		PrepareUploadedFile($FieldName, $MaxSize, $FileTypes='jpg|jpeg|gif|png', $NoRename=false, $dir="") -- validates and moves uploaded file for given $FieldName into the given $dir (or the default one if empty)
+		PrepareUploadedFile($FieldName, $MaxSize, $FileTypes={image file types}, $NoRename=false, $dir="") -- validates and moves uploaded file for given $FieldName into the given $dir (or the default one if empty)
 		get_home_links($homeLinks, $default_classes, $tgroup) -- process $homeLinks array and return custom links for homepage. Applies $default_classes to links if links have classes defined, and filters links by $tgroup (using '*' matches all table_group values)
 		quick_search_html($search_term, $label, $separate_dv = true) -- returns HTML code for the quick search box.
 	~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -390,17 +390,17 @@
 							<!-- logged user profile menu -->
 							<li class="dropdown" title="<?php echo html_attr("{$Translation['signed as']} {$mi['username']}"); ?>">
 								<a href="#" class="dropdown-toggle profile-menu-icon" data-toggle="dropdown"><i class="glyphicon glyphicon-user"></i></a>
-								<ul class="dropdown-menu">
-									<li>
+								<ul class="dropdown-menu profile-menu">
+									<li class="user-profile-menu-item" title="<?php echo html_attr("{$Translation['Your info']}"); ?>">
 										<a href="<?php echo PREPEND_PATH; ?>membership_profile.php"><i class="glyphicon glyphicon-user"></i> <span class="username"><?php echo $mi['username']; ?></span></a>
 									</li>
-									<li class="hidden-xs">
+									<li class="keyboard-shortcuts-menu-item" title="<?php echo html_attr("{$Translation['keyboard shortcuts']}"); ?>" class="hidden-xs">
 										<a href="#" class="help-shortcuts-launcher">
 											<img src="<?php echo PREPEND_PATH; ?>resources/images/keyboard.png">
 											<?php echo html_attr($Translation['keyboard shortcuts']); ?>
 										</a>
 									</li>
-									<li>
+									<li class="sign-out-menu-item" title="<?php echo html_attr("{$Translation['sign out']}"); ?>">
 										<a href="<?php echo PREPEND_PATH; ?>index.php?signOut=1"><i class="glyphicon glyphicon-log-out"></i> <?php echo $Translation['sign out']; ?></a>
 									</li>
 								</ul>
@@ -470,7 +470,7 @@
 		ob_start();
 		// notification template
 		?>
-		<div id="%%ID%%" class="alert alert-dismissable %%CLASS%%" style="opacity: 1; padding-top: 6px; padding-bottom: 6px; animation: fadeIn 1.5s ease-out;">
+		<div id="%%ID%%" class="alert alert-dismissable %%CLASS%%" style="opacity: 1; padding-top: 6px; padding-bottom: 6px; animation: fadeIn 1.5s ease-out; z-index: 100; position: relative;">
 			<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
 			%%MSG%%
 		</div>
@@ -1019,9 +1019,7 @@ EOT;
 		$css_links = <<<EOT
 
 			<link rel="stylesheet" href="{$prepend_path}resources/initializr/css/bootstrap.css">
-			<!--[if gt IE 8]><!-->
-				<link rel="stylesheet" href="{$prepend_path}resources/initializr/css/bootstrap-theme.css">
-			<!--<![endif]-->';
+			<link rel="stylesheet" href="{$prepend_path}resources/initializr/css/bootstrap-theme.css">
 			<link rel="stylesheet" href="{$prepend_path}resources/lightbox/css/lightbox.css" media="screen">
 			<link rel="stylesheet" href="{$prepend_path}resources/select2/select2.css" media="screen">
 			<link rel="stylesheet" href="{$prepend_path}resources/timepicker/bootstrap-timepicker.min.css" media="screen">
@@ -1033,7 +1031,7 @@ EOT;
 
 	#########################################################
 
-	function PrepareUploadedFile($FieldName, $MaxSize, $FileTypes = 'jpg|jpeg|gif|png', $NoRename = false, $dir = '') {
+	function PrepareUploadedFile($FieldName, $MaxSize, $FileTypes = 'jpg|jpeg|gif|png|webp', $NoRename = false, $dir = '') {
 		global $Translation;
 		$f = $_FILES[$FieldName];
 		if($f['error'] == 4 || !$f['name']) return '';
