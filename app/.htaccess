@@ -1,0 +1,3 @@
+<FilesMatch "\.(sql|log|txt|bat|sh|md)$">
+  Order allow,deny
+</FilesMatch>
