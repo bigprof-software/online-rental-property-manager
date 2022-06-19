@@ -52,7 +52,20 @@ license of choice. 2. You don't need to install AppGini in order to use this app
 This is a PHP/MySQL web application that you run from a browser. You can install it either locally
 on your own PC, or to a web/intranet server.
 
-### 1. Trying it out using Gitpod (requires a github account)
+### 1. Try the live demo
+
+* We provide a live demo with sample data [here](https://demos.appgini.com/online-rental-property-manager/)
+* You can access the demo as a guest user, with read-only access to data.
+* You can also access the demo using the following credentials:
+  * Username: `demo`
+  * Password: `demo`
+
+  The above credentials allow browsing the sample data with read-only access,
+  as well as adding new data, with full access (view, edit, delete). Data added
+  through the demo account is automatically removed periodically to prevent
+  cluttering the demo app.
+
+### 2. Trying it out using Gitpod (requires a github account)
 
 This application is ready to run within the Gitpod IDE.
 This will allow you to try the application out and develop it for your needs.
@@ -68,7 +81,7 @@ Gitpod is intended for previewing the app only, and is _not suitable for use in 
 
 ---
 
-### 2. Installing to a PC
+### 3. Installing to a PC
 
 #### System requirements
 
@@ -99,7 +112,7 @@ For Xampp on Windows, this is usually `C:\xampp\htdocs`
 
 ---
 
-### 3. Installing to a web/intranet server
+### 4. Installing to a web/intranet server
 
 #### System requirements
 
