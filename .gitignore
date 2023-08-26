@@ -12,3 +12,5 @@ app/images
 test*.php
 app/admin/backups
 config.bak.php
+*.sql
+!orpm.sql
