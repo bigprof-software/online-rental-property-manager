@@ -15,3 +15,4 @@ app/admin/backups
 config.bak.php
 *.sql
 !orpm.sql
+file-uploader.php
