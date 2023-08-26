@@ -9,6 +9,7 @@ app/images
 *.log
 *.cache
 *.zip
+!images.zip
 test*.php
 app/admin/backups
 config.bak.php
