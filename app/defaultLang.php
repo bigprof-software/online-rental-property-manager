@@ -819,4 +819,15 @@ $TranslationEn = [
 	'db_port help' => 'If MySQL is using a different port than the default %s, enter it above.',
 	'checking database info' => 'Checking database info ...',
 	'if error persists check query log' => 'If the error persists below, please check the query error log for more details',
+
+	// Added in 23.14
+	'send mail to too many members' => "You are sending an email to too many members. This could take a lot of time and affect your server performance. If you have a huge number of members, we don't recommend sending an email to all of them at once.",
+	'n recipients' => '%s recipients',
+	'messages plugin cta' => 'Escape the email chaos. Experience the power of efficient communication with the Messages Plugin for AppGini.',
+	'update calculated fields' => 'Update calculated fields',
+	'no tables with calculated fields' => 'No tables with calculated fields were found.',
+	'description for updating calculated fields' => 'This tool allows you to update calculated fields in all records across all tables, which is useful in various scenarios. For instance, you might want to use this tool if you\'ve added a new calculated field and need to populate it for existing records, changed the formula of a calculated field and need to update all records accordingly, or imported new records into one or more tables.',
+	'cli tool for updating calculated fields' => 'There is also a command-line tool for updating calculated fields. This is very handy if you want to automate the process of updating calculated fields, for instance by adding a cron job to run the command-line tool periodically. For help on using the command-line tool, please run the following command in your terminal:',
+	'start updating' => 'Start updating',
+	'captcha label' => 'Please enter the characters you see in the image',
 ];

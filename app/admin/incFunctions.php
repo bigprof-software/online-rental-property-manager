@@ -7,6 +7,7 @@
 		getThumbnailSpecs($tableName, $fieldName, $view) -- returns an associative array specifying the width, height and identifier of the thumbnail file.
 		createThumbnail($img, $specs) -- $specs is an array as returned by getThumbnailSpecs(). Returns true on success, false on failure.
 		makeSafe($string)
+		formatUri($uri) -- convert \ to / and strip slashes from uri start/end
 		checkPermissionVal($pvn)
 		sql($statement, $o)
 		sqlValue($statement)
@@ -179,7 +180,7 @@
 
 		foreach($all_tables as $tn => $ti) {
 			$arrPerm = getTablePermissions($tn);
-			if($arrPerm['access']) $accessible_tables[$tn] = $ti;
+			if(!empty($arrPerm['access'])) $accessible_tables[$tn] = $ti;
 		}
 
 		return $accessible_tables;
@@ -204,7 +205,7 @@
 
 		foreach($arrTables as $tn => $tc) {
 			$arrPerm = getTablePermissions($tn);
-			if($arrPerm['access']) $arrAccessTables[$tn] = $tc;
+			if(!empty($arrPerm['access'])) $arrAccessTables[$tn] = $tc;
 		}
 
 		return $arrAccessTables;
@@ -345,6 +346,11 @@
 		unset($thumbData);
 
 		return true;
+	}
+	########################################################################
+	function formatUri($uri) {
+		$uri = str_replace('\\', '/', $uri);
+		return trim($uri, '/');
 	}
 	########################################################################
 	function makeSafe($string, $is_gpc = true) {
@@ -869,12 +875,6 @@
 	function setupMembership() {
 		if(empty($_SESSION) || empty($_SESSION['memberID'])) return;
 
-		// run once per session, but force proceeding if not all mem tables created
-		$res = sql("show tables like 'membership_%'", $eo);
-		$num_mem_tables = db_num_rows($res);
-		$mem_update_fn = membership_table_functions();
-		if(isset($_SESSION['setupMembership']) && $num_mem_tables >= count($mem_update_fn)) return;
-
 		/* abort if current page is one of the following exceptions */
 		if(in_array(basename($_SERVER['PHP_SELF']), [
 			'pageEditMember.php', 
@@ -891,6 +891,12 @@
 			'ajax_check_login.php',
 			'ajax-update-calculated-fields.php',
 		])) return;
+
+		// run once per session, but force proceeding if not all mem tables created
+		$res = sql("show tables like 'membership_%'", $eo);
+		$num_mem_tables = db_num_rows($res);
+		$mem_update_fn = membership_table_functions();
+		if(isset($_SESSION['setupMembership']) && $num_mem_tables >= count($mem_update_fn)) return;
 
 		// call each update_membership function
 		foreach($mem_update_fn as $mem_fn) {
@@ -2868,26 +2874,16 @@
 		 *             field => query, ...
 		 */
 		return [
-			'applicants_and_tenants' => [
-			],
-			'applications_leases' => [
-			],
-			'residence_and_rental_history' => [
-			],
-			'employment_and_income_history' => [
-			],
-			'references' => [
-			],
-			'rental_owners' => [
-			],
-			'properties' => [
-			],
-			'property_photos' => [
-			],
-			'units' => [
-			],
-			'unit_photos' => [
-			],
+			'applicants_and_tenants' => [],
+			'applications_leases' => [],
+			'residence_and_rental_history' => [],
+			'employment_and_income_history' => [],
+			'references' => [],
+			'rental_owners' => [],
+			'properties' => [],
+			'property_photos' => [],
+			'units' => [],
+			'unit_photos' => [],
 		];
 	}
 	#########################################################
@@ -2928,18 +2924,6 @@
 		}
 
 		return $caluclations_made;
-	}
-	#########################################################
-	function latest_jquery() {
-		$jquery_dir = __DIR__ . '/../resources/jquery/js';
-
-		$files = scandir($jquery_dir, SCANDIR_SORT_DESCENDING);
-		foreach($files as $entry) {
-			if(preg_match('/^jquery[-0-9\.]*\.min\.js$/i', $entry))
-				return $entry;
-		}
-
-		return '';
 	}
 	#########################################################
 	function existing_value($tn, $fn, $id, $cache = true) {
@@ -3247,4 +3231,8 @@
 	function denyAccess($msg = null) {
 		@header($_SERVER['SERVER_PROTOCOL'] . ' 403 Access Denied');
 		die($msg);
+	}
+	#########################################################
+	function is_xhr() {
+		return (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest');
 	}

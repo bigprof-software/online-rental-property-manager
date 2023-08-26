@@ -132,8 +132,8 @@ $j(function() {
 
 	var validSql = function(sql) {
 		if(sql === undefined) sql = $j('#sql').val();
-		$j('#sql-begins-not-with-select').toggleClass('hidden', /^\s*SELECT\s+/i.test(sql));
-		return /^\s*SELECT\s+.*?\s+FROM\s+\S+/i.test(sql);
+		$j('#sql-begins-not-with-select').toggleClass('hidden', /^\s*(SELECT|SHOW)\s+/i.test(sql));
+		return /^\s*SELECT\s+.*?\s+FROM\s+\S+/i.test(sql) || /^\s*SHOW\s+/i.test(sql);
 	}
 
 	var resetResults = function() {

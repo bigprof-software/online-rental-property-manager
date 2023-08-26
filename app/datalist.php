@@ -12,6 +12,23 @@ class DataList {
 		$QueryOrder,
 		$filterers,
 
+		$translation,
+		$FilterAnd,
+		$FilterField,
+		$FilterOperator,
+		$FilterValue,
+		$QueryFieldsIndexed,
+		$FilterPage,
+		$QuerySearchableFields,
+		$SortFields,
+		$TableIcon,
+		$QuickSearchText,
+		$ccffv, // current control's filter value -- for internal use only
+		$ColCaption,
+		$ColNumber,
+		$ColFieldName,
+		$QueryFields,
+
 		$ColWidth, // array of field widths
 		$TableName,
 
@@ -104,6 +121,7 @@ class DataList {
 
 	function Render() {
 		$adminConfig = config('adminConfig');
+		$tvShown = $dvShown = false;
 
 		$FiltersPerGroup = 4;
 
@@ -1107,7 +1125,7 @@ class DataList {
 				if($Print_x == '' && $i) { // TV
 					$this->HTML .= '<div class="row pagination-section">';
 						$this->HTML .= '<div class="col-xs-4 col-md-3 col-lg-2 vspacer-lg">';
-							if($FirstRecord > 1) $this->HTML .= '<button onClick="' . $resetSelection . ' document.myform.NoDV.value = 1; return true;" type="submit" name="Previous_x" id="Previous" value="1" class="btn btn-default btn-block"><i class="glyphicon glyphicon-chevron-left"></i> <span class="hidden-xs">' . $this->translation['Previous'] . '</span></button>';
+							if($FirstRecord > 1) $this->HTML .= '<button onClick="' . $resetSelection . ' document.myform.NoDV.value = 1; return true;" type="submit" name="Previous_x" id="Previous" value="1" class="btn btn-default btn-block"><i class="glyphicon glyphicon-chevron-left rtl-mirror"></i> <span class="hidden-xs">' . $this->translation['Previous'] . '</span></button>';
 						$this->HTML .= '</div>';
 
 						$this->HTML .= '<div class="col-xs-4 col-md-4 col-lg-2 col-md-offset-1 col-lg-offset-3 text-center vspacer-lg form-inline">';
@@ -1115,7 +1133,7 @@ class DataList {
 						$this->HTML .= '</div>';
 
 						$this->HTML .= '<div class="col-xs-4 col-md-3 col-lg-2 col-md-offset-1 col-lg-offset-3 text-right vspacer-lg">';
-							if($i < $RecordCount) $this->HTML .= '<button onClick="'.$resetSelection.' document.myform.NoDV.value = 1; return true;" type="submit" name="Next_x" id="Next" value="1" class="btn btn-default btn-block"><span class="hidden-xs">' . $this->translation['Next'] . '</span> <i class="glyphicon glyphicon-chevron-right"></i></button>';
+							if($i < $RecordCount) $this->HTML .= '<button onClick="'.$resetSelection.' document.myform.NoDV.value = 1; return true;" type="submit" name="Next_x" id="Next" value="1" class="btn btn-default btn-block"><span class="hidden-xs">' . $this->translation['Next'] . '</span> <i class="glyphicon glyphicon-chevron-right rtl-mirror"></i></button>';
 						$this->HTML .= '</div>';
 					$this->HTML .= '</div>';
 				}
@@ -1363,7 +1381,7 @@ class DataList {
 			$empty_group = true;
 
 			for($j = $i; $j < ($i + $FiltersPerGroup); $j++) {
-				if($ffield[$j]) $empty_group = false;
+				if(!empty($ffield[$j])) $empty_group = false;
 			}
 
 			if($empty_group) {
@@ -1618,6 +1636,7 @@ class DataList {
 
 		// hook: table_csv
 		if(function_exists($this->TableName.'_csv')) {
+			$mi = getMemberInfo();
 			$args = [];
 			$mq = call_user_func_array($this->TableName . '_csv', [$csvQuery, $mi, &$args]);
 			$csvQuery = ($mq ? $mq : $csvQuery);
@@ -1814,14 +1833,14 @@ class DataList {
 
 	private function isValidFilter($index) {
 		return (
-			($this->FilterAnd[$index] != '' || $index == 1)
-			&& $this->FilterField[$index] != ''
-			&& $this->FilterOperator[$index] != ''
+			(!empty($this->FilterAnd[$index]) || $index == 1)
+			&& !empty($this->FilterField[$index])
+			&& !empty($this->FilterOperator[$index])
 			&& (
-				strlen($this->FilterValue[$index])
+				!empty($this->FilterValue[$index])
 				|| strpos($this->FilterOperator[$index], 'empty') !== false
 			)
-		);     
+		);
 	}
 
 }

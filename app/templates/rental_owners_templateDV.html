@@ -76,7 +76,8 @@
 							<a id="primary_email-link" href="mailto:<%%VALUE(primary_email)%%>" target="_blank" class="rspacer-lg"><i class="glyphicon glyphicon-envelope text-info" title="<%%VALUE(primary_email)%%>"></i></a>
 							<label for="primary_email"><button type="button" id="primary_email-edit-link" class="btn btn-default vspacer-sm" data-toggle="collapse" data-target="#primary_email" title="<%%TRANSLATION(Edit)%%>"><i class="glyphicon glyphicon-pencil"></i></button></label>
 							<input maxlength="40" type="text" class="form-control collapse" name="primary_email" id="primary_email" value="<%%VALUE(primary_email)%%>">
-						</div><script>jQuery(function() { var e_primary_email = '<%%VALUE(primary_email)%%>'; if(e_primary_email == '' || e_primary_email == '&nbsp;' || e_primary_email == 'blank.gif') jQuery('#primary_email-link').hide(); });</script>
+						</div>
+						<script>/* disable empty links */ $j(() => { const e_primary_email = '<%%VALUE(primary_email)%%>'; if(e_primary_email == '' || e_primary_email == '&nbsp;' || e_primary_email == 'blank.gif') { $j('#primary_email-link').hide(); $j('#primary_email-image').parents('a').attr('href', '').on('click', (e) => e.preventDefault()); } });</script>
 					</div>
 				</div>
 
@@ -89,7 +90,8 @@
 							<a id="alternate_email-link" href="mailto:<%%VALUE(alternate_email)%%>" target="_blank" class="rspacer-lg"><i class="glyphicon glyphicon-envelope text-info" title="<%%VALUE(alternate_email)%%>"></i></a>
 							<label for="alternate_email"><button type="button" id="alternate_email-edit-link" class="btn btn-default vspacer-sm" data-toggle="collapse" data-target="#alternate_email" title="<%%TRANSLATION(Edit)%%>"><i class="glyphicon glyphicon-pencil"></i></button></label>
 							<input maxlength="40" type="text" class="form-control collapse" name="alternate_email" id="alternate_email" value="<%%VALUE(alternate_email)%%>">
-						</div><script>jQuery(function() { var e_alternate_email = '<%%VALUE(alternate_email)%%>'; if(e_alternate_email == '' || e_alternate_email == '&nbsp;' || e_alternate_email == 'blank.gif') jQuery('#alternate_email-link').hide(); });</script>
+						</div>
+						<script>/* disable empty links */ $j(() => { const e_alternate_email = '<%%VALUE(alternate_email)%%>'; if(e_alternate_email == '' || e_alternate_email == '&nbsp;' || e_alternate_email == 'blank.gif') { $j('#alternate_email-link').hide(); $j('#alternate_email-image').parents('a').attr('href', '').on('click', (e) => e.preventDefault()); } });</script>
 					</div>
 				</div>
 

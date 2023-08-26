@@ -26,9 +26,9 @@
 		if(!isset($mviewFields[$rSort])) $rSort = $sort;
 
 		// make sure requested sortDir is valid. fallback to default sortDir
-		$rSortDir = $sortDir;
-		if(Request::val('sortDir') && in_array(strtoupper($rSortDir), ['DESC', 'ASC']))
-			$rSortDir = strtoupper(Request::val('sortDir'));
+		$rSortDir = Request::val('sortDir');
+		if(!$rSortDir || !in_array(strtoupper($rSortDir), ['DESC', 'ASC']))
+			$rSortDir = $sortDir;
 
 		$sort = $rSort;
 		$sortDir = $rSortDir;
@@ -247,17 +247,22 @@
 				<?php echo (($row[8] && $row[9]) ? $Translation['Banned'] : ($row[9] ? $Translation['active'] : $Translation['waiting approval'] )); ?>
 			</td>
 			<td class="text-center">
+				<!-- edit -->
 				<?php if($adminConfig['anonymousMember'] == $row[0]) { ?>
 					<i class="glyphicon glyphicon-pencil text-muted"></i>
 				<?php } else { ?>
 					<a href="pageEditMember.php?memberID=<?php echo urlencode($row[0]); ?>"><i class="glyphicon glyphicon-pencil" title="<?php echo $Translation['Edit member']; ?>"></i></a>
 				<?php } ?>
+				<span class="hspacer-sm"></span>
 
+				<!-- delete, ban, unban -->
 				<?php if($adminConfig['anonymousMember'] == $row[0] || $adminConfig['adminUsername'] == $row[0]) { ?>
 					<i class="glyphicon glyphicon-trash text-muted"></i>
+					<span class="hspacer-sm"></span>
 					<i class="glyphicon glyphicon-ban-circle text-muted"></i>
 				<?php } else { ?>
 					<a href="pageDeleteMember.php?memberID=<?php echo urlencode($row[0]); ?>&<?php echo $urlCsrfToken; ?>" onClick="return confirm('<?php echo addslashes(str_replace('<USERNAME>', $row[0], $Translation['sure delete user'])); ?>');"><i class="glyphicon glyphicon-trash text-danger" title="<?php echo $Translation['delete member']; ?>"></i></a>
+					<span class="hspacer-sm"></span>
 					<?php
 						if(!$row[9]) { // if member is not approved, display approve link
 							?><a href="pageChangeMemberStatus.php?memberID=<?php echo urlencode($row[0]); ?>&approve=1&<?php echo $urlCsrfToken; ?>"><i class="glyphicon glyphicon-ok text-success" title="<?php echo $Translation["unban this member"]; ?>" title="<?php echo $Translation["approve this member"]; ?>"></i></a><?php
@@ -270,7 +275,9 @@
 						}
 					?>
 				<?php } ?>
+				<span class="hspacer-sm"></span>
 
+				<!-- view records -->
 				<a href="pageViewRecords.php?memberID=<?php echo urlencode($row[0]); ?>"><i class="glyphicon glyphicon-th" title="<?php echo $Translation["View member records"]; ?>"></i></a>
 			</td>
 		</tr>

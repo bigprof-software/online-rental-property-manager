@@ -241,13 +241,13 @@
 						$j('#existing-csv-files').on('click', '.delete-csv', function() {
 							var del_btn = $j(this);
 							var csv = del_btn.data('csv');
-							var msg = '<?php echo html_attr($this->lang['sure delete csv']); ?>';
+							var msg = <?php echo json_encode($this->lang['sure delete csv']); ?>;
 							msg = msg.replace(/\[CSVFILE\]/, '"' + csv + '"');
 
 							var fail_delete = function(elm) {
 								elm.popover({
 									placement: 'auto bottom',
-									title: '<?php echo html_attr($this->lang['errors occurred']); ?>',
+									title: <?php echo json_encode($this->lang['errors occurred']); ?>,
 									content: '<span class="text-danger"><?php echo html_attr($this->lang['couldnt delete csv file']); ?></span>',
 									trigger: 'manual',
 									container: 'body',
@@ -653,7 +653,7 @@
 							} else if(!config.has_titles && !title_displayed) {
 								var generic_titles = [];
 								for(var j = 0; j < csv_row.length; j++) {
-									generic_titles.push('<?php echo html_attr($this->lang['field']); ?> ' + (j + 1));
+									generic_titles.push(<?php echo json_encode($this->lang['field']); ?> + ' ' + (j + 1));
 								}
 								add_table_header(generic_titles)
 								title_displayed = true;
@@ -719,7 +719,7 @@
 
 						$j(id).append(
 							'<label for="db-field-for-' + csv_field_num + '" class="control-label">' +
-								'<?php echo html_attr($this->lang['belongs to']); ?>' +
+								<?php echo json_encode($this->lang['belongs to']); ?> +
 							'</label>' +
 							dropdown
 						);
@@ -1387,12 +1387,12 @@
 							/* if ajax failed, retry up to 10 times, with 10 seconds in-between then fail */
 							if(progress.retries < 10) {
 								progress.retries++;
-								update_progress((progress.failed + progress.imported) / progress.total * 100, '<?php echo html_attr(str_replace('<SECONDS>', '10', $this->lang['connection failed retrying'])); ?>', 'warning');
+								update_progress((progress.failed + progress.imported) / progress.total * 100, <?php echo json_encode(str_replace('<SECONDS>', '10', $this->lang['connection failed retrying'])); ?>, 'warning');
 								setTimeout(function() { import_batch(progress, callbacks); }, 3000);
 								return;
 							} else {
 								/* fail and abort importing process */
-								update_progress((progress.failed + progress.imported) / progress.total * 100, '<?php echo html_attr($this->lang['connection failed timeout']); ?>', 'danger');
+								update_progress((progress.failed + progress.imported) / progress.total * 100, <?php echo json_encode($this->lang['connection failed timeout']); ?>, 'danger');
 								if(callbacks !== undefined && $j.isFunction(callbacks.aborted)) {
 									callbacks.aborted();
 								}

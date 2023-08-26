@@ -1,7 +1,7 @@
 <?php
-	// For help on using hooks, please refer to http://bigprof.com/appgini/help/working-with-generated-web-database-application/hooks
+	// For help on using hooks, please refer to https://bigprof.com/appgini/help/working-with-generated-web-database-application/hooks
 
-	function residence_and_rental_history_init(&$options, $memberInfo, &$args){
+	function residence_and_rental_history_init(&$options, $memberInfo, &$args) {
 		/* Inserted by Search Page Maker for AppGini on 2020-11-18 12:19:27 */
 		$options->FilterPage = 'hooks/residence_and_rental_history_filter.php';
 		/* End of Search Page Maker for AppGini code */
@@ -10,10 +10,10 @@
 		return TRUE;
 	}
 
-	function residence_and_rental_history_header($contentType, $memberInfo, &$args){
+	function residence_and_rental_history_header($contentType, $memberInfo, &$args) {
 		$header='';
 
-		switch($contentType){
+		switch($contentType) {
 			case 'tableview':
 				$header='';
 				break;
@@ -42,10 +42,10 @@
 		return $header;
 	}
 
-	function residence_and_rental_history_footer($contentType, $memberInfo, &$args){
+	function residence_and_rental_history_footer($contentType, $memberInfo, &$args) {
 		$footer='';
 
-		switch($contentType){
+		switch($contentType) {
 			case 'tableview':
 				$footer='';
 				break;
@@ -74,14 +74,14 @@
 		return $footer;
 	}
 
-	function residence_and_rental_history_before_insert(&$data, $memberInfo, &$args){
+	function residence_and_rental_history_before_insert(&$data, $memberInfo, &$args) {
 		// can current user view this parent?
 		if(!check_record_permission('applicants_and_tenants', $data['tenant'])) return false;
 
 		return TRUE;
 	}
 
-	function residence_and_rental_history_after_insert($data, $memberInfo, &$args){
+	function residence_and_rental_history_after_insert($data, $memberInfo, &$args) {
 
 		return TRUE;
 	}
@@ -93,29 +93,29 @@
 		return TRUE;
 	}
 
-	function residence_and_rental_history_after_update($data, $memberInfo, &$args){
+	function residence_and_rental_history_after_update($data, $memberInfo, &$args) {
 
 		return TRUE;
 	}
 
-	function residence_and_rental_history_before_delete($selectedID, &$skipChecks, $memberInfo, &$args){
+	function residence_and_rental_history_before_delete($selectedID, &$skipChecks, $memberInfo, &$args) {
 
 		return TRUE;
 	}
 
-	function residence_and_rental_history_after_delete($selectedID, $memberInfo, &$args){
+	function residence_and_rental_history_after_delete($selectedID, $memberInfo, &$args) {
 
 	}
 
-	function residence_and_rental_history_dv($selectedID, $memberInfo, &$html, &$args){
+	function residence_and_rental_history_dv($selectedID, $memberInfo, &$html, &$args) {
 
 	}
 
-	function residence_and_rental_history_csv($query, $memberInfo, &$args){
+	function residence_and_rental_history_csv($query, $memberInfo, &$args) {
 
 		return $query;
 	}
-	function residence_and_rental_history_batch_actions(&$args){
+	function residence_and_rental_history_batch_actions(&$args) {
 
-		return array();
+		return [];
 	}

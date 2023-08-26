@@ -26,6 +26,8 @@
 
 	// autoloading classes
 	spl_autoload_register(function($class) {
+		// convert namespace separators to directory separators
+		$class = str_replace('\\', '/', $class);
 		@include_once(APP_DIR . "/resources/lib/{$class}.php");
 	});
 
@@ -145,8 +147,13 @@
 	}
 
 	function save_config($config_array = []) {
+		$conf_arr_err = ['error' => 'Invalid config array'];
+
+		if(!is_array($config_array)) return $conf_arr_err;
+		if(!is_array($config_array['adminConfig'] ?? [])) return $conf_arr_err;
+
 		if(!count($config_array) || !count($config_array['adminConfig']))
-			return ['error' => 'Invalid config array'];
+			return $conf_arr_err;
 
 		$new_admin_config = '';
 
@@ -259,9 +266,22 @@
 			'dbPassword' => $dbPassword,
 			'dbDatabase' => $dbDatabase,
 			'dbPort' => $dbPort,
-			'appURI' => trim(dirname($_SERVER['SCRIPT_NAME']), '/'),
+			'appURI' => formatUri(dirname($_SERVER['SCRIPT_NAME'])),
 			'host' => (isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : $_SERVER['SERVER_NAME'] . ($_SERVER['SERVER_PORT'] == '80' || $_SERVER['SERVER_PORT'] == '443' ? '' : ":{$_SERVER['SERVER_PORT']}")),
 			'adminConfig' => $adminConfig
 		]);
+	}
+
+	#########################################################
+	function latest_jquery() {
+		$jquery_dir = __DIR__ . '/resources/jquery/js';
+
+		$files = scandir($jquery_dir, SCANDIR_SORT_DESCENDING);
+		foreach($files as $entry) {
+			if(preg_match('/^jquery[-0-9\.]*\.min\.js$/i', $entry))
+				return $entry;
+		}
+
+		return '';
 	}
 

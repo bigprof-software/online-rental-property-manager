@@ -1,7 +1,7 @@
 <?php
-	// For help on using hooks, please refer to http://bigprof.com/appgini/help/working-with-generated-web-database-application/hooks
+	// For help on using hooks, please refer to https://bigprof.com/appgini/help/working-with-generated-web-database-application/hooks
 
-	function applicants_and_tenants_init(&$options, $memberInfo, &$args){
+	function applicants_and_tenants_init(&$options, $memberInfo, &$args) {
 		/* Inserted by Search Page Maker for AppGini on 2020-11-18 12:19:27 */
 		$options->FilterPage = 'hooks/applicants_and_tenants_filter.php';
 		/* End of Search Page Maker for AppGini code */
@@ -10,10 +10,10 @@
 		return TRUE;
 	}
 
-	function applicants_and_tenants_header($contentType, $memberInfo, &$args){
+	function applicants_and_tenants_header($contentType, $memberInfo, &$args) {
 		$header='';
 
-		switch($contentType){
+		switch($contentType) {
 			case 'tableview':
 				$header='';
 				break;
@@ -42,10 +42,10 @@
 		return $header;
 	}
 
-	function applicants_and_tenants_footer($contentType, $memberInfo, &$args){
+	function applicants_and_tenants_footer($contentType, $memberInfo, &$args) {
 		$footer='';
 
-		switch($contentType){
+		switch($contentType) {
 			case 'tableview':
 				$footer='';
 				break;
@@ -74,44 +74,44 @@
 		return $footer;
 	}
 
-	function applicants_and_tenants_before_insert(&$data, $memberInfo, &$args){
+	function applicants_and_tenants_before_insert(&$data, $memberInfo, &$args) {
 
 		return TRUE;
 	}
 
-	function applicants_and_tenants_after_insert($data, $memberInfo, &$args){
+	function applicants_and_tenants_after_insert($data, $memberInfo, &$args) {
 
 		return TRUE;
 	}
 
-	function applicants_and_tenants_before_update(&$data, $memberInfo, &$args){
+	function applicants_and_tenants_before_update(&$data, $memberInfo, &$args) {
 
 		return TRUE;
 	}
 
-	function applicants_and_tenants_after_update($data, $memberInfo, &$args){
+	function applicants_and_tenants_after_update($data, $memberInfo, &$args) {
 
 		return TRUE;
 	}
 
-	function applicants_and_tenants_before_delete($selectedID, &$skipChecks, $memberInfo, &$args){
+	function applicants_and_tenants_before_delete($selectedID, &$skipChecks, $memberInfo, &$args) {
 
 		return TRUE;
 	}
 
-	function applicants_and_tenants_after_delete($selectedID, $memberInfo, &$args){
+	function applicants_and_tenants_after_delete($selectedID, $memberInfo, &$args) {
 
 	}
 
-	function applicants_and_tenants_dv($selectedID, $memberInfo, &$html, &$args){
+	function applicants_and_tenants_dv($selectedID, $memberInfo, &$html, &$args) {
 
 	}
 
-	function applicants_and_tenants_csv($query, $memberInfo, &$args){
+	function applicants_and_tenants_csv($query, $memberInfo, &$args) {
 
 		return $query;
 	}
-	function applicants_and_tenants_batch_actions(&$args){
+	function applicants_and_tenants_batch_actions(&$args) {
 		/* Inserted by Mass Update on 2020-11-19 11:55:55 */
 		
 		/*

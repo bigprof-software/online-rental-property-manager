@@ -44,7 +44,7 @@
 
 			$session = self::_from_string(self::_cookie());
 
-			if(!self::_active_user($session['user'])) return false;
+			if(!self::_active_user($session['user'] ?? '')) return false;
 
 			switch(self::_find($session)) {
 				case 1: // valid ... generate new token in db and update 'rememberme' cookie

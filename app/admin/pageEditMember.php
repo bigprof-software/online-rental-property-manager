@@ -409,7 +409,7 @@
 
 			if((p1 != '' && p1 != p2) || (p1 == '' && new_member)) {
 				show_notification({
-					message: '<?php echo html_attr($Translation['password mismatch']); ?>',
+					message: <?php echo json_encode($Translation['password mismatch']); ?>,
 					'class': 'danger',
 					dismiss_seconds: 10,
 					id: 'password-mismatch-alert'
@@ -433,7 +433,7 @@
 			var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 			if(!re.test($j('#email').val())) {
 				show_notification({
-					message: '<?php echo html_attr($Translation['email invalid']); ?>',
+					message: <?php echo json_encode($Translation['email invalid']); ?>,
 					'class': 'danger',
 					dismiss_seconds: 20,
 					id: 'invalid-email-alert'
@@ -455,7 +455,7 @@
 
 			if(!$j('#groupID').val()) {
 				show_notification({
-					message: '<?php echo html_attr($Translation['group invalid']); ?>',
+					message: <?php echo json_encode($Translation['group invalid']); ?>,
 					'class': 'danger',
 					dismiss_seconds: 20,
 					id: 'invalid-group-alert'
@@ -522,7 +522,7 @@
 				/* show general error if no other error alerts displayed */
 				if(!$j('.notifcation-placeholder .alert:not(.invisible)').length) {
 					show_notification({
-						message: '<?php echo html_attr($Translation['fix errors before submitting']); ?>',
+						message: <?php echo json_encode($Translation['fix errors before submitting']); ?>,
 						'class': 'danger',
 						dismiss_seconds: 20,
 						id: 'general-error-alert'
@@ -541,7 +541,7 @@
 
 		/* special permissions button */
 		$j('#special-permissions').click(function() {
-			if(confirm('<?php echo html_attr($Translation['sure continue']); ?>')) {
+			if(confirm(<?php echo json_encode($Translation['sure continue']); ?>)) {
 				window.location = 'pageEditMemberPermissions.php?memberID=' + encodeURIComponent($j('[name=oldMemberID]').val());
 			}
 		});

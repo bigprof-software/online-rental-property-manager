@@ -196,6 +196,7 @@
 			$table = $this->get_table();
 			$safe_id = makeSafe($this->request['id']);
 
+			$eo = ['silentErrors' => true];
 			$res = sql("select r.memberID, r.dateAdded, r.dateUpdated, g.groupID, g.name as 'group' from membership_userrecords r left join membership_groups g on r.groupID=g.groupID where r.tableName='{$table}' and r.pkValue='{$safe_id}'", $eo);
 			if(!$res) return 'null';
 			$rec_info = @db_fetch_assoc($res);
@@ -209,7 +210,7 @@
 
 		/**
 		 *  @brief Retrieve and validate name of current table
-		 *  @return table name, or false on error.
+		 *  @return string|false table name, or false on error.
 		 */
 		protected function get_table() {
 			$table_ok = true;

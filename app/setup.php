@@ -16,12 +16,10 @@
 			5. to show final success message, Request::val('finish')
 		below here, we determine which scenario is being called
 	*/
-	$submit = $test = $form = $finish = false; 
-	(Request::has('submit')    ? $submit = true :
-	(Request::has('test')      ?   $test = true :
-	(Request::has('show-form') ?   $form = true :
-	(Request::has('finish')    ? $finish = true :
-		false))));
+	$submit = Request::has('submit');
+	$test = Request::has('test');
+	$form = Request::has('show-form');
+	$finish = Request::has('finish');
 
 	/* if config file already exists, no need to continue */
 	if(!$finish && detect_config(false)) {
@@ -29,8 +27,15 @@
 		exit;
 	}
 
+	if(maintenance_mode()) die($Translation['maintenance mode']);
 
 	Authentication::initSession();
+
+	// check if captcha supported and verified
+	if(FORCE_SETUP_CAPTCHA && Captcha::available() && !Captcha::verified()) {
+		http_response_code(401); // Unauthorized to allow blocking of brute force attacks in WAFs
+		die(Captcha::standAloneForm('setup.php'));
+	}
 
 	/* include page header, unless we're testing db connection (ajax) */
 	$_REQUEST['Embedded'] = 1; /* to prevent displaying the navigation bar */
@@ -125,7 +130,7 @@
 			'dbPassword' => $db_password,
 			'dbDatabase' => $db_name,
 			'dbPort' => $db_port,
-			'appURI' => trim(dirname($_SERVER['SCRIPT_NAME']), '/'),
+			'appURI' => formatUri(dirname($_SERVER['SCRIPT_NAME'])),
 			'host' => (isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : $_SERVER['SERVER_NAME'] . ($_SERVER['SERVER_PORT'] == '80' || $_SERVER['SERVER_PORT'] == '443' ? '' : ":{$_SERVER['SERVER_PORT']}")),
 
 			'adminConfig' => [

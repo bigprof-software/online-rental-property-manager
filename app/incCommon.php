@@ -99,7 +99,7 @@
 			}
 		}
 
-		return $table_permissions[$tn];
+		return $table_permissions[$tn] ?? [];
 	}
 
 	#########################################################
@@ -389,7 +389,7 @@
 						<ul class="nav navbar-nav navbar-right hidden-xs">
 							<!-- logged user profile menu -->
 							<li class="dropdown" title="<?php echo html_attr("{$Translation['signed as']} {$mi['username']}"); ?>">
-								<a href="#" class="dropdown-toggle profile-menu-icon" data-toggle="dropdown"><i class="glyphicon glyphicon-user"></i></a>
+								<a href="#" class="dropdown-toggle profile-menu-icon" data-toggle="dropdown"><i class="glyphicon glyphicon-user icon"></i><span class="profile-menu-text"><?php echo $mi['username']; ?></span><b class="caret"></b></a>
 								<ul class="dropdown-menu profile-menu">
 									<li class="user-profile-menu-item" title="<?php echo html_attr("{$Translation['Your info']}"); ?>">
 										<a href="<?php echo PREPEND_PATH; ?>membership_profile.php"><i class="glyphicon glyphicon-user"></i> <span class="username"><?php echo $mi['username']; ?></span></a>
@@ -921,13 +921,16 @@
 		$safe_id = makeSafe($id);
 		$safe_table = makeSafe($table);
 
+		// fix for zero-fill: quote id only if not numeric
+		if(!is_numeric($safe_id)) $safe_id = "'$safe_id'";
+
 		if($perms[$perm] == 1) { // own records only
 			$username = getLoggedMemberID();
-			$owner = sqlValue("select memberID from membership_userrecords where tableName='{$safe_table}' and pkValue='{$safe_id}'");
+			$owner = sqlValue("select memberID from membership_userrecords where tableName='{$safe_table}' and pkValue={$safe_id}");
 			if($owner == $username) return true;
 		} elseif($perms[$perm] == 2) { // group records
 			$group_id = getLoggedGroupID();
-			$owner_group_id = sqlValue("select groupID from membership_userrecords where tableName='{$safe_table}' and pkValue='{$safe_id}'");
+			$owner_group_id = sqlValue("select groupID from membership_userrecords where tableName='{$safe_table}' and pkValue={$safe_id}");
 			if($owner_group_id == $group_id) return true;
 		} elseif($perms[$perm] == 3) { // all records
 			return true;
@@ -1014,7 +1017,7 @@ EOT;
 	function StyleSheet() {
 		if(!defined('PREPEND_PATH')) define('PREPEND_PATH', '');
 		$prepend_path = PREPEND_PATH;
-		$appVersion = (defined('APP_VERSION') ? APP_VERSION : rand());
+		$mtime = filemtime( __DIR__ . '/dynamic.css');
 
 		$css_links = <<<EOT
 
@@ -1023,7 +1026,7 @@ EOT;
 			<link rel="stylesheet" href="{$prepend_path}resources/lightbox/css/lightbox.css" media="screen">
 			<link rel="stylesheet" href="{$prepend_path}resources/select2/select2.css" media="screen">
 			<link rel="stylesheet" href="{$prepend_path}resources/timepicker/bootstrap-timepicker.min.css" media="screen">
-			<link rel="stylesheet" href="{$prepend_path}dynamic.css?{$appVersion}">
+			<link rel="stylesheet" href="{$prepend_path}dynamic.css?{$mtime}">
 EOT;
 
 		return $css_links;

@@ -112,9 +112,19 @@
 		include(__DIR__ . '/incFooter.php');
 	}
 
+	// get count of recipients
 	if($sendToAll) {
+		$countRecipients = sqlValue("select count(1) from membership_users");
+		$countRecipients--; // exclude guest user
+	} elseif($isGroup) {
+		$countRecipients = sqlValue("select count(1) from membership_users where groupID='{$groupID}'");
+	} else {
+		$countRecipients = sqlValue("select count(1) from membership_users where lcase(memberID)='{$memberID->sql}'");
+	}
+
+	if($countRecipients > 100) {
 		echo Notification::show([
-			'message' => "<b>{$Translation['attention']}</b><br>{$Translation['send mail to all members']}",
+			'message' => "<b>{$Translation['attention']}</b><br>{$Translation['send mail to too many members']}",
 			'class' => 'warning',
 			'dismiss_days' => 3,
 			'id' => 'send_mail_to_all_users'
@@ -123,6 +133,30 @@
 ?>
 
 <div class="page-header"><h1><?php echo $Translation['send mail']; ?></h1></div>
+
+<?php
+	// is the messages plugin installed?
+	$messages_plugin_installed = false;
+	$plugins = get_plugins();
+
+	foreach($plugins as $plugin) 
+		if($plugin['title'] == 'Messages')
+			$messages_plugin_installed = true;
+
+	if(!$messages_plugin_installed) { ?>
+		<div class="row">
+			<div class="col-sm-8 col-sm-offset-4 col-md-9 col-md-offset-3 col-lg-6 col-lg-offset-4">
+				<a
+					type="button" 
+					style="white-space: normal; word-wrap: break-word; margin: 2em 0;" 
+					class="btn btn-success btn-lg btn-block" 
+					href="https://bigprof.com/appgini/applications/messages-plugin" 
+					target="_blank" 
+					>&#128161; <?php echo $Translation['messages plugin cta']; ?> &#128172;
+				</a>
+			</div>
+		</div>
+<?php } ?>
 
 <form method="post" action="pageMail.php" class="form-horizontal">
 	<?php echo csrf_token(); ?>
@@ -156,13 +190,12 @@
 					$to_link = "pageEditMember.php?memberID={$memberID->url}";
 					if($sendToAll)
 						$to_link = "pageViewMembers.php";
-					if(!$sendToAll && $isGroup)
+					elseif($isGroup)
 						$to_link = "pageViewMembers.php?groupID={$groupID}";
 				?>
-				<a href="<?php echo $to_link; ?>">
-					<i class="glyphicon glyphicon-user text-info"></i> 
-					<?php echo $recipient; ?>
-				</a>
+				<a href="<?php echo $to_link; ?>"><i class="glyphicon glyphicon-user text-info"></i> <?php echo $recipient; ?></a>
+				<span class="label label-primary"><?php printf($Translation['n recipients'], $countRecipients); ?></span>
+
 				<div class="btn-group">
 					<a href="pageViewGroups.php" class="btn btn-default"><?php echo $Translation['send email to all members']; ?></a>
 					<a href="pageViewMembers.php" class="btn btn-default"><?php echo $Translation['send email to member']; ?></a>
@@ -198,7 +231,7 @@
 	<?php } ?>
 
 	<div class="form-group">
-		<div class="col-sm-4 col-sm-offset-4 col-md-6 col-md-offset-3 col-lg-4 col-lg-offset-4">
+		<div class="col-sm-4 col-sm-offset-8 col-md-4 col-md-offset-8 col-lg-2 col-lg-offset-8">
 			<button name="saveChanges" type="submit" class="btn btn-primary btn-lg btn-block"><i class="glyphicon glyphicon-envelope"></i> <?php echo $Translation["send message"]; ?></button>
 		</div>
 	</div>

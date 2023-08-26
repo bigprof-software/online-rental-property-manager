@@ -186,13 +186,13 @@
 
 				if(ps == 'strong') {
 					$j('#password').parents('.form-group').removeClass('has-error has-warning').addClass('has-success');
-					$j('#password').attr('title', '<?php echo html_attr($Translation['Password strength: strong']); ?>');
+					$j('#password').attr('title', <?php echo json_encode($Translation['Password strength: strong']); ?>);
 				} else if(ps == 'good') {
 					$j('#password').parents('.form-group').removeClass('has-success has-error').addClass('has-warning');
-					$j('#password').attr('title', '<?php echo html_attr($Translation['Password strength: good']); ?>');
+					$j('#password').attr('title', <?php echo json_encode($Translation['Password strength: good']); ?>);
 				} else {
 					$j('#password').parents('.form-group').removeClass('has-success has-warning').addClass('has-error');
-					$j('#password').attr('title', '<?php echo html_attr($Translation['Password strength: weak']); ?>');
+					$j('#password').attr('title', <?php echo json_encode($Translation['Password strength: weak']); ?>);
 				}
 			});
 

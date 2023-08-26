@@ -28,7 +28,7 @@
 		<div class="col-xs-7 col-sm-6 col-md-9">
 			<textarea class="form-control" id="sql" autofocus></textarea>
 			<div class="hidden text-danger tspacer-sm bspacer-lg" id="sql-begins-not-with-select">
-				<?php printf($Translation['Query must start with select'], '<code>SELECT&nbsp;</code>'); ?>
+				<?php printf($Translation['Query must start with select'], '<code>SELECT/SHOW&nbsp;</code>'); ?>
 			</div>
 		</div>
 		<div class="col-xs-5 col-sm-6 col-md-3">

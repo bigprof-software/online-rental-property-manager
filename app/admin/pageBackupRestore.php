@@ -174,7 +174,7 @@
 
 			<?php if($can_backup) { ?>
 				<button type="button" class="vspacer-lg btn btn-primary btn-lg" id="create-backup"><i class="glyphicon glyphicon-plus"></i> <?php echo $this->lang['create backup file']; ?></button>
-				<pre id="backup-log" class="hidden"></pre>
+				<pre id="backup-log" class="hidden text-left" dir="ltr"></pre>
 
 				<h2><?php echo $this->lang['available backups']; ?></h2>
 				<div id="backup-files-list"></div>
@@ -189,20 +189,20 @@
 				<script>
 					$j(function() {
 						/* language strings */
-						var create_backup = '<?php echo html_attr($this->lang['create backup file']); ?>';
-						var please_wait = '<?php echo html_attr($this->lang['please wait']); ?>';
-						var finished = '<?php echo html_attr($this->lang['done!']); ?>';
-						var error = '<?php echo html_attr($this->lang['error']); ?>';
-						var no_matches = '<?php echo html_attr($this->lang['no backups found']); ?>';
-						var restore_backup = '<?php echo html_attr($this->lang['restore backup']); ?>';
-						var delete_backup = '<?php echo html_attr($this->lang['delete backup']); ?>';
-						var confirm_backup = '<?php echo html_attr($this->lang['confirm backup']); ?>';
-						var confirm_restore = '<?php echo html_attr($this->lang['confirm restore']); ?>';
-						var confirm_delete = '<?php echo html_attr($this->lang['confirm delete backup']); ?>';
-						var backup_restored = '<?php echo html_attr($this->lang['backup restored']); ?>';
-						var backup_deleted = '<?php echo html_attr($this->lang['backup deleted']); ?>';
-						var delete_error = '<?php echo html_attr($this->lang['backup delete error']); ?>';
-						var restore_error = '<?php echo html_attr($this->lang['restore error']); ?>';
+						var create_backup = <?php echo json_encode($this->lang['create backup file']); ?>;
+						var please_wait = <?php echo json_encode($this->lang['please wait']); ?>;
+						var finished = <?php echo json_encode($this->lang['done!']); ?>;
+						var error = <?php echo json_encode($this->lang['error']); ?>;
+						var no_matches = <?php echo json_encode($this->lang['no backups found']); ?>;
+						var restore_backup = <?php echo json_encode($this->lang['restore backup']); ?>;
+						var delete_backup = <?php echo json_encode($this->lang['delete backup']); ?>;
+						var confirm_backup = <?php echo json_encode($this->lang['confirm backup']); ?>;
+						var confirm_restore = <?php echo json_encode($this->lang['confirm restore']); ?>;
+						var confirm_delete = <?php echo json_encode($this->lang['confirm delete backup']); ?>;
+						var backup_restored = <?php echo json_encode($this->lang['backup restored']); ?>;
+						var backup_deleted = <?php echo json_encode($this->lang['backup deleted']); ?>;
+						var delete_error = <?php echo json_encode($this->lang['backup delete error']); ?>;
+						var restore_error = <?php echo json_encode($this->lang['restore error']); ?>;
 
 						var page = '<?php echo $this->curr_page; ?>';
 						var backup_files_list = $j('#backup-files-list');
@@ -228,8 +228,7 @@
 														'<button type="button" class="btn btn-default restore" data-md5_hash="' + list[i].md5_hash + '"><i class="glyphicon glyphicon-download-alt"></i> ' + restore_backup + '</button>' +
 														'<button type="button" class="btn btn-default delete" data-md5_hash="' + list[i].md5_hash + '"><i class="glyphicon glyphicon-trash"></i> ' + delete_backup + '</button>' +
 													'</div>' +
-													list[i].datetime +
-													' (' + list[i].size + ' KB) ' +
+													`<span dir="ltr">${list[i].datetime} (${list[i].size} KB)</span>` +
 												'</h4>'
 											);
 										}
@@ -385,16 +384,16 @@
 			$config = ['dbServer' => '', 'dbUsername' => '', 'dbPassword' => '', 'dbDatabase' => '', 'dbPort' => ''];
 			foreach($config as $k => $v) $config[$k] = escapeshellarg(config($k));
 
-			$dump_file = escapeshellarg(normalize_path($this->curr_dir)) . '/backups/' . substr(md5(microtime() . rand(0, 100000)), -17) . '.sql';
+			$dump_file = escapeshellarg(normalize_path($this->curr_dir) . '/backups/' . substr(md5(microtime() . rand(0, 100000)), -17) . '.sql');
 			$pass_param = ($config['dbPassword'] ? " -p{$config['dbPassword']}" : '');
 			$port_param = ($config['dbPort'] && $config['dbPort'] != ini_get('mysqli.default_port') ? " -P {$config['dbPort']}" : '');
-			$this->cmd = "(mysqldump --no-tablespaces -u{$config['dbUsername']}{$pass_param}{$port_param} -h{$config['dbServer']} {$config['dbDatabase']} -r {$dump_file}) 2>&1";
+			$this->cmd = "(mysqldump -y -e --no-autocommit -q --single-transaction -u{$config['dbUsername']}{$pass_param}{$port_param} -h{$config['dbServer']} {$config['dbDatabase']} -r {$dump_file}) 2>&1";
 
 			maintenance_mode(true);
 			$out = []; $ret = 0;
 			@exec($this->cmd, $out, $ret);
 			// redact password to avoid revealing it on error
-			if($pass_param !== '') $this->cmd = str_replace(" {$pass_param} ", ' -p**** ', $this->cmd);
+			if($pass_param !== '') $this->cmd = str_replace($pass_param, ' -p**** ', $this->cmd);
 			maintenance_mode(false);
 
 			$this->backup_log = implode("\n", $out);
@@ -452,6 +451,7 @@
 				@file_put_contents("{$bdir}/.htaccess", 
 					"<FilesMatch \"\\.(sql)\$\">\n" .
 					"   Order allow,deny\n" .
+					"   Deny from all\n" .
 					"</FilesMatch>" 
 				);
 

@@ -81,7 +81,7 @@
 			'dbPassword' => config('dbPassword'),
 			'dbDatabase' => config('dbDatabase'),
 			'dbPort' => config('dbPort'),
-			'appURI' => trim(preg_replace('/admin$/', '', dirname($_SERVER['SCRIPT_NAME'])), '/'),
+			'appURI' => formatUri(preg_replace('/admin$/', '', dirname($_SERVER['SCRIPT_NAME']))),
 			'host' => config('host'),
 
 			'adminConfig' => [

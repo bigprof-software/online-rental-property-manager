@@ -71,30 +71,54 @@
 			$res = sql("select groupID, name, description from membership_groups $where limit $start, ".$adminConfig['groupsPerPage'], $eo);
 			while( $row = db_fetch_row($res)) {
 				$groupMembersCount = sqlValue("select count(1) from membership_users where groupID='$row[0]'");
+				$isAnonGroup = ($row[1] == $adminConfig['anonymousGroup']);
 				?>
 				<tr>
 					<td><a href="pageEditGroup.php?groupID=<?php echo $row[0]; ?>"><?php echo htmlspecialchars($row[1]); ?></a></td>
 					<td><?php echo htmlspecialchars(trim($row[2] ?? '')); ?></td>
 					<td class="text-right"><?php echo $groupMembersCount; ?></td>
 					<td class="text-center">
+						<!-- edit -->
 						<a href="pageEditGroup.php?groupID=<?php echo $row[0]; ?>" title="<?php echo $Translation['Edit group']; ?>"><i class="glyphicon glyphicon-pencil"></i></a>
+						<span class="hspacer-sm"></span>
+
+						<!-- delete -->
 						<?php if(!$groupMembersCount) { ?>
-								<a href="pageDeleteGroup.php?groupID=<?php echo $row[0]; ?>&csrf_token=<?php echo urlencode(csrf_token(false, true)); ?>" 
-								   title="<?php echo $Translation['delete group'] ; ?>" 
-								   onClick="return confirm('<?php echo addslashes($Translation['confirm delete group']); ?>');">
-									<i class="glyphicon glyphicon-trash text-danger"></i>
-								</a>
+							<a href="pageDeleteGroup.php?groupID=<?php echo $row[0]; ?>&csrf_token=<?php echo urlencode(csrf_token(false, true)); ?>" 
+								title="<?php echo $Translation['delete group'] ; ?>" 
+								onClick="return confirm('<?php echo addslashes($Translation['confirm delete group']); ?>');">
+								<i class="glyphicon glyphicon-trash text-danger"></i>
+							</a>
 						<?php } else { ?>
-								<i class="glyphicon glyphicon-trash text-muted"></i>
+							<i class="glyphicon glyphicon-trash text-muted"></i>
 						<?php } ?>
-						<a href="pageEditMember.php?groupID=<?php echo $row[0]; ?>" title="<?php echo $Translation["add new member"]; ?>"><i class="glyphicon glyphicon-plus text-success"></i></a>
-						<a href="pageViewRecords.php?groupID=<?php echo $row[0]; ?>" title="<?php echo $Translation['view group records'] ; ?>"><i class="glyphicon glyphicon-th"></i></a>
-						<?php if($groupMembersCount) { ?>
-								<a href="pageViewMembers.php?groupID=<?php echo $row[0]; ?>" title="<?php echo $Translation['view group members'] ; ?>"><i class="glyphicon glyphicon-user"></i></a>
-								<a href="pageMail.php?groupID=<?php echo $row[0]; ?>" title="<?php echo $Translation['send message to group']; ?>"><i class="glyphicon glyphicon-envelope"></i></a>
+						<span class="hspacer-sm"></span>
+
+						<!-- add member -->
+						<?php if(!$isAnonGroup) { ?>
+							<a href="pageEditMember.php?groupID=<?php echo $row[0]; ?>" title="<?php echo $Translation["add new member"]; ?>"><i class="glyphicon glyphicon-plus text-success"></i></a>
 						<?php } else { ?>
-								<i class="glyphicon glyphicon-user text-muted"></i>
-								<i class="glyphicon glyphicon-envelope text-muted"></i>
+							<i class="glyphicon glyphicon-plus text-muted"></i>
+						<?php } ?>
+						<span class="hspacer-sm"></span>
+
+						<!-- view records -->
+						<a href="pageViewRecords.php?groupID=<?php echo $row[0]; ?>" title="<?php echo $Translation['view group records'] ; ?>"><i class="glyphicon glyphicon-th"></i></a>
+						<span class="hspacer-sm"></span>
+
+						<!-- view members -->
+						<?php if($groupMembersCount) { ?>
+							<a href="pageViewMembers.php?groupID=<?php echo $row[0]; ?>" title="<?php echo $Translation['view group members'] ; ?>"><i class="glyphicon glyphicon-user"></i></a>
+						<?php } else { ?>
+							<i class="glyphicon glyphicon-user text-muted"></i>
+						<?php } ?>
+						<span class="hspacer-sm"></span>
+
+						<!-- send message -->
+						<?php if($groupMembersCount && !$isAnonGroup) { ?>
+							<a href="pageMail.php?groupID=<?php echo $row[0]; ?>" title="<?php echo $Translation['send message to group']; ?>"><i class="glyphicon glyphicon-envelope"></i></a>
+						<?php } else { ?>
+							<i class="glyphicon glyphicon-envelope text-muted"></i>
 						<?php } ?>
 					</td>
 				</tr>

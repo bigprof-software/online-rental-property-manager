@@ -215,7 +215,7 @@
 		}
 
 		$j('button.reset-permissions').click(function() {
-			return confirm('<?php echo html_attr($Translation["remove special permissions"]); ?>');
+			return confirm(<?php echo json_encode($Translation["remove special permissions"]); ?>);
 		})
 
 		$j('input[type=radio]').change(highlight_selections);

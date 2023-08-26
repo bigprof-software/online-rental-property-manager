@@ -1,17 +1,17 @@
 <?php
-	// For help on using hooks, please refer to http://bigprof.com/appgini/help/working-with-generated-web-database-application/hooks
+	// For help on using hooks, please refer to https://bigprof.com/appgini/help/working-with-generated-web-database-application/hooks
 
-	function login_ok($memberInfo, &$args){
+	function login_ok($memberInfo, &$args) {
 
 		return '';
 	}
 
-	function login_failed($attempt, &$args){
+	function login_failed($attempt, &$args) {
 
 	}
 
-	function member_activity($memberInfo, $activity, &$args){
-		switch($activity){
+	function member_activity($memberInfo, $activity, &$args) {
+		switch($activity) {
 			case 'pending':
 				break;
 
@@ -26,3 +26,12 @@
 
 		}
 	}
+
+	function sendmail_handler(&$pm) {
+
+	}
+
+	function child_records_config($childTable, $childLookupField, &$config) {
+
+	}
+

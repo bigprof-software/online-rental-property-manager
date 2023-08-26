@@ -316,9 +316,9 @@ td.units-description { white-space: normal !important; max-width: 80px !importan
 	margin: .5em 0;
 }
 
-/* correct arrow directions in RTL pages */
-.theme-rtl #Previous .glyphicon, .theme-rtl #Next .glyphicon {
-	transform: rotate(180deg);
+/* Add `rtl-mirror` class to an element to horizontally flip it in rtl (e.g. arrow glyphs, ... etc) */
+.theme-rtl .rtl-mirror {
+	transform: scale(-1, 1);
 }
 
 /* theme-specific compact adjustments */
@@ -329,10 +329,11 @@ td.units-description { white-space: normal !important; max-width: 80px !importan
 /* file upload box formatting */
 .upload-toolbox {
 	overflow-x: hidden;
-	max-width: 40rem;
 	font-size: 1.2rem;
 	text-align: left;
-	background-color: rgba(255, 255, 255, 0.15);
+	margin-bottom: 0;
+	background-color: rgba(255, 255, 255, 0.5);
+	box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.5);
 }
 .theme-rtl .upload-toolbox {
 	text-align: right;
@@ -442,19 +443,28 @@ a[href="mailto:"] { display: none; }
 .flip-vertical { transform: scaleY(-1); }
 
 /* profile menu icon */
-.profile-menu-icon {
-	border: solid 1px #ccc; border-radius: 50%; padding: 6px 9px !important; margin: 8px !important;
+.profile-menu-icon > .icon {
+	border: solid 1px #ccc; border-radius: 50%; padding: 6px !important;
 }
-.theme-compact .profile-menu-icon { padding: 2px 9px !important; margin: 6px !important; }
+.theme-compact .profile-menu-icon > .icon { padding: 6px !important; }
 
-.theme-journal .profile-menu-icon { padding: 7px 9px !important; }
-.theme-compact.theme-journal .profile-menu-icon { padding: 5px 9px !important; }
+.theme-journal .profile-menu-icon > .icon { padding: 6px !important; }
+.theme-compact.theme-journal .profile-menu-icon > .icon { padding: 6px !important; }
 
-.theme-paper .profile-menu-icon { margin: 15px !important; padding: 6px 11px !important; }
-.theme-compact.theme-paper .profile-menu-icon { padding: 2px 9px !important; margin: 12px !important; }
+.theme-paper .profile-menu-icon > .icon { padding: 6px !important; }
+.theme-compact.theme-paper .profile-menu-icon > .icon { padding: 6px !important; }
 
-.theme-readable .profile-menu-icon { margin: 15px !important; }
-.theme-compact.theme-readable .profile-menu-icon { margin: 10px !important; }
+.theme-readable .profile-menu-icon > .icon { padding: 6px !important; }
+.theme-compact.theme-readable .profile-menu-icon > .icon { padding: 6px !important; }
 
-.theme-sandstone .profile-menu-icon { padding: 6px 12px !important; }
-.theme-compact.theme-sandstone .profile-menu-icon { padding: 2px 9px !important; }
+.theme-sandstone .profile-menu-icon > .icon { padding: 6px !important; }
+.theme-compact.theme-sandstone .profile-menu-icon > .icon { padding: 6px !important; }
+.profile-menu-text { margin: 0 .25em; display: none; }
+
+/* fix multi-choice layout in rtl */
+.theme-rtl .select2-search-choice { direction: ltr; }
+.theme-rtl .select2-container-multi .select2-choices li {
+	float: right;
+	margin-right: 5px;
+	margin-left: 0;
+}

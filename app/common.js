@@ -1,6 +1,6 @@
 var AppGini = AppGini || {};
 
-AppGini.version = 22.14;
+AppGini.version = 23.14;
 
 /* initials and fixes */
 jQuery(function() {
@@ -183,6 +183,7 @@ jQuery(function() {
 		if(id == undefined || types == undefined || maxSize == undefined) return;
 
 		AppGini.checkFileUpload(id, types, maxSize);
+		AppGini.previewUploadedImage(id);
 	})
 
 	/* allow clearing chosen file upload */
@@ -251,6 +252,34 @@ jQuery(function() {
 		condition: () => $j('.lookup-flex .match-text').length > 0,
 		action: () => $j('.lookup-flex .match-text').addClass('rspacer-lg').parents('.lookup-flex').removeClass('lookup-flex').addClass('form-control-static'),
 		timeout: 30000
+	})
+
+	// define dragover and dragover-error CSS classes based on current theme colors
+	AppGini.createCSSClass('dragover', 'alert alert-info', ['border-color'], {'border-width': '3px', 'border-style': 'dashed'});
+	AppGini.createCSSClass('dragover-error', 'alert alert-danger', ['border-color'], {'border-width': '3px'});
+
+	// allow drag and drop of files into file upload fields
+	$j('input[type=file]').parents('.form-control-static')
+	.on('dragover', (e) => {
+		e.preventDefault();
+		$j(e.currentTarget).addClass('dragover');
+	})
+	.on('dragleave', (e) => {
+		$j(e.currentTarget).removeClass('dragover dragover-error');
+	})
+	.on('drop', (e) => {
+		e.preventDefault();
+		$j(e.currentTarget).removeClass('dragover dragover-error');
+
+		const fileList = e.originalEvent.dataTransfer.files ?? null;
+		if(!fileList || fileList.length > 1) {
+			$j(e.currentTarget).addClass('dragover-error');
+			return;
+		}
+
+		const input = $j(e.currentTarget).find('input[type=file]');
+		input[0].files = fileList;
+		input.trigger('change');
 	})
 });
 
@@ -1726,6 +1755,33 @@ AppGini.checkFileUpload = function(fieldName, extensions, maxSize) {
 
 	return true;
 }
+
+AppGini.previewUploadedImage = (id) => {
+	const imageInput = $j(`#${id}`);
+	const imagePreview = $j(`#${id}-image`);
+
+	// abort if not accept attr doesn't contain image/*
+	if(!imageInput.attr('accept').match(/image\/\*/i)) return;
+
+	// store original image path if not already stored
+	if(imagePreview.data('original-image') === undefined)
+		imagePreview.data('original-image', imagePreview.attr('src'));
+
+	// if no file selected, restore original image and return
+	if(imageInput[0].files.length == 0) {
+		imagePreview.attr('src', imagePreview.data('original-image'));
+		return;
+	}
+
+	// read selected file and display it in the preview
+	const reader = new FileReader();
+	reader.onload = (e) => {
+		imagePreview.attr('src', e.target.result);
+	}
+
+	reader.readAsDataURL(imageInput[0].files[0]);
+}
+
 /* setInterval alternative that repeats an action until a condition is met */
 AppGini.repeatUntil = function(config) {
 	if(config === undefined) return;
@@ -2313,3 +2369,46 @@ AppGini.addToProfileMenu = (link) => {
 	li.appendTo('.profile-menu')
 }
 
+/**
+ * Creates a CSS class with the provided name and properties.
+ * Properties are retrieved from the provided class(es) plus the provided
+ * additional properties.
+ * 
+ * @param {string} className The name of the CSS class to create.
+ * @param {string} sourceElmClass The class(es) to retrieve properties from.
+ * @param {string[]} sourceElmProps The properties to retrieve from the source class(es).
+ * @param {object} additionalCSSProps Additional properties to add to the created class.
+ */
+AppGini.createCSSClass = (className, sourceElmClass, sourceElmProps = [], additionalCSSProps = {}) => {
+	// create a new hidden element with the provided class
+	const hiddenElm = document.createElement('div');
+	hiddenElm.classList.add('hidden');
+	hiddenElm.classList.add(...sourceElmClass.split(' '));
+	document.body.appendChild(hiddenElm);
+
+	// get the computed style of the hidden element
+	const computedStyle = window.getComputedStyle(hiddenElm);
+
+	// retrieve the provided properties from the computed style
+	const props = {};
+	sourceElmProps.forEach(prop => {
+		props[prop] = computedStyle.getPropertyValue(prop);
+	});
+
+	// create a new style element with the provided class and properties
+	const styleElm = document.createElement('style');
+	styleElm.innerHTML = `.${className} {`;
+	Object.entries(props).forEach(([prop, value]) => {
+		styleElm.innerHTML += `${prop}: ${value}; `;
+	});
+	Object.entries(additionalCSSProps).forEach(([prop, value]) => {
+		styleElm.innerHTML += `${prop}: ${value}; `;
+	});
+	styleElm.innerHTML += '}';
+
+	// add the new style element to the head of the document
+	document.head.appendChild(styleElm);
+
+	// remove the hidden element
+	document.body.removeChild(hiddenElm);
+}

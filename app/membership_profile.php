@@ -228,7 +228,24 @@
 				</div>
 			</div>
 
-			<?php if($mi['username'] != $adminConfig['adminUsername']) { ?>
+			<?php if($mi['username'] == $adminConfig['adminUsername']) { ?>
+				<!-- change admin password from the admin area -->
+				<div class="panel panel-info">
+					<div class="panel-heading">
+						<h3 class="panel-title">
+							<i class="glyphicon glyphicon-asterisk"></i><i class="glyphicon glyphicon-asterisk"></i>
+							<a href="admin/pageSettings.php"><?php echo $Translation['Change your password']; ?></a>
+						</h3>
+					</div>
+					<div class="panel-body">
+						<a href="admin/pageSettings.php"><?php echo $Translation['admin settings']; ?></a>
+						<i class="glyphicon glyphicon-chevron-right rtl-mirror"></i>
+						<?php echo $Translation['Preconfigured users and groups']; ?>
+						<i class="glyphicon glyphicon-chevron-right rtl-mirror"></i>
+						<?php echo $Translation['admin password']; ?>
+					</div>
+				</div>
+			<?php } else { ?>
 				<!-- change password -->
 				<div class="panel panel-info">
 					<div class="panel-heading">
