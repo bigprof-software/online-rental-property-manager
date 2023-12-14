@@ -1,11 +1,11 @@
 repo_name: bigprof-software/online-rental-property-manager
-report_id: 030ccb6aaa3e8c8f15535b5e26a41233
+report_id: 755dd4d3233733ff30f4b46a2abe1efd
 repo_type: Public
-timestamp: '2023-11-09T11:25:31+00:00'
-requested_by: bigprof
+timestamp: '2023-12-14T09:24:11+00:00'
+requested_by: stack-file[bot]
 provider: github
 branch: master
-detected_tools_count: 5
+detected_tools_count: 8
 tools:
 - name: CSS 3
   description: The latest evolution of the Cascading Style Sheets language
@@ -47,6 +47,17 @@ tools:
   detection_source: orpm.sql
   last_updated_by: Ahmed Genedy
   last_updated_on: 2023-08-26 19:23:28.000000000 Z
+- name: pgvector
+  description: Open-source vector similarity search for Postgres
+  website_url: https://github.com/pgvector/pgvector/
+  open_source: false
+  hosted_saas: false
+  category: Data Stores
+  sub_category: Database Tools
+  image_url: https://img.stackshare.io/service/109221/default_b888cdf5617d936aa6aacf130911906955508639.png
+  detection_source: app/resources/fullcalendar/core/LICENSE.txt
+  last_updated_by: Ahmad Gneady
+  last_updated_on: 2020-11-19 17:45:49.000000000 Z
 - name: Git
   description: Fast, scalable, distributed revision control system
   website_url: http://git-scm.com/
@@ -56,3 +67,23 @@ tools:
   sub_category: Version Control System
   image_url: https://img.stackshare.io/service/1046/git.png
   detection_source: Repo Metadata
+- name: HTML
+  description: Hypertext Markup Language for creating web pages.
+  website_url: http://
+  open_source: false
+  hosted_saas: false
+  image_url: https://img.stackshare.io/service/2270/no-img-open-source.png
+  detection_source: app/admin/images/index.html
+  last_updated_by: Ahmed Genedy
+  last_updated_on: 2023-08-26 19:57:39.000000000 Z
+- name: LangChain
+  description: Build AI apps with LLMs through composability
+  website_url: https://github.com/hwchase17/langchain
+  open_source: true
+  hosted_saas: false
+  category: Communications
+  sub_category: Large Language Model Tools
+  image_url: https://img.stackshare.io/service/48790/default_5b6c6b73f1ff3775c85d2a1ba954cb87e30cbf13.jpg
+  detection_source: app/resources/fullcalendar/core/LICENSE.txt
+  last_updated_by: Ahmad Gneady
+  last_updated_on: 2020-11-19 17:45:49.000000000 Z
