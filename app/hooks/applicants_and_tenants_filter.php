@@ -90,10 +90,10 @@
 			</div>
 	<script>
 		//for population
-		var filterValue_13 = '<?php echo htmlspecialchars($FilterValue[ 1 ]); ?>';
+		var filterValue_13 = <?php echo json_encode($FilterValue[1]); ?>;
 		$j(function () {
 			if (filterValue_13) {
-				$j("input[class =filter_13][value ='" + filterValue_13 + "']").attr("checked", "checked");
+				$j(`input[class=filter_13][value="${filterValue_13}"]`).prop("checked", true);
 			}
 		})
 	</script>
