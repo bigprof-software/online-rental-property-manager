@@ -209,7 +209,10 @@
 	$adminConfig = config('adminConfig');
 	$isAnonymous = ($mi['group'] == $adminConfig['anonymousGroup']);
 
-	if(!$isAnonymous) {
+	// get view permissions for current table
+	$viewPerm = getTablePermissions($this->TableName)['view'];
+
+	if(!$isAnonymous && $viewPerm > 1) {
 		?>
 		<!-- ownership header  --> 
 		<div class="row filterByOwnership" style="border-bottom: solid 2px #DDD;">
@@ -231,12 +234,14 @@
 						<?php echo $Translation['All records owned by your group']; ?>
 					</label>
 				</div>
-				<div class="radio filterByOwnership">
-					<label>
-						<input type="radio" name="DisplayRecords" id="DisplayRecordsAll" value="all">
-						<?php echo $Translation['All records']; ?>
-					</label>
-				</div>
+				<?php if($viewPerm == 3) { ?>
+					<div class="radio filterByOwnership">
+						<label>
+							<input type="radio" name="DisplayRecords" id="DisplayRecordsAll" value="all">
+							<?php echo $Translation['All records']; ?>
+						</label>
+					</div>
+				<?php } ?>
 			</div>
 		</div>
 		<?php

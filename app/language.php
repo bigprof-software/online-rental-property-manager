@@ -857,4 +857,21 @@ $Translation = [
 	'cli tool for updating calculated fields' => 'There is also a command-line tool for updating calculated fields. This is very handy if you want to automate the process of updating calculated fields, for instance by adding a cron job to run the command-line tool periodically. For help on using the command-line tool, please run the following command in your terminal:',
 	'start updating' => 'Start updating',
 	'captcha label' => 'Please enter the characters you see in the image',
+
+	// Added in 23.17
+	'Explore more plugins' => 'Explore more plugins',
+	'Install a plugin' => 'Install a plugin',
+	'invalid order number' => 'Invalid order number',
+	'invalid order login' => 'Could not find an order with the specified order number and email address.',
+	'order number' => 'Order Number',
+	'view available plugins' => 'View available plugins',
+	'plugin check instructions' => 'Please enter your email address and order number below to check for available plugins.',
+	'no plugins available' => 'No plugins available for this order number.',
+	'install selected plugins' => 'Install selected plugins',
+	'select plugins to install' => 'Select plugins to install',
+	'plugins install progress' => 'Install progress',
+	'already installed' => 'already installed on %s (check to re-install)',
+	'plugin install failed' => 'Plugin installation failed!',
+	'plugin installed successfully' => 'Plugin installed successfully! Click to launch.',
+	'missing dependencies' => 'Errors or missing dependecies found',
 ];

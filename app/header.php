@@ -42,17 +42,55 @@
 						return iconv(datalist_db_encoding, 'UTF-8', $str);
 					}, $translationUTF8);
 
-				$imgFolder = rtrim(config('adminConfig')['baseUploadPath'], '\\/') . '/';
+				$jsAppConfig = [
+					'imgFolder' => rtrim(config('adminConfig')['baseUploadPath'], '\\/') . '/',
+					'url' => application_url(),
+					'uri' => application_uri(),
+				];
 			?>
 			var AppGini = AppGini || {};
 
 			/* translation strings */
 			AppGini.Translate = {
 				_map: <?php echo json_encode($translationUTF8, JSON_PRETTY_PRINT); ?>,
-				_encoding: '<?php echo datalist_db_encoding; ?>'
+				_encoding: '<?php echo datalist_db_encoding; ?>',
+				apply: () => {
+					// find elements with data-translate attribute that don't have .translated class
+					const contentEls = document.querySelectorAll('[data-translate]:not(.translated)');
+
+					// find elements with data-title attribute that don't have .translated class
+					const titleEls = document.querySelectorAll('[data-title]:not(.translated)');
+
+					// abort if no elements found
+					if(!contentEls.length && !titleEls.length) return;
+
+					// translate content of elements that have data-translate attribute
+					contentEls.forEach(el => {
+						const key = el.getAttribute('data-translate');
+						if(!key) return;
+
+						const translation = AppGini.Translate._map[key];
+						if(!translation) return;
+
+						el.innerHTML = translation;
+						el.classList.add('translated');
+					});
+
+					// translate title of elements that have data-title attribute
+					titleEls.forEach(el => {
+						const key = el.getAttribute('data-title');
+						if(!key) return;
+
+						const translation = AppGini.Translate._map[key];
+						if(!translation) return;
+
+						el.setAttribute('title', translation);
+						el.classList.add('translated');
+					});
+				},
 			}
 
-			AppGini.imgFolder = <?php echo json_encode($imgFolder, JSON_PARTIAL_OUTPUT_ON_ERROR); ?>;
+			AppGini.config = <?php echo json_encode($jsAppConfig, JSON_PARTIAL_OUTPUT_ON_ERROR); ?>
 		</script>
 
 		<script src="<?php echo PREPEND_PATH; ?>common.js?<?php echo filemtime( __DIR__ . '/common.js'); ?>"></script>
@@ -70,6 +108,8 @@
 				<?php if(function_exists('htmlUserBar')) echo htmlUserBar(); ?>
 				<div style="min-height: 70px;" class="hidden-print top-margin-adjuster"></div>
 			<?php } ?>
+
+			<?php echo WindowMessages::getHtml(); ?>
 
 			<?php if(class_exists('Notification', false)) echo Notification::placeholder(); ?>
 

@@ -131,18 +131,27 @@
 			<td colspan="4">
 				<table width="100%" cellspacing="0">
 					<tr>
+						<?php
+							// pagination
+							$prevPage = $page > 1 ? $page - 1 : false;
+							$nextPage = $page < ceil($numMembers / $adminConfig['membersPerPage']) ? $page + 1 : false;
+						?>
 						<th class="text-left" width="33%">
-							<a class="btn btn-default" href="pageViewGroups.php?searchGroups=<?php echo $searchHTML; ?>&page=<?php echo ($page > 1 ? $page - 1 : 1); ?>"><?php echo $Translation['previous']; ?></a>
+							<?php if($prevPage) { ?>
+								<a class="btn btn-default" href="pageViewGroups.php?searchGroups=<?php echo $searchHTML; ?>&page=<?php echo ($page > 1 ? $page - 1 : 1); ?>"><?php echo $Translation['previous']; ?></a>
+							<?php } ?>
 						</th>
 						<th class="text-center" width="33%">
 							<?php 
-								$originalValues =  array ('<GROUPNUM1>','<GROUPNUM2>','<GROUPS>' );
-								$replaceValues = array ( $start+1 , $start+db_num_rows($res) , $numGroups );
-								echo str_replace ( $originalValues , $replaceValues , $Translation['displaying groups'] );
+								$originalValues = ['<GROUPNUM1>', '<GROUPNUM2>', '<GROUPS>'];
+								$replaceValues = [$start + 1, $start + db_num_rows($res), $numGroups];
+								echo str_replace($originalValues, $replaceValues, $Translation['displaying groups']);
 							?>
 						</th>
 						<th class="text-right">
-							<a class="btn btn-default" href="pageViewGroups.php?searchGroups=<?php echo $searchHTML; ?>&page=<?php echo ($page < ceil($numGroups / $adminConfig['groupsPerPage']) ? $page + 1 : ceil($numGroups / $adminConfig['groupsPerPage'])); ?>"><?php echo $Translation['next'] ; ?></a>
+							<?php if($nextPage) { ?>
+								<a class="btn btn-default" href="pageViewGroups.php?searchGroups=<?php echo $searchHTML; ?>&page=<?php echo ($page < ceil($numGroups / $adminConfig['groupsPerPage']) ? $page + 1 : ceil($numGroups / $adminConfig['groupsPerPage'])); ?>"><?php echo $Translation['next'] ; ?></a>
+							<?php } ?>
 						</th>
 					</tr>
 				</table>
@@ -150,7 +159,7 @@
 		</tr>
 		<tr>
 			<th colspan="4">
-				<b><?php echo $Translation['key'] ; ?></b>
+				<b><?php echo $Translation['key']; ?></b>
 				<div class="row">
 					<div class="col-sm-6 col-md-4 col-lg-3"><i class="glyphicon glyphicon-pencil text-info"></i> <?php echo $Translation['edit group details'] ; ?></div>
 					<div class="col-sm-6 col-md-4 col-lg-3"><i class="glyphicon glyphicon-trash text-danger"></i> <?php echo $Translation['delete group'] ; ?></div>

@@ -209,6 +209,7 @@ td.units-description { white-space: normal !important; max-width: 80px !importan
 /* tv tools button widths */
 .tv-tools .btn { width: 5em; }
 
+#spm_notification { direction: ltr !important; }
 /* compact theme styles */
 .container.theme-compact, .container-fluid.theme-compact { line-height: 1.6; font-size: 0.857em; }
 
@@ -381,8 +382,12 @@ th:focus {
 	outline: thin dotted;
 }
 
+.nav .dropdown-menu img {
+	max-height: 1.25em;
+}
+
 .profile-menu li img {
-	height: 1.5em;
+	height: 1.5em !important;
 	vertical-align: text-bottom;
 	margin-left: -.4em;
 }
@@ -404,7 +409,7 @@ th:focus {
 /* fix nicedit components' dimensions */
 .has-nicedit > div { width: 100% !important; }
 .has-nicedit .nicEdit-main { width: 99% !important; }
-.nicEdit-main { min-height: 6em; /* overflow: auto !important; */ }
+.nicEdit-main { min-height: 6em !important; /* overflow: auto !important; */ }
 
 /* hide empty email links */
 a[href="mailto:"] { display: none; }
@@ -417,6 +422,7 @@ a[href="mailto:"] { display: none; }
 }
 .lookup-flex > .select2-container {
 	flex-grow: 1;
+	width: auto !important;
 }
 .lookup-flex > .view_parent,
 .lookup-flex > .add_new_parent {
@@ -432,7 +438,7 @@ a[href="mailto:"] { display: none; }
 	flex-grow: 1;
 }
 .date-flex > .btn {
-	flex-basis: 2.85em;
+	flex-basis: 3em;
 }
 .date-flex > select.form-control {
 	width: auto; display: unset;
@@ -467,4 +473,37 @@ a[href="mailto:"] { display: none; }
 	float: right;
 	margin-right: 5px;
 	margin-left: 0;
+}
+
+/* child record info in tv */
+.child-records-info > a {
+	display: inline-block;
+}
+.child-records-info > a.children-count {
+	text-align: right;
+	width: calc(100% - 3em);
+}
+dd.child-records-info > a.children-count {
+	max-width: 6em;
+}
+.child-records-info > a.new-child {
+	text-align: center;
+	width: 2.5em;
+}
+.update-children-count {
+	height: .8em;
+}
+
+/* prevent right-aligned fields in non-default TV layouts from being too wide */
+.container:not(.theme-rtl) .dl-horizontal dd.text-right,
+.container:not(.theme-rtl) .dl-horizontal dd > div.text-right {
+	max-width: 8em;
+}
+.theme-rtl .dl-horizontal dd.text-left,
+.theme-rtl .dl-horizontal dd > div.text-left {
+	max-width: 8em;
+}
+.theme-rtl .child-records-info {
+	direction: ltr;
+	text-align: right;
 }

@@ -1,19 +1,19 @@
 <!-- Edit this file to change the layout of each record in the table view -->
-<!-- To disable clicking of a field, remove the  and  formatters around it-->
+<!-- To disable clicking of a field, remove the <%%SELECT%%> and <%%ENDSELECT%%> formatters around it-->
 
 <!-- If you wish to hide the table view header that contains the column titles, -->
 <!-- add the following to the units_init() hook (in hooks/units.php file) -->
 <!--     $options->ShowTableHeader = 0;     -->
 
-		<td id="units-property-<%%VALUE(id)%%>" class="units-property"><%%VALUE(property)%%></td>
-		<td id="units-unit_number-<%%VALUE(id)%%>" class="units-unit_number"><%%VALUE(unit_number)%%></td>
-		<td id="units-photo-<%%VALUE(id)%%>" class="units-photo"><a href="<%%BASE_UPLOAD_PATH%%><%%VALUE(photo)%%>" data-lightbox="units-photo"><img src="thumbnail.php?i=<%%VALUE(photo)%%>&t=units&f=photo&v=tv" class="img-thumbnail"></a></td>
-		<td id="units-status-<%%VALUE(id)%%>" class="units-status"><%%VALUE(status)%%></td>
-		<td id="units-size-<%%VALUE(id)%%>" class="units-size text-center"><%%VALUE(size)%%></td>
-		<td id="units-street-<%%VALUE(id)%%>" class="units-street"><%%VALUE(street)%%></td>
-		<td id="units-city-<%%VALUE(id)%%>" class="units-city"><%%VALUE(city)%%></td>
-		<td id="units-state-<%%VALUE(id)%%>" class="units-state text-center"><%%VALUE(state)%%></td>
-		<td id="units-rooms-<%%VALUE(id)%%>" class="units-rooms text-center"><%%VALUE(rooms)%%></td>
-		<td id="units-bathroom-<%%VALUE(id)%%>" class="units-bathroom text-center"><%%VALUE(bathroom)%%></td>
-		<td id="units-features-<%%VALUE(id)%%>" class="units-features"><%%VALUE(features)%%></td>
-		<td id="units-rental_amount-<%%VALUE(id)%%>" class="units-rental_amount text-right"><%%VALUE(rental_amount)%%></td>
+		<td id="units-property-<%%VALUE(id)%%>" class="units-property text-bold"><%%VALUE(property)%%></td>
+		<td id="units-unit_number-<%%VALUE(id)%%>" class="units-unit_number text-bold"><%%VALUE(unit_number)%%></td>
+		<td id="units-photo-<%%VALUE(id)%%>" class="units-photo text-bold"><a href="<%%BASE_UPLOAD_PATH%%><%%VALUE(photo)%%>" data-lightbox="units-photo"><img src="thumbnail.php?i=<%%VALUE(photo)%%>&t=units&f=photo&v=tv" class="img-thumbnail"></a></td>
+		<td id="units-status-<%%VALUE(id)%%>" class="units-status text-bold"><%%VALUE(status)%%></td>
+		<td id="units-size-<%%VALUE(id)%%>" class="units-size text-center text-bold"><%%VALUE(size)%%></td>
+		<td id="units-street-<%%VALUE(id)%%>" class="units-street text-bold"><%%VALUE(street)%%></td>
+		<td id="units-city-<%%VALUE(id)%%>" class="units-city text-bold"><%%VALUE(city)%%></td>
+		<td id="units-state-<%%VALUE(id)%%>" class="units-state text-center text-bold"><%%VALUE(state)%%></td>
+		<td id="units-rooms-<%%VALUE(id)%%>" class="units-rooms text-center text-bold"><%%VALUE(rooms)%%></td>
+		<td id="units-bathroom-<%%VALUE(id)%%>" class="units-bathroom text-center text-bold"><%%VALUE(bathroom)%%></td>
+		<td id="units-features-<%%VALUE(id)%%>" class="units-features text-bold"><%%VALUE(features)%%></td>
+		<td id="units-rental_amount-<%%VALUE(id)%%>" class="units-rental_amount text-right text-bold"><%%VALUE(rental_amount)%%></td>

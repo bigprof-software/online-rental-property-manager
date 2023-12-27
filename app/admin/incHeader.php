@@ -218,21 +218,36 @@
 
 					<?php $plugins = get_plugins(); ?>
 
-					<?php if(count($plugins)) { ?>
-						<li class="dropdown">
-							<a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="glyphicon glyphicon-plus"></i> <?php echo $Translation["plugins"] ; ?> <b class="caret"></b></a>
-							<ul class="dropdown-menu">
-								<?php foreach($plugins as $plugin) { ?>
-									<?php
-										$plugin_icon = '';
-										if($plugin['glyphicon']) $plugin_icon = "<i class=\"glyphicon glyphicon-{$plugin['glyphicon']}\"></i> ";
-										if($plugin['icon']) $plugin_icon = "<img class=\"rspacer-md\" src=\"{$plugin['admin_path']}/{$plugin['icon']}\"> ";
-									?>
-									<li><a target="_blank" href="<?php echo $plugin['admin_path']; ?>"><?php echo $plugin_icon . $plugin['title']; ?></a></li>
-								<?php } ?>
-							</ul>
-						</li>
-					<?php } ?>
+					<li class="dropdown">
+						<a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="glyphicon glyphicon-plus"></i> <?php echo $Translation["plugins"] ; ?> <b class="caret"></b></a>
+						<ul class="dropdown-menu">
+							<li>
+								<a href="pageInstallPlugin.php">
+									<i class="glyphicon menu-item-icon text-info glyphicon-download-alt"></i>
+									<?php echo $Translation['Install a plugin']; ?>
+								</a>
+							</li>
+							<li>
+								<a target="_blank" href="https://bigprof.com/shop-discount-offers/">
+									<i class="glyphicon menu-item-icon text-info glyphicon-new-window"></i>
+									<?php echo $Translation['Explore more plugins']; ?>
+								</a>
+							</li>
+							<?php foreach($plugins as $plugin) { ?>
+								<?php
+									if(empty($pluginsSeparator)) {
+										echo '<li class="divider"></li>';
+										$pluginsSeparator = true;
+									}
+
+									$plugin_icon = '';
+									if($plugin['glyphicon']) $plugin_icon = "<i class=\"glyphicon glyphicon-{$plugin['glyphicon']}\"></i> ";
+									if($plugin['icon']) $plugin_icon = "<img class=\"rspacer-md\" src=\"{$plugin['admin_path']}/{$plugin['icon']}\"> ";
+								?>
+								<li><a target="_blank" href="<?php echo $plugin['admin_path']; ?>"><?php echo $plugin_icon . $plugin['title']; ?></a></li>
+							<?php } ?>
+						</ul>
+					</li>
 				</ul>
 
 				<div class="navbar-right">
