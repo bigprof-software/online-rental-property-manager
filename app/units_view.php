@@ -155,10 +155,10 @@
 	$x->DefaultSortField = '2';
 	$x->DefaultSortDirection = 'asc';
 
-	$x->ColWidth = [90, 40, 60, 60, 60, 100, 55, 40, 45, 70, 150, 60, ];
-	$x->ColCaption = ['Property', 'Unit', 'Cover photo', 'Status', 'Area (sq. feet)', 'Street', 'City', 'State', 'Rooms', 'Bathroom', 'Features', 'Rental amount', ];
-	$x->ColFieldName = ['property', 'unit_number', 'photo', 'status', 'size', 'street', 'city', 'state', 'rooms', 'bathroom', 'features', 'rental_amount', ];
-	$x->ColNumber  = [2, 3, 4, 5, 6, 8, 9, 10, 12, 13, 14, 16, ];
+	$x->ColWidth = [90, 40, 60, 60, 60, 100, 55, 40, 45, 70, 150, 60, 100, 100, ];
+	$x->ColCaption = ['Property', 'Unit', 'Cover photo', 'Status', 'Area (sq. feet)', 'Street', 'City', 'State', 'Rooms', 'Bathroom', 'Features', 'Rental amount', 'Applications/Leases', 'Unit photos', ];
+	$x->ColFieldName = ['property', 'unit_number', 'photo', 'status', 'size', 'street', 'city', 'state', 'rooms', 'bathroom', 'features', 'rental_amount', '%applications_leases.unit%', '%unit_photos.unit%', ];
+	$x->ColNumber  = [2, 3, 4, 5, 6, 8, 9, 10, 12, 13, 14, 16, -1, -1, ];
 
 	// template paths below are based on the app main directory
 	$x->Template = 'templates/units_templateTV.html';

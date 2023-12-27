@@ -135,10 +135,10 @@
 	$x->TableIcon = 'resources/table_icons/administrator.png';
 	$x->PrimaryKey = '`rental_owners`.`id`';
 
-	$x->ColWidth = [150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, ];
-	$x->ColCaption = ['First name', 'Last name', 'Company name', 'Primary email', 'Alternate email', 'Phone', 'Country', 'Street', 'City', 'State', 'Zip', 'Comments', ];
-	$x->ColFieldName = ['first_name', 'last_name', 'company_name', 'primary_email', 'alternate_email', 'phone', 'country', 'street', 'city', 'state', 'zip', 'comments', ];
-	$x->ColNumber  = [2, 3, 4, 6, 7, 8, 9, 10, 11, 12, 13, 14, ];
+	$x->ColWidth = [150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 100, ];
+	$x->ColCaption = ['First name', 'Last name', 'Company name', 'Primary email', 'Alternate email', 'Phone', 'Country', 'Street', 'City', 'State', 'Zip', 'Comments', 'Properties', ];
+	$x->ColFieldName = ['first_name', 'last_name', 'company_name', 'primary_email', 'alternate_email', 'phone', 'country', 'street', 'city', 'state', 'zip', 'comments', '%properties.owner%', ];
+	$x->ColNumber  = [2, 3, 4, 6, 7, 8, 9, 10, 11, 12, 13, 14, -1, ];
 
 	// template paths below are based on the app main directory
 	$x->Template = 'templates/rental_owners_templateTV.html';

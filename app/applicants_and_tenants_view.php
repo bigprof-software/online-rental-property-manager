@@ -137,10 +137,10 @@
 	$x->DefaultSortField = '2';
 	$x->DefaultSortDirection = 'asc';
 
-	$x->ColWidth = [100, 100, 100, 100, 100, 100, 80, 80, 80, 100, 100, ];
-	$x->ColCaption = ['Last name', 'First name', 'Email', 'Phone', 'Birth date', 'Driver license number', 'Monthly gross pay', 'Additional income', 'Assets', 'Status', 'Notes', ];
-	$x->ColFieldName = ['last_name', 'first_name', 'email', 'phone', 'birth_date', 'driver_license_number', 'monthly_gross_pay', 'additional_income', 'assets', 'status', 'notes', ];
-	$x->ColNumber  = [2, 3, 4, 5, 6, 7, 10, 11, 12, 13, 14, ];
+	$x->ColWidth = [100, 100, 100, 100, 100, 100, 80, 80, 80, 100, 100, 100, 100, 100, 100, ];
+	$x->ColCaption = ['Last name', 'First name', 'Email', 'Phone', 'Birth date', 'Driver license number', 'Monthly gross pay', 'Additional income', 'Assets', 'Status', 'Notes', 'Applications/Leases', 'Residence and rental history', 'Employment and income history', 'References', ];
+	$x->ColFieldName = ['last_name', 'first_name', 'email', 'phone', 'birth_date', 'driver_license_number', 'monthly_gross_pay', 'additional_income', 'assets', 'status', 'notes', '%applications_leases.tenants%', '%residence_and_rental_history.tenant%', '%employment_and_income_history.tenant%', '%references.tenant%', ];
+	$x->ColNumber  = [2, 3, 4, 5, 6, 7, 10, 11, 12, 13, 14, -1, -1, -1, -1, ];
 
 	// template paths below are based on the app main directory
 	$x->Template = 'templates/applicants_and_tenants_templateTV.html';

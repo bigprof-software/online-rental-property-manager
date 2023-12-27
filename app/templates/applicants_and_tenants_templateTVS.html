@@ -16,3 +16,19 @@
 		<td id="applicants_and_tenants-assets-<%%VALUE(id)%%>" class="applicants_and_tenants-assets text-right text-bold"><%%VALUE(assets)%%></td>
 		<td id="applicants_and_tenants-status-<%%VALUE(id)%%>" class="applicants_and_tenants-status text-center text-bold"><%%VALUE(status)%%></td>
 		<td id="applicants_and_tenants-notes-<%%VALUE(id)%%>" class="applicants_and_tenants-notes text-bold"><%%VALUE(notes)%%></td>
+		<td class="child-applications_leases-tenants child-records-info" data-id="<%%VALUE(id)%%>" data-table="applications_leases" data-lookup-field="tenants">
+			<a href="applications_leases_view.php?filterer_tenants=<%%VALUE(id)%%>" target="_blank" title="<%%TRANSLATION(view)%%>" class="children-count" style="visibility: hidden;"><span class="count-children">0</span> <i class="glyphicon glyphicon-new-window"></i></a>
+			<a href="applications_leases_view.php?filterer_tenants=<%%VALUE(id)%%>&addNew_x=1&Embedded=1" target="_blank" class="modal-link new-child" title="<%%TRANSLATION(Add New)%%> (Applications/Leases)" style="visibility: hidden;"><i class="text-success glyphicon glyphicon-plus"></i></a>
+		</td>
+		<td class="child-residence_and_rental_history-tenant child-records-info" data-id="<%%VALUE(id)%%>" data-table="residence_and_rental_history" data-lookup-field="tenant">
+			<a href="residence_and_rental_history_view.php?filterer_tenant=<%%VALUE(id)%%>" target="_blank" title="<%%TRANSLATION(view)%%>" class="children-count" style="visibility: hidden;"><span class="count-children">0</span> <i class="glyphicon glyphicon-new-window"></i></a>
+			<a href="residence_and_rental_history_view.php?filterer_tenant=<%%VALUE(id)%%>&addNew_x=1&Embedded=1" target="_blank" class="modal-link new-child" title="<%%TRANSLATION(Add New)%%> (Residence and rental history)" style="visibility: hidden;"><i class="text-success glyphicon glyphicon-plus"></i></a>
+		</td>
+		<td class="child-employment_and_income_history-tenant child-records-info" data-id="<%%VALUE(id)%%>" data-table="employment_and_income_history" data-lookup-field="tenant">
+			<a href="employment_and_income_history_view.php?filterer_tenant=<%%VALUE(id)%%>" target="_blank" title="<%%TRANSLATION(view)%%>" class="children-count" style="visibility: hidden;"><span class="count-children">0</span> <i class="glyphicon glyphicon-new-window"></i></a>
+			<a href="employment_and_income_history_view.php?filterer_tenant=<%%VALUE(id)%%>&addNew_x=1&Embedded=1" target="_blank" class="modal-link new-child" title="<%%TRANSLATION(Add New)%%> (Employment and income history)" style="visibility: hidden;"><i class="text-success glyphicon glyphicon-plus"></i></a>
+		</td>
+		<td class="child-references-tenant child-records-info" data-id="<%%VALUE(id)%%>" data-table="references" data-lookup-field="tenant">
+			<a href="references_view.php?filterer_tenant=<%%VALUE(id)%%>" target="_blank" title="<%%TRANSLATION(view)%%>" class="children-count" style="visibility: hidden;"><span class="count-children">0</span> <i class="glyphicon glyphicon-new-window"></i></a>
+			<a href="references_view.php?filterer_tenant=<%%VALUE(id)%%>&addNew_x=1&Embedded=1" target="_blank" class="modal-link new-child" title="<%%TRANSLATION(Add New)%%> (References)" style="visibility: hidden;"><i class="text-success glyphicon glyphicon-plus"></i></a>
+		</td>
