@@ -49,6 +49,8 @@ license of choice. 2. You don't need to install AppGini in order to use this app
 
 ## Installation
 
+> <img src="https://cdn.bigprof.com/images/online-meeting.png" style="width: 50px; float: right; margin-left: 10px" alt="Book a support call"> **Need assistance?** [Book a Google Meet session](https://bigprof.com/appgini/consulting-service) with us for a live walkthrough of the installation process, plus any requests for customization or additional features.
+
 This is a PHP/MySQL web application that you run from a browser. You can install it either locally
 on your own PC, or to a web/intranet server.
 
