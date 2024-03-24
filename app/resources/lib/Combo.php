@@ -44,6 +44,7 @@ class Combo {
 		global $Translation;
 		$this->HTML = '';
 
+		if(!is_array($this->ListData)) $this->ListData = [];
 		if(!is_array($this->ListItem)) $this->ListItem = $this->ListData;
 		$ArrayCount = count($this->ListItem);
 

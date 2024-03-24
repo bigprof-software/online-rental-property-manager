@@ -34,6 +34,8 @@
 	}
 
 	function db_fetch_array($res) {
+		if(!$res) return false;
+
 		switch(DATABASE) {
 			case 'mysql':
 				return @mysql_fetch_array($res);
@@ -43,6 +45,8 @@
 	}
 
 	function db_fetch_assoc($res) {
+		if(!$res) return false;
+
 		switch(DATABASE) {
 			case 'mysql':
 				return @mysql_fetch_assoc($res);
@@ -52,6 +56,8 @@
 	}
 
 	function db_fetch_row($res) {
+		if(!$res) return false;
+
 		switch(DATABASE) {
 			case 'mysql':
 				return @mysql_fetch_row($res);

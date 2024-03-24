@@ -507,3 +507,465 @@ dd.child-records-info > a.children-count {
 	direction: ltr;
 	text-align: right;
 }
+.sql-query-container {
+	white-space: pre-wrap;
+	word-break: break-word;
+	direction: ltr;
+	cursor: pointer;
+	padding-top: 2em;
+}
+.sql-query-copier {
+	position: absolute !important;
+	top: 0 !important;
+	right: 1em !important;
+}
+.theme-yeti {
+	.bg-primary, .bg-primary a,
+	.bg-primary.text-primary, .bg-primary .text-primary,
+	.light-text {
+		color: #fff;
+	}
+
+	.table-hover>tbody>tr.bg-primary:hover, .table-hover>tbody>tr:hover .bg-primary,
+	.table-striped>tbody>tr.bg-primary:nth-of-type(2n+1), .table-striped>tbody>tr:nth-of-type(2n+1) .bg-primary,
+	.dark-text {
+		color: #222;
+	}
+
+	.table-hover>tbody>tr.bg-primary:hover a, .table-hover>tbody>tr:hover .bg-primary a,
+	.table-striped>tbody>tr.bg-primary:nth-of-type(2n+1) a, .table-striped>tbody>tr:nth-of-type(2n+1) .bg-primary a,
+	.dark-link {
+		color: #008cba;
+	}
+
+	.progress{
+		height: 2.5em;
+	}
+
+	.progress .progress-bar {
+		line-height: 2;
+		font-size: 1em;
+	}
+}
+
+.theme-united {
+	.bg-primary, .bg-primary a,
+	.bg-primary.text-primary, .bg-primary .text-primary,
+	.light-text {
+		color: #fff;
+	}
+
+	.table-hover>tbody>tr.bg-primary:hover, .table-hover>tbody>tr:hover .bg-primary,
+	.table-striped>tbody>tr.bg-primary:nth-of-type(2n+1), .table-striped>tbody>tr:nth-of-type(2n+1) .bg-primary,
+	.dark-text {
+		color: #333;
+	}
+
+	.table-hover>tbody>tr.bg-primary:hover a, .table-hover>tbody>tr:hover .bg-primary a,
+	.table-striped>tbody>tr.bg-primary:nth-of-type(2n+1) a, .table-striped>tbody>tr:nth-of-type(2n+1) .bg-primary a,
+	.dark-link {
+		color: #dd4814;
+	}
+
+}
+
+.theme-superhero {
+	.bg-info, .bg-info a,
+	.bg-warning, .bg-warning a,
+	.bg-danger, .bg-danger a,
+	.bg-success, .bg-success a,
+	.bg-primary, .bg-primary a,
+
+	.bg-info.text-info, .bg-info .text-info,
+	.bg-warning.text-warning, .bg-warning .text-warning,
+	.bg-danger.text-danger, .bg-danger .text-danger,
+	.bg-success.text-success, .bg-success .text-success,
+	.bg-primary.text-primary, .bg-primary .text-primary,
+
+	.light-text {
+		color: #ebebeb;
+	}
+
+	.dark-text {
+		color: #ebebeb;
+	}
+
+	.dark-link {
+		color: #df691a;
+	}
+
+}
+
+.theme-spacelab {
+	.bg-primary, .bg-primary a,
+	.light-text {
+		color: #fff;
+	}
+
+	.table-hover>tbody>tr.bg-primary:hover, .table-hover>tbody>tr:hover .bg-primary,
+	.table-striped>tbody>tr.bg-primary:nth-of-type(2n+1), .table-striped>tbody>tr:nth-of-type(2n+1) .bg-primary,
+	.dark-text {
+		color: #666;
+	}
+
+	.table-hover>tbody>tr.bg-primary:hover a, .table-hover>tbody>tr:hover .bg-primary a,
+	.table-striped>tbody>tr.bg-primary:nth-of-type(2n+1) a, .table-striped>tbody>tr:nth-of-type(2n+1) .bg-primary a,
+	.dark-link {
+		color: #3399f3;
+	}
+
+}
+
+.theme-slate {
+	.bg-danger, .bg-danger a,
+	.bg-primary, .bg-primary a,
+	.light-text {
+		color: #fff;
+	}
+
+	.dark-text {
+		color: #c8c8c8;
+	}
+
+	.dark-link {
+		color: #fff;
+	}
+
+}
+
+.theme-simplex {
+	.bg-primary, .bg-primary a,
+	.light-text {
+		color: #fff;
+	}
+
+	.table-hover>tbody>tr.bg-primary:hover, .table-hover>tbody>tr:hover .bg-primary,
+	.table-striped>tbody>tr.bg-primary:nth-of-type(2n+1), .table-striped>tbody>tr:nth-of-type(2n+1) .bg-primary,
+	.dark-text {
+		color: #777;
+	}
+
+	.table-hover>tbody>tr.bg-primary:hover a, .table-hover>tbody>tr:hover .bg-primary a,
+	.table-striped>tbody>tr.bg-primary:nth-of-type(2n+1) a, .table-striped>tbody>tr:nth-of-type(2n+1) .bg-primary a,
+	.dark-link {
+		color: #d9230f;
+	}
+
+}
+
+.theme-sandstone {
+	.bg-primary, .bg-primary a,
+	.light-text {
+		color: #fff;
+	}
+
+	.table-hover>tbody>tr.bg-primary:hover, .table-hover>tbody>tr:hover .bg-primary,
+	.table-striped>tbody>tr.bg-primary:nth-of-type(2n+1), .table-striped>tbody>tr:nth-of-type(2n+1) .bg-primary,
+	.dark-text {
+		color: #3e3f3a;
+	}
+
+	.table-hover>tbody>tr.bg-primary:hover a, .table-hover>tbody>tr:hover .bg-primary a,
+	.table-striped>tbody>tr.bg-primary:nth-of-type(2n+1) a, .table-striped>tbody>tr:nth-of-type(2n+1) .bg-primary a,
+	.dark-link {
+		color: #93c54b;
+	}
+
+}
+
+.theme-readable {
+	.bg-primary, .bg-primary a,
+	.light-text {
+		color: #fff;
+	}
+
+	.table-hover>tbody>tr.bg-primary:hover, .table-hover>tbody>tr:hover .bg-primary,
+	.table-striped>tbody>tr.bg-primary:nth-of-type(2n+1), .table-striped>tbody>tr:nth-of-type(2n+1) .bg-primary,
+	.dark-text {
+		color: #333;
+	}
+
+	.table-hover>tbody>tr.bg-primary:hover a, .table-hover>tbody>tr:hover .bg-primary a,
+	.table-striped>tbody>tr.bg-primary:nth-of-type(2n+1) a, .table-striped>tbody>tr:nth-of-type(2n+1) .bg-primary a,
+	.dark-link {
+		color: #4582ec;
+	}
+
+}
+
+.theme-paper {
+	.bg-primary, .bg-primary a,
+	.light-text {
+		color: #fff;
+	}
+
+	.table-hover>tbody>tr.bg-primary:hover, .table-hover>tbody>tr:hover .bg-primary,
+	.table-striped>tbody>tr.bg-primary:nth-of-type(2n+1), .table-striped>tbody>tr:nth-of-type(2n+1) .bg-primary,
+	.dark-text {
+		color: #666;
+	}
+
+	.table-hover>tbody>tr.bg-primary:hover a, .table-hover>tbody>tr:hover .bg-primary a,
+	.table-striped>tbody>tr.bg-primary:nth-of-type(2n+1) a, .table-striped>tbody>tr:nth-of-type(2n+1) .bg-primary a,
+	.dark-link {
+		color: #2196f3;
+	}
+
+	.progress{
+		height: 2em;
+	}
+
+	.progress .progress-bar {
+		line-height: 2;
+		font-size: 1em;
+	}
+}
+
+.theme-journal {
+	.bg-primary, .bg-primary a,
+	.light-text {
+		color: #fff;
+	}
+
+	.table-hover>tbody>tr.bg-primary:hover, .table-hover>tbody>tr:hover .bg-primary,
+	.table-striped>tbody>tr.bg-primary:nth-of-type(2n+1), .table-striped>tbody>tr:nth-of-type(2n+1) .bg-primary,
+	.dark-text {
+		color: #777;
+	}
+
+	.table-hover>tbody>tr.bg-primary:hover a, .table-hover>tbody>tr:hover .bg-primary a,
+	.table-striped>tbody>tr.bg-primary:nth-of-type(2n+1) a, .table-striped>tbody>tr:nth-of-type(2n+1) .bg-primary a,
+	.dark-link {
+		color: #eb6864;
+	}
+
+}
+
+.theme-flatly {
+
+	.bg-info, .bg-info a,
+	.bg-warning, .bg-warning a,
+	.bg-danger, .bg-danger a,
+	.bg-success, .bg-success a,
+	.bg-primary, .bg-primary a,
+
+	.bg-info.text-info, .bg-info .text-info,
+	.bg-warning.text-warning, .bg-warning .text-warning,
+	.bg-danger.text-danger, .bg-danger .text-danger,
+	.bg-success.text-success, .bg-success .text-success,
+	.bg-primary.text-primary, .bg-primary .text-primary,
+
+	.light-text {
+		color: #fff;
+	}
+
+	.table-hover>tbody>tr.bg-primary:hover, .table-hover>tbody>tr:hover .bg-primary,
+	.table-hover>tbody>tr.bg-success:hover, .table-hover>tbody>tr:hover .bg-success,
+	.table-hover>tbody>tr.bg-warning:hover, .table-hover>tbody>tr:hover .bg-warning,
+	.table-hover>tbody>tr.bg-info:hover, .table-hover>tbody>tr:hover .bg-info,
+	.table-hover>tbody>tr.bg-danger:hover, .table-hover>tbody>tr:hover .bg-danger,
+
+	.table-striped>tbody>tr.bg-primary:nth-of-type(2n+1), .table-striped>tbody>tr:nth-of-type(2n+1) .bg-primary,
+	.table-striped>tbody>tr.bg-success:nth-of-type(2n+1), .table-striped>tbody>tr:nth-of-type(2n+1) .bg-success,
+	.table-striped>tbody>tr.bg-warning:nth-of-type(2n+1), .table-striped>tbody>tr:nth-of-type(2n+1) .bg-warning,
+	.table-striped>tbody>tr.bg-info:nth-of-type(2n+1), .table-striped>tbody>tr:nth-of-type(2n+1) .bg-info,
+	.table-striped>tbody>tr.bg-danger:nth-of-type(2n+1), .table-striped>tbody>tr:nth-of-type(2n+1) .bg-danger,
+
+	.dark-text {
+		color: #3c3c3c;
+	}
+
+	.table-hover>tbody>tr.bg-primary:hover a, .table-hover>tbody>tr:hover .bg-primary a,
+	.table-hover>tbody>tr.bg-success:hover a, .table-hover>tbody>tr:hover .bg-success a,
+	.table-hover>tbody>tr.bg-warning:hover a, .table-hover>tbody>tr:hover .bg-warning a,
+	.table-hover>tbody>tr.bg-info:hover a, .table-hover>tbody>tr:hover .bg-info a,
+	.table-hover>tbody>tr.bg-danger:hover a, .table-hover>tbody>tr:hover .bg-danger a,
+
+	.table-striped>tbody>tr.bg-primary:nth-of-type(2n+1) a, .table-striped>tbody>tr:nth-of-type(2n+1) .bg-primary a,
+	.table-striped>tbody>tr.bg-success:nth-of-type(2n+1) a, .table-striped>tbody>tr:nth-of-type(2n+1) .bg-success a,
+	.table-striped>tbody>tr.bg-warning:nth-of-type(2n+1) a, .table-striped>tbody>tr:nth-of-type(2n+1) .bg-warning a,
+	.table-striped>tbody>tr.bg-info:nth-of-type(2n+1) a, .table-striped>tbody>tr:nth-of-type(2n+1) .bg-info a,
+	.table-striped>tbody>tr.bg-danger:nth-of-type(2n+1) a, .table-striped>tbody>tr:nth-of-type(2n+1) .bg-danger a,
+
+	.dark-link {
+		color: #18bc9c;
+	}
+
+	.progress{
+		height: 2em;
+	}
+
+	.progress .progress-bar {
+		line-height: 2;
+		font-size: 1em;
+	}
+}
+
+.theme-darkly {
+
+	.bg-info, .bg-info a,
+	.bg-warning, .bg-warning a,
+	.bg-danger, .bg-danger a,
+	.bg-success, .bg-success a,
+	.bg-primary, .bg-primary a,
+
+	.bg-info.text-info, .bg-info .text-info,
+	.bg-warning.text-warning, .bg-warning .text-warning,
+	.bg-danger.text-danger, .bg-danger .text-danger,
+	.bg-success.text-success, .bg-success .text-success,
+	.bg-primary.text-primary, .bg-primary .text-primary,
+
+	.light-text {
+		color: #fff;
+	}
+
+	.progress{
+		height: 2em;
+	}
+
+	.progress .progress-bar {
+		line-height: 2;
+		font-size: 1em;
+	}
+
+}
+
+.theme-cyborg {
+	.bg-info, .bg-info a,
+	.bg-warning, .bg-warning a,
+	.bg-danger, .bg-danger a,
+	.bg-success, .bg-success a,
+	.bg-primary, .bg-primary a,
+
+	.bg-info.text-info, .bg-info .text-info,
+	.bg-warning.text-warning, .bg-warning .text-warning,
+	.bg-danger.text-danger, .bg-danger .text-danger,
+	.bg-success.text-success, .bg-success .text-success,
+	.bg-primary.text-primary, .bg-primary .text-primary,
+
+	.light-text {
+		color: #fff;
+	}
+
+}
+
+.theme-cosmo {
+	.bg-info, .bg-info a,
+	.bg-warning, .bg-warning a,
+	.bg-danger, .bg-danger a,
+	.bg-success, .bg-success a,
+	.bg-primary, .bg-primary a,
+
+	.bg-info.text-info, .bg-info .text-info,
+	.bg-warning.text-warning, .bg-warning .text-warning,
+	.bg-danger.text-danger, .bg-danger .text-danger,
+	.bg-success.text-success, .bg-success .text-success,
+	.bg-primary.text-primary, .bg-primary .text-primary,
+
+	.light-text {
+		color: #fff;
+	}
+
+	.table-hover>tbody>tr.bg-primary:hover, .table-hover>tbody>tr:hover .bg-primary,
+	.table-hover>tbody>tr.bg-success:hover, .table-hover>tbody>tr:hover .bg-success,
+	.table-hover>tbody>tr.bg-warning:hover, .table-hover>tbody>tr:hover .bg-warning,
+	.table-hover>tbody>tr.bg-info:hover, .table-hover>tbody>tr:hover .bg-info,
+	.table-hover>tbody>tr.bg-danger:hover, .table-hover>tbody>tr:hover .bg-danger,
+
+	.table-striped>tbody>tr.bg-primary:nth-of-type(2n+1), .table-striped>tbody>tr:nth-of-type(2n+1) .bg-primary,
+	.table-striped>tbody>tr.bg-success:nth-of-type(2n+1), .table-striped>tbody>tr:nth-of-type(2n+1) .bg-success,
+	.table-striped>tbody>tr.bg-warning:nth-of-type(2n+1), .table-striped>tbody>tr:nth-of-type(2n+1) .bg-warning,
+	.table-striped>tbody>tr.bg-info:nth-of-type(2n+1), .table-striped>tbody>tr:nth-of-type(2n+1) .bg-info,
+	.table-striped>tbody>tr.bg-danger:nth-of-type(2n+1), .table-striped>tbody>tr:nth-of-type(2n+1) .bg-danger,
+
+	.dark-text {
+		color: #333;
+	}
+
+	.table-hover>tbody>tr.bg-primary:hover a, .table-hover>tbody>tr:hover .bg-primary a,
+	.table-hover>tbody>tr.bg-success:hover a, .table-hover>tbody>tr:hover .bg-success a,
+	.table-hover>tbody>tr.bg-warning:hover a, .table-hover>tbody>tr:hover .bg-warning a,
+	.table-hover>tbody>tr.bg-info:hover a, .table-hover>tbody>tr:hover .bg-info a,
+	.table-hover>tbody>tr.bg-danger:hover a, .table-hover>tbody>tr:hover .bg-danger a,
+
+	.table-striped>tbody>tr.bg-primary:nth-of-type(2n+1) a, .table-striped>tbody>tr:nth-of-type(2n+1) .bg-primary a,
+	.table-striped>tbody>tr.bg-success:nth-of-type(2n+1) a, .table-striped>tbody>tr:nth-of-type(2n+1) .bg-success a,
+	.table-striped>tbody>tr.bg-warning:nth-of-type(2n+1) a, .table-striped>tbody>tr:nth-of-type(2n+1) .bg-warning a,
+	.table-striped>tbody>tr.bg-info:nth-of-type(2n+1) a, .table-striped>tbody>tr:nth-of-type(2n+1) .bg-info a,
+	.table-striped>tbody>tr.bg-danger:nth-of-type(2n+1) a, .table-striped>tbody>tr:nth-of-type(2n+1) .bg-danger a,
+
+	.dark-link {
+		color: #2780e3;
+	}
+
+	.progress{
+		height: 2em;
+	}
+
+	.progress .progress-bar {
+		line-height: 2;
+		font-size: 1em;
+	}
+}
+
+.theme-cerulean {
+	.bg-primary, .bg-primary a,
+	.bg-primary.text-primary, .bg-primary .text-primary,
+	.light-text {
+		color: #fff;
+	}
+
+	.table-hover>tbody>tr.bg-primary:hover, .table-hover>tbody>tr:hover .bg-primary,
+	.table-hover>tbody>tr.bg-success:hover, .table-hover>tbody>tr:hover .bg-success,
+	.table-hover>tbody>tr.bg-warning:hover, .table-hover>tbody>tr:hover .bg-warning,
+	.table-hover>tbody>tr.bg-info:hover, .table-hover>tbody>tr:hover .bg-info,
+	.table-hover>tbody>tr.bg-danger:hover, .table-hover>tbody>tr:hover .bg-danger,
+
+	.table-striped>tbody>tr.bg-primary:nth-of-type(2n+1), .table-striped>tbody>tr:nth-of-type(2n+1) .bg-primary,
+	.table-striped>tbody>tr.bg-success:nth-of-type(2n+1), .table-striped>tbody>tr:nth-of-type(2n+1) .bg-success,
+	.table-striped>tbody>tr.bg-warning:nth-of-type(2n+1), .table-striped>tbody>tr:nth-of-type(2n+1) .bg-warning,
+	.table-striped>tbody>tr.bg-info:nth-of-type(2n+1), .table-striped>tbody>tr:nth-of-type(2n+1) .bg-info,
+	.table-striped>tbody>tr.bg-danger:nth-of-type(2n+1), .table-striped>tbody>tr:nth-of-type(2n+1) .bg-danger,
+
+	.dark-text {
+		color: #555;
+	}
+
+	.table-hover>tbody>tr.bg-primary:hover a, .table-hover>tbody>tr:hover .bg-primary a,
+	.table-hover>tbody>tr.bg-success:hover a, .table-hover>tbody>tr:hover .bg-success a,
+	.table-hover>tbody>tr.bg-warning:hover a, .table-hover>tbody>tr:hover .bg-warning a,
+	.table-hover>tbody>tr.bg-info:hover a, .table-hover>tbody>tr:hover .bg-info a,
+	.table-hover>tbody>tr.bg-danger:hover a, .table-hover>tbody>tr:hover .bg-danger a,
+
+	.table-striped>tbody>tr.bg-primary:nth-of-type(2n+1) a, .table-striped>tbody>tr:nth-of-type(2n+1) .bg-primary a,
+	.table-striped>tbody>tr.bg-success:nth-of-type(2n+1) a, .table-striped>tbody>tr:nth-of-type(2n+1) .bg-success a,
+	.table-striped>tbody>tr.bg-warning:nth-of-type(2n+1) a, .table-striped>tbody>tr:nth-of-type(2n+1) .bg-warning a,
+	.table-striped>tbody>tr.bg-info:nth-of-type(2n+1) a, .table-striped>tbody>tr:nth-of-type(2n+1) .bg-info a,
+	.table-striped>tbody>tr.bg-danger:nth-of-type(2n+1) a, .table-striped>tbody>tr:nth-of-type(2n+1) .bg-danger a,
+
+	.dark-link {
+		color: #2fa4e7;
+	}
+
+}
+
+.theme-bootstrap {
+	.bg-primary, .bg-primary a,
+	.bg-primary.text-primary, .bg-primary .text-primary,
+	.light-text {
+		color: #fff;
+	}
+
+	.table-hover>tbody>tr.bg-primary:hover, .table-hover>tbody>tr:hover .bg-primary,
+	.table-striped>tbody>tr.bg-primary:nth-of-type(2n+1), .table-striped>tbody>tr:nth-of-type(2n+1) .bg-primary,
+	.dark-text {
+		color: #333;
+	}
+
+	.table-hover>tbody>tr.bg-primary:hover a, .table-hover>tbody>tr:hover .bg-primary a,
+	.table-striped>tbody>tr.bg-primary:nth-of-type(2n+1) a, .table-striped>tbody>tr:nth-of-type(2n+1) .bg-primary a,
+	.dark-link {
+		color: #337ab7;
+	}
+
+}

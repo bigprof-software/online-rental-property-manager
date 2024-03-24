@@ -3483,3 +3483,33 @@
 			'body' => $respBody,
 		];
 	}
+
+	/**
+	 * @brief Retrieve owner username of the record with the given primary key value
+	 * 
+	 * @param $tn string table name
+	 * @param $pkValue string primary key value
+	 * @return string|null username of the record owner, or null if not found
+	 */
+	function getRecordOwner($tn, $pkValue) {
+		$tn = makeSafe($tn);
+		$pkValue = makeSafe($pkValue);
+		$owner = sqlValue("SELECT `memberID` FROM `membership_userrecords` WHERE `tableName`='{$tn}' AND `pkValue`='$pkValue'");
+
+		if(!strlen($owner)) return null;
+		return $owner;
+	}
+
+	/**
+	 * @brief Retrieve lookup field name that determines record owner of the given table
+	 * 
+	 * @param $tn string table name
+	 * @return string|null lookup field name, or null if default (record owner is user that creates the record)
+	 */
+	function tableRecordOwner($tn) {
+		$owners = [
+		];
+
+		return $owners[$tn] ?? null;
+	}
+

@@ -455,8 +455,8 @@
 		$pluginSlug = Request::val('installPlugin');
 		$pluginUrl = 'https://bigprof.com' . Request::val('pluginUrl');
 
-		// validate the plugin name (alpha-numeric and hyphens only, 5-20 characters)
-		if(!preg_match('/^[a-z0-9\-_]{5,20}$/i', $pluginSlug))
+		// validate the plugin name (alpha-numeric and hyphens only, 3-30 characters)
+		if(!preg_match('/^[a-z0-9\-_]{3,30}$/i', $pluginSlug))
 			die(json_response($Translation['plugin install failed'] . ' LINE# ' . __LINE__, true));
 
 		// validate the plugin url

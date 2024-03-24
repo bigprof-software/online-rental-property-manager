@@ -847,4 +847,32 @@ $TranslationEn = [
 	'plugin install failed' => 'Plugin installation failed!',
 	'plugin installed successfully' => 'Plugin installed successfully! Click to launch.',
 	'missing dependencies' => 'Errors or missing dependecies found',
+
+	// Added in 24.10
+	'fix record owners' => 'Fix record owners',
+	'record owner not configured for this table' => 'Record owner is not configured for this table.',
+	'start' => 'Start',
+	'fixing record owners' => 'Fixing record owners ...',
+	'number of runs' => 'Number of runs',
+	'no tables to fix record owners' => 'No tables have record owners configured. Nothing to fix.',
+	'fix record owners description' => 'This tool enables you to update the record owners for pre-existing records in tables that have record owners configured. This is useful when you have recently configured record owners for one or more tables and wish to apply the updated configuration to the existing records.',
+	'records updated:' => 'Records updated: ',
+	'ldap disable user signup' => 'Disable (only admins can add users)',
+	'ldap settings' => 'LDAP settings',
+	'login method' => 'Login method',
+	'default' => 'Default',
+	'ldap' => 'LDAP',
+	'ldap server' => 'LDAP server',
+	'ldap version' => 'LDAP version',
+	'ldap username prefix' => 'LDAP username prefix',
+	'ldap username suffix' => 'LDAP username suffix',
+	'ldap default user group' => 'Default user group for new LDAP users',
+	'Examples: ' => 'Examples: ',
+	'Example: ' => 'Example: ',
+	'ldap admin user warning' => 'Before enabling LDAP login, make sure the admin username %s exists in the LDAP server. Otherwise, you will not be able to sign in as admin.',
+
+	// Added in 24.11
+	'SQL' => 'SQL',
+	'click to copy' => 'Click to copy',
+	'copied' => 'Copied!',
 ];
