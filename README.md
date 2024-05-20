@@ -49,7 +49,8 @@ license of choice. 2. You don't need to install AppGini in order to use this app
 
 ## Installation
 
-> <img src="https://cdn.bigprof.com/images/online-meeting.png" style="width: 50px; float: right; margin-left: 10px" alt="Book a support call"> **Need assistance?** [Book a Google Meet session](https://bigprof.com/appgini/consulting-service) with us for a live walkthrough of the installation process, plus any requests for customization or additional features.
+> ***Need assistance?*** **[Book a Google Meet session](https://bigprof.com/appgini/consulting-service)**
+> **with us for a live walkthrough of the installation process, plus any requests for customization or additional features.**
 
 This is a PHP/MySQL web application that you run from a browser. You can install it either locally
 on your own PC, or to a web/intranet server.
@@ -109,8 +110,9 @@ For Xampp on Windows, this is usually `C:\xampp\htdocs`
 3. In your web browser, go to: `http://localhost/app-folder/`
 (change `app-folder` to the name of the folder inside your document root where you extracted the zip in step 2).
 
-4. You should now see the setup wizard in your browser. Just follow the steps!   
-![The setup wizard](https://cdn.bigprof.com/appgini-open-source-apps/setup-wizard-page-1.png)
+4. You should now see the setup wizard in your browser. Just follow the steps!
+
+   <img src="https://cdn.bigprof.com/appgini-open-source-apps/setup-wizard-page-1.png" alt="The setup wizard" style="width: 761px; height: 398px; max-width: 100%;">
 
 ---
 
