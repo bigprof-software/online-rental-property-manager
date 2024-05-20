@@ -231,121 +231,14 @@
 		return FALSE;
 	}
 	########################################################################
+	/**
+	 * Alias for `Thumbnail::create()`. Create a thumbnail of an image. The thumbnail is saved in the same directory as the original image, with the same name, suffixed with `$specs['identifier']`
+	 * @param string $img - path to image file
+	 * @param array $specs - array with thumbnail specs as returned by getThumbnailSpecs()
+	 * @return bool - true on success, false on failure
+	 */
 	function createThumbnail($img, $specs) {
-		$w = $specs['width'];
-		$h = $specs['height'];
-		$id = $specs['identifier'];
-		$path = dirname($img);
-
-		// image doesn't exist or inaccessible?
-		// known issue: for webp files, requires PHP 7.1+
-		if(!$size = @getimagesize($img)) return false;
-
-		// calculate thumbnail size to maintain aspect ratio
-		$ow = $size[0]; // original image width
-		$oh = $size[1]; // original image height
-		$twbh = $h / $oh * $ow; // calculated thumbnail width based on given height
-		$thbw = $w / $ow * $oh; // calculated thumbnail height based on given width
-		if($w && $h) {
-			if($twbh > $w) $h = $thbw;
-			if($thbw > $h) $w = $twbh;
-		} elseif($w) {
-			$h = $thbw;
-		} elseif($h) {
-			$w = $twbh;
-		} else {
-			return false;
-		}
-
-		// dir not writeable?
-		if(!is_writable($path)) return false;
-
-		// GD lib not loaded?
-		if(!function_exists('gd_info')) return false;
-		$gd = gd_info();
-
-		// GD lib older than 2.0?
-		preg_match('/\d/', $gd['GD Version'], $gdm);
-		if($gdm[0] < 2) return false;
-
-		// get file extension
-		preg_match('/\.[a-zA-Z]{3,4}$/U', $img, $matches);
-		$ext = strtolower($matches[0]);
-
-		// check if supplied image is supported and specify actions based on file type
-		if($ext == '.gif') {
-			if(!$gd['GIF Create Support']) return false;
-			$thumbFunc = 'imagegif';
-		} elseif($ext == '.png') {
-			if(!$gd['PNG Support'])  return false;
-			$thumbFunc = 'imagepng';
-		} elseif($ext == '.webp') {
-			if(!$gd['WebP Support'] && !$gd['WEBP Support'])  return false;
-			$thumbFunc = 'imagewebp';
-		} elseif($ext == '.jpg' || $ext == '.jpe' || $ext == '.jpeg') {
-			if(!$gd['JPG Support'] && !$gd['JPEG Support'])  return false;
-			$thumbFunc = 'imagejpeg';
-		} else {
-			return false;
-		}
-
-		// determine thumbnail file name
-		$ext = $matches[0];
-		$thumb = substr($img, 0, -5) . str_replace($ext, $id . $ext, substr($img, -5));
-
-		// if the original image smaller than thumb, then just copy it to thumb
-		if($h > $oh && $w > $ow) {
-			return (@copy($img, $thumb) ? true : false);
-		}
-
-		// get image data
-		if(
-			$thumbFunc == 'imagewebp'
-			&& !$imgData = imagecreatefromwebp($img)
-		)
-			return false;
-		elseif(!$imgData = imagecreatefromstring(file_get_contents($img)))
-			return false;
-
-		// finally, create thumbnail
-		$thumbData = imagecreatetruecolor($w, $h);
-
-		//preserve transparency of png and gif images
-		$transIndex = null;
-		if($thumbFunc == 'imagepng' || $thumbFunc == 'imagewebp') {
-			if(($clr = @imagecolorallocate($thumbData, 0, 0, 0)) != -1) {
-				@imagecolortransparent($thumbData, $clr);
-				@imagealphablending($thumbData, false);
-				@imagesavealpha($thumbData, true);
-			}
-		} elseif($thumbFunc == 'imagegif') {
-			@imagealphablending($thumbData, false);
-			$transIndex = imagecolortransparent($imgData);
-			if($transIndex >= 0) {
-				$transClr = imagecolorsforindex($imgData, $transIndex);
-				$transIndex = imagecolorallocatealpha($thumbData, $transClr['red'], $transClr['green'], $transClr['blue'], 127);
-				imagefill($thumbData, 0, 0, $transIndex);
-			}
-		}
-
-		// resize original image into thumbnail
-		if(!imagecopyresampled($thumbData, $imgData, 0, 0 , 0, 0, $w, $h, $ow, $oh)) return false;
-		unset($imgData);
-
-		// gif transparency
-		if($thumbFunc == 'imagegif' && $transIndex >= 0) {
-			imagecolortransparent($thumbData, $transIndex);
-			for($y = 0; $y < $h; ++$y)
-				for($x = 0; $x < $w; ++$x)
-					if(((imagecolorat($thumbData, $x, $y) >> 24) & 0x7F) >= 100) imagesetpixel($thumbData, $x, $y, $transIndex);
-			imagetruecolortopalette($thumbData, true, 255);
-			imagesavealpha($thumbData, false);
-		}
-
-		if(!$thumbFunc($thumbData, $thumb)) return false;
-		unset($thumbData);
-
-		return true;
+		return Thumbnail::create($img, $specs);
 	}
 	########################################################################
 	function formatUri($uri) {
@@ -414,6 +307,8 @@
 
 		if($connected) return $db_link;
 
+		global $Translation;
+
 		/****** Check that MySQL module is enabled ******/
 		if(!extension_loaded('mysql') && !extension_loaded('mysqli')) {
 			$o['error'] = 'PHP is not configured to connect to MySQL on this machine. Please see <a href="https://www.php.net/manual/en/ref.mysql.php">this page</a> for help on how to configure MySQL.';
@@ -427,7 +322,7 @@
 			$o['error'] = db_error($db_link, true);
 			if(!empty($o['silentErrors'])) return false;
 
-			dieErrorPage($o['error']);
+			dieErrorPage($o['error'] ? $o['error'] : $Translation['no db connection']);
 		}
 
 		/****** Select DB ********/
@@ -435,7 +330,7 @@
 			$o['error'] = db_error($db_link);
 			if(!empty($o['silentErrors'])) return false;
 
-			dieErrorPage($o['error']);
+			dieErrorPage(str_replace('<DBName>', '****', $Translation['no db name']));
 		}
 
 		$connected = true;
@@ -1536,7 +1431,7 @@
 						'appgini' => "VARCHAR(40) NULL",
 						'info' => [
 							'caption' => 'Cover photo',
-							'description' => 'Maximum file size allowed: 2000 KB.<br>Allowed file types: jpg, jpeg, gif, png',
+							'description' => 'Maximum file size allowed: 2000 KB.<br>Allowed file types: jpg, jpeg, gif, png, webp',
 						],
 					],
 					'type' => [
@@ -2612,7 +2507,7 @@
 	 *  
 	 *  @param [in] $set_array Assoc array of field names => values
 	 *  @param [in] $glue optional glue. Set to ' AND ' or ' OR ' if preparing a WHERE clause, or to ',' (default) for a SET clause
-	 *  @return SET string
+	 *  @return string containing the prepared SET or WHERE clause
 	 */
 	function prepare_sql_set($set_array, $glue = ', ') {
 		$fnvs = [];

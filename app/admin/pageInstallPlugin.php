@@ -374,6 +374,8 @@
 			'cURL extension not enabled' => function_exists('curl_init'),
 			// 'plugins' folder is writable
 			'Plugins folder not writable' => is_writable($pluginsFolder),
+			// allow_url_fopen is enabled
+			'allow_url_fopen is disabled in php.ini' => ini_get('allow_url_fopen') == 1,
 		];
 
 		// if all dependencies are met, return false

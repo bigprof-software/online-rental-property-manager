@@ -119,7 +119,7 @@
 			?>
 
 			<?php if(Request::val('Embedded')) { ?>
-				<div style="height: 2rem;"></div>
+				<div class="modal-top-spacer"></div>
 			<?php } ?>
 
 			<?php if(!defined('APPGINI_SETUP') && is_file(__DIR__ . '/hooks/header-extras.php')) { include(__DIR__ . '/hooks/header-extras.php'); } ?>

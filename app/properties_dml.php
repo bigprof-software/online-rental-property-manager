@@ -20,8 +20,8 @@ function properties_insert(&$error_message = '') {
 			'noRename' => false,
 			'dir' => '',
 			'success' => function($name, $selected_id) {
-				createThumbnail($name, getThumbnailSpecs('properties', 'photo', 'tv'));
-				createThumbnail($name, getThumbnailSpecs('properties', 'photo', 'dv'));
+				Thumbnail::create($name, getThumbnailSpecs('properties', 'photo', 'tv'));
+				Thumbnail::create($name, getThumbnailSpecs('properties', 'photo', 'dv'));
 			},
 			'failure' => function($selected_id, $fileRemoved) {
 				if(!strlen(Request::val('SelectedID'))) return '';
@@ -210,8 +210,8 @@ function properties_update(&$selected_id, &$error_message = '') {
 			'dir' => '',
 			'id' => $selected_id,
 			'success' => function($name, $selected_id) {
-				createThumbnail($name, getThumbnailSpecs('properties', 'photo', 'tv'));
-				createThumbnail($name, getThumbnailSpecs('properties', 'photo', 'dv'));
+				Thumbnail::create($name, getThumbnailSpecs('properties', 'photo', 'tv'));
+				Thumbnail::create($name, getThumbnailSpecs('properties', 'photo', 'dv'));
 			},
 			'removeOnRequest' => true,
 			'remove' => function($selected_id) {

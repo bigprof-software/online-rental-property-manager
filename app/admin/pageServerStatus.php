@@ -1,6 +1,6 @@
 <?php
-	$appgini_version = '24.11.1591';
-	$generated_ts = '24/03/2024 16:10:47';
+	$appgini_version = '24.13.1629';
+	$generated_ts = '20/05/2024 21:55:41';
 
 	require(__DIR__ . '/incCommon.php');
 
@@ -89,7 +89,7 @@
 <hr>
 
 <div class="row">
-	<div class="col-lg-4">
+	<div class="col-lg-3">
 		<h3><?php echo $Translation['uploads info']; ?></h3>
 		<span class="label label-info big-number">
 			<?php echo $num_uploads; ?>
@@ -125,8 +125,8 @@
 		<hr>
 	</div>
 
-	<div class="col-lg-4">
-		<h3><?php echo $Translation['db status']; ?></h3>
+	<div class="col-lg-3">
+		<h3><?php echo $Translation['db server status']; ?></h3>
 		<div class="db-status scrollable">
 			<pre>SHOW STATUS; SHOW VARIABLES;</pre>
 			<table class="table table-striped table-hover table-bordered">
@@ -141,7 +141,18 @@
 		<hr>
 	</div>
 
-	<div class="col-lg-4" id="phpinfo">
+	<div class="col-lg-3">
+		<h3><?php echo $Translation['db client status']; ?></h3>
+		<div class="db-status scrollable">
+			<pre><?php print_r(db_link()); ?></pre>
+		</div>
+		<h3><?php echo $Translation['date and time info']; ?></h3>
+		<div class="db-status scrollable">
+			<pre><?php echo date('Y-m-d H:i:s T') . "\n" . gmdate('Y-m-d H:i:s T'); ?></pre>
+		</div>
+	</div>
+
+	<div class="col-lg-3" id="phpinfo">
 		<h3><?php echo $Translation['php info']; ?></h3>
 		<div class="db-status scrollable">
 			<?php echo $phpinfo[0]; ?>
@@ -182,10 +193,10 @@
 <script>
 	$j(function() {
 		// apply a zoom-in button to each grid cell
-		$j('<i class="glyphicon glyphicon-zoom-in resizer text-primary hspacer-sm cursor-pointer"></i>').prependTo('.col-lg-4 > h3:first-child');
+		$j('<i class="glyphicon glyphicon-zoom-in resizer text-primary hspacer-sm cursor-pointer"></i>').prependTo('.col-lg-3 > h3:first-child');
 
 		// and for every zoom-in button, add a class 'zoomable-cell' to its grid cell
-		$j('.resizer').parents('.col-lg-4').addClass('zoomable-cell');
+		$j('.resizer').parents('.col-lg-3').addClass('zoomable-cell');
 
 		// on clicking a zoom button, maximize/restore its parent grid cell
 		$j('.row').on('click', '.resizer', function() {
@@ -194,15 +205,15 @@
 				maximized = cell.hasClass('col-lg-12');
 
 			toggler.toggleClass('glyphicon-zoom-in glyphicon-zoom-out');
-			cell.toggleClass('col-lg-12 col-lg-4');
+			cell.toggleClass('col-lg-12 col-lg-3');
 			cell.children('.db-status').toggleClass('scrollable')
 
 			if(maximized) {
 				// restore default size
-				cell.parents('.row').children('.col-lg-4').removeClass('hidden');
+				cell.parents('.row').children('.col-lg-3').removeClass('hidden');
 			} else {
 				// otherwise, maximize
-				cell.parents('.row').children('.col-lg-4').addClass('hidden');
+				cell.parents('.row').children('.col-lg-3').addClass('hidden');
 			}
 		})
 	})

@@ -213,108 +213,112 @@ td.units-description { white-space: normal !important; max-width: 80px !importan
 /* compact theme styles */
 .container.theme-compact, .container-fluid.theme-compact { line-height: 1.6; font-size: 0.857em; }
 
-.theme-compact .btn {
-	font-size: 12px;
-	padding: 4px 10px;
-}
+.theme-compact { 
+	.btn {
+		font-size: 12px;
+		padding: 4px 10px;
+	}
 
-.theme-compact .btn-lg, .theme-compact .btn-group-lg > .btn {
-	font-size: 15px;
-	padding: 6px 15px;
-}
+	.btn-lg, .btn-group-lg > .btn {
+		font-size: 15px;
+		padding: 6px 15px;
+	}
 
-.theme-compact .form-group {
-	margin-bottom: 8px;
-}
+	.form-group {
+		margin-bottom: 8px;
+	}
 
-.theme-compact .form-control, .theme-compact .input-group-addon {
-	font-size: 12px;
-	height: auto;
-	padding: 4px 6px;
-}
+	:not(.input-group-lg) > .form-control, :not(.input-group-lg) > .input-group-addon {
+		font-size: 12px;
+		height: auto;
+		padding: 4px 6px;
+	}
 
-.theme-compact .input-sm {
-	border-radius: 3px;
-	font-size: 12px;
-	padding: 2px 6px;
-}
+	.input-sm {
+		border-radius: 3px;
+		font-size: 12px;
+		padding: 2px 6px;
+	}
 
-.theme-compact select.input-sm {
-	height: 25px;
-	line-height: 25px;
-}
+	select.input-sm {
+		height: 25px;
+		line-height: 25px;
+	}
 
-.theme-compact .dropdown-menu {
-	font-size: 12px;
-}
+	.dropdown-menu {
+		font-size: 12px;
+	}
 
-.theme-compact .table > thead > tr > th, .theme-compact .table > tbody > tr > th, .theme-compact .table > tfoot > tr > th, .theme-compact .table > thead > tr > td, .theme-compact .table > tbody > tr > td, .theme-compact .table > tfoot > tr > td {
-	padding: 4px;
-}
+	.table > thead > tr > th, .table > tbody > tr > th, .table > tfoot > tr > th, .table > thead > tr > td, .table > tbody > tr > td, .table > tfoot > tr > td {
+		padding: 4px;
+	}
 
-.theme-compact h1, .theme-compact h2, .theme-compact h3, .theme-compact h4, .theme-compact h5, .theme-compact h6, .theme-compact .h1, .theme-compact .h2, .theme-compact .h3, .theme-compact .h4, .theme-compact .h5, .theme-compact .h6 {
-	line-height: 2;
-}
+	h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
+		line-height: 2;
+	}
 
-.theme-compact h1, .theme-compact .h1 {
-	font-size: 27px;
-}
+	h1, .h1 {
+		font-size: 27px;
+	}
 
-.theme-compact h2, .theme-compact .h2 {
-	font-size: 24px;
-}
+	h2, .h2 {
+		font-size: 24px;
+	}
 
-.theme-compact h3, .theme-compact .h3 {
-	font-size: 20px;
-}
+	h3, .h3 {
+		font-size: 20px;
+	}
 
-.theme-compact h4, .theme-compact .h4 {
-	font-size: 16px;
-}
+	h4, .h4 {
+		font-size: 16px;
+	}
 
-.theme-compact .navbar {
-	margin-bottom: 13px;
-	min-height: 40px;
-}
+	.navbar {
+		margin-bottom: 13px;
+		min-height: 40px;
+	}
 
-.theme-compact .navbar-fixed-bottom {
-	margin-bottom: 0 !important;
-}
+	.navbar-fixed-bottom {
+		margin-bottom: 0 !important;
+	}
 
-.theme-compact .navbar-brand {
-	font-size: 15px;
-	height: 40px;
-	padding: 12px;
-}
+	.navbar-brand {
+		font-size: 15px;
+		height: 40px;
+		padding: 12px;
+	}
 
-.theme-compact .navbar-nav > li > a {
-	padding-bottom: 9px;
-	padding-top: 9px;
-	line-height: 26px;
-}
+	.navbar-nav > li > a {
+		padding-bottom: 9px;
+		padding-top: 9px;
+		line-height: 26px;
+	}
 
-.theme-compact .navbar-text {
-	margin-bottom: 12px;
-	margin-top: 14px;
-}
+	.navbar-text {
+		margin-bottom: 12px;
+		margin-top: 14px;
+	}
 
-.theme-compact .page-header {
-	margin: 20px 0 10px;
-	padding-bottom: 0;
-}
+	.page-header {
+		margin: 20px 0 10px;
+		padding-bottom: 0;
+	}
 
-.theme-compact .navbar-nav > li > a { margin-top: 0; margin-bottom: 0; }
+	.navbar-nav > li > a { margin-top: 0; margin-bottom: 0; }
 
-.theme-compact .panel-heading {
-	padding: 6px;
-}
+	.panel-heading {
+		padding: 6px;
+	}
 
-.theme-compact .panel-title {
-	font-size: 14px;
-}
+	.panel-title {
+		font-size: 14px;
+	}
 
-.theme-compact #quick-search {
-	margin: .5em 0;
+	#quick-search {
+		margin: .5em 0;
+	}
+
+	.profile-menu-icon > .icon { padding: 6px !important; }
 }
 
 /* Add `rtl-mirror` class to an element to horizontally flip it in rtl (e.g. arrow glyphs, ... etc) */
@@ -452,7 +456,6 @@ a[href="mailto:"] { display: none; }
 .profile-menu-icon > .icon {
 	border: solid 1px #ccc; border-radius: 50%; padding: 6px !important;
 }
-.theme-compact .profile-menu-icon > .icon { padding: 6px !important; }
 
 .theme-journal .profile-menu-icon > .icon { padding: 6px !important; }
 .theme-compact.theme-journal .profile-menu-icon > .icon { padding: 6px !important; }
@@ -968,4 +971,12 @@ dd.child-records-info > a.children-count {
 		color: #337ab7;
 	}
 
+}
+
+td.row .img-responsive {
+	max-width: 100% !important;
+}
+
+.modal-top-spacer {
+	height: 2rem;
 }

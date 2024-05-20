@@ -21,8 +21,8 @@ function units_insert(&$error_message = '') {
 			'noRename' => false,
 			'dir' => '',
 			'success' => function($name, $selected_id) {
-				createThumbnail($name, getThumbnailSpecs('units', 'photo', 'tv'));
-				createThumbnail($name, getThumbnailSpecs('units', 'photo', 'dv'));
+				Thumbnail::create($name, getThumbnailSpecs('units', 'photo', 'tv'));
+				Thumbnail::create($name, getThumbnailSpecs('units', 'photo', 'dv'));
 			},
 			'failure' => function($selected_id, $fileRemoved) {
 				if(!strlen(Request::val('SelectedID'))) return '';
@@ -192,8 +192,8 @@ function units_update(&$selected_id, &$error_message = '') {
 			'dir' => '',
 			'id' => $selected_id,
 			'success' => function($name, $selected_id) {
-				createThumbnail($name, getThumbnailSpecs('units', 'photo', 'tv'));
-				createThumbnail($name, getThumbnailSpecs('units', 'photo', 'dv'));
+				Thumbnail::create($name, getThumbnailSpecs('units', 'photo', 'tv'));
+				Thumbnail::create($name, getThumbnailSpecs('units', 'photo', 'dv'));
 			},
 			'removeOnRequest' => true,
 			'remove' => function($selected_id) {

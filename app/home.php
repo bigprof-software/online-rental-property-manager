@@ -44,6 +44,14 @@
 	}
 </style>
 
+<!-- search box -->
+<div id="homepage-search-box-container" class="input-group input-group-lg vspacer-lg hidden">
+	<input type="text" class="form-control" id="homepage-search-box" placeholder="<?php echo html_attr($Translation['quick search']); ?>">
+	<span class="input-group-btn">
+		<button class="btn btn-default" type="button"><i class="glyphicon glyphicon-search"></i></button>
+		<button class="btn btn-default" type="button" id="clear-homepage-search-box"><i class="glyphicon glyphicon-remove"></i></button>
+	</span>
+</div>
 
 <?php
 	// get member info
@@ -71,6 +79,8 @@
 		}
 
 		$i = 0; $current_group = '';
+
+		?><div class="homepage-links"><?php
 		foreach($tg as $tn => $tgroup) {
 			$tc = $arrTables[$tn];
 			/* is the current table filter-first? */
@@ -111,7 +121,7 @@
 					<?php } ?>
 					<?php $current_group = $tgroup; ?>
 
-					<a class="btn btn-primary btn-block btn-lg collapser vspacer-lg" data-toggle="collapse" href="#group-<?php echo md5($tgroup); ?>"><?php echo $tgroup; ?> <i class="glyphicon glyphicon-chevron-right"></i></a>
+					<a class="btn btn-primary btn-block btn-lg collapser collapsed vspacer-lg" data-toggle="collapse" href="#group-<?php echo md5($tgroup); ?>"><?php echo $tgroup; ?> <i class="glyphicon glyphicon-chevron-right"></i></a>
 					<div class="collapse" id="group-<?php echo md5($tgroup); ?>">
 						<div class="row table_links">
 				<?php } ?>
@@ -165,6 +175,8 @@
 			<?php
 			$i++;
 		}
+		?></div><?php // .homepage-links
+
 	} elseif($mi['username'] && $mi['username'] != $guest_username) {
 		// non-guest user but no tables to access
 		die(error_message($Translation['no table access'], false));
@@ -207,6 +219,86 @@
 			if(!$j(target + " .row div").length) $j(this).hide();
 		});
 		$j('.collapser:visible').eq(0).click();
+
+		// homepage search functionality
+		// to disable search, set `AppGini.disableHomePageSearch` to true in a script block in hooks/footer-extras.php
+		//
+		// by default, only titles are searched
+		// to also search descriptions, set `AppGini.homePageSearchDescriptions` to true in a script block in hooks/footer-extras.php
+
+		// if we have at least 2 collapsers visible, or 4+ .btn in .panel-body, enable search
+		if($j('.collapser:visible').length > 1 || $j('.panel-body .btn:not(.btn-add-new)').length > 3) {
+			// if AppGini.disableHomePageSearch is set to true, don't enable search
+			const disabled = AppGini?.disableHomePageSearch ?? false;
+			if(!disabled) enableSearch();
+		}
+
+		function enableSearch() {
+			// show search box
+			$j('#homepage-search-box-container').removeClass('hidden');
+
+			// search box functionality: on typing, hide all blocks except those containing the search string
+			// if search string is empty, show all blocks
+			$j('#homepage-search-box').keyup(function() {
+				const search = $j.trim($j(this).val()).toLowerCase();
+				if(search == '') {
+					$j('.hidden-by-search').removeClass('hidden-by-search hidden');
+					return;
+				}
+
+				// loop through all panels, hide unmatching ones, show matching ones
+				$j('.homepage-links .panel').each(function() {
+					const panel = $j(this);
+					const searchable = (AppGini?.homePageSearchDescriptions ? panel : panel.find('.btn:not(.btn-add-new)'));
+					panel.parent().toggleClass('hidden-by-search hidden', $j.trim(searchable.text()).toLowerCase().indexOf(search) == -1);
+				});
+
+				// loop through all `.collapser` elements and show if:
+					// - their text matches the search string, or
+					// - at least one of their target's `.panel` elements is not hidden-by-search
+					// - and hide otherwise
+				$j('.collapser').each(function() {
+					const collapser = $j(this);
+					const target = $j(collapser.attr('href'));
+					const collapserMatches = collapser.text().toLowerCase().indexOf(search) > -1;
+					let show = collapserMatches;
+
+					target.find('.panel').each(function() {
+						show = show || !$j(this).parent().hasClass('hidden-by-search');
+					});
+					collapser.toggleClass('hidden-by-search hidden', !show);
+
+					// uncollapse if at least one of the panels is not hidden
+					if(show && collapser.hasClass('collapsed')) collapser.click();
+
+					// if collapser itself matches the search, show all panels
+					if(collapserMatches) target.find('.panel').parent().removeClass('hidden-by-search hidden');
+				});
+			});
+
+			// focus search box if not hidden
+			$j('#homepage-search-box').focus();
+
+			// focus search box on pressing '/' or '?' keys
+			$j(document).keyup(function(e) {
+				if(e.keyCode == 191 && !$j('#homepage-search-box').is(':focus')) {
+					$j('#homepage-search-box').focus();
+					e.preventDefault();
+				}
+			});
+
+			// clear search box on clicking 'x' button
+			$j('#clear-homepage-search-box').click(function() {
+				$j('#homepage-search-box').val('').keyup().focus();
+			});
+
+			// clear search box on clicking ESC key while search box is focused
+			$j(document).keyup(function(e) {
+				if(e.keyCode == 27 && $j('#homepage-search-box').is(':focus')) {
+					$j('#homepage-search-box').val('').keyup().focus();
+				}
+			});
+		}
 	});
 </script>
 

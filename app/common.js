@@ -1,6 +1,6 @@
 var AppGini = AppGini || {};
 
-AppGini.version = 24.11;
+AppGini.version = 24.13;
 
 /* initials and fixes */
 jQuery(function() {
@@ -157,21 +157,9 @@ jQuery(function() {
 	// format .locale-int and .locale-float numbers
 	// to stop it, set AppGini.noLocaleFormatting to true in a hook script in footer-extras.php, .. etc
 	if(!AppGini.noLocaleFormatting) setInterval(() => {
-		$j('.locale-int').each(function() {
+		$j('.locale-int, .locale-float').each(function() {
 			let i = $j(this).text().trim();
-			if(!/^\d+(\.\d+)?$/.test(i)) return; // already formatted or invalid number
-
-			$j(this).text(parseInt(i).toLocaleString());
-		})
-
-		$j('.locale-float').each(function() {
-			let f = $j(this).text().trim();
-			if(!/^\d+(\.\d+)?$/.test(f)) return; // already formatted or invalid number
-
-			// preserve decimals
-			const countDecimals = (f.split('.')[1] || '').length;
-
-			$j(this).text(parseFloat(f).toLocaleString(undefined, {minimumFractionDigits: countDecimals, maximumFractionDigits: countDecimals}));
+			$j(this).text(AppGini.localeFormat(i, $j(this).hasClass('locale-int')));
 		})
 	}, 100);
 
@@ -2596,4 +2584,39 @@ AppGini.htmlEntitiesToText = (html) => {
 	const txt = document.createElement('textarea');
 	txt.innerHTML = html;
 	return txt.value;
+}
+
+AppGini.localeFormat = (num, isInt, locale) => {
+	// ensure num is a string
+	num = num.toString();
+
+	// if num has no digits, return it as is
+	if (!num.match(/\d/)) {
+		return num;
+	}
+
+	// if isInt is not provided or not true, set as false
+	isInt = isInt === true;
+
+	// if locale not provided, default to current locale
+	locale = locale || navigator.language;
+
+	// decimal separator based on locale
+	const decimalSeparator = new Intl.NumberFormat(locale).format(1.1).replace(/\d/g, '');
+	// thousands separator based on locale
+	const thousandsSeparator = new Intl.NumberFormat(locale).format(11111).replace(/\d/g, '');
+
+	// if number is a raw number (e.g. 1234.5 or 12.34), format it based on locale
+	if (!isInt && num.indexOf(decimalSeparator) === -1) {
+		let lfn = new Intl.NumberFormat(locale).format(num);
+		return lfn === 'NaN' ? num : lfn;
+	}
+
+	// if number is already formatted in the locale, return it as is
+	if (num.indexOf(thousandsSeparator) !== -1) {
+		return num;
+	}
+
+	// return the number formatted in the locale
+	return new Intl.NumberFormat(locale).format(parseFloat(num.replace(decimalSeparator, '.')));
 }

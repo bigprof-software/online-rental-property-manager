@@ -1148,7 +1148,7 @@ class DataList {
 				$this->HTML .= "</table></div>\n";
 
 				/* highlight quick search matches */
-				if(strlen($SearchString) && $RecordCount) $this->HTML .= '<script>$j(function() { $j(".table-responsive td:not([colspan])").mark("' . html_attr($SearchString) . '", { className: "text-bold bg-warning", diacritics: false }); })</script>';
+				if(strlen($SearchString) && $RecordCount) $this->HTML .= '<script>$j(function() { $j(".table_view .table-responsive td").mark("' . html_attr($SearchString) . '", { className: "text-bold bg-warning", diacritics: false }); })</script>';
 
 				if($Print_x == '' && $i) { // TV
 					$this->HTML .= '<div class="row pagination-section">';

@@ -875,4 +875,9 @@ $TranslationEn = [
 	'SQL' => 'SQL',
 	'click to copy' => 'Click to copy',
 	'copied' => 'Copied!',
+
+	// Added in 24.13
+	'db server status' => 'Database server status',
+	'db client status' => 'Database client status',
+	'date and time info' => 'Date and time info',
 ];

@@ -41,7 +41,7 @@
 	if(getImage($thumb) && !getLoggedAdmin())  exit;
 
 	// otherwise, try to create the thumbnail and output it
-	if(!createThumbnail($img, getThumbnailSpecs($t, $f, $v)))  getImage();
+	if(!Thumbnail::create($img, getThumbnailSpecs($t, $f, $v)))  getImage();
 	if(!getImage($thumb))  getImage();
 
 	function getImage($img = '') {

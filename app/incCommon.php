@@ -482,7 +482,7 @@
 
 				if(!autoDismiss) {
 					if(embedded)
-						$j('#%%ID%%').before('<div style="height: 2rem;"></div>');
+						$j('#%%ID%%').before('<div class="modal-top-spacer"></div>');
 					else
 						$j('#%%ID%%').css({ margin: '0 0 1rem' });
 
