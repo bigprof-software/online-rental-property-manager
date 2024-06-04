@@ -1,6 +1,6 @@
 var AppGini = AppGini || {};
 
-AppGini.version = 24.13;
+AppGini.version = 24.14;
 
 /* initials and fixes */
 jQuery(function() {
@@ -316,6 +316,31 @@ jQuery(function() {
 	$j(document).on('click', '.sql-query-container', function() {
 		$j(this).siblings('.sql-query-copier').click();
 	})
+
+	// in TVP, disable lightbox for images
+	if($j('#current_view').val() == 'TVP') {
+		const links = document.querySelectorAll('a[data-lightbox]');
+		links.forEach(function(link) {
+			const img = link.innerHTML; // Get the inner HTML of the <a> tag, which should be an <img> element
+			link.parentNode.replaceChild(link.firstChild, link); // Replace the <a> tag with its child <img>
+		});
+	}
+
+	// render the DV layout toolbar
+	AppGini.renderDVLayoutToolbar();
+
+	// handle click on layout toolbar buttons
+	$j('.detail_view-layout').on('click', 'a', function(e) {
+		e.preventDefault();
+
+		if($j(this).hasClass('switch-to-single-column-layout')) {
+			AppGini.applySingleColumnLayout();
+		} else if($j(this).hasClass('switch-to-double-column-layout')) {
+			AppGini.applyDoubleColumnLayout();
+		} else if($j(this).hasClass('switch-to-triple-column-layout')) {
+			AppGini.applyTripleColumnLayout();
+		}
+	});
 
 });
 
@@ -943,7 +968,7 @@ function mass_change_owner(t, ids) {
 }
 
 function add_more_actions_link() {
-	window.open('https://bigprof.com/appgini/help/advanced-topics/hooks/multiple-record-batch-actions?r=appgini-action-menu');
+	window.open('https://bigprof.com/appgini/help/advanced-topics/hooks/multiple-record-batch-actions/?r=appgini-action-menu');
 }
 
 /* detect current screen size (xs, sm, md or lg) */
@@ -2301,7 +2326,7 @@ AppGini.showKeyboardShortcuts = (e) => {
 	 */
 	if(typeof(_noShortcutsReference) == 'undefined')
 		$j(
-			'<a href="https://bigprof.com/appgini/help/working-with-generated-web-database-application/shortcut-keys" target="_blank">' +
+			'<a href="https://bigprof.com/appgini/help/working-with-generated-web-database-application/shortcut-keys/" target="_blank">' +
 			AppGini.Translate._map['keyboard shorcuts reference'] +
 			'</a>'
 		).appendTo('#' + modalId + ' .modal-footer');
@@ -2620,3 +2645,108 @@ AppGini.localeFormat = (num, isInt, locale) => {
 	// return the number formatted in the locale
 	return new Intl.NumberFormat(locale).format(parseFloat(num.replace(decimalSeparator, '.')));
 }
+AppGini.storedLayout = (val) => {
+	const view = $j('[name="current_view"]').val();
+
+	if(val !== undefined) {
+		localStorage.setItem(`rental_property_manager.${AppGini.currentTableName()}.${view}.layout`, val);
+	}
+	return localStorage.getItem(`rental_property_manager.${AppGini.currentTableName()}.${view}.layout`);
+}
+
+AppGini.renderDVLayoutToolbar = () => {
+	// already rendered? return
+	if($j('.detail_view-layout').length) return;
+
+	// if not in detail view, return
+	if(!$j('.detail_view').length) return;
+
+	// if we have less than 3 divs in the first fieldset, return
+	if($j('fieldset.form-horizontal').first().children('div').length < 3) return;
+
+	// create the layout toolbar above 1st fieldset
+	$j('fieldset.form-horizontal').first().before(`
+		<div class="detail_view-layout hidden-print">
+			<a href="#" class="switch-to-single-column-layout"><img src="${AppGini.config.url}resources/images/single-column-layout.png"></a>
+			<a href="#" class="switch-to-double-column-layout"><img src="${AppGini.config.url}resources/images/double-column-layout.png"></a>
+			<a href="#" class="switch-to-triple-column-layout"><img src="${AppGini.config.url}resources/images/triple-column-layout.png"></a>
+		</div>
+	`);
+
+	// retrieve user preference from local storage
+	const dvLayout = AppGini.storedLayout();
+
+	// apply user preference if found
+	const windowWidth = $j(window).width();
+	if(dvLayout == 'double-column-layout' && windowWidth >= 1200) {
+		AppGini.applyDoubleColumnLayout();
+	} else if(dvLayout == 'triple-column-layout' && windowWidth >= 1700) {
+		AppGini.applyTripleColumnLayout();
+	}
+}
+
+AppGini.applySingleColumnLayout = () => {
+	// move all divs inside second and third fieldsets to the first fieldset
+	$j('fieldset.form-horizontal').slice(1).children('div').appendTo($j('fieldset.form-horizontal').first());
+
+	// remove second and third fieldsets
+	$j('fieldset.form-horizontal').slice(1).remove();
+
+	// remove .double-column-layout and .triple-column-layout classes from all fieldsets
+	$j('fieldset.form-horizontal').removeClass('double-column-layout triple-column-layout');
+
+	// store preference in local storage
+	AppGini.storedLayout('single-column-layout');
+}
+
+AppGini.applyDoubleColumnLayout = () => {
+	// if already in double-column layout, return
+	if($j('fieldset.form-horizontal').first().hasClass('double-column-layout')) return;
+
+	// if already in triple-column layout, switch to double-column layout
+	if($j('fieldset.form-horizontal').first().hasClass('triple-column-layout')) {
+		AppGini.applySingleColumnLayout();
+	}
+
+	// create a new fieldset for the third column
+	$j('fieldset.form-horizontal').first().after('<fieldset></fieldset>');
+
+	// add .double-column-layout class to all fieldsets
+	$j('fieldset').addClass('form-horizontal double-column-layout');
+
+	// move half of the divs from the first fieldset to the second fieldset
+	const half = Math.ceil($j('fieldset.form-horizontal').first().children('div').length / 2);
+	$j('fieldset.form-horizontal').first().children('div').slice(half).appendTo($j('fieldset.form-horizontal').first().next());
+
+	// store preference in local storage
+	AppGini.storedLayout('double-column-layout');
+}
+
+AppGini.applyTripleColumnLayout = () => {
+	// if already in triple-column layout, return
+	if($j('fieldset.form-horizontal').first().hasClass('triple-column-layout')) return;
+
+	// if already in double-column layout, switch to triple-column layout
+	if($j('fieldset.form-horizontal').first().hasClass('double-column-layout')) {
+		AppGini.applySingleColumnLayout();
+	}
+
+	// create a new fieldset for the second column
+	$j('fieldset.form-horizontal').first().after('<fieldset></fieldset>');
+
+	// create a new fieldset for the third column
+	$j('fieldset.form-horizontal').first().after('<fieldset></fieldset>');
+
+	// add .triple-column-layout class to all fieldsets
+	$j('fieldset').addClass('form-horizontal triple-column-layout');
+
+	// move 1/3 of the divs from the first fieldset to the second fieldset
+	const third = Math.ceil($j('fieldset.form-horizontal').first().children('div').length / 3);
+	$j('fieldset.form-horizontal').first().children('div').slice(third * 2).appendTo($j('fieldset.form-horizontal').first().next().next());
+	$j('fieldset.form-horizontal').first().children('div').slice(third).appendTo($j('fieldset.form-horizontal').first().next());
+
+	// store preference in local storage
+	AppGini.storedLayout('triple-column-layout');
+}
+
+

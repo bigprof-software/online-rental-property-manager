@@ -28,7 +28,6 @@
 		check_record_permission($table, $id, $perm = 'view') -- returns true if current user has the specified permission $perm ('view', 'edit' or 'delete') for the given recors, false otherwise
 		NavMenus($options) -- returns the HTML code for the top navigation menus. $options is not implemented currently.
 		StyleSheet() -- returns the HTML code for included style sheet files to be placed in the <head> section.
-		getUploadDir($dir) -- if dir is empty, returns upload dir configured in defaultLang.php, else returns $dir.
 		PrepareUploadedFile($FieldName, $MaxSize, $FileTypes={image file types}, $NoRename=false, $dir="") -- validates and moves uploaded file for given $FieldName into the given $dir (or the default one if empty)
 		get_home_links($homeLinks, $default_classes, $tgroup) -- process $homeLinks array and return custom links for homepage. Applies $default_classes to links if links have classes defined, and filters links by $tgroup (using '*' matches all table_group values)
 		quick_search_html($search_term, $label, $separate_dv = true) -- returns HTML code for the quick search box.
@@ -357,7 +356,7 @@
 				<a class="navbar-brand" href="<?php echo PREPEND_PATH; ?>index.php"><i class="glyphicon glyphicon-home"></i> <?php echo APP_TITLE; ?></a>
 			</div>
 			<div class="collapse navbar-collapse">
-				<ul class="nav navbar-nav"><?php echo ($home_page ? '' : NavMenus()); ?></ul>
+				<ul class="nav navbar-nav"><?php echo ($home_page && !HOMEPAGE_NAVMENUS ? '' : NavMenus()); ?></ul>
 
 				<?php if(userCanImport()){ ?>
 					<ul class="nav navbar-nav">
@@ -598,6 +597,52 @@
 		$pc = str_ireplace(array_keys($arrCodes), array_values($arrCodes), $code);
 
 		return $pc;
+	}
+
+	#########################################################
+
+	function parseMySQLDateTime($datetime, $altDateTime) {
+		// is $datetime valid?
+		if(mysql_datetime($datetime)) return mysql_datetime($datetime);
+
+		if($altDateTime === '') return '';
+
+		// is $altDateTime valid?
+		if(mysql_datetime($altDateTime)) return mysql_datetime($altDateTime);
+
+		/* parse $altDateTime */
+		$matches = [];
+		if(!preg_match('/^([+-])(\d+)(s|m|h|d)(0)?$/', $altDateTime, $matches))
+			return '';
+
+		$sign = ($matches[1] == '-' ? -1 : 1);
+		$unit = $matches[3];
+		$qty = $matches[2];
+
+		// m0 means increment minutes, set seconds to 0
+		// h0 means increment hours, set minutes and seconds to 0
+		// d0 means increment days, set time to 00:00:00
+		$zeroTime = $matches[4] == '0';
+
+		switch($unit) {
+			case 's':
+				$seconds = $qty * $sign;
+				break;
+			case 'm':
+				$seconds = $qty * 60 * $sign;
+				if($zeroTime) return @date('Y-m-d H:i:00', @time() + $seconds);
+				break;
+			case 'h':
+				$seconds = $qty * 3600 * $sign;
+				if($zeroTime) return @date('Y-m-d H:00:00', @time() + $seconds);
+				break;
+			case 'd':
+				$seconds = $qty * 86400 * $sign;
+				if($zeroTime) return @date('Y-m-d 00:00:00', @time() + $seconds);
+				break;
+		}
+
+		return @date('Y-m-d H:i:s', @time() + $seconds);
 	}
 
 	#########################################################
@@ -1433,3 +1478,11 @@ EOT;
 
 		return $childTables;
 	}
+
+	#########################################################
+
+	function isDetailViewEnabled($tn) {
+		$tables = ['applicants_and_tenants', 'applications_leases', 'residence_and_rental_history', 'employment_and_income_history', 'references', 'rental_owners', 'properties', 'property_photos', 'units', 'unit_photos', ];
+		return in_array($tn, $tables);
+	}
+

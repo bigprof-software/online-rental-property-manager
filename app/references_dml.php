@@ -428,7 +428,7 @@ function references_form($selected_id = '', $AllowUpdate = 1, $AllowInsert = 1, 
 		$pt_perm = getTablePermissions($ptfc[0]);
 
 		// process foreign key links
-		if($pt_perm['view'] || $pt_perm['edit']) {
+		if(($pt_perm['view'] && isDetailViewEnabled($ptfc[0])) || $pt_perm['edit']) {
 			$templateCode = str_replace("<%%PLINK({$luf})%%>", '<button type="button" class="btn btn-default view_parent" id="' . $ptfc[0] . '_view_parent" title="' . html_attr($Translation['View'] . ' ' . $ptfc[1]) . '"><i class="glyphicon glyphicon-eye-open"></i></button>', $templateCode);
 		}
 

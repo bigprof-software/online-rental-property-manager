@@ -18,10 +18,10 @@
 		<td id="units-features-<%%VALUE(id)%%>" class="units-features text-bold"><%%VALUE(features)%%></td>
 		<td id="units-rental_amount-<%%VALUE(id)%%>" class="units-rental_amount text-right text-bold"><%%VALUE(rental_amount)%%></td>
 		<td class="child-applications_leases-unit child-records-info" data-id="<%%VALUE(id)%%>" data-table="applications_leases" data-lookup-field="unit">
-			<a href="applications_leases_view.php?filterer_unit=<%%VALUE(id)%%>" target="_blank" title="<%%TRANSLATION(view)%%>" class="children-count" style="visibility: hidden;"><span class="count-children">0</span> <i class="glyphicon glyphicon-new-window"></i></a>
+			<a href="applications_leases_view.php?filterer_unit=<%%VALUE(id)%%>&Embedded=1" target="_blank" title="<%%TRANSLATION(view)%%> (Applications/Leases)" class="modal-link children-count" style="visibility: hidden;"><span class="count-children">0</span> <i class="glyphicon glyphicon-new-window"></i></a>
 			<a href="applications_leases_view.php?filterer_unit=<%%VALUE(id)%%>&addNew_x=1&Embedded=1" target="_blank" class="modal-link new-child" title="<%%TRANSLATION(Add New)%%> (Applications/Leases)" style="visibility: hidden;"><i class="text-success glyphicon glyphicon-plus"></i></a>
 		</td>
 		<td class="child-unit_photos-unit child-records-info" data-id="<%%VALUE(id)%%>" data-table="unit_photos" data-lookup-field="unit">
-			<a href="unit_photos_view.php?filterer_unit=<%%VALUE(id)%%>" target="_blank" title="<%%TRANSLATION(view)%%>" class="children-count" style="visibility: hidden;"><span class="count-children">0</span> <i class="glyphicon glyphicon-new-window"></i></a>
+			<a href="unit_photos_view.php?filterer_unit=<%%VALUE(id)%%>&Embedded=1" target="_blank" title="<%%TRANSLATION(view)%%> (Unit photos)" class="modal-link children-count" style="visibility: hidden;"><span class="count-children">0</span> <i class="glyphicon glyphicon-new-window"></i></a>
 			<a href="unit_photos_view.php?filterer_unit=<%%VALUE(id)%%>&addNew_x=1&Embedded=1" target="_blank" class="modal-link new-child" title="<%%TRANSLATION(Add New)%%> (Unit photos)" style="visibility: hidden;"><i class="text-success glyphicon glyphicon-plus"></i></a>
 		</td>

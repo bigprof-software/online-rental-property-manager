@@ -57,6 +57,10 @@ class Request {
 		);
 	}
 
+	public static function datetime($var, $default = '') {
+		return parseMySQLDateTime(self::val($var), $default);
+	}
+
 	public static function multipleChoice($var, $default = '') {
 		return is_array($_REQUEST[$var]) ? implode(', ', $_REQUEST[$var]) : $default;
 	}

@@ -97,7 +97,7 @@
 	/* get profile info */
 	/* 
 		$mi already contains the profile info, as documented at: 
-		https://bigprof.com/appgini/help/working-with-generated-web-database-application/hooks/memberInfo
+		https://bigprof.com/appgini/help/advanced-topics/hooks/memberInfo-array/
 
 		custom field names are stored in $adminConfig['custom1'] to $adminConfig['custom4']
 	*/

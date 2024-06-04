@@ -18,6 +18,6 @@
 		<td id="rental_owners-zip-<%%VALUE(id)%%>" class="rental_owners-zip text-right text-bold"><%%VALUE(zip)%%></td>
 		<td id="rental_owners-comments-<%%VALUE(id)%%>" class="rental_owners-comments text-bold"><%%VALUE(comments)%%></td>
 		<td class="child-properties-owner child-records-info" data-id="<%%VALUE(id)%%>" data-table="properties" data-lookup-field="owner">
-			<a href="properties_view.php?filterer_owner=<%%VALUE(id)%%>" target="_blank" title="<%%TRANSLATION(view)%%>" class="children-count" style="visibility: hidden;"><span class="count-children">0</span> <i class="glyphicon glyphicon-new-window"></i></a>
+			<a href="properties_view.php?filterer_owner=<%%VALUE(id)%%>&Embedded=1" target="_blank" title="<%%TRANSLATION(view)%%> (Properties)" class="modal-link children-count" style="visibility: hidden;"><span class="count-children">0</span> <i class="glyphicon glyphicon-new-window"></i></a>
 			<a href="properties_view.php?filterer_owner=<%%VALUE(id)%%>&addNew_x=1&Embedded=1" target="_blank" class="modal-link new-child" title="<%%TRANSLATION(Add New)%%> (Properties)" style="visibility: hidden;"><i class="text-success glyphicon glyphicon-plus"></i></a>
 		</td>

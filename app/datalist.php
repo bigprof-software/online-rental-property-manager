@@ -166,7 +166,7 @@ class DataList {
 
 		$setSelectedIDPreviousPage = $setSelectedIDNextPage = $previousRecordDV = $nextRecordDV = null;
 
-		if($SelectedID && !$Embedded && $this->AllowDVNavigation) {
+		if($SelectedID /*&& !$Embedded*/ && $this->AllowDVNavigation) {
 			$setSelectedIDPreviousPage = !empty(Request::val('setSelectedIDPreviousPage'));
 			$setSelectedIDNextPage = !empty(Request::val('setSelectedIDNextPage')) && !$setSelectedIDPreviousPage;
 			$previousRecordDV = !empty(Request::val('previousRecordDV')) && !$setSelectedIDPreviousPage && !$setSelectedIDNextPage;
@@ -198,6 +198,7 @@ class DataList {
 		if($this->Permissions['edit'] || $this->Permissions['delete']) {
 			$this->AllowSelection = 1;
 		} elseif(!$this->AllowSelection) {
+			$this->AllowPrintingDV = 0;
 			$SelectedID = '';
 			$PrintDV = '';
 		}
@@ -659,7 +660,7 @@ class DataList {
 			}
 			// end of table view navigation code
 
-			if($SelectedID && $RecordCount && !$Embedded && $this->AllowDVNavigation) {
+			if($SelectedID && $RecordCount /*&& !$Embedded*/ && $this->AllowDVNavigation) {
 				// in DV, if user is navigating to prev record, 
 				// and current one is first record in page,
 				// navigate to previous page (unless this is the first page)
@@ -679,7 +680,7 @@ class DataList {
 			$fieldCountTV = count($this->QueryFieldsTV);
 			$indexOfSelectedID = null;
 
-			if($SelectedID && count($tvRecords) && !$Embedded) {
+			if($SelectedID && count($tvRecords) /*&& !$Embedded*/) {
 				if($setSelectedIDPreviousPage)
 					// set SelectedID to pk of last item in $tvRecords
 					$indexOfSelectedID = count($tvRecords) - 1;
@@ -854,7 +855,7 @@ class DataList {
 			}
 
 			// begin table and display table title
-			if(!$this->HideTableView && !($dvprint_x && $this->AllowSelection && $SelectedID) && !$PrintDV && !$Embedded) {
+			if(!$this->HideTableView && !($dvprint_x && $this->AllowSelection && $SelectedID) && !$PrintDV && !($Embedded && $delete_x)) {
 				if(getLoggedAdmin() && $this->AllowAdminShowSQL) {
 					$this->HTML .= '<button type="button" class="sql-query-copier btn btn-link btn-xs hidden">' . $this->translation['click to copy'] . '</button>';
 					$this->HTML .= '<pre class="sql-query-container hidden vspace-lg" title="' . html_attr($this->translation['click to copy']) . '">' . $this->getTVQuery($FirstRecord) . '</pre>';
@@ -1225,7 +1226,7 @@ class DataList {
 					$this->TemplateDVP
 				]);
 
-				if($this->Permissions['view'] && $this->AllowDVNavigation && !$Embedded) $this->addDVNavigation(
+				if($this->Permissions['view'] && $this->AllowDVNavigation /*&& !$Embedded*/) $this->addDVNavigation(
 					$dvCode,
 					$SelectedID,
 					// array of PKs of TV records

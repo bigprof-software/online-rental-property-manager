@@ -81,6 +81,7 @@
 		request_outside_admin_folder() -- returns true if currently executing script is outside admin folder, false otherwise.
 		breakpoint(__FILE__, __LINE__, $msg) -- if DEBUG_MODE enabled, logs a message to {app_dir}/breakpoint.csv, if $msg is array, it will be converted to str via json_encode
 		denyAccess($msg) -- Send a 403 Access Denied header, with an optional message then die
+		getUploadDir($dir) -- if dir is empty, returns upload dir configured in defaultLang.php, else returns $dir.
 	~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	*/
 	########################################################################
@@ -3158,7 +3159,7 @@
 	function getUploadDir($dir = '') {
 		if($dir == '') $dir = config('adminConfig')['baseUploadPath'];
 
-		return rtrim($dir, '\\/') . '/';
+		return rtrim($dir, '\\/') . DIRECTORY_SEPARATOR;
 	}
 	#########################################################
 	function bgStyleToClass($html) {

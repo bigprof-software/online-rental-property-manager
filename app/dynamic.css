@@ -980,3 +980,52 @@ td.row .img-responsive {
 .modal-top-spacer {
 	height: 2rem;
 }
+
+/* Styling for detail view layout toobar and detail view columns */
+.detail_view-layout {
+	display: none;
+	margin: 0 0 1em 0;
+	text-align: right;
+}
+.detail_view-layout a {
+	outline: none;
+}
+.theme-rtl .detail_view-layout {
+	text-align: left;
+}
+.switch-to-single-column-layout, .switch-to-double-column-layout, .switch-to-triple-column-layout {
+	display: none;
+}
+
+@media (min-width: 1200px) {
+	.detail_view-layout {
+		display: block;
+	}
+	.switch-to-single-column-layout, .switch-to-double-column-layout {
+		display: inline-block;
+	}
+	.double-column-layout {
+		width: 50%;
+		float: left;
+		padding: 0 1em 0 0;
+	}
+	.theme-rtl .double-column-layout {
+		float: right;
+		padding: 0 0 0 1em;
+	}
+}
+
+@media (min-width: 1700px) {
+	.switch-to-triple-column-layout {
+		display: inline-block;
+	}
+	.triple-column-layout {
+		width: 33.33%;
+		float: left;
+		padding: 0 1em 0 0;
+	}
+	.theme-rtl .triple-column-layout {
+		float: right;
+		padding: 0 0 0 1em;
+	}
+}

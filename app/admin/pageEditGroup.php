@@ -127,6 +127,13 @@ if($groupID != '') {
 		$groupID = 0;
 	}
 }
+
+// get all groups and their permissions
+$groupPermissions = [];
+$res = sql("SELECT * FROM `membership_grouppermissions`", $eo);
+while($row = db_fetch_assoc($res)) {
+	$groupPermissions[$row['groupID']][$row['tableName']] = $row;
+}
 ?>
 
 <?php if(Request::val('msg') == 'added'){ ?>
@@ -145,7 +152,7 @@ if($groupID != '') {
 
 <div class="page-header">
 	<h1>
-		<?php echo($groupID ? str_replace('<GROUPNAME>', '<span class="text-info">' . html_attr($name) . '</span>', $Translation['edit group']) : $Translation['add new group']); ?>
+		<?php echo($groupID ? preg_replace('/\'?<GROUPNAME>\'?/', '<span class="text-info text-bold">' . html_attr($name) . '</span>', $Translation['edit group']) : $Translation['add new group']); ?>
 		<div class="pull-right">
 			<div class="btn-group">
 				<a href="pageViewGroups.php" class="btn btn-default btn-lg">
@@ -179,22 +186,30 @@ if($groupID != '') {
 <?php } ?> 
 
 
-<div class="form-group">
-	<label class="col-sm-4 col-md-3 col-lg-2 col-lg-offset-2 control-label"></label>
-	<div class="col-sm-8 col-md-9 col-lg-6">
-		<div class="checkbox">
-			<label>
-				<input type="checkbox" id="showToolTips" value="1" checked>
-				<?php echo $Translation['show tool tips']; ?>
-			</label>
-		</div>
-	</div>
-</div>
-
 <form method="post" action="pageEditGroup.php" class="form-horizontal">
 	<?php echo csrf_token(); ?>
 
 	<input type="hidden" name="groupID" value="<?php echo $groupID; ?>">
+
+	<div class="row">
+		<div class=" col-lg-3 col-lg-offset-9 col-sm-4 col-sm-offset-8" >
+			<button type="submit" name="saveChanges" value="1" class="btn btn-primary btn-lg pull-right btn-block" style="max-width: 15em;"><i class="glyphicon glyphicon-ok"></i> <?php echo $Translation['save changes']; ?></button>
+		</div>
+	</div>
+
+	<div class="form-group">
+		<label class="col-sm-4 col-md-3 col-lg-2 col-lg-offset-2 control-label"></label>
+		<div class="col-sm-8 col-md-9 col-lg-6">
+			<div class="checkbox">
+				<label>
+					<input type="checkbox" id="showToolTips" value="1" checked>
+					<?php echo $Translation['show tool tips']; ?>
+				</label>
+			</div>
+		</div>
+	</div>
+
+	<div style="height: 3em;"></div>
 
 	<div class="form-group ">
 		<label for="group-name" class="col-sm-4 col-md-3 col-lg-2 col-lg-offset-2 control-label"><?php echo $Translation['group name']; ?></label>
@@ -252,12 +267,6 @@ if($groupID != '') {
 			</div>
 		</div>
 
-		<div class="row">
-			<div class=" col-lg-3 col-lg-offset-9 col-sm-4 col-sm-offset-8" >
-				<button type="submit" name="saveChanges" value="1" class="btn btn-primary btn-lg pull-right btn-block"><i class="glyphicon glyphicon-ok"></i> <?php echo $Translation['save changes']; ?></button>
-			</div>
-		</div>
-
 		<div style="height: 3em;"></div>
 	<?php } ?>
 
@@ -268,7 +277,29 @@ if($groupID != '') {
 
 	<div class="table-responsive">
 		<table class="table table-striped table-bordered table-hover">
-			<caption><h2><?php echo $Translation['group table permissions']; ?></h2></caption>
+			<caption>
+				<h2 class="pull-left"><?php echo $Translation['group table permissions']; ?></h2>
+				<div class="pull-right vspacer-lg">
+					<label class="control-label"><?php echo $Translation['Copy permissions from another group']; ?></label>
+					<div style="display: flex; align-items: center; gap: .5em;">
+						<select id="copy-permissions" class="form-control" style="flex-grow: 1;">
+							<option value=""><?php echo $Translation['select group']; ?></option>
+							<?php
+								$eo = ['silentErrors' => true];
+								$res = sql("SELECT `groupID`, `name` FROM `membership_groups` WHERE `groupID` != '{$groupID}'", $eo);
+								while($row = db_fetch_assoc($res)) {
+									echo "<option value=\"{$row['groupID']}\">{$row['name']}</option>";
+								}
+							?>
+						</select>
+						<button type="button" id="btn-revert-permissions" class="btn btn-default" title="<?php echo html_attr($Translation['revert permissions']); ?>">
+							<i class="glyphicon glyphicon-remove"></i>
+						</button>
+					</div>
+				</div>
+				<div class="pull-right vspacer-lg hspacer-md" style="font-size: 2em;">&#128203;</div>
+				<div class="clearfix"></div>
+			</caption>
 			<thead>
 				<tr>
 					<th><?php echo $Translation['table']; ?></th>
@@ -347,7 +378,7 @@ if($groupID != '') {
 							</div>
 						</th>
 						<td class="insert-permission">
-							<input onMouseOver="stm(<?php echo $tn; ?>_addTip, toolTipStyle);" onMouseOut="htm();" type="checkbox" name="<?php echo $tn; ?>_insert" value="1" <?php echo ($perm["{$tn}_insert"] ? "checked class=\"text-primary\"" : ""); ?>>
+							<input onMouseOver="stm(<?php echo $tn; ?>_addTip, toolTipStyle);" onMouseOut="htm();" type="checkbox" name="<?php echo $tn; ?>_insert" id="<?php echo $tn; ?>_insert" value="1" <?php echo ($perm["{$tn}_insert"] ? "checked class=\"text-primary\"" : ""); ?>>
 						</td>
 						<td class="view-permission">
 							<?php echo htmlRadioGroup("{$tn}_view", array_keys($arrPermText), $arrPermText, $perm["{$tn}_view"], 'text-primary'); ?>
@@ -360,14 +391,13 @@ if($groupID != '') {
 						</td>
 					</tr>
 				<?php } ?>
-				<tr><td colspan="5" style="height: 7em;"></td></tr>
 			</tbody>
 		</table>
 	</div>
 
 	<div class="row">
 		<div class=" col-lg-3 col-lg-offset-9 col-sm-4 col-sm-offset-8 " >
-			<button type="submit" name="saveChanges" value="1" class="btn btn-primary btn-lg btn-block "><i class="glyphicon glyphicon-ok"></i> <?php echo $Translation['save changes']; ?></button>
+			<button type="submit" name="saveChanges" value="1" class="btn btn-primary btn-lg pull-right btn-block" style="max-width: 15em;"><i class="glyphicon glyphicon-ok"></i> <?php echo $Translation['save changes']; ?></button>
 		</div>
 	</div>
 </form>
@@ -376,6 +406,8 @@ if($groupID != '') {
 
 <script>
 	$j(function() {
+		const groupPermissions = <?php echo json_encode($groupPermissions); ?>;
+
 		var highlight_selections = function() {
 			$j('input[type=radio]:checked').parent().parent().addClass('bg-warning text-primary text-bold');
 			$j('input[type=radio]:not(:checked)').parent().parent().removeClass('bg-warning text-primary text-bold');
@@ -443,6 +475,47 @@ if($groupID != '') {
 		$j('input[type=radio]').parent().mouseout(function() {
 			htm();
 		});
+
+		// copy permissions from another group
+		$j('#copy-permissions').on('change', function() {
+			const groupID = $j('#copy-permissions').val();
+
+			if(groupID && groupPermissions[groupID]) {
+				const perms = groupPermissions[groupID];
+				for(const tn in perms) {
+					const p = perms[tn];
+					console.log(tn, p);
+					$j(`#${tn}_insert`).prop('checked', p.allowInsert == 1);
+					$j(`#${tn}_view${p.allowView}`).prop('checked', true);
+					$j(`#${tn}_edit${p.allowEdit}`).prop('checked', true);
+					$j(`#${tn}_delete${p.allowDelete}`).prop('checked', true);
+				}
+			}
+		});
+
+		// revert permissions
+		$j('#btn-revert-permissions').on('click', function() {
+			const groupID = <?php echo json_encode($groupID ?? null); ?>;
+
+			if(groupID && groupPermissions[groupID]) {
+				const perms = groupPermissions[groupID];
+				for(const tn in perms) {
+					const p = perms[tn];
+					console.log(tn, p);
+					$j(`#${tn}_insert`).prop('checked', p.allowInsert == 1);
+					$j(`#${tn}_view${p.allowView}`).prop('checked', true);
+					$j(`#${tn}_edit${p.allowEdit}`).prop('checked', true);
+					$j(`#${tn}_delete${p.allowDelete}`).prop('checked', true);
+				}
+			} else {
+				setPermissionTo('insert', 'no');
+				setPermissionTo('view', 'no');
+				setPermissionTo('edit', 'no');
+				setPermissionTo('delete', 'no');
+			}
+
+			$j('#copy-permissions').val('');
+		})
 	});
 </script>
 

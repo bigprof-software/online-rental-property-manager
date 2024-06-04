@@ -907,4 +907,8 @@ $Translation = [
 	'db server status' => 'Database server status',
 	'db client status' => 'Database client status',
 	'date and time info' => 'Date and time info',
+
+	// Added in 24.14
+	'Copy permissions from another group' => 'Copy permissions from another group',
+	'revert permissions' => 'Revert permissions',
 ];
