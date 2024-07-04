@@ -1029,3 +1029,24 @@ td.row .img-responsive {
 		padding: 0 0 0 1em;
 	}
 }
+
+.form-group > .col-lg-9:not(:has(.datetimepicker)) {
+	overflow-x: auto;
+}
+
+/* pagination section */
+.pagination-section {
+	display: flex;
+	justify-content: flex-start;
+	align-items: center;
+	gap: 1em;
+}
+.pagination-section > div {
+	flex-grow: 1;
+}
+.pagination-section > div:not(:last-child):not(:first-child) {
+	text-align: center;
+}
+.pagination-section > div:last-child {
+	text-align: right;
+}

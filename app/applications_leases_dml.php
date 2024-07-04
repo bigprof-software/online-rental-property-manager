@@ -229,31 +229,40 @@ function applications_leases_update(&$selected_id, &$error_message = '') {
 	set_record_owner('applications_leases', $selected_id);
 }
 
-function applications_leases_form($selected_id = '', $AllowUpdate = 1, $AllowInsert = 1, $AllowDelete = 1, $separateDV = 0, $TemplateDV = '', $TemplateDVP = '') {
+function applications_leases_form($selectedId = '', $allowUpdate = true, $allowInsert = true, $allowDelete = true, $separateDV = true, $templateDV = '', $templateDVP = '') {
 	// function to return an editable form for a table records
-	// and fill it with data of record whose ID is $selected_id. If $selected_id
+	// and fill it with data of record whose ID is $selectedId. If $selectedId
 	// is empty, an empty form is shown, with only an 'Add New'
 	// button displayed.
 
 	global $Translation;
 	$eo = ['silentErrors' => true];
-	$noUploads = null;
-	$row = $urow = $jsReadOnly = $jsEditable = $lookups = null;
-
+	$noUploads = $row = $urow = $jsReadOnly = $jsEditable = $lookups = null;
 	$noSaveAsCopy = false;
+	$hasSelectedId = strlen($selectedId) > 0;
 
 	// mm: get table permissions
 	$arrPerm = getTablePermissions('applications_leases');
-	if(!$arrPerm['insert'] && $selected_id == '')
+	$allowInsert = ($arrPerm['insert'] ? true : false);
+	$allowUpdate = $hasSelectedId && check_record_permission('applications_leases', $selectedId, 'edit');
+	$allowDelete = $hasSelectedId && check_record_permission('applications_leases', $selectedId, 'delete');
+
+	if(!$allowInsert && !$hasSelectedId)
 		// no insert permission and no record selected
-		// so show access denied error unless TVDV
+		// so show access denied error -- except if TVDV: just hide DV
 		return $separateDV ? $Translation['tableAccessDenied'] : '';
-	$AllowInsert = ($arrPerm['insert'] ? true : false);
+
+	if($hasSelectedId && !check_record_permission('applications_leases', $selectedId, 'view'))
+		return $Translation['tableAccessDenied'];
+
 	// print preview?
-	$dvprint = false;
-	if(strlen($selected_id) && Request::val('dvprint_x') != '') {
-		$dvprint = true;
-	}
+	$dvprint = $hasSelectedId && Request::val('dvprint_x') != '';
+
+	$showSaveNew = !$dvprint && ($allowInsert && !$hasSelectedId);
+	$showSaveChanges = !$dvprint && $allowUpdate && $hasSelectedId;
+	$showDelete = !$dvprint && $allowDelete && $hasSelectedId;
+	$showSaveAsCopy = !$dvprint && ($allowInsert && $hasSelectedId && !$noSaveAsCopy);
+	$fieldsAreEditable = !$dvprint && (($allowInsert && !$hasSelectedId) || ($allowUpdate && $hasSelectedId) || $showSaveAsCopy);
 
 	$filterer_tenants = Request::val('filterer_tenants');
 	$filterer_property = Request::val('filterer_property');
@@ -351,17 +360,8 @@ function applications_leases_form($selected_id = '', $AllowUpdate = 1, $AllowIns
 	$combo_security_deposit_date->MonthNames = $Translation['month names'];
 	$combo_security_deposit_date->NamePrefix = 'security_deposit_date';
 
-	if($selected_id) {
-		if(!check_record_permission('applications_leases', $selected_id, 'view'))
-			return $Translation['tableAccessDenied'];
-
-		// can edit?
-		$AllowUpdate = check_record_permission('applications_leases', $selected_id, 'edit');
-
-		// can delete?
-		$AllowDelete = check_record_permission('applications_leases', $selected_id, 'delete');
-
-		$res = sql("SELECT * FROM `applications_leases` WHERE `id`='" . makeSafe($selected_id) . "'", $eo);
+	if($hasSelectedId) {
+		$res = sql("SELECT * FROM `applications_leases` WHERE `id`='" . makeSafe($selectedId) . "'", $eo);
 		if(!($row = db_fetch_array($res))) {
 			return error_message($Translation['No records found'], 'applications_leases_view.php', false);
 		}
@@ -403,19 +403,19 @@ function applications_leases_form($selected_id = '', $AllowUpdate = 1, $AllowIns
 
 	<script>
 		// initial lookup values
-		AppGini.current_tenants__RAND__ = { text: "", value: "<?php echo addslashes($selected_id ? $urow['tenants'] : htmlspecialchars($filterer_tenants, ENT_QUOTES)); ?>"};
-		AppGini.current_property__RAND__ = { text: "", value: "<?php echo addslashes($selected_id ? $urow['property'] : htmlspecialchars($filterer_property, ENT_QUOTES)); ?>"};
-		AppGini.current_unit__RAND__ = { text: "", value: "<?php echo addslashes($selected_id ? $urow['unit'] : htmlspecialchars($filterer_unit, ENT_QUOTES)); ?>"};
+		AppGini.current_tenants__RAND__ = { text: "", value: "<?php echo addslashes($hasSelectedId ? $urow['tenants'] : htmlspecialchars($filterer_tenants, ENT_QUOTES)); ?>"};
+		AppGini.current_property__RAND__ = { text: "", value: "<?php echo addslashes($hasSelectedId ? $urow['property'] : htmlspecialchars($filterer_property, ENT_QUOTES)); ?>"};
+		AppGini.current_unit__RAND__ = { text: "", value: "<?php echo addslashes($hasSelectedId ? $urow['unit'] : htmlspecialchars($filterer_unit, ENT_QUOTES)); ?>"};
 
 		jQuery(function() {
 			setTimeout(function() {
 				if(typeof(tenants_reload__RAND__) == 'function') tenants_reload__RAND__();
 				if(typeof(property_reload__RAND__) == 'function') property_reload__RAND__();
-				<?php echo (!$AllowUpdate || $dvprint ? 'if(typeof(unit_reload__RAND__) == \'function\') unit_reload__RAND__(AppGini.current_property__RAND__.value);' : ''); ?>
+				<?php echo (!$allowUpdate || $dvprint ? 'if(typeof(unit_reload__RAND__) == \'function\') unit_reload__RAND__(AppGini.current_property__RAND__.value);' : ''); ?>
 			}, 50); /* we need to slightly delay client-side execution of the above code to allow AppGini.ajaxCache to work */
 		});
 		function tenants_reload__RAND__() {
-		<?php if(($AllowUpdate || $AllowInsert) && !$dvprint) { ?>
+		<?php if($fieldsAreEditable) { ?>
 
 			$j("#tenants-container__RAND__").select2({
 				/* initial default value */
@@ -492,7 +492,7 @@ function applications_leases_form($selected_id = '', $AllowUpdate = 1, $AllowIns
 
 		}
 		function property_reload__RAND__() {
-		<?php if(($AllowUpdate || $AllowInsert) && !$dvprint) { ?>
+		<?php if($fieldsAreEditable) { ?>
 
 			$j("#property-container__RAND__").select2({
 				/* initial default value */
@@ -571,7 +571,7 @@ function applications_leases_form($selected_id = '', $AllowUpdate = 1, $AllowIns
 
 		}
 		function unit_reload__RAND__(filterer_property) {
-		<?php if(($AllowUpdate || $AllowInsert) && !$dvprint) { ?>
+		<?php if($fieldsAreEditable) { ?>
 
 			$j("#unit-container__RAND__").select2({
 				/* initial default value */
@@ -657,10 +657,10 @@ function applications_leases_form($selected_id = '', $AllowUpdate = 1, $AllowIns
 
 	// open the detail view template
 	if($dvprint) {
-		$template_file = is_file("./{$TemplateDVP}") ? "./{$TemplateDVP}" : './templates/applications_leases_templateDVP.html';
+		$template_file = is_file("./{$templateDVP}") ? "./{$templateDVP}" : './templates/applications_leases_templateDVP.html';
 		$templateCode = @file_get_contents($template_file);
 	} else {
-		$template_file = is_file("./{$TemplateDV}") ? "./{$TemplateDV}" : './templates/applications_leases_templateDV.html';
+		$template_file = is_file("./{$templateDV}") ? "./{$templateDV}" : './templates/applications_leases_templateDV.html';
 		$templateCode = @file_get_contents($template_file);
 	}
 
@@ -669,8 +669,9 @@ function applications_leases_form($selected_id = '', $AllowUpdate = 1, $AllowIns
 	$templateCode = str_replace('<%%RND1%%>', $rnd1, $templateCode);
 	$templateCode = str_replace('<%%EMBEDDED%%>', (Request::val('Embedded') ? 'Embedded=1' : ''), $templateCode);
 	// process buttons
-	if($AllowInsert) {
-		if(!$selected_id) $templateCode = str_replace('<%%INSERT_BUTTON%%>', '<button type="submit" class="btn btn-success" id="insert" name="insert_x" value="1" onclick="return applications_leases_validateData();"><i class="glyphicon glyphicon-plus-sign"></i> ' . $Translation['Save New'] . '</button>', $templateCode);
+	if($showSaveNew) {
+		$templateCode = str_replace('<%%INSERT_BUTTON%%>', '<button type="submit" class="btn btn-success" id="insert" name="insert_x" value="1" onclick="return applications_leases_validateData();"><i class="glyphicon glyphicon-plus-sign"></i> ' . $Translation['Save New'] . '</button>', $templateCode);
+	} elseif($showSaveAsCopy) {
 		$templateCode = str_replace('<%%INSERT_BUTTON%%>', '<button type="submit" class="btn btn-default" id="insert" name="insert_x" value="1" onclick="return applications_leases_validateData();"><i class="glyphicon glyphicon-plus-sign"></i> ' . $Translation['Save As Copy'] . '</button>', $templateCode);
 	} else {
 		$templateCode = str_replace('<%%INSERT_BUTTON%%>', '', $templateCode);
@@ -683,14 +684,14 @@ function applications_leases_form($selected_id = '', $AllowUpdate = 1, $AllowIns
 		$backAction = '$j(\'form\').eq(0).attr(\'novalidate\', \'novalidate\'); document.myform.reset(); return true;';
 	}
 
-	if($selected_id) {
+	if($hasSelectedId) {
 		if(!Request::val('Embedded')) $templateCode = str_replace('<%%DVPRINT_BUTTON%%>', '<button type="submit" class="btn btn-default" id="dvprint" name="dvprint_x" value="1" onclick="$j(\'form\').eq(0).prop(\'novalidate\', true); document.myform.reset(); return true;" title="' . html_attr($Translation['Print Preview']) . '"><i class="glyphicon glyphicon-print"></i> ' . $Translation['Print Preview'] . '</button>', $templateCode);
-		if($AllowUpdate)
+		if($allowUpdate)
 			$templateCode = str_replace('<%%UPDATE_BUTTON%%>', '<button type="submit" class="btn btn-success btn-lg" id="update" name="update_x" value="1" onclick="return applications_leases_validateData();" title="' . html_attr($Translation['Save Changes']) . '"><i class="glyphicon glyphicon-ok"></i> ' . $Translation['Save Changes'] . '</button>', $templateCode);
 		else
 			$templateCode = str_replace('<%%UPDATE_BUTTON%%>', '', $templateCode);
 
-		if($AllowDelete)
+		if($allowDelete)
 			$templateCode = str_replace('<%%DELETE_BUTTON%%>', '<button type="submit" class="btn btn-danger" id="delete" name="delete_x" value="1" title="' . html_attr($Translation['Delete']) . '"><i class="glyphicon glyphicon-trash"></i> ' . $Translation['Delete'] . '</button>', $templateCode);
 		else
 			$templateCode = str_replace('<%%DELETE_BUTTON%%>', '', $templateCode);
@@ -703,8 +704,8 @@ function applications_leases_form($selected_id = '', $AllowUpdate = 1, $AllowIns
 		// if not in embedded mode and user has insert only but no view/update/delete,
 		// remove 'back' button
 		if(
-			$arrPerm['insert']
-			&& !$arrPerm['update'] && !$arrPerm['delete'] && !$arrPerm['view']
+			$allowInsert
+			&& !$allowUpdate && !$allowDelete && !$arrPerm['view']
 			&& !Request::val('Embedded')
 		)
 			$templateCode = str_replace('<%%DESELECT_BUTTON%%>', '', $templateCode);
@@ -729,7 +730,7 @@ function applications_leases_form($selected_id = '', $AllowUpdate = 1, $AllowIns
 	}
 
 	// set records to read only if user can't insert new records and can't edit current record
-	if(($selected_id && !$AllowUpdate && !$AllowInsert) || (!$selected_id && !$AllowInsert)) {
+	if(!$fieldsAreEditable) {
 		$jsReadOnly = '';
 		$jsReadOnly .= "\tjQuery('#tenants').prop('disabled', true).css({ color: '#555', backgroundColor: '#fff' });\n";
 		$jsReadOnly .= "\tjQuery('#tenants_caption').prop('disabled', true).css({ color: '#555', backgroundColor: 'white' });\n";
@@ -757,8 +758,9 @@ function applications_leases_form($selected_id = '', $AllowUpdate = 1, $AllowIns
 		$jsReadOnly .= "\tjQuery('.select2-container').hide();\n";
 
 		$noUploads = true;
-	} elseif($AllowInsert) {
-		$jsEditable = "\tjQuery('form').eq(0).data('already_changed', true);"; // temporarily disable form change handler
+	} else {
+		// temporarily disable form change handler till time and datetime pickers are enabled
+		$jsEditable = "\tjQuery('form').eq(0).data('already_changed', true);";
 		$jsEditable .= "\tjQuery('form').eq(0).data('already_changed', false);"; // re-enable form change handler
 	}
 
@@ -778,14 +780,14 @@ function applications_leases_form($selected_id = '', $AllowUpdate = 1, $AllowIns
 	$templateCode = str_replace('<%%COMBOTEXT(type)%%>', $combo_type->SelectedData, $templateCode);
 	$templateCode = str_replace(
 		'<%%COMBO(start_date)%%>', 
-		($selected_id && !$arrPerm['edit'] && ($noSaveAsCopy || !$arrPerm['insert']) ? 
+		(!$fieldsAreEditable ? 
 			'<div class="form-control-static">' . $combo_start_date->GetHTML(true) . '</div>' : 
 			$combo_start_date->GetHTML()
 		), $templateCode);
 	$templateCode = str_replace('<%%COMBOTEXT(start_date)%%>', $combo_start_date->GetHTML(true), $templateCode);
 	$templateCode = str_replace(
 		'<%%COMBO(end_date)%%>', 
-		($selected_id && !$arrPerm['edit'] && ($noSaveAsCopy || !$arrPerm['insert']) ? 
+		(!$fieldsAreEditable ? 
 			'<div class="form-control-static">' . $combo_end_date->GetHTML(true) . '</div>' : 
 			$combo_end_date->GetHTML()
 		), $templateCode);
@@ -794,14 +796,14 @@ function applications_leases_form($selected_id = '', $AllowUpdate = 1, $AllowIns
 	$templateCode = str_replace('<%%COMBOTEXT(recurring_charges_frequency)%%>', $combo_recurring_charges_frequency->SelectedData, $templateCode);
 	$templateCode = str_replace(
 		'<%%COMBO(next_due_date)%%>', 
-		($selected_id && !$arrPerm['edit'] && ($noSaveAsCopy || !$arrPerm['insert']) ? 
+		(!$fieldsAreEditable ? 
 			'<div class="form-control-static">' . $combo_next_due_date->GetHTML(true) . '</div>' : 
 			$combo_next_due_date->GetHTML()
 		), $templateCode);
 	$templateCode = str_replace('<%%COMBOTEXT(next_due_date)%%>', $combo_next_due_date->GetHTML(true), $templateCode);
 	$templateCode = str_replace(
 		'<%%COMBO(security_deposit_date)%%>', 
-		($selected_id && !$arrPerm['edit'] && ($noSaveAsCopy || !$arrPerm['insert']) ? 
+		(!$fieldsAreEditable ? 
 			'<div class="form-control-static">' . $combo_security_deposit_date->GetHTML(true) . '</div>' : 
 			$combo_security_deposit_date->GetHTML()
 		), $templateCode);
@@ -844,7 +846,7 @@ function applications_leases_form($selected_id = '', $AllowUpdate = 1, $AllowIns
 	$templateCode = str_replace('<%%UPLOADFILE(agreement)%%>', '', $templateCode);
 
 	// process values
-	if($selected_id) {
+	if($hasSelectedId) {
 		if( $dvprint) $templateCode = str_replace('<%%VALUE(id)%%>', safe_html($urow['id']), $templateCode);
 		if(!$dvprint) $templateCode = str_replace('<%%VALUE(id)%%>', html_attr($row['id']), $templateCode);
 		$templateCode = str_replace('<%%URLVALUE(id)%%>', urlencode($urow['id']), $templateCode);
@@ -883,19 +885,11 @@ function applications_leases_form($selected_id = '', $AllowUpdate = 1, $AllowIns
 		$templateCode = str_replace('<%%URLVALUE(security_deposit)%%>', urlencode($urow['security_deposit']), $templateCode);
 		$templateCode = str_replace('<%%VALUE(security_deposit_date)%%>', app_datetime($row['security_deposit_date']), $templateCode);
 		$templateCode = str_replace('<%%URLVALUE(security_deposit_date)%%>', urlencode(app_datetime($urow['security_deposit_date'])), $templateCode);
-		if($dvprint || (!$AllowUpdate && !$AllowInsert)) {
-			$templateCode = str_replace('<%%VALUE(emergency_contact)%%>', safe_html($urow['emergency_contact']), $templateCode);
-		} else {
-			$templateCode = str_replace('<%%VALUE(emergency_contact)%%>', safe_html($urow['emergency_contact'], true), $templateCode);
-		}
+		$templateCode = str_replace('<%%VALUE(emergency_contact)%%>', safe_html($urow['emergency_contact'], $fieldsAreEditable), $templateCode);
 		$templateCode = str_replace('<%%URLVALUE(emergency_contact)%%>', urlencode($urow['emergency_contact']), $templateCode);
-		if($dvprint || (!$AllowUpdate && !$AllowInsert)) {
-			$templateCode = str_replace('<%%VALUE(co_signer_details)%%>', safe_html($urow['co_signer_details']), $templateCode);
-		} else {
-			$templateCode = str_replace('<%%VALUE(co_signer_details)%%>', safe_html($urow['co_signer_details'], true), $templateCode);
-		}
+		$templateCode = str_replace('<%%VALUE(co_signer_details)%%>', safe_html($urow['co_signer_details'], $fieldsAreEditable), $templateCode);
 		$templateCode = str_replace('<%%URLVALUE(co_signer_details)%%>', urlencode($urow['co_signer_details']), $templateCode);
-		if($AllowUpdate || $AllowInsert) {
+		if($fieldsAreEditable) {
 			$templateCode = str_replace('<%%HTMLAREA(notes)%%>', '<textarea name="notes" id="notes" rows="5">' . safe_html(htmlspecialchars_decode($row['notes'])) . '</textarea>', $templateCode);
 		} else {
 			$templateCode = str_replace('<%%HTMLAREA(notes)%%>', '<div id="notes" class="form-control-static">' . $row['notes'] . '</div>', $templateCode);
@@ -959,7 +953,7 @@ function applications_leases_form($selected_id = '', $AllowUpdate = 1, $AllowIns
 		$templateCode .= $jsReadOnly;
 		$templateCode .= $jsEditable;
 
-		if(!$selected_id) {
+		if(!$hasSelectedId) {
 		}
 
 		$templateCode.="\n});</script>\n";
@@ -987,8 +981,8 @@ function applications_leases_form($selected_id = '', $AllowUpdate = 1, $AllowIns
 
 	/* default field values */
 	$rdata = $jdata = get_defaults('applications_leases');
-	if($selected_id) {
-		$jdata = get_joined_record('applications_leases', $selected_id);
+	if($hasSelectedId) {
+		$jdata = get_joined_record('applications_leases', $selectedId);
 		if($jdata === false) $jdata = get_defaults('applications_leases');
 		$rdata = $row;
 	}
@@ -997,7 +991,7 @@ function applications_leases_form($selected_id = '', $AllowUpdate = 1, $AllowIns
 	// hook: applications_leases_dv
 	if(function_exists('applications_leases_dv')) {
 		$args = [];
-		applications_leases_dv(($selected_id ? $selected_id : FALSE), getMemberInfo(), $templateCode, $args);
+		applications_leases_dv(($hasSelectedId ? $selectedId : FALSE), getMemberInfo(), $templateCode, $args);
 	}
 
 	return $templateCode;

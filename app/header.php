@@ -35,13 +35,6 @@
 
 		<script>
 			<?php
-				// make a UTF8 version of $Translation
-				$translationUTF8 = $Translation;
-				if(datalist_db_encoding != 'UTF-8')
-					$translationUTF8 = array_map(function($str) {
-						return iconv(datalist_db_encoding, 'UTF-8', $str);
-					}, $translationUTF8);
-
 				$jsAppConfig = [
 					'imgFolder' => rtrim(config('adminConfig')['baseUploadPath'], '\\/') . '/',
 					'url' => application_url(),
@@ -50,49 +43,10 @@
 			?>
 			var AppGini = AppGini || {};
 
-			/* translation strings */
-			AppGini.Translate = {
-				_map: <?php echo json_encode($translationUTF8, JSON_PRETTY_PRINT); ?>,
-				_encoding: '<?php echo datalist_db_encoding; ?>',
-				apply: () => {
-					// find elements with data-translate attribute that don't have .translated class
-					const contentEls = document.querySelectorAll('[data-translate]:not(.translated)');
-
-					// find elements with data-title attribute that don't have .translated class
-					const titleEls = document.querySelectorAll('[data-title]:not(.translated)');
-
-					// abort if no elements found
-					if(!contentEls.length && !titleEls.length) return;
-
-					// translate content of elements that have data-translate attribute
-					contentEls.forEach(el => {
-						const key = el.getAttribute('data-translate');
-						if(!key) return;
-
-						const translation = AppGini.Translate._map[key];
-						if(!translation) return;
-
-						el.innerHTML = translation;
-						el.classList.add('translated');
-					});
-
-					// translate title of elements that have data-title attribute
-					titleEls.forEach(el => {
-						const key = el.getAttribute('data-title');
-						if(!key) return;
-
-						const translation = AppGini.Translate._map[key];
-						if(!translation) return;
-
-						el.setAttribute('title', translation);
-						el.classList.add('translated');
-					});
-				},
-			}
-
 			AppGini.config = <?php echo json_encode($jsAppConfig, JSON_PARTIAL_OUTPUT_ON_ERROR); ?>
 		</script>
 
+		<script src="<?php echo PREPEND_PATH; ?>lang.js.php?<?php echo filemtime( __DIR__ . '/language.php'); ?>"></script>
 		<script src="<?php echo PREPEND_PATH; ?>common.js?<?php echo filemtime( __DIR__ . '/common.js'); ?>"></script>
 		<script src="<?php echo PREPEND_PATH; ?>shortcuts.js?<?php echo filemtime( __DIR__ . '/shortcuts.js'); ?>"></script>
 		<?php if(isset($x->TableName) && is_file(__DIR__ . "/hooks/{$x->TableName}-tv.js")) { ?>

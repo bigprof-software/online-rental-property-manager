@@ -40,7 +40,7 @@
 		html_attr_tags_ok($str) -- same as html_attr, but allowing HTML tags
 		Notification() -- class for providing a standardized html notifications functionality
 		sendmail($mail) -- sends an email using PHPMailer as specified in the assoc array $mail( ['to', 'name', 'subject', 'message', 'debug'] ) and returns true on success or an error message on failure
-		safe_html($str, $noBr = false) -- sanitize HTML strings, and apply nl2br() to non-HTML ones (unless optional 2nd param is passed as true)
+		safe_html($str, $preserveNewLines = false) -- sanitize HTML strings, and convert new lines (\n) to breaks (<br>) for non-HTML ones (unless optional 2nd param is passed as true)
 		get_tables_info($skip_authentication = false) -- retrieves table properties as a 2D assoc array ['table_name' => ['prop1' => 'val', ..], ..]
 		getLoggedMemberID() -- returns memberID of logged member. If no login, returns anonymous memberID
 		getLoggedGroupID() -- returns groupID of logged member, or anonymous groupID
@@ -187,7 +187,7 @@
 		return $accessible_tables;
 	}
 	#########################################################
-	function getTableList($skip_authentication = false) {
+	function getTableList($skip_authentication = false, $include_internal_tables = false) {
 		$arrAccessTables = [];
 		$arrTables = [
 			/* 'table_name' => ['table caption', 'homepage description', 'icon', 'table group name'] */   
@@ -202,7 +202,31 @@
 			'units' => ['Units', 'Listing of all units, its details and current status.', 'resources/table_icons/change_password.png', 'Assets/Setup'],
 			'unit_photos' => ['Unit photos', '', 'resources/table_icons/camera_link.png', 'Assets/Setup'],
 		];
-		if($skip_authentication || getLoggedAdmin()) return $arrTables;
+
+		if($skip_authentication || getLoggedAdmin()) {
+			if($include_internal_tables) {
+				// merge internal tables with user tables
+				$internalIcon = 'resources/images/appgini-icon.png';
+				$internalTables = [
+					'appgini_csv_import_jobs',
+					'appgini_query_log',
+					'membership_cache',
+					'membership_grouppermissions',
+					'membership_groups',
+					'membership_userpermissions',
+					'membership_userrecords',
+					'membership_users',
+					'membership_usersessions',
+				];
+
+				// format internal tables as 'tn' => ['tn', '', icon, ''] and merge with user tables
+				$arrTables = array_merge($arrTables, array_combine(
+					$internalTables, 
+					array_map(function($tn) use($internalIcon) { return [$tn, '', $internalIcon, '']; }, $internalTables)
+				));
+			}
+			return $arrTables;
+		}
 
 		foreach($arrTables as $tn => $tc) {
 			$arrPerm = getTablePermissions($tn);
@@ -436,27 +460,7 @@
 		static $created = false;
 		if($created) return true;
 
-		$o = [
-			'silentErrors' => true,
-			'noSlowQueryLog' => true,
-			'noErrorQueryLog' => true
-		];
-
-		sql("CREATE TABLE IF NOT EXISTS `appgini_query_log` (
-			`datetime` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-			`statement` LONGTEXT,
-			`duration` DECIMAL(10,2) UNSIGNED DEFAULT 0.0,
-			`error` TEXT,
-			`memberID` VARCHAR(200),
-			`uri` VARCHAR(200)
-		) CHARSET " . mysql_charset, $o);
-
-		// check if table created
-		//$o2 = $o;
-		//$o2['error'] = '';
-		//sql("SELECT COUNT(1) FROM 'appgini_query_log'", $o2);
-
-		//$created = empty($o2['error']);
+		createTableIfNotExists('appgini_query_log');
 
 		$created = true;
 		return $created;
@@ -913,8 +917,9 @@
 		return $keys;
 	}
 	########################################################################
-	function get_table_fields($tn = null) {
-		static $schema = null;
+	function get_table_fields($tn = null, $include_internal_tables = false) {
+		static $schema = null, $internalTables = null;
+
 		if($schema === null) {
 			/* application schema as created in AppGini */
 			$schema = [
@@ -1702,11 +1707,101 @@
 					],
 				],
 			];
+
+			$internalTablesSimple = [
+				'appgini_csv_import_jobs' => [
+					'id' => "VARCHAR(40) NOT NULL PRIMARY KEY",
+					'memberID' => "VARCHAR(100) NOT NULL",
+					'config' => "TEXT",
+					'insert_ts' => "INT",
+					'last_update_ts' => "INT",
+					'total' => "INT DEFAULT '99999999'",
+					'done' => "INT DEFAULT '0'",
+				],
+				'appgini_query_log' => [
+					'datetime' => "TIMESTAMP DEFAULT CURRENT_TIMESTAMP",
+					'statement' => "LONGTEXT",
+					'duration' => "DECIMAL(10,2) UNSIGNED DEFAULT '0.00'",
+					'error' => "TEXT",
+					'memberID' => "VARCHAR(200)",
+					'uri' => "VARCHAR(200)",
+				],
+				'membership_cache' => [
+					'request' => "VARCHAR(100) NOT NULL PRIMARY KEY",
+					'request_ts' => "INT",
+					'response' => "LONGTEXT",
+				],
+				'membership_grouppermissions' => [
+					'permissionID' => "INT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT",
+					'groupID' => "INT UNSIGNED",
+					'tableName' => "VARCHAR(100)",
+					'allowInsert' => "TINYINT NOT NULL DEFAULT '0'",
+					'allowView' => "TINYINT NOT NULL DEFAULT '0'",
+					'allowEdit' => "TINYINT NOT NULL DEFAULT '0'",
+					'allowDelete' => "TINYINT NOT NULL DEFAULT '0'",
+				],
+				'membership_groups' => [
+					'groupID' => "INT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT",
+					'name' => "VARCHAR(100) NOT NULL UNIQUE",
+					'description' => "TEXT",
+					'allowSignup' => "TINYINT",
+					'needsApproval' => "TINYINT",
+					'allowCSVImport' => "TINYINT NOT NULL DEFAULT '0'",
+				],
+				'membership_userpermissions' => [
+					'permissionID' => "INT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT",
+					'memberID' => "VARCHAR(100) NOT NULL",
+					'tableName' => "VARCHAR(100)",
+					'allowInsert' => "TINYINT NOT NULL DEFAULT '0'",
+					'allowView' => "TINYINT NOT NULL DEFAULT '0'",
+					'allowEdit' => "TINYINT NOT NULL DEFAULT '0'",
+					'allowDelete' => "TINYINT NOT NULL DEFAULT '0'",
+				],
+				'membership_userrecords' => [
+					'recID' => "BIGINT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT",
+					'tableName' => "VARCHAR(100)",
+					'pkValue' => "VARCHAR(255)",
+					'memberID' => "VARCHAR(100)",
+					'dateAdded' => "BIGINT UNSIGNED",
+					'dateUpdated' => "BIGINT UNSIGNED",
+					'groupID' => "INT UNSIGNED",
+				],
+				'membership_users' => [
+					'memberID' => "VARCHAR(100) NOT NULL PRIMARY KEY",
+					'passMD5' => "VARCHAR(255)",
+					'email' => "VARCHAR(100)",
+					'signupDate' => "DATE",
+					'groupID' => "INT UNSIGNED",
+					'isBanned' => "TINYINT",
+					'isApproved' => "TINYINT",
+					'custom1' => "TEXT",
+					'custom2' => "TEXT",
+					'custom3' => "TEXT",
+					'custom4' => "TEXT",
+					'comments' => "TEXT",
+					'pass_reset_key' => "VARCHAR(100)",
+					'pass_reset_expiry' => "INT UNSIGNED",
+					'flags' => "TEXT",
+					'allowCSVImport' => "TINYINT NOT NULL DEFAULT '0'",
+					'data' => "LONGTEXT",
+				]
+			];
+
+			$internalTables = [];
+			// add 'appgini' and 'info' keys to internal tables fields
+			foreach($internalTablesSimple as $tableName => $fields) {
+				$internalTables[$tableName] = [];
+				foreach($fields as $fn => $fd) {
+					$internalTables[$tableName][$fn] = ['appgini' => $fd, 'info' => ['caption' => $fn, 'description' => '']];
+				}
+			}
 		}
 
-		if($tn === null) return $schema;
+		if($tn === null && !$include_internal_tables) return $schema;
 
-		return isset($schema[$tn]) ? $schema[$tn] : [];
+		if($tn === null) return array_merge($schema, $internalTables);
+
+		return $schema[$tn] ?? $internalTables[$tn] ?? [];
 	}
 	########################################################################
 	function updateField($tn, $fn, $dataType, $notNull = false, $default = null, $extra = null) {
@@ -1810,21 +1905,27 @@
 	}
 
 	########################################################################
+	function createTableIfNotExists($tn, $return_schema_without_executing = false) {
+		$schema = get_table_fields($tn);
+		if(!$schema) return false;
+
+		$create_sql = "CREATE TABLE IF NOT EXISTS `{$tn}` (";
+		foreach($schema as $fn => $fd) {
+			$create_sql .= "\n  `{$fn}` {$fd['appgini']}, ";
+		}
+		$create_sql = rtrim($create_sql, ', ') . "\n) CHARSET " . mysql_charset;
+		$create_sql = trim($create_sql);
+
+		if($return_schema_without_executing) return $create_sql;
+
+		$eo = ['silentErrors' => true, 'noErrorQueryLog' => true];
+		sql($create_sql, $eo);
+	}
+
+	########################################################################
 	function update_membership_groups() {
 		$tn = 'membership_groups';
-		$eo = ['silentErrors' => true, 'noErrorQueryLog' => true];
-
-		sql(
-			"CREATE TABLE IF NOT EXISTS `{$tn}` (
-				`groupID` INT UNSIGNED NOT NULL AUTO_INCREMENT,
-				`name` varchar(100) NOT NULL,
-				`description` TEXT,
-				`allowSignup` TINYINT,
-				`needsApproval` TINYINT,
-				`allowCSVImport` TINYINT NOT NULL DEFAULT '0',
-				PRIMARY KEY (`groupID`)
-			) CHARSET " . mysql_charset,
-		$eo);
+		createTableIfNotExists($tn);
 
 		updateField($tn, 'name', 'VARCHAR(100)', true);
 		addIndex($tn, 'name', true);
@@ -1833,31 +1934,7 @@
 	########################################################################
 	function update_membership_users() {
 		$tn = 'membership_users';
-		$eo = ['silentErrors' => true, 'noErrorQueryLog' => true];
-
-		sql(
-			"CREATE TABLE IF NOT EXISTS `{$tn}` (
-				`memberID` VARCHAR(100) NOT NULL, 
-				`passMD5` VARCHAR(255), 
-				`email` VARCHAR(100), 
-				`signupDate` DATE, 
-				`groupID` INT UNSIGNED, 
-				`isBanned` TINYINT, 
-				`isApproved` TINYINT, 
-				`custom1` TEXT, 
-				`custom2` TEXT, 
-				`custom3` TEXT, 
-				`custom4` TEXT, 
-				`comments` TEXT, 
-				`pass_reset_key` VARCHAR(100),
-				`pass_reset_expiry` INT UNSIGNED,
-				`flags` TEXT,
-				`allowCSVImport` TINYINT NOT NULL DEFAULT '0', 
-				`data` LONGTEXT,
-				PRIMARY KEY (`memberID`),
-				INDEX `groupID` (`groupID`)
-			) CHARSET " . mysql_charset,
-		$eo);
+		createTableIfNotExists($tn);
 
 		updateField($tn, 'pass_reset_key', 'VARCHAR(100)');
 		updateField($tn, 'pass_reset_expiry', 'INT UNSIGNED');
@@ -1871,25 +1948,7 @@
 	########################################################################
 	function update_membership_userrecords() {
 		$tn = 'membership_userrecords';
-		$eo = ['silentErrors' => true, 'noErrorQueryLog' => true];
-
-		sql(
-			"CREATE TABLE IF NOT EXISTS `{$tn}` (
-				`recID` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT, 
-				`tableName` VARCHAR(100), 
-				`pkValue` VARCHAR(255), 
-				`memberID` VARCHAR(100), 
-				`dateAdded` BIGINT UNSIGNED, 
-				`dateUpdated` BIGINT UNSIGNED, 
-				`groupID` INT UNSIGNED, 
-				PRIMARY KEY (`recID`),
-				UNIQUE INDEX `tableName_pkValue` (`tableName`, `pkValue`(100)),
-				INDEX `pkValue` (`pkValue`),
-				INDEX `tableName` (`tableName`),
-				INDEX `memberID` (`memberID`),
-				INDEX `groupID` (`groupID`)
-			) CHARSET " . mysql_charset,
-		$eo);
+		createTableIfNotExists($tn);
 
 		addIndex($tn, ['tableName' => null, 'pkValue' => 100], true);
 		addIndex($tn, 'pkValue');
@@ -1901,40 +1960,14 @@
 	########################################################################
 	function update_membership_grouppermissions() {
 		$tn = 'membership_grouppermissions';
-		$eo = ['silentErrors' => true, 'noErrorQueryLog' => true];
-
-		sql(
-			"CREATE TABLE IF NOT EXISTS `{$tn}` (
-				`permissionID` INT UNSIGNED NOT NULL AUTO_INCREMENT,
-				`groupID` INT UNSIGNED,
-				`tableName` VARCHAR(100),
-				`allowInsert` TINYINT NOT NULL DEFAULT '0',
-				`allowView` TINYINT NOT NULL DEFAULT '0',
-				`allowEdit` TINYINT NOT NULL DEFAULT '0',
-				`allowDelete` TINYINT NOT NULL DEFAULT '0',
-				PRIMARY KEY (`permissionID`)
-			) CHARSET " . mysql_charset,
-		$eo);
+		createTableIfNotExists($tn);
 
 		addIndex($tn, ['groupID', 'tableName'], true);
 	}
 	########################################################################
 	function update_membership_userpermissions() {
 		$tn = 'membership_userpermissions';
-		$eo = ['silentErrors' => true, 'noErrorQueryLog' => true];
-
-		sql(
-			"CREATE TABLE IF NOT EXISTS `{$tn}` (
-				`permissionID` INT UNSIGNED NOT NULL AUTO_INCREMENT,
-				`memberID` VARCHAR(100) NOT NULL,
-				`tableName` VARCHAR(100),
-				`allowInsert` TINYINT NOT NULL DEFAULT '0',
-				`allowView` TINYINT NOT NULL DEFAULT '0',
-				`allowEdit` TINYINT NOT NULL DEFAULT '0',
-				`allowDelete` TINYINT NOT NULL DEFAULT '0',
-				PRIMARY KEY (`permissionID`)
-			) CHARSET " . mysql_charset,
-		$eo);
+		createTableIfNotExists($tn);
 
 		updateField($tn, 'memberID', 'VARCHAR(100)', true);
 		addIndex($tn, ['memberID', 'tableName'], true);
@@ -1942,10 +1975,13 @@
 	########################################################################
 	function update_membership_usersessions() {
 		$tn = 'membership_usersessions';
+
+		// not using createTableIfNotExists() here because we need to add a composite unique index,
+		// which is not supported by that function yet
 		$eo = ['silentErrors' => true, 'noErrorQueryLog' => true];
 
 		sql(
-			"CREATE TABLE IF NOT EXISTS `membership_usersessions` (
+			"CREATE TABLE IF NOT EXISTS `$tn` (
 				`memberID` VARCHAR(100) NOT NULL,
 				`token` VARCHAR(100) NOT NULL,
 				`agent` VARCHAR(100) NOT NULL,
@@ -1959,16 +1995,7 @@
 	########################################################################
 	function update_membership_cache() {
 		$tn = 'membership_cache';
-		$eo = ['silentErrors' => true, 'noErrorQueryLog' => true];
-
-		sql(
-			"CREATE TABLE IF NOT EXISTS `membership_cache` (
-				`request` VARCHAR(100) NOT NULL,
-				`request_ts` INT,
-				`response` LONGTEXT,
-				PRIMARY KEY (`request`)
-			) CHARSET " . mysql_charset,
-		$eo);
+		createTableIfNotExists($tn);
 
 		updateField($tn, 'response', 'LONGTEXT');
 	}
@@ -2461,9 +2488,9 @@
 		return true;
 	}
 	#########################################################
-	function safe_html($str, $noBr = false) {
+	function safe_html($str, $preserveNewLines = false) {
 		/* if $str has no HTML tags, apply nl2br */
-		if($str == strip_tags($str)) return $noBr ? $str : nl2br($str);
+		if($str == strip_tags($str)) return $preserveNewLines ? $str : nl2br($str);
 
 		$hc = new CI_Input(datalist_db_encoding);
 		$str = $hc->xss_clean(bgStyleToClass($str));
@@ -2819,7 +2846,7 @@
 	 *  @brief converts string from utf8 to app-configured encoding
 	 *  
 	 *  @param [in] $str string to convert from utf8
-	 *  @return utf8-decoded string
+	 *  @return string utf8-decoded string
 	 *  
 	 *  @details if the constant 'datalist_db_encoding' is not defined, original string is returned
 	 */
@@ -3152,6 +3179,12 @@
 		// Correct <MaxSize> and <FileTypes> to prevent invalid HTML
 		$template = str_replace(['<MaxSize>', '<FileTypes>'], ['{MaxSize}', '{FileTypes}'], $template);
 		$template = str_replace('<%%BASE_UPLOAD_PATH%%>', getUploadDir(''), $template);
+
+		// strip lines that only contain HTML comments
+		$template = preg_replace('/^\s*<!--.*?-->\s*$/m', '', $template);
+
+		// strip lines that only contain whitespace
+		$template = preg_replace('/^\s*$/m', '', $template);
 
 		return $template;
 	}

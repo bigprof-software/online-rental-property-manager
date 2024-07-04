@@ -14,10 +14,11 @@
 		$schema: [ tablename => [ fieldname => [ appgini => '...', 'db' => '...'], ... ], ... ]
 	*/
 
-	/* application schema as created in AppGini */
-	$schema = get_table_fields();
+	/* application schema as created in AppGini, including internal tables */
+	$schema = get_table_fields(null, true);
 
-	$table_captions = getTableList();
+	/* list of all tables in the database, including internal tables */
+	$table_captions = getTableList(true, true);
 
 	/* function for preparing field definition for comparison */
 	function prepare_def($def) {
@@ -45,6 +46,9 @@
 
 		/* ignore zero-padding for date data types */
 		$def = preg_replace("/date\s*default\s*'([0-9]{4})-0?([1-9])-0?([1-9])'/i", "date default '$1-$2-$3'", $def);
+
+		/* if default is CURRENT_TIMESTAMP, remove single quotes */
+		$def = preg_replace("/default\s*'CURRENT_TIMESTAMP'/i", "default current_timestamp", $def);
 
 		return trim($def);
 	}
@@ -248,7 +252,7 @@
 </script>
 
 <table class="table table-responsive table-hover table-striped">
-	<thead><tr>
+	<thead><tr class="active">
 		<th></th>
 		<th><?php echo $Translation['field'] ; ?></th>
 		<th><?php echo $Translation['AppGini definition'] ; ?></th>
@@ -258,18 +262,37 @@
 
 	<tbody>
 	<?php foreach($schema as $tn => $fields) { ?>
-		<tr class="text-info"><td colspan="5">
-			<h4 data-placement="auto top" data-toggle="tooltip" title="<?php echo str_replace ( "<TABLENAME>" , $tn , $Translation['table name title']) ; ?>"><img src="../<?php echo $table_captions[$tn][2]; ?>"> <?php echo $table_captions[$tn][0]; ?></h4>
+		<tr class="info"><th colspan="5">
+			<h4>
+				<img src="../<?php echo $table_captions[$tn][2]; ?>" class="hspacer-md"> 
+				<span  data-placement="auto top" data-toggle="tooltip" title="<?php echo html_attr(str_replace( "<TABLENAME>", $tn, $Translation['table name title'])); ?>">
+					<?php echo $table_captions[$tn][0]; ?>
+				</span>
+
+				<!-- single button dropdown -->
+				<div class="btn-group pull-right always_shown">
+					<button type="button" class="btn btn-default btn-xs dropdown-toggle hspacer-lg" data-toggle="dropdown" title="SQL">
+						<i class="glyphicon glyphicon-info-sign"></i> <span class="caret"></span>
+					</button>
+					<ul class="dropdown-menu sql-display">
+						<li><?php echo createTableIfNotExists($tn, true); ?></li>
+					</ul>
+				</div>
+			</h4>
+
 			<?php if(mysql_charset == 'utf8mb4' && $tableCharset[$tn] != 'utf8mb4') { ?>
 				<span class="label label-danger"><?php echo $Translation['unicode error']; ?></span>
 			<?php } ?>
-		</td></tr>
+		</th></tr>
 		<?php foreach($fields as $fn => $fd) { ?>
 			<?php $diff = ((prepare_def($fd['appgini']) == prepare_def($fd['db'])) ? false : true); ?>
 			<?php $no_db = ($fd['db'] ? false : true); ?>
 			<tr class="<?php echo ($diff ? 'warning' : 'field_ok'); ?>">
-				<td><i class="glyphicon glyphicon-<?php echo ($diff ? 'remove text-danger' : 'ok text-success'); ?>"></i></td>
-				<td><?php echo $fn; ?></td>
+				<td></td>
+				<td>
+					<i class="hspacer-md glyphicon glyphicon-<?php echo ($diff ? 'remove text-danger' : 'ok text-success'); ?>"></i>
+					<?php echo $fn; ?>
+				</td>
 				<td class="<?php echo ($diff ? 'bold text-success' : ''); ?>"><samp><?php echo $fd['appgini']; ?></samp></td>
 				<td class="<?php echo ($diff ? 'bold text-danger' : ''); ?>"><?php echo thisOr("<samp>{$fd['db']}</samp>", $Translation['does not exist']); ?></td>
 				<td>
@@ -288,8 +311,19 @@
 <div class="alert summary"></div>
 
 <style>
-	.bold{ font-weight: bold; }
-	[data-toggle="tooltip"]{ display: inline-block !important; }
+	.bold { font-weight: bold; }
+	[data-toggle="tooltip"] { display: inline-block !important; }
+	.sql-display {
+		max-width: 600px;
+		min-width: 40vw;
+		padding: 2em;
+	}
+	.sql-display li {
+		white-space: pre;
+		font-family: monospace;
+		overflow: auto;
+		line-height: 1.5;
+	}
 </style>
 
 <script>

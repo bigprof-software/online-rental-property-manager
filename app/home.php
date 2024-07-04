@@ -196,7 +196,12 @@
 			$j('div[id$="-tile"] .panel-body-description').css({height: 'auto'});
 		}
 
-		$j('.panel-body .btn').height(32);
+		// adjust button heights to be equal and at least 32px
+		AppGini.repeatUntil({
+			action: () => $j('.panel-body .btn').height(32),
+			condition: () => Math.min(...$j('.panel-body .btn').map((_, el) => $j(el).height()).get().filter(height => height >= 0)) >= 32,
+			frequency: 100,
+		})
 
 		$j('.btn-add-new').click(function() {
 			var tn = $j(this).attr('id').replace(/_add_new$/, '');

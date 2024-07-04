@@ -879,6 +879,21 @@
 				return '';
 			}
 
+			// if html data not empty, apply max width and height in place of provided height and width
+			$provided_width = $data['width'] ?? null;
+			$provided_height = $data['height'] ?? null;
+			if($provided_width && $provided_height) {
+				$aspect_ratio = $provided_width / $provided_height;
+				if($max_width / $aspect_ratio < $max_height) {
+					$max_height = intval($max_width / $aspect_ratio);
+				} else {
+					$max_width = intval($max_height * $aspect_ratio);
+				}
+
+				$data['html'] = str_replace("width=\"{$provided_width}\"", "width=\"{$max_width}\"", $data['html']);
+				$data['html'] = str_replace("height=\"{$provided_height}\"", "height=\"{$max_height}\"", $data['html']);
+			}
+
 			return (isset($data[$retrieve]) ? $data[$retrieve] : $data['html']);
 		}
 

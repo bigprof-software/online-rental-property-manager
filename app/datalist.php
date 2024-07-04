@@ -156,6 +156,13 @@ class DataList {
 		$deselect_x = Request::val('deselect_x');
 		$addNew_x = Request::val('addNew_x');
 		$dvprint_x = Request::val('dvprint_x');
+
+		// records per page: if user-provided and > 0, use it, else use default
+		$defaultRPP = $this->RecordsPerPage;
+		$userRPP = intval(Request::val('RecordsPerPage'));
+		$appliedRecordsPerPage = ($userRPP > 0 ? $userRPP : $defaultRPP);
+		$this->RecordsPerPage = $appliedRecordsPerPage;
+
 		$DisplayRecords = (in_array(Request::val('DisplayRecords'), ['user', 'group']) ? Request::val('DisplayRecords') : 'all');
 		list($this->FilterAnd, $this->FilterField, $this->FilterOperator, $this->FilterValue) = $this->validate_filters($_REQUEST, $FiltersPerGroup);
 		$record_selector = [];
@@ -676,7 +683,7 @@ class DataList {
 				}
 			}
 
-			$tvRecords = $this->getTVRevords($FirstRecord);
+			$tvRecords = $this->getTVRecords($FirstRecord);
 			$fieldCountTV = count($this->QueryFieldsTV);
 			$indexOfSelectedID = null;
 
@@ -835,10 +842,10 @@ class DataList {
 						$this->HTML .= $this->tv_tools();
 						$this->HTML .= '<p></p>';
 					$this->HTML .= '</div>';
-
-					$this->HTML .= '<div class="row"><div data-table="' . $this->TableName . '" class="table-' . $this->TableName . ' table_view col-xs-12 ' . $this->TVClasses . '">';
-					$tvRowNeedsClosing = true;
 				}
+
+				$this->HTML .= '<div class="row"><div data-table="' . $this->TableName . '" class="table-' . $this->TableName . ' table_view col-xs-12 ' . $this->TVClasses . '">';
+				$tvRowNeedsClosing = true;
 
 				if($Print_x != '') {
 					/* fix top margin for print-preview */
@@ -1067,65 +1074,21 @@ class DataList {
 					$pagesMenu = '';
 					if($RecordCount > $this->RecordsPerPage) {
 						$pagesMenuId = "{$this->TableName}_pagesMenu";
-						$pagesMenu = $this->translation['go to page'] . ' <select style="width: 90%; max-width: 8em;" class="input-sm ltr form-control" id="' . $pagesMenuId . '" onChange="document.myform.writeAttribute(\'novalidate\', \'novalidate\'); document.myform.NoDV.value = 1; document.myform.FirstRecord.value = (this.value * ' . $this->RecordsPerPage . '+1); document.myform.submit();">';
-						$pagesMenu .= '</select>';
 
-						$pagesMenu .= '<script>';
-						$pagesMenu .= 'var lastPage = ' . (ceil($RecordCount / $this->RecordsPerPage) - 1) . ';';
-						$pagesMenu .= 'var currentPage = ' . (($FirstRecord - 1) / $this->RecordsPerPage) . ';';
-						$pagesMenu .= 'var pagesMenu = document.getElementById("' . $pagesMenuId . '");';
-						$pagesMenu .= 'var lump = ' . datalist_max_page_lump . ';';
-
-						$pagesMenu .= 'if(lastPage <= lump * 3) {';
-						$pagesMenu .= '  addPageNumbers(0, lastPage);';
-						$pagesMenu .= '} else {';
-						$pagesMenu .= '  addPageNumbers(0, lump - 1);';
-						$pagesMenu .= '  if(currentPage < lump) addPageNumbers(lump, currentPage + lump / 2);';
-						$pagesMenu .= '  if(currentPage >= lump && currentPage < (lastPage - lump)) {';
-						$pagesMenu .= '    addPageNumbers(';
-						$pagesMenu .= '      Math.max(currentPage - lump / 2, lump),';
-						$pagesMenu .= '      Math.min(currentPage + lump / 2, lastPage - lump - 1)';
-						$pagesMenu .= '    );';
-						$pagesMenu .= '  }';
-						$pagesMenu .= '  if(currentPage >= (lastPage - lump)) addPageNumbers(currentPage - lump / 2, lastPage - lump - 1);';
-						$pagesMenu .= '  addPageNumbers(lastPage - lump, lastPage);';
-						$pagesMenu .= '}';
-
-						$pagesMenu .= 'function addPageNumbers(fromPage, toPage) {';
-						$pagesMenu .= '  var ellipsesIndex = 0;';
-						$pagesMenu .= '  if(fromPage > toPage) return;';
-						$pagesMenu .= '  if(fromPage > 0) {';
-						$pagesMenu .= '    if(pagesMenu.options[pagesMenu.options.length - 1].text != fromPage) {';
-						$pagesMenu .= '      ellipsesIndex = pagesMenu.options.length;';
-						$pagesMenu .= '      fromPage--;';
-						$pagesMenu .= '    }';
-						$pagesMenu .= '  }';
-						$pagesMenu .= '  for(i = fromPage; i <= toPage; i++) {';
-						$pagesMenu .= '    var option = document.createElement("option");';
-						$pagesMenu .= '    option.text = (i + 1);';
-						$pagesMenu .= '    option.value = i;';
-						$pagesMenu .= '    if(i == currentPage) { option.selected = "selected"; }';
-						$pagesMenu .= '    try{';
-						$pagesMenu .= '      /* for IE earlier than version 8 */';
-						$pagesMenu .= '      pagesMenu.add(option, pagesMenu.options[null]);';
-						$pagesMenu .= '    }catch(e) {';
-						$pagesMenu .= '      pagesMenu.add(option, null);';
-						$pagesMenu .= '    }';
-						$pagesMenu .= '  }';
-						$pagesMenu .= '  if(ellipsesIndex > 0) {';
-						$pagesMenu .= '    pagesMenu.options[ellipsesIndex].text = " ... ";';
-						$pagesMenu .= '  }';
-						$pagesMenu .= '}';
-						$pagesMenu .= '</script>';
+						$pagesMenu  = "<label class=\"hidden-xs\" for=\"$pagesMenuId\">{$this->translation['go to page']}</label>"; 
+						$pagesMenu .= '<select class="input-sm ltr form-control hspacer-md text-center" id="' . $pagesMenuId . '"></select>';
+						$pagesMenu .= '<script>$j(() => {' .
+								'AppGini.preparePagesMenu(' .
+									"{$this->RecordsPerPage}, " .
+									"'{$pagesMenuId}', " .
+									(ceil($RecordCount / $this->RecordsPerPage) - 1) . ', ' . // last page
+									(($FirstRecord - 1) / $this->RecordsPerPage) . ', ' . // current page
+									datalist_max_page_lump . // lump
+								');' .
+							'});</script>';
 					}
 
 					$this->HTML .= "\n\t";
-
-					if($i) { // 1 or more records found
-						$this->HTML .= "<tfoot><tr><td colspan=".(count($this->ColCaption)+1).'>';
-							$this->HTML .= $this->translation['records x to y of z'];
-						$this->HTML .= '</td></tr></tfoot>';
-					}
 
 					if(!$i) { // no records found
 						$this->HTML .= "<tfoot><tr><td colspan=".(count($this->ColCaption)+1).'>';
@@ -1133,43 +1096,50 @@ class DataList {
 								$this->HTML .= '<i class="glyphicon glyphicon-warning-sign"></i> ';
 								$this->HTML .= $this->translation['No matches found!'];
 							$this->HTML .= '</div>';
+							$this->HTML .= '<style> .record-count-info { display: none; } </style>';
 						$this->HTML .= '</td></tr></tfoot>';
 					}
 
 				} else { // TVP
-					if($i)  $this->HTML .= "\n\t<tfoot><tr><td colspan=".(count($this->ColCaption) + 1). '>' . $this->translation['records x to y of z'] . '</td></tr></tfoot>';
-					if(!$i) $this->HTML .= "\n\t<tfoot><tr><td colspan=".(count($this->ColCaption) + 1). '>' . $this->translation['No matches found!'] . '</td></tr></tfoot>';
+					if(!$i) $this->HTML .= "\n\t<tfoot><tr><td colspan=" . (count($this->ColCaption) + 1) . '>' . $this->translation['No matches found!'] . '</td></tr></tfoot>';
 				}
 
-				$this->HTML = str_replace("<FirstRecord>", '<span class="first-record locale-int">' . $FirstRecord . '</span>', $this->HTML);
-				$this->HTML = str_replace("<LastRecord>", '<span class="last-record locale-int">' . $i . '</span>', $this->HTML);
-				$this->HTML = str_replace("<RecordCount>", '<span class="record-count locale-int">' . $RecordCount . '</span>', $this->HTML);
 				$tvShown = true;
 
 				$this->HTML .= "</table></div>\n";
 
-				/* highlight quick search matches */
-				if(strlen($SearchString) && $RecordCount) $this->HTML .= '<script>$j(function() { $j(".table_view .table-responsive td").mark("' . html_attr($SearchString) . '", { className: "text-bold bg-warning", diacritics: false }); })</script>';
+				// records count TV/TVP footer
+				$recordCountHtml = str_replace(
+					['<FirstRecord>', '<LastRecord>', '<RecordCount>'],
+					[
+						'<span class="first-record locale-int">' . $FirstRecord . '</span>',
+						'<span class="last-record locale-int">' . $i . '</span>',
+						'<span class="record-count locale-int">' . $RecordCount . '</span>'
+					],
+					$this->translation['records x to y of z']
+				);
+				$this->HTML .= '<div class="bspacer-lg record-count-info">' . $recordCountHtml . '</div>';
 
-				if($Print_x == '' && $i) { // TV
-					$this->HTML .= '<div class="row pagination-section">';
-						$this->HTML .= '<div class="col-xs-4 col-md-3 col-lg-2 vspacer-lg">';
+				// records count and pagination in TV if 1 or more records found
+				if($i && $Print_x == '') {
+
+					$this->HTML .= '<div class="pagination-section">';
+						$this->HTML .= '<div class="">';
 						if($FirstRecord > 1) 
-							$this->HTML .= '<div class="visible-xs">&nbsp;</div>' .
-								'<button onClick="' . $resetSelection . ' document.myform.NoDV.value = 1; return true;" type="submit" name="Previous_x" id="Previous" value="1" class="btn btn-default btn-block"><i class="glyphicon glyphicon-chevron-left rtl-mirror"></i> <span class="hidden-xs">' . $this->translation['Previous'] . '</span></button>';
+							$this->HTML .= '<button onClick="' . $resetSelection . ' document.myform.NoDV.value = 1; return true;" type="submit" name="Previous_x" id="Previous" value="1" class="btn btn-default btn-block" style="max-width: 15em;"><i class="glyphicon glyphicon-chevron-left rtl-mirror"></i> <span class="hidden-xs">' . $this->translation['Previous'] . '</span></button>';
 						$this->HTML .= '</div>';
 
-						$this->HTML .= '<div class="col-xs-4 col-md-4 col-lg-2 col-md-offset-1 col-lg-offset-3 text-center vspacer-lg form-inline">';
-							$this->HTML .= $pagesMenu;
-						$this->HTML .= '</div>';
+						$this->HTML .= '<div class="form-inline">' . $pagesMenu . '</div>';
 
-						$this->HTML .= '<div class="col-xs-4 col-md-3 col-lg-2 col-md-offset-1 col-lg-offset-3 text-right vspacer-lg">';
+						$this->HTML .= '<div>';
 						if($i < $RecordCount)
-							$this->HTML .= '<div class="visible-xs">&nbsp;</div>' .
-								'<button onClick="' . $resetSelection . ' document.myform.NoDV.value = 1; return true;" type="submit" name="Next_x" id="Next" value="1" class="btn btn-default btn-block"><span class="hidden-xs">' . $this->translation['Next'] . '</span> <i class="glyphicon glyphicon-chevron-right rtl-mirror"></i></button>';
+							$this->HTML .= '<button onClick="' . $resetSelection . ' document.myform.NoDV.value = 1; return true;" type="submit" name="Next_x" id="Next" value="1" class="btn btn-default btn-block" style="max-width: 15em; margin-left: auto;"><span class="hidden-xs">' . $this->translation['Next'] . '</span> <i class="glyphicon glyphicon-chevron-right rtl-mirror"></i></button>';
 						$this->HTML .= '</div>';
 					$this->HTML .= '</div>';
 				}
+
+				/* highlight quick search matches */
+				if(strlen($SearchString) && $RecordCount) $this->HTML .= '<script>$j(function() { $j(".table_view .table-responsive td").mark("' . html_attr($SearchString) . '", { className: "text-bold bg-warning", diacritics: false }); })</script>';
 
 				$this->HTML .= '</div>'; // end of div.table_view
 
@@ -1195,7 +1165,9 @@ class DataList {
 		$this->HTML .= '<input name="FirstRecord" type="hidden" value="' . $FirstRecord . '">';
 		$this->HTML .= '<input name="NoDV" type="hidden" value="">';
 		$this->HTML .= '<input name="PrintDV" type="hidden" value="">';
-		if($this->QuickSearch && !strpos($this->HTML, 'SearchString')) $this->HTML .= '<input name="SearchString" type="hidden" value="' . html_attr($SearchString) . '">';
+		$this->HTML .= '<input name="RecordsPerPage" type="hidden" value="' . $appliedRecordsPerPage . '">';
+		if(/*$this->QuickSearch &&*/ !strpos($this->HTML, ' name="SearchString"')) $this->HTML .= '<input name="SearchString" type="hidden" value="' . html_attr($SearchString) . '">';
+
 		// hidden variables: filters ...
 		$FiltersCode = '';
 		for($i = 1; $i <= (datalist_filters_count * $FiltersPerGroup); $i++) { // Number of filters allowed
@@ -1661,7 +1633,7 @@ class DataList {
 		return $this->buildQuery($tvFields, $first - 1, $this->RecordsPerPage);
 	}
 
-	function getTVRevords($first) {
+	function getTVRecords($first) {
 		//$eo = ['silentErrors' => true];
 		$result = sql($this->getTVQuery($first), $eo);
 		$tvRecords = [];

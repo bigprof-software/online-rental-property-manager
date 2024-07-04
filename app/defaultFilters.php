@@ -248,6 +248,9 @@
 	}
 ?>
 
+<input type="hidden" name="RecordsPerPage" value="<?php echo intval($this->RecordsPerPage); ?>">
+<input type="hidden" name="SearchString" value="<?php echo html_attr($SearchString); ?>">
+
 <!-- filter actions -->
 <div class="row">
 	<div class="col-md-2 col-md-offset-2 vspacer-lg">

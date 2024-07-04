@@ -876,36 +876,24 @@
 		}
 
 		private function setupDb() {
-			$eo = ['silentErrors' => true];
-
 			$tn = self::JOBS_TABLE;
-			sql(
-				"CREATE TABLE IF NOT EXISTS `{$tn}` (
-					`id` VARCHAR(40) NOT NULL,
-					`memberID` VARCHAR(100) NOT NULL,
-					`config` TEXT,
-					`insert_ts` INT,
-					`last_update_ts` INT,
-					`total` INT DEFAULT 99999999,
-					`done` INT DEFAULT 0,
-					PRIMARY KEY (`id`),
-					INDEX `memberID` (`memberID`)
-				) CHARSET " . mysql_charset,
-			$eo);
+			createTableIfNotExists($tn);
+			addIndex($tn, 'memberID');
 
 			// TODO
 			/*
 			$tn = self::JOBS_LOG_TABLE;
-			sql(
-				"CREATE TABLE IF NOT EXISTS `{$tn}` (
-					`id` BIGINT NOT NULL AUTO_INCREMENT,
-					`job_id` VARCHAR(40) NOT NULL,
-					`ts` INT,
-					`details` TEXT,
-					PRIMARY KEY (`id`),
-					INDEX `job_id` (`job_id`)
-				) CHARSET " . mysql_charset,
-			$eo);
+			createTableIfNotExists($tn);
+			addIndex($n, 'job_id');
+
+			CREATE TABLE IF NOT EXISTS `{$tn}` (
+				`id` BIGINT NOT NULL AUTO_INCREMENT,
+				`job_id` VARCHAR(40) NOT NULL,
+				`ts` INT,
+				`details` TEXT,
+				PRIMARY KEY (`id`),
+				INDEX `job_id` (`job_id`)
+			) CHARSET mysql_charset
 			*/
 		}
 
