@@ -49,6 +49,7 @@
 
 		/* if default is CURRENT_TIMESTAMP, remove single quotes */
 		$def = preg_replace("/default\s*'CURRENT_TIMESTAMP'/i", "default current_timestamp", $def);
+		$def = preg_replace("/default\s*'CURRENT_TIMESTAMP\(\)'/i", "default current_timestamp", $def);
 
 		return trim($def);
 	}

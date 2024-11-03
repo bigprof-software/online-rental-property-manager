@@ -7,12 +7,9 @@
 	}
 
 	$sql = trim(Request::val('sql'));
-	if(
-		!preg_match('/^SELECT\s+.*?\s+FROM\s+\S+/i', $sql)
-		&& !preg_match('/^SHOW\s+/i', $sql)
-	) {
+	if(!preg_match('/^\s*(SELECT\s+.*?\s+FROM\s+\S+|SHOW\s+)/is', $sql)) {
 		@header('HTTP/1.0 404 Not Found');
-		die("Invalid query");
+		die('Invalid query');
 	}
 
 	// force a limit of 1000 to SELECT queries in case no limit specified

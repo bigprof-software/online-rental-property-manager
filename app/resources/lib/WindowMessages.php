@@ -49,6 +49,9 @@
 class WindowMessages {
 	private static function getExistingOrNewWindowId() {
 		$widFromRequest = Request::val('browser_window_id');
+		// strip all non-alphanumeric characters
+		$widFromRequest = preg_replace('/[^a-z0-9]/i', '', $widFromRequest);
+
 		if($widFromRequest) return $widFromRequest;
 
 		// abort if ajax request
@@ -77,7 +80,7 @@ class WindowMessages {
 	 */
 	public static function injectWindowId($buffer) {
 		$wid = self::getExistingOrNewWindowId();
-		
+
 		// if buffer already contains window id, do nothing
 		if(strpos($buffer, 'name="browser_window_id" value="' . $wid) !== false) return $buffer;
 

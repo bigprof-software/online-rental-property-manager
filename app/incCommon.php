@@ -910,34 +910,61 @@
 		$url_parts = parse_url($url);
 		$coords_regex = '/-?\d+(\.\d+)?[,+]-?\d+(\.\d+)?(,\d{1,2}z)?/'; /* https://stackoverflow.com/questions/2660201 */
 
-		if(preg_match($coords_regex, $url_parts['path'] . '?' . $url_parts['query'], $m)) {
-			list($lat, $long, $zoom) = explode(',', $m[0]);
-			$zoom = intval($zoom);
-			if(!$zoom) $zoom = 10; /* default zoom */
-			if(!$max_height) $max_height = 360;
-			if(!$max_width) $max_width = 480;
-
-			$api_key = config('adminConfig')['googleAPIKey'];
-			$embed_url = "https://www.google.com/maps/embed/v1/view?key={$api_key}&amp;center={$lat},{$long}&amp;zoom={$zoom}&amp;maptype=roadmap";
-			$thumbnail_url = "https://maps.googleapis.com/maps/api/staticmap?key={$api_key}&amp;center={$lat},{$long}&amp;zoom={$zoom}&amp;maptype=roadmap&amp;size={$max_width}x{$max_height}";
-
-			if($retrieve == 'html') {
-				return "<iframe width=\"{$max_width}\" height=\"{$max_height}\" frameborder=\"0\" style=\"border:0\" src=\"{$embed_url}\"></iframe>";
-			} else {
-				return $thumbnail_url;
-			}
-		} else {
+		if(!preg_match($coords_regex, $url_parts['path'] . '?' . $url_parts['query'], $m))
 			return '<div class="text-danger">' . $Translation['cant retrieve coordinates from url'] . '</div>';
+
+		list($lat, $long, $zoom) = explode(',', $m[0]);
+		$zoom = intval($zoom);
+		if(!$zoom) $zoom = 15; /* default zoom */
+		if(!$max_height) $max_height = 360;
+		if(!$max_width) $max_width = 480;
+
+		$api_key = config('adminConfig')['googleAPIKey'];
+
+		// if max_height is all numeric, append 'px' to it
+		$frame_height = $max_height;
+		if(is_numeric($frame_height)) $frame_height .= 'px';
+
+		$embed_url = 'https://www.google.com/maps/embed/v1/%s?' . http_build_query([
+			'key' => $api_key,
+			'zoom' => $zoom,
+			'maptype' => 'roadmap',
+		], '', '&amp;');
+
+		$thumbnail_url = 'https://maps.googleapis.com/maps/api/staticmap?' . http_build_query([
+			'key' => $api_key,
+			'zoom' => $zoom,
+			'maptype' => 'roadmap',
+			'size' => "{$max_width}x{$max_height}",
+			'center' => "$lat,$long",
+		], '', '&amp;');
+
+		$iframe = "<iframe allowfullscreen loading=\"lazy\" style=\"border: none; width: 100%%; height: $frame_height;\" src=\"%s\" referrerpolicy=\"no-referrer-when-downgrade\"></iframe>";
+
+		switch($retrieve) {
+			case 'html':
+				$embed_url = sprintf($embed_url, 'view') . '&amp;' . http_build_query(['center' => "$lat,$long"]);
+				return sprintf($iframe, $embed_url);
+			case 'html-pinpoint':
+				$embed_url = sprintf($embed_url, 'place') . '&amp;' . http_build_query(['q' => "$lat,$long"]);
+				return sprintf($iframe, $embed_url);
+			case 'thumbnail-pinpoint':
+				return $thumbnail_url . '&amp;' . http_build_query(['markers' => "$lat,$long"]);
+			default: // 'thumbnail'
+				return $thumbnail_url;
 		}
 	}
 
 	#########################################################
 
 	function request_cache($request, $force_fetch = false) {
+		static $cache_table_exists = null;
 		$max_cache_lifetime = 7 * 86400; /* max cache lifetime in seconds before refreshing from source */
 
 		// force fetching request if no cache table exists
-		$cache_table_exists = sqlValue("show tables like 'membership_cache'");
+		if($cache_table_exists === null)
+			$cache_table_exists = sqlValue("show tables like 'membership_cache'");
+
 		if(!$cache_table_exists)
 			return request_cache($request, true);
 

@@ -532,7 +532,7 @@
 				db_test_in_progress = true;
 
 				testFeedback
-					.html(AppGini.Translate._map['checking database info'])
+					.html(<?php echo json_encode($Translation['checking database info']); ?>)
 					.removeClass('alert-danger alert-success hidden')
 					.addClass('alert-warning');
 
@@ -543,12 +543,12 @@
 					success: (resp) => {
 						testFeedback
 							.addClass('alert-success')
-							.html(AppGini.Translate._map['Database info is correct'])
+							.html(<?php echo json_encode($Translation['Database info is correct']); ?>)
 					},
 					error: () => {
 						testFeedback
 							.addClass('alert-danger')
-							.html(AppGini.Translate._map['Database connection error'])
+							.html(<?php echo json_encode($Translation['Database connection error']); ?>)
 					},
 					complete: () => {
 						db_test_in_progress = false;

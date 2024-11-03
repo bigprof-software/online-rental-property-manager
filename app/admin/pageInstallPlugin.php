@@ -141,11 +141,16 @@
 	function pageJS() {
 		global $Translation;
 
+		$pluginsOrderNum = getUserData('pluginsOrderNum');
+		$pluginsEmail = getUserData('pluginsEmail');
+
 		ob_start(); ?>
 		<script>
 			$j(() => {
 				const numSteps = $j('#accordion .panel').length;
 				const csrf_token = '<?php echo csrf_token(false, true); ?>';
+				const pluginsOrderNum = <?php echo json_encode($pluginsOrderNum); ?>;
+				const pluginsEmail = <?php echo json_encode($pluginsEmail); ?>;
 
 				const expandStep = (step) => {
 					$j(`#step${step}`).addClass('expanded').children('.panel-body').removeClass('hidden');
@@ -180,9 +185,9 @@
 					expandStep(2);
 				}
 
-				// if email and order number are stored in localStorage, populate form with them
-				$j('#email').val(localStorage.getItem('AppGini.plugins.email'));
-				$j('#orderNum').val(localStorage.getItem('AppGini.plugins.orderNum'));
+				// if email and order number are stored in user data, populate form with them
+				$j('#email').val(pluginsEmail);
+				$j('#orderNum').val(pluginsOrderNum);
 
 				// expand step 1 by default
 				expandStep(1);
@@ -250,10 +255,6 @@
 
 							// hide error message
 							$j('#order-login-error').addClass('hidden');
-
-							// store email and order number in localStorage for future use
-							localStorage.setItem('AppGini.plugins.email', email);
-							localStorage.setItem('AppGini.plugins.orderNum', orderNum);
 
 							populatePlugins(resp.data);
 						},
@@ -423,6 +424,10 @@
 		// if no links found, return error
 		if(!count($links))
 			die(json_response($Translation['no plugins available'], true));
+
+		// store order num and email to user data
+		setUserData('pluginsOrderNum', $order);
+		setUserData('pluginsEmail', $email);
 
 		// parse plugin names from links
 		$plugins = [];

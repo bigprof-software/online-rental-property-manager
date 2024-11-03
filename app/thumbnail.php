@@ -69,7 +69,6 @@
 		if($thumbInfo && $fp) {
 			$file_size = filesize($img);
 			@header("Last-Modified: {$last_modified_gmt}", true, 200);
-			@header("Pragma:");
 			@header("Cache-Control: private, max-age=864000", true);
 			@header("Content-type: {$thumbInfo['mime']}");
 			@header("Content-Length: {$file_size}");

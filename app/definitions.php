@@ -3,7 +3,7 @@
 	@define('SESSION_NAME', 'Rental_property_manager');
 	@define('APP_TITLE', 'Rental Property Manager');
 	@define('APP_DIR', __DIR__);
-	@define('APP_VERSION', '24.15');
+	@define('APP_VERSION', '24.18');
 	@define('maxSortBy', 4);
 	@define('empty_lookup_value', '{empty_value}');
 	@define('MULTIPLE_SUPER_ADMINS', false);

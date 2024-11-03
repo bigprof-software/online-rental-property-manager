@@ -131,9 +131,10 @@ $j(function() {
 	}
 
 	var validSql = function(sql) {
+		const regex = /^\s*(SELECT\s+.*?\s+FROM\s+\S+|SHOW\s+)/is;
 		if(sql === undefined) sql = $j('#sql').val();
-		$j('#sql-begins-not-with-select').toggleClass('hidden', /^\s*(SELECT|SHOW)\s+/i.test(sql));
-		return /^\s*SELECT\s+.*?\s+FROM\s+\S+/i.test(sql) || /^\s*SHOW\s+/i.test(sql);
+		$j('#sql-begins-not-with-select').toggleClass('hidden', regex.test(sql));
+		return regex.test(sql);
 	}
 
 	var resetResults = function() {

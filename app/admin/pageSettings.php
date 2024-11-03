@@ -400,7 +400,7 @@
 			<?php echo settings_textbox('MySQLDateFormat', $Translation['MySQL date'], $adminConfig['MySQLDateFormat'], $Translation['MySQL reference']); ?>
 			<?php echo settings_textbox('PHPDateFormat', $Translation['PHP short date'], $adminConfig['PHPDateFormat'], $Translation['PHP manual']); ?>
 			<?php echo settings_textbox('PHPDateTimeFormat', $Translation['PHP long date'], $adminConfig['PHPDateTimeFormat'], $Translation['PHP manual']); ?>
-			<?php echo settings_textbox('googleAPIKey', $Translation['google API key'], $adminConfig['googleAPIKey'], "<a target=\"_blank\" href=\"https://bigprof.com/appgini/google-maps-api-key\">{$Translation['google API key instructions']}</a>"); ?>
+			<?php echo settings_textbox('googleAPIKey', $Translation['google API key'], $adminConfig['googleAPIKey'], "<a target=\"_blank\" href=\"https://bigprof.com/appgini/google-maps-api-key\">{$Translation['google API key instructions']}</a> <div class=\"text-danger\">{$Translation['restrict API key']}</div>"); ?>
 
 			<?php echo settings_textbox(
 				'baseUploadPath', 

@@ -1033,8 +1033,13 @@ class DataList {
 								$rowTemp = str_replace("<%%VALUE($fieldTVCaption)%%>", thisOr($fd, ''), $rowTemp);
 								$rowTemp = str_replace("<%%HTML_ATTR($fieldTVCaption)%%>", html_attr($fd), $rowTemp);
 
-								if(strpos($rowTemp, "<%%YOUTUBETHUMB($fieldTVCaption)%%>") !== false) $rowTemp = str_replace("<%%YOUTUBETHUMB($fieldTVCaption)%%>", thisOr(get_embed('youtube', $fd, '', '', 'thumbnail_url'), 'blank.gif'), $rowTemp);
-								if(strpos($rowTemp, "<%%GOOGLEMAPTHUMB($fieldTVCaption)%%>") !== false) $rowTemp = str_replace("<%%GOOGLEMAPTHUMB($fieldTVCaption)%%>", thisOr(get_embed('googlemap', $fd, '', '', 'thumbnail_url'), 'blank.gif'), $rowTemp);
+								if(strpos($rowTemp, "<%%YOUTUBETHUMB($fieldTVCaption)%%>") !== false)
+									$rowTemp = str_replace("<%%YOUTUBETHUMB($fieldTVCaption)%%>", thisOr(get_embed('youtube', $fd, '', '', 'thumbnail_url'), 'blank.gif'), $rowTemp);
+								if(strpos($rowTemp, "<%%GOOGLEMAPTHUMB($fieldTVCaption)%%>") !== false)
+									$rowTemp = str_replace("<%%GOOGLEMAPTHUMB($fieldTVCaption)%%>", thisOr(get_embed('googlemap', $fd, '', '', 'thumbnail'), 'blank.gif'), $rowTemp);
+								if(strpos($rowTemp, "<%%GOOGLEMAPTHUMBPINPOINT($fieldTVCaption)%%>") !== false)
+									$rowTemp = str_replace("<%%GOOGLEMAPTHUMBPINPOINT($fieldTVCaption)%%>", thisOr(get_embed('googlemap', $fd, '', '', 'thumbnail-pinpoint'), 'blank.gif'), $rowTemp);
+
 								if(thisOr($fd) == '&nbsp;' && preg_match('/<a href=".*?&nbsp;.*?<\/a>/i', $rowTemp, $m)) {
 									$rowTemp = str_replace($m[0], '', $rowTemp);
 								}
@@ -1297,7 +1302,8 @@ class DataList {
 		// call detail view javascript hook file if found
 		$dvJSHooksFile = APP_DIR . '/hooks/' . $this->TableName . '-dv.js';
 		if(is_file($dvJSHooksFile) && ($this->ContentType == 'detailview' || $this->ContentType == 'tableview+detailview')) {
-			$this->HTML .= "\n<script src=\"hooks/{$this->TableName}-dv.js\"></script>\n";
+			$dvModDate = @filemtime($dvJSHooksFile);
+			$this->HTML .= "\n<script src=\"hooks/{$this->TableName}-dv.js?$dvModDate\"></script>";
 		}
 
 		return;

@@ -68,9 +68,16 @@
 	<tbody>
 		<?php
 
-			$res = sql("select groupID, name, description from membership_groups $where limit $start, ".$adminConfig['groupsPerPage'], $eo);
+			// get count of members of each group
+			$countMembers = [];
+			$res = sql("SELECT groupID, count(1) FROM membership_users GROUP BY groupID", $eo);
+			while($row = db_fetch_row($res)) {
+				$countMembers[$row[0]] = $row[1];
+			}
+
+			$res = sql("SELECT groupID, name, description FROM membership_groups $where /* LIMIT $start, {$adminConfig['groupsPerPage']} */", $eo);
 			while( $row = db_fetch_row($res)) {
-				$groupMembersCount = sqlValue("select count(1) from membership_users where groupID='$row[0]'");
+				$groupMembersCount = $countMembers[$row[0]] ?? 0;
 				$isAnonGroup = ($row[1] == $adminConfig['anonymousGroup']);
 				?>
 				<tr>

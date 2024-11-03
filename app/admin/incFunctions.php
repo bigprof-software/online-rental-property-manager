@@ -87,7 +87,8 @@
 	########################################################################
 	function set_headers() {
 		@header('Content-Type: text/html; charset=' . datalist_db_encoding);
-		@header('X-Frame-Options: SAMEORIGIN'); // prevent iframing by other sites to prevent clickjacking
+		// @header('X-Frame-Options: SAMEORIGIN'); // deprecated
+		@header("Content-Security-Policy: frame-ancestors 'self' " . application_url()); // prevent iframing by other sites to prevent clickjacking
 	}
 	########################################################################
 	function get_tables_info($skip_authentication = false) {
@@ -424,7 +425,13 @@
 		$statement = makeSafe(trim(preg_replace('/^\s+/m', ' ', $statement)));
 		$duration = floatval($duration);
 		$memberID = makeSafe(getLoggedMemberID());
-		$uri = makeSafe($_SERVER['REQUEST_URI']);
+		$uri = $_SERVER['REQUEST_URI'];
+
+		// for 'admin/ajax-sql.php' strip sql and csrf_token params from uri
+		if(strpos($uri, 'admin/ajax-sql.php') !== false) {
+			$uri = stripParams($uri, ['sql', 'csrf_token']);
+		}
+		$uri = makeSafe($uri);
 
 		sql("INSERT INTO `appgini_query_log` SET
 			`statement`='$statement',
@@ -445,7 +452,13 @@
 		$statement = makeSafe(trim(preg_replace('/^\s+/m', ' ', $statement)));
 		$error = makeSafe($error);
 		$memberID = makeSafe(getLoggedMemberID());
-		$uri = makeSafe($_SERVER['REQUEST_URI']);
+		$uri = $_SERVER['REQUEST_URI'];
+
+		// for 'admin/ajax-sql.php' strip sql and csrf_token params from uri
+		if(strpos($uri, 'admin/ajax-sql.php') !== false) {
+			$uri = stripParams($uri, ['sql', 'csrf_token']);
+		}
+		$uri = makeSafe($uri);
 
 		sql("INSERT INTO `appgini_query_log` SET
 			`statement`='$statement',
@@ -455,6 +468,42 @@
 		", $o);
 	}
 
+	########################################################################
+	/**
+	 * Strip specified parameters from a URL
+	 * @param string $uri - the URL to strip parameters from, could be a full URL or just a URI
+	 * @param array $paramsToRemove - an array of parameter names to remove
+	 * @return string - the URL with specified parameters removed
+	 */
+	function stripParams($uri, $paramsToRemove) {
+		// Parse the URL and its components
+		$parsedUrl = parse_url($uri);
+
+		// Parse the query string into an associative array
+		parse_str($parsedUrl['query'] ?? '', $queryParams);
+
+		// Remove specified parameters
+		foreach ($paramsToRemove as $param) {
+			unset($queryParams[$param]);
+		}
+
+		// Reconstruct the query string
+		$newQuery = http_build_query($queryParams);
+
+		// Reconstruct the URL
+		$newUrl = $parsedUrl['scheme'] ?? '';
+		if (!empty($newUrl)) {
+			$newUrl .= '://';
+		}
+		$newUrl .= $parsedUrl['host'] ?? '';
+		$newUrl .= $parsedUrl['path'] ?? '';
+		if (!empty($newQuery)) {
+			$newUrl .= '?' . $newQuery;
+		}
+		$newUrl .= $parsedUrl['fragment'] ?? '';
+
+		return $newUrl;
+	}
 	########################################################################
 	function createQueryLogTable() {
 		static $created = false;
@@ -1719,7 +1768,7 @@
 					'done' => "INT DEFAULT '0'",
 				],
 				'appgini_query_log' => [
-					'datetime' => "TIMESTAMP DEFAULT CURRENT_TIMESTAMP",
+					'datetime' => "TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP",
 					'statement' => "LONGTEXT",
 					'duration' => "DECIMAL(10,2) UNSIGNED DEFAULT '0.00'",
 					'error' => "TEXT",

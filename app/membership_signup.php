@@ -2,8 +2,6 @@
 	include_once(__DIR__ . '/lib.php');
 	if(MULTI_TENANTS) redirect(SaaS::signupUrl(), true);
 
-	include_once(__DIR__ . '/header.php');
-
 	$adminConfig = config('adminConfig');
 	$app_name = APP_TITLE;
 
@@ -95,6 +93,8 @@
 	// drop-down of groups allowing self-signup
 	$groupsDropDown = preg_replace('/<option.*?value="".*?><\/option>/i', '', htmlSQLSelect('groupID', "select groupID, concat(name, if(needsApproval=1, ' *', ' ')) from membership_groups where allowSignup=1 order by name", ($cg == 1 ? sqlValue("select groupID from membership_groups where allowSignup=1 order by name limit 1") : 0 )));
 	$groupsDropDown = str_replace('<select ', '<select class="form-control" ', $groupsDropDown);
+
+	include_once(__DIR__ . '/header.php');
 ?>
 
 <?php if(!$noSignup) { ?>

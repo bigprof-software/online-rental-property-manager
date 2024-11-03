@@ -69,6 +69,7 @@
 						});
 						localStorage.removeItem(param.ChildTable + '_last_added_id');
 						<?php echo $current_table; ?>GetChildrenRecordsList({ Verb: 'reload' });
+						AppGini.calculatedFields.init();
 						AppGini.scrollTo('children-tabs');
 					},
 					size: 'full',
@@ -87,6 +88,7 @@
 							childId: command.ChildID
 						});
 						<?php echo $current_table; ?>GetChildrenRecordsList({ Verb: 'reload' });
+						AppGini.calculatedFields.init();
 						AppGini.scrollTo('children-tabs');
 					},
 					size: 'full',

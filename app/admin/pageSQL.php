@@ -115,7 +115,7 @@
 	?>
 </div>
 
-<script src="pageSQL.js"></script>
+<script src="pageSQL.js?<?php echo filemtime(__DIR__ . '/pageSQL.js'); ?>"></script>
 <style>
 	#sql { font-family: monospace; font-size: large; }
 </style>
