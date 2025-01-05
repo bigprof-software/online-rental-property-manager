@@ -916,4 +916,7 @@ $Translation = [
 	'Could not capture your location' => 'Could not capture your location',
 	'You must allow the browser to capture your location' => 'You must allow the browser to capture your location',
 	'restrict API key' => 'IMPORTANT! Make sure to add an IP or website restriction to your API key to protect it against abuse.',
+
+	// Added in 24.19
+	'no insert permission' => 'You do not have permission to insert records into this table.',
 ];

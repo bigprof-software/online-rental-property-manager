@@ -59,8 +59,7 @@
 	include(__DIR__ . '/incHeader.php');
 
 	// fetch record data to fill in the form below
-	$res = sql("select * from membership_userrecords where recID='{$recID}'", $eo);
-	if($row = db_fetch_assoc($res)) {
+	if($row = getRecord('membership_userrecords', $recID)) {
 		// get record data
 		$tableName = $row['tableName'];
 		$pkValue = $row['pkValue'];
@@ -169,11 +168,7 @@
 		<div class="col-sm-8 col-md-9 col-lg-6">
 			<div class="form-control-static">
 				<?php
-					// get pk field name
-					$pkField = getPKFieldName($tableName);
-
-					$res = sql("select * from `{$tableName}` where `{$pkField}`='" . makeSafe($pkValue, false) . "'", $eo);
-					if($row = db_fetch_assoc($res)) {
+					if($row = getRecord($tableName, $pkValue)) {
 						?>
 						<div style="margin-bottom: 1em;">
 							<a href="../<?php echo $tableName; ?>_view.php?SelectedID=<?php echo urlencode($pkValue); ?>&dvprint_x=1" target="_blank" class="btn btn-default">

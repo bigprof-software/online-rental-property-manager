@@ -392,7 +392,7 @@
 			static $cache = [];
 			if(!empty($cache[$memberID])) return $cache[$memberID];
 
-			$cache[$memberID] = strtolower(preg_replace('/[^\w\. @]/', '', trim($memberID)));
+			$cache[$memberID] = strtolower(preg_replace('/[^\w\. @\-]/', '', trim($memberID)));
 			return $cache[$memberID];
 		}
 
@@ -405,8 +405,8 @@
 			$username = trim(strtolower($username));
 
 			if(
-				!preg_match('/^\w[\w\. @]{3,100}$/', $username)
-				|| preg_match('/(@@|  |\.\.|___)/', $username)
+				!preg_match('/^\w[\w\. @\-]{3,100}$/', $username)
+				|| preg_match('/(@@|  |\.\.|___|--)/', $username)
 				|| (!defined('APPGINI_SETUP') && $username == config('adminConfig')['anonymousMember'])
 				|| $username == 'guest' // even if anonymous user is not 'guest', this should't be allowed still
 			) return false;

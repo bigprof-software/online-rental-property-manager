@@ -104,8 +104,7 @@ include(__DIR__ . '/incHeader.php');
 
 if($groupID != '') {
 	// fetch group data to fill in the form below
-	$res = sql("SELECT * FROM `membership_groups` WHERE `groupID`='{$groupID}'", $eo);
-	if($row = db_fetch_assoc($res)) {
+	if($row = getRecord('membership_groups', $groupID)) {
 		// get group data
 		$name = $row['name'];
 		$description = $row['description'];

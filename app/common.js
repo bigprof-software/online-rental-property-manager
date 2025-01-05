@@ -1,6 +1,6 @@
 var AppGini = AppGini || {};
 
-AppGini.version = 24.18;
+AppGini.version = 25.10;
 
 /* global constants */
 const NO_GEOLOCATION_THOUGH_REQUIRED = -1;
@@ -191,7 +191,8 @@ $j(function() {
 			return false;
 		}
 
-		$j('form').attr('novalidate', 'novalidate')
+		AppGini.suppressBeforeUnloadWarning = true;
+
 		return true;
 	})
 
@@ -336,8 +337,8 @@ $j(function() {
 	// handle clicking 'Capture my location' button
 	AppGini.handleCaptureLocation();
 
-	// ignore form validation on clicking '#addNew' button
-	$j('#addNew').on('click', (e) => $j('form').attr('novalidate', 'novalidate'));
+	AppGini.handleDVFormChange();
+	AppGini.handleDVFormSubmission();
 });
 
 /* show/hide TV action buttons based on whether records are selected or not */
@@ -736,18 +737,18 @@ function get_selected_records_ids() {
 }
 
 function print_multiple_dv_tvdv(t, ids) {
-	document.myform.NoDV.value=1;
-	document.myform.PrintDV.value=1;
-	document.myform.SelectedID.value = '';
-	document.myform.submit();
+	document.forms[0].NoDV.value=1;
+	document.forms[0].PrintDV.value=1;
+	document.forms[0].SelectedID.value = '';
+	document.forms[0].submit();
 	return true;
 }
 
 function print_multiple_dv_sdv(t, ids) {
-	document.myform.NoDV.value=1;
-	document.myform.PrintDV.value=1;
-	document.myform.writeAttribute('novalidate', 'novalidate');
-	document.myform.submit();
+	document.forms[0].NoDV.value=1;
+	document.forms[0].PrintDV.value=1;
+	document.forms[0].writeAttribute('novalidate', 'novalidate');
+	document.forms[0].submit();
 	return true;
 }
 
@@ -1398,7 +1399,7 @@ AppGini.TVScroll = function() {
 									'<iframe ' +
 										'width="100%" height="100%" ' +
 										'style="display: block; overflow: scroll !important; -webkit-overflow-scrolling: touch !important;" ' +
-										'sandbox="allow-modals allow-forms allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox allow-downloads" ' +
+										'sandbox="allow-modals allow-forms allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox allow-downloads allow-top-navigation-by-user-activation" ' +
 										'src="' + op.url + '">' +
 									'</iframe>'
 									: op.message
@@ -1475,7 +1476,7 @@ AppGini.TVScroll = function() {
 									'<iframe ' +
 										'width="100%" height="100%" ' +
 										'style="display: block; overflow: scroll !important; -webkit-overflow-scrolling: touch !important;" ' +
-										'sandbox="allow-modals allow-forms allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox allow-downloads" ' +
+										'sandbox="allow-modals allow-forms allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox allow-downloads allow-top-navigation-by-user-activation" ' +
 										'src="' + op.url + '">' +
 									'</iframe>'
 									: op.message
@@ -2940,6 +2941,14 @@ AppGini.renderTVRecordsPerPageSelector = () => {
 		// set RecordsPerPage hidden field value
 		parentForm.find('input[name=RecordsPerPage]').val(newRecordsPerPage);
 
+		// if the url includes special parameters, add them to the form
+		const url = new URL(window.location.href);
+		['record-added-ok', 'record-added-error', 'record-updated-ok', 'record-updated-error', 'record-deleted-ok', 'record-deleted-error', 'error_message'].forEach(param => {
+			if(!url.searchParams.has(param)) return;
+			const safeValue = url.searchParams.get(param).replace(/"/g, '&quot;');
+			parentForm.append(`<input type="hidden" name="${param}" value="${safeValue}">`);
+		});
+
 		// submit the form
 		parentForm.submit();
 	});
@@ -3182,6 +3191,9 @@ AppGini.handleSubmitRecord = (e, insertMode) => {
 
 		// add insert_x=1 or update_x=1 to form data based on insertMode
 		$j(`<input type="hidden" name="${insertMode ? 'insert' : 'update'}_x" value="1">`).appendTo(form);
+
+		AppGini.suppressBeforeUnloadWarning = true;
+
 		form.submit();
 	}, insertMode);
 }
@@ -3198,3 +3210,46 @@ AppGini.modalError = (message) => {
 		.append('<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>');
 }
 
+AppGini.handleDVFormChange = () => {
+	// run only once
+	if(AppGini._handleDVFormChangeApplied != undefined) return;
+	AppGini._handleDVFormChangeApplied = true;
+
+	// if no #insert or #update buttons, return
+	if(!$j('#insert').length && !$j('#update').length) return;
+
+	$j('form').eq(0).on('change', function() {
+		if($j(this).data('already_changed')) return;
+
+		if($j('#deselect').length) {
+			$j('#deselect')
+				.removeClass('btn-default')
+				.addClass('btn-warning')
+				.get(0).lastChild.data = ` ${AppGini.Translate._map['Cancel']}`;
+		}
+
+		// handle onbeforeunload event to warn user before leaving the page without saving changes
+		window.onbeforeunload = (e) => {
+			// if AppGini.suppressBeforeUnloadWarning is not set (i.e. requested action is not insert/update/delete),
+			// warn user before leaving the page
+			if(!AppGini.suppressBeforeUnloadWarning) {
+				e.preventDefault();
+				e.returnValue = AppGini.Translate._map['discard changes confirm'];
+				return e.returnValue;
+			}
+		}  
+
+		$j(this).data('already_changed', true);
+	});
+}
+
+AppGini.handleDVFormSubmission = () => {
+	// run only once
+	if(AppGini._handleDVFormSubmissionApplied != undefined) return;
+	AppGini._handleDVFormSubmissionApplied = true;
+
+	// disable form validation on form submission via any button other than #insert or #update
+	$j('form').eq(0).on('click', ':not([id=insert],[id=update])', function() {
+		$j(this).closest('form').attr('novalidate', 'novalidate');
+	});
+}

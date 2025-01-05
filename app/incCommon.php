@@ -1197,11 +1197,11 @@ EOT;
 		$safe_clear_label = html_attr($Translation['Reset Filters']);
 
 		if($separate_dv) {
-			$reset_selection = "document.myform.SelectedID.value = '';";
+			$reset_selection = "document.forms[0].SelectedID.value = '';";
 		} else {
-			$reset_selection = "document.myform.writeAttribute('novalidate', 'novalidate');";
+			$reset_selection = "document.forms[0].writeAttribute('novalidate', 'novalidate');";
 		}
-		$reset_selection .= ' document.myform.NoDV.value=1; return true;';
+		$reset_selection .= ' document.forms[0].NoDV.value=1; return true;';
 
 		$html = <<<EOT
 		<div class="input-group" id="quick-search">
@@ -1526,5 +1526,116 @@ EOT;
 	function isDetailViewEnabled($tn) {
 		$tables = ['applicants_and_tenants', 'applications_leases', 'residence_and_rental_history', 'employment_and_income_history', 'references', 'rental_owners', 'properties', 'property_photos', 'units', 'unit_photos', ];
 		return in_array($tn, $tables);
+	}
+
+	#########################################################
+
+	function appDir($path = '') {
+		// if path not empty and doesn't start with a slash, add it
+		if($path && $path[0] != '/') $path = '/' . $path;
+		return __DIR__ . $path;
+	}
+
+	#########################################################
+
+	/**
+	 * Inserts a new record in a table, performing various before and after tasks
+	 * @param string $tableName the name of the table to insert into
+	 * @param array $data associative array of field names and values to insert
+	 * @param string $recordOwner the username of the record owner
+	 * @param string $errorMessage error message to be set in case of failure
+	 * 
+	 * @return mixed the ID of the inserted record if successful, false otherwise
+	 */
+	function tableInsert($tableName, $data, $recordOwner, &$errorMessage = '') {
+		global $Translation;
+
+		// mm: can member insert record?
+		if(!getTablePermissions($tableName)['insert']) {
+			$errorMessage = $Translation['no insert permission'];
+			return false;
+		}
+
+		$memberInfo = getMemberInfo();
+
+		// check for required fields
+		$fields = get_table_fields($tableName);
+		$notNullFields = notNullFields($tableName);
+		foreach($notNullFields as $fieldName) {
+			if($data[$fieldName] !== '') continue;
+
+			$errorMessage = "{$fields[$fieldName]['info']['caption']}: {$Translation['field not null']}";
+			return false;
+		}
+
+		@include_once(__DIR__ . "/hooks/{$tableName}.php");
+
+		// hook: before_insert
+		$beforeInsertFunc = "{$tableName}_before_insert";
+		if(function_exists($beforeInsertFunc)) {
+			$args = [];
+			if(!$beforeInsertFunc($data, $memberInfo, $args)) {
+				if(isset($args['error_message'])) $errorMessage = $args['error_message'];
+				return false;
+			}
+		}
+
+		$pkIsAutoInc = pkIsAutoIncrement($tableName);
+		$pkField = getPKFieldName($tableName) ?: '';
+
+		$error = '';
+		// set empty fields to NULL
+		$data = array_map(function($v) { return ($v === '' ? NULL : $v); }, $data);
+		insert($tableName, backtick_keys_once($data), $error);
+		if($error) {
+			$errorMessage = $error;
+			return false;
+		}
+
+		$recID = $pkIsAutoInc ? db_insert_id() : ($data[$pkField] ?? false);
+
+		update_calc_fields($tableName, $recID, calculated_fields()[$tableName]);
+
+		// hook: after_insert
+		$afterInsertFunc = "{$tableName}_after_insert";
+		if(function_exists($afterInsertFunc)) {
+			if($row = getRecord($tableName, $recID)) {
+				$data = array_map('makeSafe', $row);
+			}
+			$data['selectedID'] = makeSafe($recID);
+			$args = [];
+			if(!$afterInsertFunc($data, $memberInfo, $args)) { return $recID; }
+		}
+
+		// mm: save ownership data
+		// record owner is current user
+		set_record_owner($tableName, $recID, $recordOwner);
+
+		return $recID;
+	}
+
+	#########################################################
+
+	/**
+	 * Checks whether the primary key of a table is auto-increment
+	 * @param string $tn the name of the table
+	 * 
+	 * @return bool true if the primary key is auto-increment, false otherwise
+	 */
+	function pkIsAutoIncrement($tn) {
+		// caching
+		static $cache = [];
+
+		if(isset($cache[$tn])) return $cache[$tn];
+
+		$pk = getPKFieldName($tn);
+		if(!$pk) {
+			$cache[$tn] = false;
+			return false;
+		}
+
+		$isAutoInc = sqlValue("SHOW COLUMNS FROM `$tn` WHERE Field='{$pk}' AND Extra LIKE '%auto_increment%'");
+		$cache[$tn] = $isAutoInc ? true : false;
+		return $cache[$tn];
 	}
 

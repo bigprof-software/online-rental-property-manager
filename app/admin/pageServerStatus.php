@@ -1,6 +1,6 @@
 <?php
-	$appgini_version = '24.18.1766';
-	$generated_ts = '03/11/2024 12:08:33';
+	$appgini_version = '25.10.1893 beta';
+	$generated_ts = '05/01/2025 13:12:50';
 
 	require(__DIR__ . '/incCommon.php');
 

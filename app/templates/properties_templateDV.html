@@ -195,12 +195,6 @@
 			$j('#properties_dv_container').removeClass('hidden');
 			if(!$j('.table_view').length || $j('[name=SelectedID]').val().length) AppGini.focusFormElement('properties', 'property_name');
 
-			$j('form').eq(0).change(function() {
-				if($j(this).data('already_changed')) return;
-				if($j('#deselect').length) $j('#deselect').removeClass('btn-default').addClass('btn-warning').get(0).lastChild.data = " <%%TRANSLATION(Cancel)%%>";
-				$j(this).data('already_changed', true);
-			});
-
 			$j('a[href="<%%BASE_UPLOAD_PATH%%>"]').click(function() { return false; });
 
 			if(embedded_mode) {
@@ -324,13 +318,5 @@
 					}
 				);
 			}
-
-			/* warn user if 'add new' clicked while unsaved changes exist */
-			$j('#addNew').click(function() {
-				if($j('#deselect.btn-warning').length) {
-					return confirm('<%%TRANSLATION(discard changes confirm)%%>');
-				}
-			});
-
 		});
 	</script>

@@ -16,8 +16,7 @@
 	}
 
 	// fetch record data to fill in the form below
-	$res = sql("select * from membership_userrecords where recID='$recID'", $eo);
-	if(!($row = db_fetch_assoc($res))) {
+	if(!($row = getRecord('membership_userrecords', $recID))) {
 		echo Notification::show([
 			'message' => $Translation['record not found error'],
 			'class' => 'danger',
@@ -37,8 +36,7 @@
 	// get pk field name
 	$pkField = getPKFieldName($tableName);
 
-	$res = sql("select * from `{$tableName}` where `{$pkField}`='" . makeSafe($pkValue, false) . "'", $eo);
-	if(!($row = db_fetch_assoc($res))) {
+	if(!($row = getRecord($tableName, $pkValue))) {
 		echo Notification::show([
 			'message' => $Translation['record not found error'],
 			'class' => 'danger',

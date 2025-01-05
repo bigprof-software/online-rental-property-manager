@@ -3029,15 +3029,9 @@
 	function existing_value($tn, $fn, $id, $cache = true) {
 		/* cache results in records[tablename][id] */
 		static $record = [];
-
 		if($cache && !empty($record[$tn][$id])) return $record[$tn][$id][$fn];
-		if(!$pk = getPKFieldName($tn)) return false;
 
-		$sid = makeSafe($id);
-		$eo = ['silentErrors' => true];
-		$res = sql("SELECT * FROM `{$tn}` WHERE `{$pk}`='{$sid}'", $eo);
-		$record[$tn][$id] = db_fetch_assoc($res);
-
+		$record[$tn][$id] = getRecord($tn, $id);
 		return $record[$tn][$id][$fn];
 	}
 	#########################################################
@@ -3489,5 +3483,27 @@
 		];
 
 		return $owners[$tn] ?? null;
+	}
+
+	/**
+	 * @brief Retrieve not-nullable fields of the given table
+	 * 
+	 * @param $tn string table name
+	 * @return array list of not-nullable fields
+	 */
+	function notNullFields($tn) {
+		$fields = get_table_fields($tn);
+		if(!$fields) return [];
+
+		// map $fields based on whether 'appgini' key's value includes 'NOT NULL' or 'PRIMARY KEY' (skipping 'AUTO_INCREMENT' ones) and filter out not-nullable fields
+		$notNullFields = array_filter($fields, function($field) {
+			return (
+					strpos($field['appgini'], 'NOT NULL') !== false // required
+					|| strpos($field['appgini'], 'PRIMARY KEY') !== false // or primary key
+				) && strpos($field['appgini'], 'AUTO_INCREMENT') === false; // but not auto-increment
+		});
+		$notNullFields = array_keys(array_map(function($field) { return $field['name']; }, $notNullFields));
+
+		return $notNullFields;
 	}
 

@@ -106,79 +106,445 @@ img[src="blank.gif"] { max-height: 10px !important; }
 	-webkit-overflow-scrolling: touch !important;
 }
 
-td.applicants_and_tenants-last_name { white-space: normal !important; max-width: 100px !important; min-width: 100px !important; overflow: hidden;  }
-td.applicants_and_tenants-first_name { white-space: normal !important; max-width: 100px !important; min-width: 100px !important; overflow: hidden;  }
-td.applicants_and_tenants-email { white-space: normal !important; max-width: 100px !important; min-width: 100px !important; overflow: hidden; word-break: break-all; }
-td.applicants_and_tenants-phone { white-space: normal !important; max-width: 100px !important; min-width: 100px !important; overflow: hidden;  }
-td.applicants_and_tenants-birth_date { white-space: normal !important; max-width: 100px !important; min-width: 100px !important; overflow: hidden;  }
-td.applicants_and_tenants-driver_license_number { white-space: normal !important; max-width: 100px !important; min-width: 100px !important; overflow: hidden;  }
-td.applicants_and_tenants-driver_license_state { white-space: normal !important; max-width: 100px !important; min-width: 100px !important; overflow: hidden;  }
-td.applicants_and_tenants-requested_lease_term { white-space: normal !important; max-width: 100px !important; min-width: 100px !important; overflow: hidden;  }
-td.applicants_and_tenants-monthly_gross_pay { white-space: normal !important; max-width: 80px !important; min-width: 80px !important; overflow: hidden;  }
-td.applicants_and_tenants-additional_income { white-space: normal !important; max-width: 80px !important; min-width: 80px !important; overflow: hidden;  }
-td.applicants_and_tenants-assets { white-space: normal !important; max-width: 80px !important; min-width: 80px !important; overflow: hidden;  }
-td.applicants_and_tenants-status { white-space: normal !important; max-width: 100px !important; min-width: 100px !important; overflow: hidden;  }
-td.applicants_and_tenants-notes { white-space: normal !important; max-width: 100px !important; min-width: 100px !important; overflow: hidden;  }
-td.applications_leases-tenants { white-space: normal !important; max-width: 60px !important; min-width: 60px !important; overflow: hidden;  }
-td.applications_leases-status { white-space: normal !important; max-width: 50px !important; min-width: 50px !important; overflow: hidden;  }
-td.applications_leases-property { white-space: normal !important; max-width: 80px !important; min-width: 80px !important; overflow: hidden;  }
-td.applications_leases-unit { white-space: normal !important; max-width: 60px !important; min-width: 60px !important; overflow: hidden;  }
-td.applications_leases-type { white-space: normal !important; max-width: 40px !important; min-width: 40px !important; overflow: hidden;  }
-td.applications_leases-total_number_of_occupants { white-space: normal !important; max-width: 70px !important; min-width: 70px !important; overflow: hidden;  }
-td.applications_leases-start_date { white-space: normal !important; max-width: 70px !important; min-width: 70px !important; overflow: hidden;  }
-td.applications_leases-end_date { white-space: normal !important; max-width: 60px !important; min-width: 60px !important; overflow: hidden;  }
-td.applications_leases-rent { white-space: normal !important; max-width: 70px !important; min-width: 70px !important; overflow: hidden;  }
-td.applications_leases-security_deposit { white-space: normal !important; max-width: 80px !important; min-width: 80px !important; overflow: hidden;  }
-td.applications_leases-security_deposit_date { white-space: normal !important; max-width: 80px !important; min-width: 80px !important; overflow: hidden;  }
-td.applications_leases-emergency_contact { white-space: normal !important; max-width: 120px !important; min-width: 120px !important; overflow: hidden;  }
-td.applications_leases-co_signer_details { white-space: normal !important; max-width: 100px !important; min-width: 100px !important; overflow: hidden;  }
-td.applications_leases-notes { white-space: normal !important; max-width: 100px !important; min-width: 100px !important; overflow: hidden;  }
-td.applications_leases-agreement { white-space: normal !important; max-width: 70px !important; min-width: 70px !important; overflow: hidden;  }
-td.residence_and_rental_history-address { white-space: normal !important; max-width: 180px !important; min-width: 180px !important; overflow: hidden;  }
-td.residence_and_rental_history-landlord_or_manager_name { white-space: normal !important; max-width: 120px !important; min-width: 120px !important; overflow: hidden;  }
-td.residence_and_rental_history-landlord_or_manager_phone { white-space: normal !important; max-width: 100px !important; min-width: 100px !important; overflow: hidden;  }
-td.residence_and_rental_history-monthly_rent { white-space: normal !important; max-width: 80px !important; min-width: 80px !important; overflow: hidden;  }
-td.residence_and_rental_history-duration_of_residency_from { white-space: normal !important; max-width: 100px !important; min-width: 100px !important; overflow: hidden;  }
-td.residence_and_rental_history-to { white-space: normal !important; max-width: 80px !important; min-width: 80px !important; overflow: hidden;  }
-td.residence_and_rental_history-reason_for_leaving { white-space: normal !important; max-width: 120px !important; min-width: 120px !important; overflow: hidden;  }
-td.residence_and_rental_history-notes { white-space: normal !important; max-width: 120px !important; min-width: 120px !important; overflow: hidden;  }
-td.employment_and_income_history-employer_name { white-space: normal !important; max-width: 80px !important; min-width: 80px !important; overflow: hidden;  }
-td.employment_and_income_history-city { white-space: normal !important; max-width: 100px !important; min-width: 100px !important; overflow: hidden;  }
-td.employment_and_income_history-employer_phone { white-space: normal !important; max-width: 100px !important; min-width: 100px !important; overflow: hidden;  }
-td.employment_and_income_history-employed_from { white-space: normal !important; max-width: 80px !important; min-width: 80px !important; overflow: hidden;  }
-td.employment_and_income_history-employed_till { white-space: normal !important; max-width: 80px !important; min-width: 80px !important; overflow: hidden;  }
-td.employment_and_income_history-occupation { white-space: normal !important; max-width: 100px !important; min-width: 100px !important; overflow: hidden;  }
-td.employment_and_income_history-notes { white-space: normal !important; max-width: 50px !important; min-width: 50px !important; overflow: hidden;  }
-td.references-reference_name { white-space: normal !important; max-width: 160px !important; min-width: 160px !important; overflow: hidden;  }
-td.references-phone { white-space: normal !important; max-width: 160px !important; min-width: 160px !important; overflow: hidden;  }
-td.properties-property_name { white-space: normal !important; max-width: 50px !important; min-width: 50px !important; overflow: hidden;  }
-td.properties-photo { white-space: normal !important; max-width: 60px !important; min-width: 60px !important; overflow: hidden;  }
-td.properties-type { white-space: normal !important; max-width: 80px !important; min-width: 80px !important; overflow: hidden;  }
-td.properties-number_of_units { white-space: normal !important; max-width: 50px !important; min-width: 50px !important; overflow: hidden;  }
-td.properties-owner { white-space: normal !important; max-width: 100px !important; min-width: 100px !important; overflow: hidden;  }
-td.properties-operating_account { white-space: normal !important; max-width: 120px !important; min-width: 120px !important; overflow: hidden;  }
-td.properties-property_reserve { white-space: normal !important; max-width: 70px !important; min-width: 70px !important; overflow: hidden;  }
-td.properties-street { white-space: normal !important; max-width: 120px !important; min-width: 120px !important; overflow: hidden;  }
-td.properties-City { white-space: normal !important; max-width: 70px !important; min-width: 70px !important; overflow: hidden;  }
-td.properties-State { white-space: normal !important; max-width: 50px !important; min-width: 50px !important; overflow: hidden;  }
-td.properties-ZIP { white-space: normal !important; max-width: 50px !important; min-width: 50px !important; overflow: hidden;  }
-td.units-id { white-space: normal !important; max-width: 150px !important; min-width: 150px !important; overflow: hidden;  }
-td.units-property { white-space: normal !important; max-width: 90px !important; min-width: 90px !important; overflow: hidden;  }
-td.units-unit_number { white-space: normal !important; max-width: 40px !important; min-width: 40px !important; overflow: hidden;  }
-td.units-photo { white-space: normal !important; max-width: 60px !important; min-width: 60px !important; overflow: hidden;  }
-td.units-status { white-space: normal !important; max-width: 60px !important; min-width: 60px !important; overflow: hidden;  }
-td.units-size { white-space: normal !important; max-width: 60px !important; min-width: 60px !important; overflow: hidden;  }
-td.units-country { white-space: normal !important; max-width: 80px !important; min-width: 80px !important; overflow: hidden;  }
-td.units-street { white-space: normal !important; max-width: 100px !important; min-width: 100px !important; overflow: hidden;  }
-td.units-city { white-space: normal !important; max-width: 55px !important; min-width: 55px !important; overflow: hidden;  }
-td.units-state { white-space: normal !important; max-width: 40px !important; min-width: 40px !important; overflow: hidden;  }
-td.units-postal_code { white-space: normal !important; max-width: 80px !important; min-width: 80px !important; overflow: hidden;  }
-td.units-rooms { white-space: normal !important; max-width: 45px !important; min-width: 45px !important; overflow: hidden;  }
-td.units-bathroom { white-space: normal !important; max-width: 70px !important; min-width: 70px !important; overflow: hidden;  }
-td.units-features { white-space: normal !important; max-width: 150px !important; min-width: 150px !important; overflow: hidden;  }
-td.units-rental_amount { white-space: normal !important; max-width: 60px !important; min-width: 60px !important; overflow: hidden;  }
-td.units-deposit_amount { white-space: normal !important; max-width: 50px !important; min-width: 50px !important; overflow: hidden;  }
-td.units-description { white-space: normal !important; max-width: 80px !important; min-width: 80px !important; overflow: hidden;  }
+th.applicants_and_tenants-last_name, td.applicants_and_tenants-last_name {
+	white-space: normal !important;
+	width: 100px !important;
+	min-width: 100px !important;
+	overflow: hidden;
+}
+th.applicants_and_tenants-first_name, td.applicants_and_tenants-first_name {
+	white-space: normal !important;
+	width: 100px !important;
+	min-width: 100px !important;
+	overflow: hidden;
+}
+th.applicants_and_tenants-email, td.applicants_and_tenants-email {
+	white-space: normal !important;
+	width: 100px !important;
+	min-width: 100px !important;
+	overflow: hidden;
+	word-break: break-all;
+}
+th.applicants_and_tenants-phone, td.applicants_and_tenants-phone {
+	white-space: normal !important;
+	width: 100px !important;
+	min-width: 100px !important;
+	overflow: hidden;
+}
+th.applicants_and_tenants-birth_date, td.applicants_and_tenants-birth_date {
+	white-space: normal !important;
+	width: 100px !important;
+	min-width: 100px !important;
+	overflow: hidden;
+}
+th.applicants_and_tenants-driver_license_number, td.applicants_and_tenants-driver_license_number {
+	white-space: normal !important;
+	width: 100px !important;
+	min-width: 100px !important;
+	overflow: hidden;
+}
+th.applicants_and_tenants-driver_license_state, td.applicants_and_tenants-driver_license_state {
+	white-space: normal !important;
+	width: 100px !important;
+	min-width: 100px !important;
+	overflow: hidden;
+}
+th.applicants_and_tenants-requested_lease_term, td.applicants_and_tenants-requested_lease_term {
+	white-space: normal !important;
+	width: 100px !important;
+	min-width: 100px !important;
+	overflow: hidden;
+}
+th.applicants_and_tenants-monthly_gross_pay, td.applicants_and_tenants-monthly_gross_pay {
+	white-space: normal !important;
+	width: 80px !important;
+	min-width: 80px !important;
+	overflow: hidden;
+}
+th.applicants_and_tenants-additional_income, td.applicants_and_tenants-additional_income {
+	white-space: normal !important;
+	width: 80px !important;
+	min-width: 80px !important;
+	overflow: hidden;
+}
+th.applicants_and_tenants-assets, td.applicants_and_tenants-assets {
+	white-space: normal !important;
+	width: 80px !important;
+	min-width: 80px !important;
+	overflow: hidden;
+}
+th.applicants_and_tenants-status, td.applicants_and_tenants-status {
+	white-space: normal !important;
+	width: 100px !important;
+	min-width: 100px !important;
+	overflow: hidden;
+}
+th.applicants_and_tenants-notes, td.applicants_and_tenants-notes {
+	white-space: normal !important;
+	width: 100px !important;
+	min-width: 100px !important;
+	overflow: hidden;
+}
+th.applications_leases-tenants, td.applications_leases-tenants {
+	white-space: normal !important;
+	width: 60px !important;
+	min-width: 60px !important;
+	overflow: hidden;
+}
+th.applications_leases-status, td.applications_leases-status {
+	white-space: normal !important;
+	width: 50px !important;
+	min-width: 50px !important;
+	overflow: hidden;
+}
+th.applications_leases-property, td.applications_leases-property {
+	white-space: normal !important;
+	width: 80px !important;
+	min-width: 80px !important;
+	overflow: hidden;
+}
+th.applications_leases-unit, td.applications_leases-unit {
+	white-space: normal !important;
+	width: 60px !important;
+	min-width: 60px !important;
+	overflow: hidden;
+}
+th.applications_leases-type, td.applications_leases-type {
+	white-space: normal !important;
+	width: 40px !important;
+	min-width: 40px !important;
+	overflow: hidden;
+}
+th.applications_leases-total_number_of_occupants, td.applications_leases-total_number_of_occupants {
+	white-space: normal !important;
+	width: 70px !important;
+	min-width: 70px !important;
+	overflow: hidden;
+}
+th.applications_leases-start_date, td.applications_leases-start_date {
+	white-space: normal !important;
+	width: 70px !important;
+	min-width: 70px !important;
+	overflow: hidden;
+}
+th.applications_leases-end_date, td.applications_leases-end_date {
+	white-space: normal !important;
+	width: 60px !important;
+	min-width: 60px !important;
+	overflow: hidden;
+}
+th.applications_leases-rent, td.applications_leases-rent {
+	white-space: normal !important;
+	width: 70px !important;
+	min-width: 70px !important;
+	overflow: hidden;
+}
+th.applications_leases-security_deposit, td.applications_leases-security_deposit {
+	white-space: normal !important;
+	width: 80px !important;
+	min-width: 80px !important;
+	overflow: hidden;
+}
+th.applications_leases-security_deposit_date, td.applications_leases-security_deposit_date {
+	white-space: normal !important;
+	width: 80px !important;
+	min-width: 80px !important;
+	overflow: hidden;
+}
+th.applications_leases-emergency_contact, td.applications_leases-emergency_contact {
+	white-space: normal !important;
+	width: 120px !important;
+	min-width: 120px !important;
+	overflow: hidden;
+}
+th.applications_leases-co_signer_details, td.applications_leases-co_signer_details {
+	white-space: normal !important;
+	width: 100px !important;
+	min-width: 100px !important;
+	overflow: hidden;
+}
+th.applications_leases-notes, td.applications_leases-notes {
+	white-space: normal !important;
+	width: 100px !important;
+	min-width: 100px !important;
+	overflow: hidden;
+}
+th.applications_leases-agreement, td.applications_leases-agreement {
+	white-space: normal !important;
+	width: 70px !important;
+	min-width: 70px !important;
+	overflow: hidden;
+}
+th.residence_and_rental_history-address, td.residence_and_rental_history-address {
+	white-space: normal !important;
+	width: 180px !important;
+	min-width: 180px !important;
+	overflow: hidden;
+}
+th.residence_and_rental_history-landlord_or_manager_name, td.residence_and_rental_history-landlord_or_manager_name {
+	white-space: normal !important;
+	width: 120px !important;
+	min-width: 120px !important;
+	overflow: hidden;
+}
+th.residence_and_rental_history-landlord_or_manager_phone, td.residence_and_rental_history-landlord_or_manager_phone {
+	white-space: normal !important;
+	width: 100px !important;
+	min-width: 100px !important;
+	overflow: hidden;
+}
+th.residence_and_rental_history-monthly_rent, td.residence_and_rental_history-monthly_rent {
+	white-space: normal !important;
+	width: 80px !important;
+	min-width: 80px !important;
+	overflow: hidden;
+}
+th.residence_and_rental_history-duration_of_residency_from, td.residence_and_rental_history-duration_of_residency_from {
+	white-space: normal !important;
+	width: 100px !important;
+	min-width: 100px !important;
+	overflow: hidden;
+}
+th.residence_and_rental_history-to, td.residence_and_rental_history-to {
+	white-space: normal !important;
+	width: 80px !important;
+	min-width: 80px !important;
+	overflow: hidden;
+}
+th.residence_and_rental_history-reason_for_leaving, td.residence_and_rental_history-reason_for_leaving {
+	white-space: normal !important;
+	width: 120px !important;
+	min-width: 120px !important;
+	overflow: hidden;
+}
+th.residence_and_rental_history-notes, td.residence_and_rental_history-notes {
+	white-space: normal !important;
+	width: 120px !important;
+	min-width: 120px !important;
+	overflow: hidden;
+}
+th.employment_and_income_history-employer_name, td.employment_and_income_history-employer_name {
+	white-space: normal !important;
+	width: 80px !important;
+	min-width: 80px !important;
+	overflow: hidden;
+}
+th.employment_and_income_history-city, td.employment_and_income_history-city {
+	white-space: normal !important;
+	width: 100px !important;
+	min-width: 100px !important;
+	overflow: hidden;
+}
+th.employment_and_income_history-employer_phone, td.employment_and_income_history-employer_phone {
+	white-space: normal !important;
+	width: 100px !important;
+	min-width: 100px !important;
+	overflow: hidden;
+}
+th.employment_and_income_history-employed_from, td.employment_and_income_history-employed_from {
+	white-space: normal !important;
+	width: 80px !important;
+	min-width: 80px !important;
+	overflow: hidden;
+}
+th.employment_and_income_history-employed_till, td.employment_and_income_history-employed_till {
+	white-space: normal !important;
+	width: 80px !important;
+	min-width: 80px !important;
+	overflow: hidden;
+}
+th.employment_and_income_history-occupation, td.employment_and_income_history-occupation {
+	white-space: normal !important;
+	width: 100px !important;
+	min-width: 100px !important;
+	overflow: hidden;
+}
+th.employment_and_income_history-notes, td.employment_and_income_history-notes {
+	white-space: normal !important;
+	width: 50px !important;
+	min-width: 50px !important;
+	overflow: hidden;
+}
+th.references-reference_name, td.references-reference_name {
+	white-space: normal !important;
+	width: 160px !important;
+	min-width: 160px !important;
+	overflow: hidden;
+}
+th.references-phone, td.references-phone {
+	white-space: normal !important;
+	width: 160px !important;
+	min-width: 160px !important;
+	overflow: hidden;
+}
+th.properties-property_name, td.properties-property_name {
+	white-space: normal !important;
+	width: 50px !important;
+	min-width: 50px !important;
+	overflow: hidden;
+}
+th.properties-photo, td.properties-photo {
+	white-space: normal !important;
+	width: 60px !important;
+	min-width: 60px !important;
+	overflow: hidden;
+}
+th.properties-type, td.properties-type {
+	white-space: normal !important;
+	width: 80px !important;
+	min-width: 80px !important;
+	overflow: hidden;
+}
+th.properties-number_of_units, td.properties-number_of_units {
+	white-space: normal !important;
+	width: 50px !important;
+	min-width: 50px !important;
+	overflow: hidden;
+}
+th.properties-owner, td.properties-owner {
+	white-space: normal !important;
+	width: 100px !important;
+	min-width: 100px !important;
+	overflow: hidden;
+}
+th.properties-operating_account, td.properties-operating_account {
+	white-space: normal !important;
+	width: 120px !important;
+	min-width: 120px !important;
+	overflow: hidden;
+}
+th.properties-property_reserve, td.properties-property_reserve {
+	white-space: normal !important;
+	width: 70px !important;
+	min-width: 70px !important;
+	overflow: hidden;
+}
+th.properties-street, td.properties-street {
+	white-space: normal !important;
+	width: 120px !important;
+	min-width: 120px !important;
+	overflow: hidden;
+}
+th.properties-City, td.properties-City {
+	white-space: normal !important;
+	width: 70px !important;
+	min-width: 70px !important;
+	overflow: hidden;
+}
+th.properties-State, td.properties-State {
+	white-space: normal !important;
+	width: 50px !important;
+	min-width: 50px !important;
+	overflow: hidden;
+}
+th.properties-ZIP, td.properties-ZIP {
+	white-space: normal !important;
+	width: 50px !important;
+	min-width: 50px !important;
+	overflow: hidden;
+}
+th.units-id, td.units-id {
+	white-space: normal !important;
+	width: 150px !important;
+	min-width: 150px !important;
+	overflow: hidden;
+}
+th.units-property, td.units-property {
+	white-space: normal !important;
+	width: 90px !important;
+	min-width: 90px !important;
+	overflow: hidden;
+}
+th.units-unit_number, td.units-unit_number {
+	white-space: normal !important;
+	width: 40px !important;
+	min-width: 40px !important;
+	overflow: hidden;
+}
+th.units-photo, td.units-photo {
+	white-space: normal !important;
+	width: 60px !important;
+	min-width: 60px !important;
+	overflow: hidden;
+}
+th.units-status, td.units-status {
+	white-space: normal !important;
+	width: 60px !important;
+	min-width: 60px !important;
+	overflow: hidden;
+}
+th.units-size, td.units-size {
+	white-space: normal !important;
+	width: 60px !important;
+	min-width: 60px !important;
+	overflow: hidden;
+}
+th.units-country, td.units-country {
+	white-space: normal !important;
+	width: 80px !important;
+	min-width: 80px !important;
+	overflow: hidden;
+}
+th.units-street, td.units-street {
+	white-space: normal !important;
+	width: 100px !important;
+	min-width: 100px !important;
+	overflow: hidden;
+}
+th.units-city, td.units-city {
+	white-space: normal !important;
+	width: 55px !important;
+	min-width: 55px !important;
+	overflow: hidden;
+}
+th.units-state, td.units-state {
+	white-space: normal !important;
+	width: 40px !important;
+	min-width: 40px !important;
+	overflow: hidden;
+}
+th.units-postal_code, td.units-postal_code {
+	white-space: normal !important;
+	width: 80px !important;
+	min-width: 80px !important;
+	overflow: hidden;
+}
+th.units-rooms, td.units-rooms {
+	white-space: normal !important;
+	width: 45px !important;
+	min-width: 45px !important;
+	overflow: hidden;
+}
+th.units-bathroom, td.units-bathroom {
+	white-space: normal !important;
+	width: 70px !important;
+	min-width: 70px !important;
+	overflow: hidden;
+}
+th.units-features, td.units-features {
+	white-space: normal !important;
+	width: 150px !important;
+	min-width: 150px !important;
+	overflow: hidden;
+}
+th.units-rental_amount, td.units-rental_amount {
+	white-space: normal !important;
+	width: 60px !important;
+	min-width: 60px !important;
+	overflow: hidden;
+}
+th.units-deposit_amount, td.units-deposit_amount {
+	white-space: normal !important;
+	width: 50px !important;
+	min-width: 50px !important;
+	overflow: hidden;
+}
+th.units-description, td.units-description {
+	white-space: normal !important;
+	width: 80px !important;
+	min-width: 80px !important;
+	overflow: hidden;
+}
 
 /* fixes for glyph icons in some themes */
 .glyphicon-camera:before { content: "\e046"; }

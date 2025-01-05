@@ -909,13 +909,13 @@ class DataList {
 						/* Sorting icon and link */
 						if($this->AllowSorting == 1 && $this->ColNumber[$i] != -1) {
 							if($current_view != 'TVP') {
-								$sort1 = "<a href=\"{$this->ScriptFileName}?SortDirection=asc&SortField=".($this->ColNumber[$i])."\" onClick=\"$resetSelection document.myform.NoDV.value=1; document.myform.SortDirection.value='asc'; document.myform.SortField.value = '".($this->ColNumber[$i])."'; document.myform.submit(); return false;\" class=\"TableHeader\">";
+								$sort1 = "<a href=\"{$this->ScriptFileName}?SortDirection=asc&SortField=".($this->ColNumber[$i])."\" onClick=\"$resetSelection document.forms[0].NoDV.value=1; document.forms[0].SortDirection.value='asc'; document.forms[0].SortField.value = '".($this->ColNumber[$i])."'; document.forms[0].submit(); return false;\" class=\"TableHeader\">";
 								$sort2 = "</a>";
 							}
 							if($this->ColNumber[$i] == $SortField) {
 								$SortDirection = ($SortDirection == 'asc' ? 'desc' : 'asc');
 								if($current_view != 'TVP')
-									$sort1 = "<a href=\"{$this->ScriptFileName}?SortDirection=$SortDirection&SortField=".($this->ColNumber[$i])."\" onClick=\"$resetSelection document.myform.NoDV.value=1; document.myform.SortDirection.value='$SortDirection'; document.myform.SortField.value = ".($this->ColNumber[$i])."; document.myform.submit(); return false;\" class=\"TableHeader\">";
+									$sort1 = "<a href=\"{$this->ScriptFileName}?SortDirection=$SortDirection&SortField=".($this->ColNumber[$i])."\" onClick=\"$resetSelection document.forms[0].NoDV.value=1; document.forms[0].SortDirection.value='$SortDirection'; document.forms[0].SortField.value = ".($this->ColNumber[$i])."; document.forms[0].submit(); return false;\" class=\"TableHeader\">";
 								$sort2 = ' <i class="text-warning glyphicon glyphicon-sort-by-attributes' . ($SortDirection == 'desc' ? '' : '-alt') . "\"></i>{$sort2}";
 								$SortDirection = ($SortDirection == 'asc' ? 'desc' : 'asc');
 							}
@@ -961,11 +961,11 @@ class DataList {
 						$sortCombo->SelectedClass = '';
 						$sortCombo->Render();
 						$sortby_dropdown = $sortCombo->HTML;
-						$sortby_dropdown = str_replace('<select ', "<select onChange=\"document.myform.SortDirection.value='$SortDirection'; document.myform.SortField.value=document.myform.FieldsList.value; document.myform.NoDV.value=1; document.myform.submit();\" ", $sortby_dropdown);
+						$sortby_dropdown = str_replace('<select ', "<select onChange=\"document.forms[0].SortDirection.value='$SortDirection'; document.forms[0].SortField.value=document.forms[0].FieldsList.value; document.forms[0].NoDV.value=1; document.forms[0].submit();\" ", $sortby_dropdown);
 						if($SortField) {
 							$SortDirection = ($SortDirection == 'desc' ? 'asc' : 'desc');
 							$sort_class = ($SortDirection == 'asc' ? 'sort-by-attributes-alt' : 'sort-by-attributes');
-							$sort = "<a href=\"javascript: document.myform.NoDV.value = 1; document.myform.SortDirection.value = '{$SortDirection}'; document.myform.SortField.value = '{$SortField}'; document.myform.submit();\" class=TableHeader><i class=\"text-warning glyphicon glyphicon-{$sort_class}\"></i></a>";
+							$sort = "<a href=\"javascript: document.forms[0].NoDV.value = 1; document.forms[0].SortDirection.value = '{$SortDirection}'; document.forms[0].SortField.value = '{$SortField}'; document.forms[0].submit();\" class=TableHeader><i class=\"text-warning glyphicon glyphicon-{$sort_class}\"></i></a>";
 							$SortDirection = ($SortDirection == 'desc' ? 'asc' : 'desc');
 						} else {
 							$sort = '';
@@ -1013,7 +1013,7 @@ class DataList {
 							}
 
 							if($this->AllowSelection == 1 && $SelectedID != $currentID) {
-								$rowTemp = str_replace('<%%SELECT%%>',"<a onclick=\"document.myform.SelectedField.value = this.parentNode.cellIndex; document.myform.SelectedID.value = '" . addslashes($currentID) . "'; document.myform.submit(); return false;\" href=\"{$this->ScriptFileName}?SelectedID=" . html_attr($currentID) . "\" style=\"display: block; padding:0px;\">",$rowTemp);
+								$rowTemp = str_replace('<%%SELECT%%>',"<a onclick=\"document.forms[0].SelectedField.value = this.parentNode.cellIndex; document.forms[0].SelectedID.value = '" . addslashes($currentID) . "'; document.forms[0].submit(); return false;\" href=\"{$this->ScriptFileName}?SelectedID=" . html_attr($currentID) . "\" style=\"display: block; padding:0px;\">",$rowTemp);
 								$rowTemp = str_replace('<%%ENDSELECT%%>','</a>',$rowTemp);
 							} else {
 								$rowTemp = str_replace('<%%SELECT%%>', '', $rowTemp);
@@ -1052,7 +1052,7 @@ class DataList {
 							// default view if no template
 							for($j = 0; $j < $fieldCountTV; $j++) {
 								if($this->AllowSelection == 1) {
-									$sel1 = "<a href=\"{$this->ScriptFileName}?SelectedID=" . html_attr($currentID) . "\" onclick=\"document.myform.SelectedID.value = '" . addslashes($currentID) . "'; document.myform.submit(); return false;\" style=\"padding:0px;\">";
+									$sel1 = "<a href=\"{$this->ScriptFileName}?SelectedID=" . html_attr($currentID) . "\" onclick=\"document.forms[0].SelectedID.value = '" . addslashes($currentID) . "'; document.forms[0].submit(); return false;\" style=\"padding:0px;\">";
 									$sel2 = "</a>";
 								} else {
 									$sel1 = '';
@@ -1131,14 +1131,14 @@ class DataList {
 					$this->HTML .= '<div class="pagination-section">';
 						$this->HTML .= '<div class="">';
 						if($FirstRecord > 1) 
-							$this->HTML .= '<button onClick="' . $resetSelection . ' document.myform.NoDV.value = 1; return true;" type="submit" name="Previous_x" id="Previous" value="1" class="btn btn-default btn-block" style="max-width: 15em;"><i class="glyphicon glyphicon-chevron-left rtl-mirror"></i> <span class="hidden-xs">' . $this->translation['Previous'] . '</span></button>';
+							$this->HTML .= '<button onClick="' . $resetSelection . ' document.forms[0].NoDV.value = 1; return true;" type="submit" name="Previous_x" id="Previous" value="1" class="btn btn-default btn-block" style="max-width: 15em;"><i class="glyphicon glyphicon-chevron-left rtl-mirror"></i> <span class="hidden-xs">' . $this->translation['Previous'] . '</span></button>';
 						$this->HTML .= '</div>';
 
 						$this->HTML .= '<div class="form-inline">' . $pagesMenu . '</div>';
 
 						$this->HTML .= '<div>';
 						if($i < $RecordCount)
-							$this->HTML .= '<button onClick="' . $resetSelection . ' document.myform.NoDV.value = 1; return true;" type="submit" name="Next_x" id="Next" value="1" class="btn btn-default btn-block" style="max-width: 15em; margin-left: auto;"><span class="hidden-xs">' . $this->translation['Next'] . '</span> <i class="glyphicon glyphicon-chevron-right rtl-mirror"></i></button>';
+							$this->HTML .= '<button onClick="' . $resetSelection . ' document.forms[0].NoDV.value = 1; return true;" type="submit" name="Next_x" id="Next" value="1" class="btn btn-default btn-block" style="max-width: 15em; margin-left: auto;"><span class="hidden-xs">' . $this->translation['Next'] . '</span> <i class="glyphicon glyphicon-chevron-right rtl-mirror"></i></button>';
 						$this->HTML .= '</div>';
 					$this->HTML .= '</div>';
 				}
@@ -1234,7 +1234,7 @@ class DataList {
 					ob_start();
 					?><script>
 						localStorage.setItem(
-							'<?php echo $this->TableName; ?>_last_added_id', 
+							`${AppGini.currentTableName()}_last_added_id`,
 							<?php echo json_encode($SelectedID); ?>
 						);
 					</script><?php
@@ -1247,7 +1247,7 @@ class DataList {
 					ob_start();
 					?><script>
 						setTimeout(function() {
-							window.location = '<?php echo $this->TableName; ?>_view.php';
+							window.location = `${AppGini.currentTableName()}_view.php`;
 						}, 4000);
 					</script><?php
 					$this->HTML .= ob_get_clean();
@@ -1555,9 +1555,9 @@ class DataList {
 
 	function resetSelection() {
 		if($this->SeparateDV)
-			return "document.myform.SelectedID.value = '';";
+			return "document.forms[0].SelectedID.value = '';";
 
-		return "document.myform.writeAttribute('novalidate', 'novalidate');";
+		return "document.forms[0].writeAttribute('novalidate', 'novalidate');";
 	}
 
 	function getTVButtons($print = false) {
@@ -1574,11 +1574,11 @@ class DataList {
 
 		// display Print icon
 		if($this->AllowPrinting)
-			$buttons .= '<button onClick="document.myform.NoDV.value = 1; <%%RESET_SELECTION%%> return true;" type="submit" name="Print_x" id="Print" value="1" class="btn btn-default"><i class="glyphicon glyphicon-print"></i> <%%TRANSLATION(Print Preview)%%></button>';
+			$buttons .= '<button onClick="document.forms[0].NoDV.value = 1; <%%RESET_SELECTION%%> return true;" type="submit" name="Print_x" id="Print" value="1" class="btn btn-default"><i class="glyphicon glyphicon-print"></i> <%%TRANSLATION(Print Preview)%%></button>';
 
 		// display CSV icon
 		if($this->AllowCSV)
-			$buttons .= '<button onClick="document.myform.NoDV.value = 1; <%%RESET_SELECTION%%> return true;" type="submit" name="CSV_x" id="CSV" value="1" class="btn btn-default"><i class="glyphicon glyphicon-download-alt"></i> <%%TRANSLATION(CSV)%%></button>';
+			$buttons .= '<button onClick="document.forms[0].NoDV.value = 1; <%%RESET_SELECTION%%> return true;" type="submit" name="CSV_x" id="CSV" value="1" class="btn btn-default"><i class="glyphicon glyphicon-download-alt"></i> <%%TRANSLATION(CSV)%%></button>';
 
 		// if admin and AllowAdminShowSQL, display SQL icon
 		if(getLoggedAdmin() && $this->AllowAdminShowSQL)
@@ -1586,11 +1586,11 @@ class DataList {
 
 		// display Filter icon
 		if($this->AllowFilters)
-			$buttons .= '<button onClick="document.myform.NoDV.value = 1; <%%RESET_SELECTION%%> return true;" type="submit" name="Filter_x" id="Filter" value="1" class="btn btn-default"><i class="glyphicon glyphicon-filter"></i> <%%TRANSLATION(filter)%%></button>';
+			$buttons .= '<button onClick="document.forms[0].NoDV.value = 1; <%%RESET_SELECTION%%> return true;" type="submit" name="Filter_x" id="Filter" value="1" class="btn btn-default"><i class="glyphicon glyphicon-filter"></i> <%%TRANSLATION(filter)%%></button>';
 
 		// display Show All icon
 		if(($this->AllowFilters))
-			$buttons .= '<button onClick="document.myform.NoDV.value = 1; <%%RESET_SELECTION%%> return true;" type="submit" name="NoFilter_x" id="NoFilter" value="1" class="btn btn-default"><i class="glyphicon glyphicon-remove-circle"></i> <%%TRANSLATION(Reset Filters)%%></button>';
+			$buttons .= '<button onClick="document.forms[0].NoDV.value = 1; <%%RESET_SELECTION%%> return true;" type="submit" name="NoFilter_x" id="NoFilter" value="1" class="btn btn-default"><i class="glyphicon glyphicon-remove-circle"></i> <%%TRANSLATION(Reset Filters)%%></button>';
 
 		return str_replace(
 			'<%%RESET_SELECTION%%>', 
@@ -1803,22 +1803,7 @@ class DataList {
 						.find('.btn').css({ width: '100%' });
 				}).trigger('resize');
 
-				navBtns.on('click', '.btn', function(e) {
-					// detect changes and confirm they'd be lost
-					if($j('#deselect').hasClass('btn-warning'))
-						if(!confirm(
-							<?php echo json_encode(to_utf8($this->translation['discard changes confirm'])); ?>
-						)) {
-							e.preventDefault();
-							return false;
-						}
-
-					// reset form and prevent validation
-					var form = $j(this).parents('form');
-					form.prop('novalidate', true).get(0).reset();
-					return true;
-				})
-				.appendTo('#<?php echo $this->TableName; ?>_dv_action_buttons > .btn-toolbar:first-child');
+				navBtns.appendTo(`#${AppGini.currentTableName()}_dv_action_buttons > .btn-toolbar:first-child`);
 			})
 		</script>
 		<?php
