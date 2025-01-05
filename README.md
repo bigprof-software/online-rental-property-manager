@@ -57,7 +57,7 @@ on your own PC, or to a web/intranet server.
 
 ### 1. Try the live demo
 
-* We provide a live demo with sample data [here](https://demos.appgini.com/online-rental-property-manager/)
+* We provide a live demo with sample data [here](https://online-rental-property-manager.demos.appgini.com/)
 * You can access the demo as a guest user, with read-only access to data.
 * You can also access the demo using the following credentials:
   * Username: `demo`
