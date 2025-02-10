@@ -197,6 +197,7 @@
 				}
 			});
 
+			referencesUniqueFields.forEach(fieldName => enforce_uniqueness('references', fieldName));
 
 			/* load admin tools for admin user */
 			if(!add_new_mode) {
@@ -210,4 +211,7 @@
 				);
 			}
 		});
+
+		var referencesUniqueFields = [
+		];
 	</script>

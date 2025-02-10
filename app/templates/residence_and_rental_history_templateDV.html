@@ -260,6 +260,7 @@
 				}
 			});
 
+			residence_and_rental_historyUniqueFields.forEach(fieldName => enforce_uniqueness('residence_and_rental_history', fieldName));
 
 			/* load admin tools for admin user */
 			if(!add_new_mode) {
@@ -273,4 +274,7 @@
 				);
 			}
 		});
+
+		var residence_and_rental_historyUniqueFields = [
+		];
 	</script>

@@ -165,13 +165,13 @@
 		/* redirect to finish page using javascript */
 		?>
 		<script>
-			jQuery(function() {
+			$j(function() {
 				var a = window.location.href + '?finish=1';
 
-				if(jQuery('div[class="text-danger"]').length) {
-					jQuery('body').append('<p class="text-center"><a href="' + a + '" class="btn btn-default vspacer-lg"><?php echo addslashes($Translation['Continue']); ?> <i class="glyphicon glyphicon-chevron-right"></i></a></p>');
+				if($j('div[class="text-danger"]').length) {
+					$j('body').append('<p class="text-center"><a href="' + a + '" class="btn btn-default vspacer-lg"><?php echo addslashes($Translation['Continue']); ?> <i class="glyphicon glyphicon-chevron-right"></i></a></p>');
 				} else {
-					jQuery('body').append('<div id="manual-redir" style="width: 400px; margin: 10px auto;">If not redirected automatically, <a href="<?php echo basename(__FILE__); ?>?finish=1">click here</a>!</div>');
+					$j('body').append('<div id="manual-redir" style="width: 400px; margin: 10px auto;">If not redirected automatically, <a href="<?php echo basename(__FILE__); ?>?finish=1">click here</a>!</div>');
 					window.location = a;
 				}
 			});
@@ -499,13 +499,13 @@
 
 			/* passwords not matching? */
 			if(p1 != p2) {
-				modal_window({ message: '<div class="alert alert-danger"><?php echo addslashes($Translation['password no match']); ?></div>', title: "<?php echo addslashes($Translation['error:']); ?>", close: function() { jQuery('#confirmPassword').focus(); } });
+				modal_window({ message: '<div class="alert alert-danger"><?php echo addslashes($Translation['password no match']); ?></div>', title: "<?php echo addslashes($Translation['error:']); ?>", close: function() { $j('#confirmPassword').focus(); } });
 				return false;
 			}
 
 			/* user invalid? */
 			if(!/^\w[\w\. @]{3,100}$/.test(user) || /(@@|  |\.\.|___)/.test(user) || user.toLowerCase() == 'guest') {
-				modal_window({ message: '<div class="alert alert-danger"><?php echo addslashes($Translation['username invalid']); ?></div>', title: "<?php echo addslashes($Translation['error:']); ?>", close: function() { jQuery('#username').focus(); } });
+				modal_window({ message: '<div class="alert alert-danger"><?php echo addslashes($Translation['username invalid']); ?></div>', title: "<?php echo addslashes($Translation['error:']); ?>", close: function() { $j('#username').focus(); } });
 				return false;
 			}
 

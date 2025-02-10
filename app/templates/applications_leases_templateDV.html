@@ -340,6 +340,7 @@
 				}
 			});
 
+			applications_leasesUniqueFields.forEach(fieldName => enforce_uniqueness('applications_leases', fieldName));
 
 			/* load admin tools for admin user */
 			if(!add_new_mode) {
@@ -353,4 +354,7 @@
 				);
 			}
 		});
+
+		var applications_leasesUniqueFields = [
+		];
 	</script>

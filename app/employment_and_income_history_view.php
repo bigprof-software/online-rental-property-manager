@@ -101,7 +101,7 @@
 	$x->AllowPrinting = 1;
 	$x->AllowPrintingDV = 1;
 	$x->AllowCSV = 1;
-	$x->AllowAdminShowSQL = 0;
+	$x->AllowAdminShowSQL = showSQL();
 	$x->RecordsPerPage = 10;
 	$x->QuickSearch = 1;
 	$x->QuickSearchText = $Translation['quick search'];

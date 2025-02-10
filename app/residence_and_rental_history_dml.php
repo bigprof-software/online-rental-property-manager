@@ -237,7 +237,7 @@ function residence_and_rental_history_form($selectedId = '', $allowUpdate = true
 		// initial lookup values
 		AppGini.current_tenant__RAND__ = { text: "", value: "<?php echo addslashes($hasSelectedId ? $urow['tenant'] : htmlspecialchars($filterer_tenant, ENT_QUOTES)); ?>"};
 
-		jQuery(function() {
+		$j(function() {
 			setTimeout(function() {
 				if(typeof(tenant_reload__RAND__) == 'function') tenant_reload__RAND__();
 			}, 50); /* we need to slightly delay client-side execution of the above code to allow AppGini.ajaxCache to work */
@@ -404,24 +404,24 @@ function residence_and_rental_history_form($selectedId = '', $allowUpdate = true
 	// set records to read only if user can't insert new records and can't edit current record
 	if(!$fieldsAreEditable) {
 		$jsReadOnly = '';
-		$jsReadOnly .= "\tjQuery('#tenant').prop('disabled', true).css({ color: '#555', backgroundColor: '#fff' });\n";
-		$jsReadOnly .= "\tjQuery('#tenant_caption').prop('disabled', true).css({ color: '#555', backgroundColor: 'white' });\n";
-		$jsReadOnly .= "\tjQuery('#address').replaceWith('<div class=\"form-control-static\" id=\"address\">' + (jQuery('#address').val() || '') + '</div>');\n";
-		$jsReadOnly .= "\tjQuery('#landlord_or_manager_name').replaceWith('<div class=\"form-control-static\" id=\"landlord_or_manager_name\">' + (jQuery('#landlord_or_manager_name').val() || '') + '</div>');\n";
-		$jsReadOnly .= "\tjQuery('#landlord_or_manager_phone').replaceWith('<div class=\"form-control-static\" id=\"landlord_or_manager_phone\">' + (jQuery('#landlord_or_manager_phone').val() || '') + '</div>');\n";
-		$jsReadOnly .= "\tjQuery('#monthly_rent').replaceWith('<div class=\"form-control-static\" id=\"monthly_rent\">' + (jQuery('#monthly_rent').val() || '') + '</div>');\n";
-		$jsReadOnly .= "\tjQuery('#duration_of_residency_from').prop('readonly', true);\n";
-		$jsReadOnly .= "\tjQuery('#duration_of_residency_fromDay, #duration_of_residency_fromMonth, #duration_of_residency_fromYear').prop('disabled', true).css({ color: '#555', backgroundColor: '#fff' });\n";
-		$jsReadOnly .= "\tjQuery('#to').prop('readonly', true);\n";
-		$jsReadOnly .= "\tjQuery('#toDay, #toMonth, #toYear').prop('disabled', true).css({ color: '#555', backgroundColor: '#fff' });\n";
-		$jsReadOnly .= "\tjQuery('#reason_for_leaving').replaceWith('<div class=\"form-control-static\" id=\"reason_for_leaving\">' + (jQuery('#reason_for_leaving').val() || '') + '</div>');\n";
-		$jsReadOnly .= "\tjQuery('.select2-container').hide();\n";
+		$jsReadOnly .= "\t\$j('#tenant').prop('disabled', true).css({ color: '#555', backgroundColor: '#fff' });\n";
+		$jsReadOnly .= "\t\$j('#tenant_caption').prop('disabled', true).css({ color: '#555', backgroundColor: 'white' });\n";
+		$jsReadOnly .= "\t\$j('#address').replaceWith('<div class=\"form-control-static\" id=\"address\">' + (\$j('#address').val() || '') + '</div>');\n";
+		$jsReadOnly .= "\t\$j('#landlord_or_manager_name').replaceWith('<div class=\"form-control-static\" id=\"landlord_or_manager_name\">' + (\$j('#landlord_or_manager_name').val() || '') + '</div>');\n";
+		$jsReadOnly .= "\t\$j('#landlord_or_manager_phone').replaceWith('<div class=\"form-control-static\" id=\"landlord_or_manager_phone\">' + (\$j('#landlord_or_manager_phone').val() || '') + '</div>');\n";
+		$jsReadOnly .= "\t\$j('#monthly_rent').replaceWith('<div class=\"form-control-static\" id=\"monthly_rent\">' + (\$j('#monthly_rent').val() || '') + '</div>');\n";
+		$jsReadOnly .= "\t\$j('#duration_of_residency_from').prop('readonly', true);\n";
+		$jsReadOnly .= "\t\$j('#duration_of_residency_fromDay, #duration_of_residency_fromMonth, #duration_of_residency_fromYear').prop('disabled', true).css({ color: '#555', backgroundColor: '#fff' });\n";
+		$jsReadOnly .= "\t\$j('#to').prop('readonly', true);\n";
+		$jsReadOnly .= "\t\$j('#toDay, #toMonth, #toYear').prop('disabled', true).css({ color: '#555', backgroundColor: '#fff' });\n";
+		$jsReadOnly .= "\t\$j('#reason_for_leaving').replaceWith('<div class=\"form-control-static\" id=\"reason_for_leaving\">' + (\$j('#reason_for_leaving').val() || '') + '</div>');\n";
+		$jsReadOnly .= "\t\$j('.select2-container').hide();\n";
 
 		$noUploads = true;
 	} else {
 		// temporarily disable form change handler till time and datetime pickers are enabled
-		$jsEditable = "\tjQuery('form').eq(0).data('already_changed', true);";
-		$jsEditable .= "\tjQuery('form').eq(0).data('already_changed', false);"; // re-enable form change handler
+		$jsEditable = "\t\$j('form').eq(0).data('already_changed', true);";
+		$jsEditable .= "\t\$j('form').eq(0).data('already_changed', false);"; // re-enable form change handler
 	}
 
 	// process combos

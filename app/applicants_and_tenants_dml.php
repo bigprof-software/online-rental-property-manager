@@ -88,8 +88,8 @@ function applicants_and_tenants_delete($selected_id, $AllowDeleteOfParents = fal
 		$RetMsg = $Translation['confirm delete'];
 		$RetMsg = str_replace('<RelatedRecords>', sprintf($childrenATag, $rirow[0]), $RetMsg);
 		$RetMsg = str_replace(['[<TableName>]', '<TableName>'], sprintf($childrenATag, 'applications_leases'), $RetMsg);
-		$RetMsg = str_replace('<Delete>', '<input type="button" class="btn btn-danger" value="' . html_attr($Translation['yes']) . '" onClick="window.location = \'applicants_and_tenants_view.php?SelectedID=' . urlencode($selected_id) . '&delete_x=1&confirmed=1&csrf_token=' . urlencode(csrf_token(false, true)) . '\';">', $RetMsg);
-		$RetMsg = str_replace('<Cancel>', '<input type="button" class="btn btn-success" value="' . html_attr($Translation[ 'no']) . '" onClick="window.location = \'applicants_and_tenants_view.php?SelectedID=' . urlencode($selected_id) . '\';">', $RetMsg);
+		$RetMsg = str_replace('<Delete>', '<input type="button" class="btn btn-danger" value="' . html_attr($Translation['yes']) . '" onClick="window.location = `applicants_and_tenants_view.php?SelectedID=' . urlencode($selected_id) . '&delete_x=1&confirmed=1&csrf_token=' . urlencode(csrf_token(false, true)) . (Request::val('Embedded') ? '&Embedded=1' : '') . '`;">', $RetMsg);
+		$RetMsg = str_replace('<Cancel>', '<input type="button" class="btn btn-success" value="' . html_attr($Translation[ 'no']) . '" onClick="window.location = `applicants_and_tenants_view.php?SelectedID=' . urlencode($selected_id) . (Request::val('Embedded') ? '&Embedded=1' : '') . '`;">', $RetMsg);
 		return $RetMsg;
 	}
 
@@ -108,8 +108,8 @@ function applicants_and_tenants_delete($selected_id, $AllowDeleteOfParents = fal
 		$RetMsg = $Translation['confirm delete'];
 		$RetMsg = str_replace('<RelatedRecords>', sprintf($childrenATag, $rirow[0]), $RetMsg);
 		$RetMsg = str_replace(['[<TableName>]', '<TableName>'], sprintf($childrenATag, 'residence_and_rental_history'), $RetMsg);
-		$RetMsg = str_replace('<Delete>', '<input type="button" class="btn btn-danger" value="' . html_attr($Translation['yes']) . '" onClick="window.location = \'applicants_and_tenants_view.php?SelectedID=' . urlencode($selected_id) . '&delete_x=1&confirmed=1&csrf_token=' . urlencode(csrf_token(false, true)) . '\';">', $RetMsg);
-		$RetMsg = str_replace('<Cancel>', '<input type="button" class="btn btn-success" value="' . html_attr($Translation[ 'no']) . '" onClick="window.location = \'applicants_and_tenants_view.php?SelectedID=' . urlencode($selected_id) . '\';">', $RetMsg);
+		$RetMsg = str_replace('<Delete>', '<input type="button" class="btn btn-danger" value="' . html_attr($Translation['yes']) . '" onClick="window.location = `applicants_and_tenants_view.php?SelectedID=' . urlencode($selected_id) . '&delete_x=1&confirmed=1&csrf_token=' . urlencode(csrf_token(false, true)) . (Request::val('Embedded') ? '&Embedded=1' : '') . '`;">', $RetMsg);
+		$RetMsg = str_replace('<Cancel>', '<input type="button" class="btn btn-success" value="' . html_attr($Translation[ 'no']) . '" onClick="window.location = `applicants_and_tenants_view.php?SelectedID=' . urlencode($selected_id) . (Request::val('Embedded') ? '&Embedded=1' : '') . '`;">', $RetMsg);
 		return $RetMsg;
 	}
 
@@ -128,8 +128,8 @@ function applicants_and_tenants_delete($selected_id, $AllowDeleteOfParents = fal
 		$RetMsg = $Translation['confirm delete'];
 		$RetMsg = str_replace('<RelatedRecords>', sprintf($childrenATag, $rirow[0]), $RetMsg);
 		$RetMsg = str_replace(['[<TableName>]', '<TableName>'], sprintf($childrenATag, 'employment_and_income_history'), $RetMsg);
-		$RetMsg = str_replace('<Delete>', '<input type="button" class="btn btn-danger" value="' . html_attr($Translation['yes']) . '" onClick="window.location = \'applicants_and_tenants_view.php?SelectedID=' . urlencode($selected_id) . '&delete_x=1&confirmed=1&csrf_token=' . urlencode(csrf_token(false, true)) . '\';">', $RetMsg);
-		$RetMsg = str_replace('<Cancel>', '<input type="button" class="btn btn-success" value="' . html_attr($Translation[ 'no']) . '" onClick="window.location = \'applicants_and_tenants_view.php?SelectedID=' . urlencode($selected_id) . '\';">', $RetMsg);
+		$RetMsg = str_replace('<Delete>', '<input type="button" class="btn btn-danger" value="' . html_attr($Translation['yes']) . '" onClick="window.location = `applicants_and_tenants_view.php?SelectedID=' . urlencode($selected_id) . '&delete_x=1&confirmed=1&csrf_token=' . urlencode(csrf_token(false, true)) . (Request::val('Embedded') ? '&Embedded=1' : '') . '`;">', $RetMsg);
+		$RetMsg = str_replace('<Cancel>', '<input type="button" class="btn btn-success" value="' . html_attr($Translation[ 'no']) . '" onClick="window.location = `applicants_and_tenants_view.php?SelectedID=' . urlencode($selected_id) . (Request::val('Embedded') ? '&Embedded=1' : '') . '`;">', $RetMsg);
 		return $RetMsg;
 	}
 
@@ -148,8 +148,8 @@ function applicants_and_tenants_delete($selected_id, $AllowDeleteOfParents = fal
 		$RetMsg = $Translation['confirm delete'];
 		$RetMsg = str_replace('<RelatedRecords>', sprintf($childrenATag, $rirow[0]), $RetMsg);
 		$RetMsg = str_replace(['[<TableName>]', '<TableName>'], sprintf($childrenATag, 'references'), $RetMsg);
-		$RetMsg = str_replace('<Delete>', '<input type="button" class="btn btn-danger" value="' . html_attr($Translation['yes']) . '" onClick="window.location = \'applicants_and_tenants_view.php?SelectedID=' . urlencode($selected_id) . '&delete_x=1&confirmed=1&csrf_token=' . urlencode(csrf_token(false, true)) . '\';">', $RetMsg);
-		$RetMsg = str_replace('<Cancel>', '<input type="button" class="btn btn-success" value="' . html_attr($Translation[ 'no']) . '" onClick="window.location = \'applicants_and_tenants_view.php?SelectedID=' . urlencode($selected_id) . '\';">', $RetMsg);
+		$RetMsg = str_replace('<Delete>', '<input type="button" class="btn btn-danger" value="' . html_attr($Translation['yes']) . '" onClick="window.location = `applicants_and_tenants_view.php?SelectedID=' . urlencode($selected_id) . '&delete_x=1&confirmed=1&csrf_token=' . urlencode(csrf_token(false, true)) . (Request::val('Embedded') ? '&Embedded=1' : '') . '`;">', $RetMsg);
+		$RetMsg = str_replace('<Cancel>', '<input type="button" class="btn btn-success" value="' . html_attr($Translation[ 'no']) . '" onClick="window.location = `applicants_and_tenants_view.php?SelectedID=' . urlencode($selected_id) . (Request::val('Embedded') ? '&Embedded=1' : '') . '`;">', $RetMsg);
 		return $RetMsg;
 	}
 
@@ -417,25 +417,24 @@ function applicants_and_tenants_form($selectedId = '', $allowUpdate = true, $all
 	// set records to read only if user can't insert new records and can't edit current record
 	if(!$fieldsAreEditable) {
 		$jsReadOnly = '';
-		$jsReadOnly .= "\tjQuery('#last_name').replaceWith('<div class=\"form-control-static\" id=\"last_name\">' + (jQuery('#last_name').val() || '') + '</div>');\n";
-		$jsReadOnly .= "\tjQuery('#first_name').replaceWith('<div class=\"form-control-static\" id=\"first_name\">' + (jQuery('#first_name').val() || '') + '</div>');\n";
-		$jsReadOnly .= "\tjQuery('#email').replaceWith('<div class=\"form-control-static\" id=\"email\">' + (jQuery('#email').val() || '') + '</div>');\n";
-		$jsReadOnly .= "\tjQuery('#email, #email-edit-link').hide();\n";
-		$jsReadOnly .= "\tjQuery('#phone').replaceWith('<div class=\"form-control-static\" id=\"phone\">' + (jQuery('#phone').val() || '') + '</div>');\n";
-		$jsReadOnly .= "\tjQuery('#birth_date').prop('readonly', true);\n";
-		$jsReadOnly .= "\tjQuery('#birth_dateDay, #birth_dateMonth, #birth_dateYear').prop('disabled', true).css({ color: '#555', backgroundColor: '#fff' });\n";
-		$jsReadOnly .= "\tjQuery('#driver_license_number').replaceWith('<div class=\"form-control-static\" id=\"driver_license_number\">' + (jQuery('#driver_license_number').val() || '') + '</div>');\n";
-		$jsReadOnly .= "\tjQuery('#monthly_gross_pay').replaceWith('<div class=\"form-control-static\" id=\"monthly_gross_pay\">' + (jQuery('#monthly_gross_pay').val() || '') + '</div>');\n";
-		$jsReadOnly .= "\tjQuery('#additional_income').replaceWith('<div class=\"form-control-static\" id=\"additional_income\">' + (jQuery('#additional_income').val() || '') + '</div>');\n";
-		$jsReadOnly .= "\tjQuery('#assets').replaceWith('<div class=\"form-control-static\" id=\"assets\">' + (jQuery('#assets').val() || '') + '</div>');\n";
-		$jsReadOnly .= "\tjQuery('input[name=status]').parent().html('<div class=\"form-control-static\">' + jQuery('input[name=status]:checked').next().text() + '</div>')\n";
-		$jsReadOnly .= "\tjQuery('.select2-container').hide();\n";
+		$jsReadOnly .= "\t\$j('#last_name').replaceWith('<div class=\"form-control-static\" id=\"last_name\">' + (\$j('#last_name').val() || '') + '</div>');\n";
+		$jsReadOnly .= "\t\$j('#first_name').replaceWith('<div class=\"form-control-static\" id=\"first_name\">' + (\$j('#first_name').val() || '') + '</div>');\n";
+		$jsReadOnly .= "\t\$j('#email').parent().replaceWith(`<div class=\"form-control-static\" id=\"email\">\${\$j('#email').val() || ''}\${\$j('#email').val() ? '<a target=\"_blank\" class=\"hspacer-lg\" href=\"mailto:' + \$j('#email').val() + '\" target=\"_blank\"><i class=\"glyphicon glyphicon-envelope\"></i></a>' : ''}</div>`);\n";
+		$jsReadOnly .= "\t\$j('#phone').replaceWith('<div class=\"form-control-static\" id=\"phone\">' + (\$j('#phone').val() || '') + '</div>');\n";
+		$jsReadOnly .= "\t\$j('#birth_date').prop('readonly', true);\n";
+		$jsReadOnly .= "\t\$j('#birth_dateDay, #birth_dateMonth, #birth_dateYear').prop('disabled', true).css({ color: '#555', backgroundColor: '#fff' });\n";
+		$jsReadOnly .= "\t\$j('#driver_license_number').replaceWith('<div class=\"form-control-static\" id=\"driver_license_number\">' + (\$j('#driver_license_number').val() || '') + '</div>');\n";
+		$jsReadOnly .= "\t\$j('#monthly_gross_pay').replaceWith('<div class=\"form-control-static\" id=\"monthly_gross_pay\">' + (\$j('#monthly_gross_pay').val() || '') + '</div>');\n";
+		$jsReadOnly .= "\t\$j('#additional_income').replaceWith('<div class=\"form-control-static\" id=\"additional_income\">' + (\$j('#additional_income').val() || '') + '</div>');\n";
+		$jsReadOnly .= "\t\$j('#assets').replaceWith('<div class=\"form-control-static\" id=\"assets\">' + (\$j('#assets').val() || '') + '</div>');\n";
+		$jsReadOnly .= "\t\$j('input[name=status]').parent().html('<div class=\"form-control-static\">' + \$j('input[name=status]:checked').next().text() + '</div>')\n";
+		$jsReadOnly .= "\t\$j('.select2-container').hide();\n";
 
 		$noUploads = true;
 	} else {
 		// temporarily disable form change handler till time and datetime pickers are enabled
-		$jsEditable = "\tjQuery('form').eq(0).data('already_changed', true);";
-		$jsEditable .= "\tjQuery('form').eq(0).data('already_changed', false);"; // re-enable form change handler
+		$jsEditable = "\t\$j('form').eq(0).data('already_changed', true);";
+		$jsEditable .= "\t\$j('form').eq(0).data('already_changed', false);"; // re-enable form change handler
 	}
 
 	// process combos
@@ -580,8 +579,6 @@ function applicants_and_tenants_form($selectedId = '', $allowUpdate = true, $all
 		$templateCode .= $jsEditable;
 
 		if(!$hasSelectedId) {
-			$templateCode.="\n\tif(document.getElementById('emailEdit')) { document.getElementById('emailEdit').style.display='inline'; }";
-			$templateCode.="\n\tif(document.getElementById('emailEditLink')) { document.getElementById('emailEditLink').style.display='none'; }";
 		}
 
 		$templateCode.="\n});</script>\n";

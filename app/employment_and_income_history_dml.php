@@ -235,7 +235,7 @@ function employment_and_income_history_form($selectedId = '', $allowUpdate = tru
 		// initial lookup values
 		AppGini.current_tenant__RAND__ = { text: "", value: "<?php echo addslashes($hasSelectedId ? $urow['tenant'] : htmlspecialchars($filterer_tenant, ENT_QUOTES)); ?>"};
 
-		jQuery(function() {
+		$j(function() {
 			setTimeout(function() {
 				if(typeof(tenant_reload__RAND__) == 'function') tenant_reload__RAND__();
 			}, 50); /* we need to slightly delay client-side execution of the above code to allow AppGini.ajaxCache to work */
@@ -402,23 +402,23 @@ function employment_and_income_history_form($selectedId = '', $allowUpdate = tru
 	// set records to read only if user can't insert new records and can't edit current record
 	if(!$fieldsAreEditable) {
 		$jsReadOnly = '';
-		$jsReadOnly .= "\tjQuery('#tenant').prop('disabled', true).css({ color: '#555', backgroundColor: '#fff' });\n";
-		$jsReadOnly .= "\tjQuery('#tenant_caption').prop('disabled', true).css({ color: '#555', backgroundColor: 'white' });\n";
-		$jsReadOnly .= "\tjQuery('#employer_name').replaceWith('<div class=\"form-control-static\" id=\"employer_name\">' + (jQuery('#employer_name').val() || '') + '</div>');\n";
-		$jsReadOnly .= "\tjQuery('#city').replaceWith('<div class=\"form-control-static\" id=\"city\">' + (jQuery('#city').val() || '') + '</div>');\n";
-		$jsReadOnly .= "\tjQuery('#employer_phone').replaceWith('<div class=\"form-control-static\" id=\"employer_phone\">' + (jQuery('#employer_phone').val() || '') + '</div>');\n";
-		$jsReadOnly .= "\tjQuery('#employed_from').prop('readonly', true);\n";
-		$jsReadOnly .= "\tjQuery('#employed_fromDay, #employed_fromMonth, #employed_fromYear').prop('disabled', true).css({ color: '#555', backgroundColor: '#fff' });\n";
-		$jsReadOnly .= "\tjQuery('#employed_till').prop('readonly', true);\n";
-		$jsReadOnly .= "\tjQuery('#employed_tillDay, #employed_tillMonth, #employed_tillYear').prop('disabled', true).css({ color: '#555', backgroundColor: '#fff' });\n";
-		$jsReadOnly .= "\tjQuery('#occupation').replaceWith('<div class=\"form-control-static\" id=\"occupation\">' + (jQuery('#occupation').val() || '') + '</div>');\n";
-		$jsReadOnly .= "\tjQuery('.select2-container').hide();\n";
+		$jsReadOnly .= "\t\$j('#tenant').prop('disabled', true).css({ color: '#555', backgroundColor: '#fff' });\n";
+		$jsReadOnly .= "\t\$j('#tenant_caption').prop('disabled', true).css({ color: '#555', backgroundColor: 'white' });\n";
+		$jsReadOnly .= "\t\$j('#employer_name').replaceWith('<div class=\"form-control-static\" id=\"employer_name\">' + (\$j('#employer_name').val() || '') + '</div>');\n";
+		$jsReadOnly .= "\t\$j('#city').replaceWith('<div class=\"form-control-static\" id=\"city\">' + (\$j('#city').val() || '') + '</div>');\n";
+		$jsReadOnly .= "\t\$j('#employer_phone').replaceWith('<div class=\"form-control-static\" id=\"employer_phone\">' + (\$j('#employer_phone').val() || '') + '</div>');\n";
+		$jsReadOnly .= "\t\$j('#employed_from').prop('readonly', true);\n";
+		$jsReadOnly .= "\t\$j('#employed_fromDay, #employed_fromMonth, #employed_fromYear').prop('disabled', true).css({ color: '#555', backgroundColor: '#fff' });\n";
+		$jsReadOnly .= "\t\$j('#employed_till').prop('readonly', true);\n";
+		$jsReadOnly .= "\t\$j('#employed_tillDay, #employed_tillMonth, #employed_tillYear').prop('disabled', true).css({ color: '#555', backgroundColor: '#fff' });\n";
+		$jsReadOnly .= "\t\$j('#occupation').replaceWith('<div class=\"form-control-static\" id=\"occupation\">' + (\$j('#occupation').val() || '') + '</div>');\n";
+		$jsReadOnly .= "\t\$j('.select2-container').hide();\n";
 
 		$noUploads = true;
 	} else {
 		// temporarily disable form change handler till time and datetime pickers are enabled
-		$jsEditable = "\tjQuery('form').eq(0).data('already_changed', true);";
-		$jsEditable .= "\tjQuery('form').eq(0).data('already_changed', false);"; // re-enable form change handler
+		$jsEditable = "\t\$j('form').eq(0).data('already_changed', true);";
+		$jsEditable .= "\t\$j('form').eq(0).data('already_changed', false);"; // re-enable form change handler
 	}
 
 	// process combos

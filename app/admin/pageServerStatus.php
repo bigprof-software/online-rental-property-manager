@@ -1,6 +1,6 @@
 <?php
-	$appgini_version = '25.10.1893 beta';
-	$generated_ts = '05/01/2025 13:12:50';
+	$appgini_version = '25.10.1935';
+	$generated_ts = '10/02/2025 13:50:12';
 
 	require(__DIR__ . '/incCommon.php');
 
@@ -81,11 +81,19 @@
 	while($row = db_fetch_array($res)) $db_status[$row[0]] = $row[1];
 	$res = sql('SHOW VARIABLES', $eo);
 	while($row = db_fetch_array($res)) $db_status[$row[0]] = $row[1];
+
+	$dbLink = db_link();
 ?>
 
 <div class="page-header"><h1><?php echo $Translation['server status']; ?></h1></div>
 
-<h4><?php echo $gen_info; ?></h4>
+<h4>
+	<?php echo $gen_info; ?>
+	<button class="btn btn-lg btn-default pull-right" id="export-json">
+		<i class="glyphicon glyphicon-save"></i>
+		<?php echo $Translation['download']; ?>
+	</button>
+</h4>
 <hr>
 
 <div class="row">
@@ -144,7 +152,7 @@
 	<div class="col-lg-3">
 		<h3><?php echo $Translation['db client status']; ?></h3>
 		<div class="db-status scrollable">
-			<pre><?php print_r(db_link()); ?></pre>
+			<pre><?php print_r($dbLink); ?></pre>
 		</div>
 		<h3><?php echo $Translation['date and time info']; ?></h3>
 		<div class="db-status scrollable">
@@ -215,6 +223,42 @@
 				// otherwise, maximize
 				cell.parents('.row').children('.col-lg-3').addClass('hidden');
 			}
+		})
+
+		// export server status as JSON
+		$j('#export-json').on('click', function() {
+			var data = {
+				appgini: {
+					version: <?php echo json_encode($appgini_version); ?>,
+					generated: <?php echo json_encode($generated_ts); ?>
+				},
+				uploads: {
+					num_files: <?php echo $num_uploads; ?>,
+					total_size_bytes: <?php echo $uploads_size; ?>
+				},
+				db: {
+					storage: <?php echo json_encode($db_storage); ?>,
+					status: {
+						server: <?php echo json_encode($db_status); ?>,
+						client: <?php echo json_encode(print_r($dbLink, true)); ?>
+					}
+				},
+				datetime: {
+					local: <?php echo json_encode(date('Y-m-d H:i:s T')); ?>,
+					utc: <?php echo json_encode(gmdate('Y-m-d H:i:s T')); ?>
+				},
+				php: <?php echo json_encode($phpinfo[0]); ?>
+			};
+
+			var blob = new Blob([JSON.stringify(data, null, 2)], {type: 'application/json'}),
+				url = URL.createObjectURL(blob),
+				a = document.createElement('a');
+
+			a.href = url;
+			a.download = 'server-status.json';
+			document.body.appendChild(a);
+			a.click();
+			document.body.removeChild(a);
 		})
 	})
 </script>

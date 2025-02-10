@@ -108,8 +108,8 @@ function units_delete($selected_id, $AllowDeleteOfParents = false, $skipChecks =
 		$RetMsg = $Translation['confirm delete'];
 		$RetMsg = str_replace('<RelatedRecords>', sprintf($childrenATag, $rirow[0]), $RetMsg);
 		$RetMsg = str_replace(['[<TableName>]', '<TableName>'], sprintf($childrenATag, 'applications_leases'), $RetMsg);
-		$RetMsg = str_replace('<Delete>', '<input type="button" class="btn btn-danger" value="' . html_attr($Translation['yes']) . '" onClick="window.location = \'units_view.php?SelectedID=' . urlencode($selected_id) . '&delete_x=1&confirmed=1&csrf_token=' . urlencode(csrf_token(false, true)) . '\';">', $RetMsg);
-		$RetMsg = str_replace('<Cancel>', '<input type="button" class="btn btn-success" value="' . html_attr($Translation[ 'no']) . '" onClick="window.location = \'units_view.php?SelectedID=' . urlencode($selected_id) . '\';">', $RetMsg);
+		$RetMsg = str_replace('<Delete>', '<input type="button" class="btn btn-danger" value="' . html_attr($Translation['yes']) . '" onClick="window.location = `units_view.php?SelectedID=' . urlencode($selected_id) . '&delete_x=1&confirmed=1&csrf_token=' . urlencode(csrf_token(false, true)) . (Request::val('Embedded') ? '&Embedded=1' : '') . '`;">', $RetMsg);
+		$RetMsg = str_replace('<Cancel>', '<input type="button" class="btn btn-success" value="' . html_attr($Translation[ 'no']) . '" onClick="window.location = `units_view.php?SelectedID=' . urlencode($selected_id) . (Request::val('Embedded') ? '&Embedded=1' : '') . '`;">', $RetMsg);
 		return $RetMsg;
 	}
 
@@ -128,8 +128,8 @@ function units_delete($selected_id, $AllowDeleteOfParents = false, $skipChecks =
 		$RetMsg = $Translation['confirm delete'];
 		$RetMsg = str_replace('<RelatedRecords>', sprintf($childrenATag, $rirow[0]), $RetMsg);
 		$RetMsg = str_replace(['[<TableName>]', '<TableName>'], sprintf($childrenATag, 'unit_photos'), $RetMsg);
-		$RetMsg = str_replace('<Delete>', '<input type="button" class="btn btn-danger" value="' . html_attr($Translation['yes']) . '" onClick="window.location = \'units_view.php?SelectedID=' . urlencode($selected_id) . '&delete_x=1&confirmed=1&csrf_token=' . urlencode(csrf_token(false, true)) . '\';">', $RetMsg);
-		$RetMsg = str_replace('<Cancel>', '<input type="button" class="btn btn-success" value="' . html_attr($Translation[ 'no']) . '" onClick="window.location = \'units_view.php?SelectedID=' . urlencode($selected_id) . '\';">', $RetMsg);
+		$RetMsg = str_replace('<Delete>', '<input type="button" class="btn btn-danger" value="' . html_attr($Translation['yes']) . '" onClick="window.location = `units_view.php?SelectedID=' . urlencode($selected_id) . '&delete_x=1&confirmed=1&csrf_token=' . urlencode(csrf_token(false, true)) . (Request::val('Embedded') ? '&Embedded=1' : '') . '`;">', $RetMsg);
+		$RetMsg = str_replace('<Cancel>', '<input type="button" class="btn btn-success" value="' . html_attr($Translation[ 'no']) . '" onClick="window.location = `units_view.php?SelectedID=' . urlencode($selected_id) . (Request::val('Embedded') ? '&Embedded=1' : '') . '`;">', $RetMsg);
 		return $RetMsg;
 	}
 
@@ -345,7 +345,7 @@ function units_form($selectedId = '', $allowUpdate = true, $allowInsert = true, 
 		// initial lookup values
 		AppGini.current_property__RAND__ = { text: "", value: "<?php echo addslashes($hasSelectedId ? $urow['property'] : htmlspecialchars($filterer_property, ENT_QUOTES)); ?>"};
 
-		jQuery(function() {
+		$j(function() {
 			setTimeout(function() {
 				if(typeof(property_reload__RAND__) == 'function') property_reload__RAND__();
 			}, 50); /* we need to slightly delay client-side execution of the above code to allow AppGini.ajaxCache to work */
@@ -512,24 +512,24 @@ function units_form($selectedId = '', $allowUpdate = true, $allowInsert = true, 
 	// set records to read only if user can't insert new records and can't edit current record
 	if(!$fieldsAreEditable) {
 		$jsReadOnly = '';
-		$jsReadOnly .= "\tjQuery('#property').prop('disabled', true).css({ color: '#555', backgroundColor: '#fff' });\n";
-		$jsReadOnly .= "\tjQuery('#property_caption').prop('disabled', true).css({ color: '#555', backgroundColor: 'white' });\n";
-		$jsReadOnly .= "\tjQuery('#unit_number').replaceWith('<div class=\"form-control-static\" id=\"unit_number\">' + (jQuery('#unit_number').val() || '') + '</div>');\n";
-		$jsReadOnly .= "\tjQuery('#photo').replaceWith('<div class=\"form-control-static\" id=\"photo\">' + (jQuery('#photo').val() || '') + '</div>');\n";
-		$jsReadOnly .= "\tjQuery('input[name=status]').parent().html('<div class=\"form-control-static\">' + jQuery('input[name=status]:checked').next().text() + '</div>')\n";
-		$jsReadOnly .= "\tjQuery('#size').replaceWith('<div class=\"form-control-static\" id=\"size\">' + (jQuery('#size').val() || '') + '</div>');\n";
-		$jsReadOnly .= "\tjQuery('#rooms').replaceWith('<div class=\"form-control-static\" id=\"rooms\">' + (jQuery('#rooms').val() || '') + '</div>');\n";
-		$jsReadOnly .= "\tjQuery('#bathroom').replaceWith('<div class=\"form-control-static\" id=\"bathroom\">' + (jQuery('#bathroom').val() || '') + '</div>');\n";
-		$jsReadOnly .= "\tjQuery('#features').replaceWith('<div class=\"form-control-static\" id=\"features\">' + (jQuery('#features').val() || '') + '</div>'); jQuery('#features-multi-selection-help').hide();\n";
-		$jsReadOnly .= "\tjQuery('#s2id_features').remove();\n";
-		$jsReadOnly .= "\tjQuery('#rental_amount').replaceWith('<div class=\"form-control-static\" id=\"rental_amount\">' + (jQuery('#rental_amount').val() || '') + '</div>');\n";
-		$jsReadOnly .= "\tjQuery('.select2-container').hide();\n";
+		$jsReadOnly .= "\t\$j('#property').prop('disabled', true).css({ color: '#555', backgroundColor: '#fff' });\n";
+		$jsReadOnly .= "\t\$j('#property_caption').prop('disabled', true).css({ color: '#555', backgroundColor: 'white' });\n";
+		$jsReadOnly .= "\t\$j('#unit_number').replaceWith('<div class=\"form-control-static\" id=\"unit_number\">' + (\$j('#unit_number').val() || '') + '</div>');\n";
+		$jsReadOnly .= "\t\$j('#photo').replaceWith('<div class=\"form-control-static\" id=\"photo\">' + (\$j('#photo').val() || '') + '</div>');\n";
+		$jsReadOnly .= "\t\$j('input[name=status]').parent().html('<div class=\"form-control-static\">' + \$j('input[name=status]:checked').next().text() + '</div>')\n";
+		$jsReadOnly .= "\t\$j('#size').replaceWith('<div class=\"form-control-static\" id=\"size\">' + (\$j('#size').val() || '') + '</div>');\n";
+		$jsReadOnly .= "\t\$j('#rooms').replaceWith('<div class=\"form-control-static\" id=\"rooms\">' + (\$j('#rooms').val() || '') + '</div>');\n";
+		$jsReadOnly .= "\t\$j('#bathroom').replaceWith('<div class=\"form-control-static\" id=\"bathroom\">' + (\$j('#bathroom').val() || '') + '</div>');\n";
+		$jsReadOnly .= "\t\$j('#features').replaceWith('<div class=\"form-control-static\" id=\"features\">' + (\$j('#features').val() || '') + '</div>'); \$j('#features-multi-selection-help').hide();\n";
+		$jsReadOnly .= "\t\$j('#s2id_features').remove();\n";
+		$jsReadOnly .= "\t\$j('#rental_amount').replaceWith('<div class=\"form-control-static\" id=\"rental_amount\">' + (\$j('#rental_amount').val() || '') + '</div>');\n";
+		$jsReadOnly .= "\t\$j('.select2-container').hide();\n";
 
 		$noUploads = true;
 	} else {
 		// temporarily disable form change handler till time and datetime pickers are enabled
-		$jsEditable = "\tjQuery('form').eq(0).data('already_changed', true);";
-		$jsEditable .= "\tjQuery('form').eq(0).data('already_changed', false);"; // re-enable form change handler
+		$jsEditable = "\t\$j('form').eq(0).data('already_changed', true);";
+		$jsEditable .= "\t\$j('form').eq(0).data('already_changed', false);"; // re-enable form change handler
 	}
 
 	// process combos

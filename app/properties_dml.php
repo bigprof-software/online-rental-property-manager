@@ -103,8 +103,8 @@ function properties_delete($selected_id, $AllowDeleteOfParents = false, $skipChe
 		$RetMsg = $Translation['confirm delete'];
 		$RetMsg = str_replace('<RelatedRecords>', sprintf($childrenATag, $rirow[0]), $RetMsg);
 		$RetMsg = str_replace(['[<TableName>]', '<TableName>'], sprintf($childrenATag, 'applications_leases'), $RetMsg);
-		$RetMsg = str_replace('<Delete>', '<input type="button" class="btn btn-danger" value="' . html_attr($Translation['yes']) . '" onClick="window.location = \'properties_view.php?SelectedID=' . urlencode($selected_id) . '&delete_x=1&confirmed=1&csrf_token=' . urlencode(csrf_token(false, true)) . '\';">', $RetMsg);
-		$RetMsg = str_replace('<Cancel>', '<input type="button" class="btn btn-success" value="' . html_attr($Translation[ 'no']) . '" onClick="window.location = \'properties_view.php?SelectedID=' . urlencode($selected_id) . '\';">', $RetMsg);
+		$RetMsg = str_replace('<Delete>', '<input type="button" class="btn btn-danger" value="' . html_attr($Translation['yes']) . '" onClick="window.location = `properties_view.php?SelectedID=' . urlencode($selected_id) . '&delete_x=1&confirmed=1&csrf_token=' . urlencode(csrf_token(false, true)) . (Request::val('Embedded') ? '&Embedded=1' : '') . '`;">', $RetMsg);
+		$RetMsg = str_replace('<Cancel>', '<input type="button" class="btn btn-success" value="' . html_attr($Translation[ 'no']) . '" onClick="window.location = `properties_view.php?SelectedID=' . urlencode($selected_id) . (Request::val('Embedded') ? '&Embedded=1' : '') . '`;">', $RetMsg);
 		return $RetMsg;
 	}
 
@@ -123,8 +123,8 @@ function properties_delete($selected_id, $AllowDeleteOfParents = false, $skipChe
 		$RetMsg = $Translation['confirm delete'];
 		$RetMsg = str_replace('<RelatedRecords>', sprintf($childrenATag, $rirow[0]), $RetMsg);
 		$RetMsg = str_replace(['[<TableName>]', '<TableName>'], sprintf($childrenATag, 'property_photos'), $RetMsg);
-		$RetMsg = str_replace('<Delete>', '<input type="button" class="btn btn-danger" value="' . html_attr($Translation['yes']) . '" onClick="window.location = \'properties_view.php?SelectedID=' . urlencode($selected_id) . '&delete_x=1&confirmed=1&csrf_token=' . urlencode(csrf_token(false, true)) . '\';">', $RetMsg);
-		$RetMsg = str_replace('<Cancel>', '<input type="button" class="btn btn-success" value="' . html_attr($Translation[ 'no']) . '" onClick="window.location = \'properties_view.php?SelectedID=' . urlencode($selected_id) . '\';">', $RetMsg);
+		$RetMsg = str_replace('<Delete>', '<input type="button" class="btn btn-danger" value="' . html_attr($Translation['yes']) . '" onClick="window.location = `properties_view.php?SelectedID=' . urlencode($selected_id) . '&delete_x=1&confirmed=1&csrf_token=' . urlencode(csrf_token(false, true)) . (Request::val('Embedded') ? '&Embedded=1' : '') . '`;">', $RetMsg);
+		$RetMsg = str_replace('<Cancel>', '<input type="button" class="btn btn-success" value="' . html_attr($Translation[ 'no']) . '" onClick="window.location = `properties_view.php?SelectedID=' . urlencode($selected_id) . (Request::val('Embedded') ? '&Embedded=1' : '') . '`;">', $RetMsg);
 		return $RetMsg;
 	}
 
@@ -143,8 +143,8 @@ function properties_delete($selected_id, $AllowDeleteOfParents = false, $skipChe
 		$RetMsg = $Translation['confirm delete'];
 		$RetMsg = str_replace('<RelatedRecords>', sprintf($childrenATag, $rirow[0]), $RetMsg);
 		$RetMsg = str_replace(['[<TableName>]', '<TableName>'], sprintf($childrenATag, 'units'), $RetMsg);
-		$RetMsg = str_replace('<Delete>', '<input type="button" class="btn btn-danger" value="' . html_attr($Translation['yes']) . '" onClick="window.location = \'properties_view.php?SelectedID=' . urlencode($selected_id) . '&delete_x=1&confirmed=1&csrf_token=' . urlencode(csrf_token(false, true)) . '\';">', $RetMsg);
-		$RetMsg = str_replace('<Cancel>', '<input type="button" class="btn btn-success" value="' . html_attr($Translation[ 'no']) . '" onClick="window.location = \'properties_view.php?SelectedID=' . urlencode($selected_id) . '\';">', $RetMsg);
+		$RetMsg = str_replace('<Delete>', '<input type="button" class="btn btn-danger" value="' . html_attr($Translation['yes']) . '" onClick="window.location = `properties_view.php?SelectedID=' . urlencode($selected_id) . '&delete_x=1&confirmed=1&csrf_token=' . urlencode(csrf_token(false, true)) . (Request::val('Embedded') ? '&Embedded=1' : '') . '`;">', $RetMsg);
+		$RetMsg = str_replace('<Cancel>', '<input type="button" class="btn btn-success" value="' . html_attr($Translation[ 'no']) . '" onClick="window.location = `properties_view.php?SelectedID=' . urlencode($selected_id) . (Request::val('Embedded') ? '&Embedded=1' : '') . '`;">', $RetMsg);
 		return $RetMsg;
 	}
 
@@ -397,7 +397,7 @@ function properties_form($selectedId = '', $allowUpdate = true, $allowInsert = t
 		// initial lookup values
 		AppGini.current_owner__RAND__ = { text: "", value: "<?php echo addslashes($hasSelectedId ? $urow['owner'] : htmlspecialchars($filterer_owner, ENT_QUOTES)); ?>"};
 
-		jQuery(function() {
+		$j(function() {
 			setTimeout(function() {
 				if(typeof(owner_reload__RAND__) == 'function') owner_reload__RAND__();
 			}, 50); /* we need to slightly delay client-side execution of the above code to allow AppGini.ajaxCache to work */
@@ -564,24 +564,24 @@ function properties_form($selectedId = '', $allowUpdate = true, $allowInsert = t
 	// set records to read only if user can't insert new records and can't edit current record
 	if(!$fieldsAreEditable) {
 		$jsReadOnly = '';
-		$jsReadOnly .= "\tjQuery('#property_name').replaceWith('<div class=\"form-control-static\" id=\"property_name\">' + (jQuery('#property_name').val() || '') + '</div>');\n";
-		$jsReadOnly .= "\tjQuery('#photo').replaceWith('<div class=\"form-control-static\" id=\"photo\">' + (jQuery('#photo').val() || '') + '</div>');\n";
-		$jsReadOnly .= "\tjQuery('input[name=type]').parent().html('<div class=\"form-control-static\">' + jQuery('input[name=type]:checked').next().text() + '</div>')\n";
-		$jsReadOnly .= "\tjQuery('#number_of_units').replaceWith('<div class=\"form-control-static\" id=\"number_of_units\">' + (jQuery('#number_of_units').val() || '') + '</div>');\n";
-		$jsReadOnly .= "\tjQuery('#owner').prop('disabled', true).css({ color: '#555', backgroundColor: '#fff' });\n";
-		$jsReadOnly .= "\tjQuery('#owner_caption').prop('disabled', true).css({ color: '#555', backgroundColor: 'white' });\n";
-		$jsReadOnly .= "\tjQuery('#country').replaceWith('<div class=\"form-control-static\" id=\"country\">' + (jQuery('#country').val() || '') + '</div>'); jQuery('#country-multi-selection-help').hide();\n";
-		$jsReadOnly .= "\tjQuery('#street').replaceWith('<div class=\"form-control-static\" id=\"street\">' + (jQuery('#street').val() || '') + '</div>');\n";
-		$jsReadOnly .= "\tjQuery('#City').replaceWith('<div class=\"form-control-static\" id=\"City\">' + (jQuery('#City').val() || '') + '</div>');\n";
-		$jsReadOnly .= "\tjQuery('#State').replaceWith('<div class=\"form-control-static\" id=\"State\">' + (jQuery('#State').val() || '') + '</div>'); jQuery('#State-multi-selection-help').hide();\n";
-		$jsReadOnly .= "\tjQuery('#ZIP').replaceWith('<div class=\"form-control-static\" id=\"ZIP\">' + (jQuery('#ZIP').val() || '') + '</div>');\n";
-		$jsReadOnly .= "\tjQuery('.select2-container').hide();\n";
+		$jsReadOnly .= "\t\$j('#property_name').replaceWith('<div class=\"form-control-static\" id=\"property_name\">' + (\$j('#property_name').val() || '') + '</div>');\n";
+		$jsReadOnly .= "\t\$j('#photo').replaceWith('<div class=\"form-control-static\" id=\"photo\">' + (\$j('#photo').val() || '') + '</div>');\n";
+		$jsReadOnly .= "\t\$j('input[name=type]').parent().html('<div class=\"form-control-static\">' + \$j('input[name=type]:checked').next().text() + '</div>')\n";
+		$jsReadOnly .= "\t\$j('#number_of_units').replaceWith('<div class=\"form-control-static\" id=\"number_of_units\">' + (\$j('#number_of_units').val() || '') + '</div>');\n";
+		$jsReadOnly .= "\t\$j('#owner').prop('disabled', true).css({ color: '#555', backgroundColor: '#fff' });\n";
+		$jsReadOnly .= "\t\$j('#owner_caption').prop('disabled', true).css({ color: '#555', backgroundColor: 'white' });\n";
+		$jsReadOnly .= "\t\$j('#country').replaceWith('<div class=\"form-control-static\" id=\"country\">' + (\$j('#country').val() || '') + '</div>'); \$j('#country-multi-selection-help').hide();\n";
+		$jsReadOnly .= "\t\$j('#street').replaceWith('<div class=\"form-control-static\" id=\"street\">' + (\$j('#street').val() || '') + '</div>');\n";
+		$jsReadOnly .= "\t\$j('#City').replaceWith('<div class=\"form-control-static\" id=\"City\">' + (\$j('#City').val() || '') + '</div>');\n";
+		$jsReadOnly .= "\t\$j('#State').replaceWith('<div class=\"form-control-static\" id=\"State\">' + (\$j('#State').val() || '') + '</div>'); \$j('#State-multi-selection-help').hide();\n";
+		$jsReadOnly .= "\t\$j('#ZIP').replaceWith('<div class=\"form-control-static\" id=\"ZIP\">' + (\$j('#ZIP').val() || '') + '</div>');\n";
+		$jsReadOnly .= "\t\$j('.select2-container').hide();\n";
 
 		$noUploads = true;
 	} else {
 		// temporarily disable form change handler till time and datetime pickers are enabled
-		$jsEditable = "\tjQuery('form').eq(0).data('already_changed', true);";
-		$jsEditable .= "\tjQuery('form').eq(0).data('already_changed', false);"; // re-enable form change handler
+		$jsEditable = "\t\$j('form').eq(0).data('already_changed', true);";
+		$jsEditable .= "\t\$j('form').eq(0).data('already_changed', false);"; // re-enable form change handler
 	}
 
 	// process combos

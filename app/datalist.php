@@ -1034,7 +1034,7 @@ class DataList {
 								$rowTemp = str_replace("<%%HTML_ATTR($fieldTVCaption)%%>", html_attr($fd), $rowTemp);
 
 								if(strpos($rowTemp, "<%%YOUTUBETHUMB($fieldTVCaption)%%>") !== false)
-									$rowTemp = str_replace("<%%YOUTUBETHUMB($fieldTVCaption)%%>", thisOr(get_embed('youtube', $fd, '', '', 'thumbnail_url'), 'blank.gif'), $rowTemp);
+									$rowTemp = str_replace("<%%YOUTUBETHUMB($fieldTVCaption)%%>", thisOr(get_embed('video', $fd, '', '', 'thumbnail_url'), 'blank.gif'), $rowTemp);
 								if(strpos($rowTemp, "<%%GOOGLEMAPTHUMB($fieldTVCaption)%%>") !== false)
 									$rowTemp = str_replace("<%%GOOGLEMAPTHUMB($fieldTVCaption)%%>", thisOr(get_embed('googlemap', $fd, '', '', 'thumbnail'), 'blank.gif'), $rowTemp);
 								if(strpos($rowTemp, "<%%GOOGLEMAPTHUMBPINPOINT($fieldTVCaption)%%>") !== false)

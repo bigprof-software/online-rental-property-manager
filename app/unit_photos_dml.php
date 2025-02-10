@@ -240,7 +240,7 @@ function unit_photos_form($selectedId = '', $allowUpdate = true, $allowInsert = 
 		// initial lookup values
 		AppGini.current_unit__RAND__ = { text: "", value: "<?php echo addslashes($hasSelectedId ? $urow['unit'] : htmlspecialchars($filterer_unit, ENT_QUOTES)); ?>"};
 
-		jQuery(function() {
+		$j(function() {
 			setTimeout(function() {
 				if(typeof(unit_reload__RAND__) == 'function') unit_reload__RAND__();
 			}, 50); /* we need to slightly delay client-side execution of the above code to allow AppGini.ajaxCache to work */
@@ -407,16 +407,16 @@ function unit_photos_form($selectedId = '', $allowUpdate = true, $allowInsert = 
 	// set records to read only if user can't insert new records and can't edit current record
 	if(!$fieldsAreEditable) {
 		$jsReadOnly = '';
-		$jsReadOnly .= "\tjQuery('#unit').prop('disabled', true).css({ color: '#555', backgroundColor: '#fff' });\n";
-		$jsReadOnly .= "\tjQuery('#unit_caption').prop('disabled', true).css({ color: '#555', backgroundColor: 'white' });\n";
-		$jsReadOnly .= "\tjQuery('#photo').replaceWith('<div class=\"form-control-static\" id=\"photo\">' + (jQuery('#photo').val() || '') + '</div>');\n";
-		$jsReadOnly .= "\tjQuery('.select2-container').hide();\n";
+		$jsReadOnly .= "\t\$j('#unit').prop('disabled', true).css({ color: '#555', backgroundColor: '#fff' });\n";
+		$jsReadOnly .= "\t\$j('#unit_caption').prop('disabled', true).css({ color: '#555', backgroundColor: 'white' });\n";
+		$jsReadOnly .= "\t\$j('#photo').replaceWith('<div class=\"form-control-static\" id=\"photo\">' + (\$j('#photo').val() || '') + '</div>');\n";
+		$jsReadOnly .= "\t\$j('.select2-container').hide();\n";
 
 		$noUploads = true;
 	} else {
 		// temporarily disable form change handler till time and datetime pickers are enabled
-		$jsEditable = "\tjQuery('form').eq(0).data('already_changed', true);";
-		$jsEditable .= "\tjQuery('form').eq(0).data('already_changed', false);"; // re-enable form change handler
+		$jsEditable = "\t\$j('form').eq(0).data('already_changed', true);";
+		$jsEditable .= "\t\$j('form').eq(0).data('already_changed', false);"; // re-enable form change handler
 	}
 
 	// process combos

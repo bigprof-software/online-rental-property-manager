@@ -892,4 +892,7 @@ $TranslationEn = [
 
 	// Added in 24.19
 	'no insert permission' => 'You do not have permission to insert records into this table.',
+
+	// Added in 25.10
+	'download' => 'Download',
 ];

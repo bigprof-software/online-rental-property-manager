@@ -11,14 +11,15 @@
 	}
 
 	$memberID = new Request('memberID', 'strtolower');
+	$eo = ['silentErrors' => true];
 
 	// validate memberID exists and is not guest and is not admin
 	$anonymousMember = strtolower($adminConfig['anonymousMember']);
 	$anonymousGroup = $adminConfig['anonymousGroup'];
-	$anonGroupID = sqlValue("select groupID from membership_groups where lcase(name)='" . strtolower(makeSafe($anonymousGroup)) . "'");
-	$adminGroupID = sqlValue("select groupID from membership_groups where name='Admins'");
-	$groupID = sqlValue("select groupID from membership_users where lcase(memberID)='{$memberID->sql}'");
-	$group = strip_tags(sqlValue("select name from membership_groups where groupID='{$groupID}'"));
+	$anonGroupID = sqlValue("SELECT `groupID` FROM `membership_groups` WHERE LCASE(`name`)='" . strtolower(makeSafe($anonymousGroup)) . "'");
+	$adminGroupID = sqlValue("SELECT `groupID` FROM `membership_groups` WHERE `name`='Admins'");
+	$groupID = sqlValue("SELECT `groupID` FROM `membership_users` WHERE LCASE(`memberID`)='{$memberID->sql}'");
+	$group = strip_tags(sqlValue("SELECT `name` FROM `membership_groups` WHERE `groupID`='{$groupID}'"));
 	if($groupID == $anonGroupID || $memberID->raw == $anonymousMember || !$groupID || $groupID == $adminGroupID || $memberID->raw == $adminConfig['adminUsername']) {
 		// error in request. redirect to members page.
 		redirect('admin/pageViewMembers.php');
@@ -29,44 +30,43 @@
 		// csrf check
 		if(!csrf_token(true)) die($Translation['invalid security token']);
 
+		$tablePermissions = [];
+
 		// validate data
 		foreach ($tables as $t => $tc) {
-			eval(" 
-					\${$t}_insert = checkPermissionVal('{$t}_insert');
-					\${$t}_view = checkPermissionVal('{$t}_view');
-					\${$t}_edit = checkPermissionVal('{$t}_edit');
-					\${$t}_delete = checkPermissionVal('{$t}_delete');
-				");
+			$tablePermissions[$t] = [
+				'insert' => checkPermissionVal("{$t}_insert"),
+				'view' => checkPermissionVal("{$t}_view"),
+				'edit' => checkPermissionVal("{$t}_edit"),
+				'delete' => checkPermissionVal("{$t}_delete")
+			];
 		}
 
 		// reset then add member permissions
-		sql("delete from membership_userpermissions where lcase(memberID)='{$memberID->sql}'", $eo);
+		sql("DELETE FROM `membership_userpermissions` WHERE LCASE(`memberID`)='{$memberID->sql}'", $eo);
 
 		// add new member permissions
-		$query = "insert into membership_userpermissions (memberID, tableName, allowInsert, allowView, allowEdit, allowDelete) values ";
+		$query = "INSERT INTO `membership_userpermissions` (`memberID`, `tableName`, `allowInsert`, `allowView`, `allowEdit`, `allowDelete`) VALUES ";
+		$inserts = [];
 		foreach ($tables as $t => $tc) {
-			$insert = "{$t}_insert";
-			$view = "{$t}_view";
-			$edit = "{$t}_edit";
-			$delete = "{$t}_delete";
-			$query .= "('{$memberID->sql}', '{$t}', '${$insert}', '${$view}', '${$edit}', '${$delete}'),";
+			$inserts[] = "('{$memberID->sql}', '{$t}', '{$tablePermissions[$t]['insert']}', '{$tablePermissions[$t]['view']}', '{$tablePermissions[$t]['edit']}', '{$tablePermissions[$t]['delete']}')";
 		}
-		$query = substr($query, 0, -1);
-		sql($query, $eo);
+		$query .= implode(', ', $inserts);
+		if(count($inserts)) sql($query, $eo);
 
 		// redirect to member permissions page
-		redirect("admin/pageEditMemberPermissions.php?saved=1&memberID=" . $memberID->url);
+		redirect("admin/pageEditMemberPermissions.php?saved=1&memberID={$memberID->url}");
 	} elseif(Request::has('resetPermissions')) {
-		sql("delete from membership_userpermissions where lcase(memberID)='{$memberID->sql}'", $eo);
+		sql("DELETE FROM `membership_userpermissions` WHERE LCASE(`memberID`) = '{$memberID->sql}'", $eo);
 		// redirect to member permissions page
-		redirect("admin/pageEditMemberPermissions.php?reset=1&memberID=" . $memberID->url);
+		redirect("admin/pageEditMemberPermissions.php?reset=1&memberID={$memberID->url}");
 	}
 
 	$GLOBALS['page_title'] = $Translation['user table permissions'];
 	include(__DIR__ . '/incHeader.php');
 
 	// fetch group permissions to fill in the form below in case user has no special permissions
-	$res1 = sql("select * from membership_grouppermissions where groupID='{$groupID}'", $eo);
+	$res1 = sql("SELECT * FROM `membership_grouppermissions` WHERE `groupID` = '{$groupID}'", $eo);
 	while ($row = db_fetch_assoc($res1)) {
 		$tableName = $row['tableName'];
 		$vIns = $tableName . "_insert";
@@ -80,7 +80,7 @@
 	}
 
 	// fetch user permissions to fill in the form below, overwriting his group permissions
-	$res2 = sql("select * from membership_userpermissions where lcase(memberID)='{$memberID->sql}'", $eo);
+	$res2 = sql("SELECT * FROM `membership_userpermissions` WHERE LCASE(`memberID`) = '{$memberID->sql}'", $eo);
 	while ($row = db_fetch_assoc($res2)) {
 		$tableName = $row['tableName'];
 		$vIns = $tableName . "_insert";

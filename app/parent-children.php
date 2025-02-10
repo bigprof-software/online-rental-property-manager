@@ -208,9 +208,12 @@
 				"`$ChildTable`.`$ChildLookupField` IN ($IDs) " .
 				"GROUP BY `$ChildTable`.`$ChildLookupField`";
 			$res = sql($query, $eo);
-			$data = ['ChildTable' => $ChildTable, 'ChildLookupField' => $ChildLookupField, 'counts' => []];
+			$data = ['ChildTable' => $ChildTable, 'ChildLookupField' => $ChildLookupField];
+			// build counts array in $data, with keys being the IDs and values being 0 (as initial count)
+			$data['counts'] = array_fill_keys(explode("','", substr($IDs, 1, -1)), 0);
 			while($row = db_fetch_row($res)) {
 				$data['counts'][$row[0]] = intval($row[1]);
+				if(showSQL()) $data['query'] = $query;
 			}
 
 			json_response($data); // this returns the count and exits

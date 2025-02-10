@@ -91,8 +91,8 @@ function rental_owners_delete($selected_id, $AllowDeleteOfParents = false, $skip
 		$RetMsg = $Translation['confirm delete'];
 		$RetMsg = str_replace('<RelatedRecords>', sprintf($childrenATag, $rirow[0]), $RetMsg);
 		$RetMsg = str_replace(['[<TableName>]', '<TableName>'], sprintf($childrenATag, 'properties'), $RetMsg);
-		$RetMsg = str_replace('<Delete>', '<input type="button" class="btn btn-danger" value="' . html_attr($Translation['yes']) . '" onClick="window.location = \'rental_owners_view.php?SelectedID=' . urlencode($selected_id) . '&delete_x=1&confirmed=1&csrf_token=' . urlencode(csrf_token(false, true)) . '\';">', $RetMsg);
-		$RetMsg = str_replace('<Cancel>', '<input type="button" class="btn btn-success" value="' . html_attr($Translation[ 'no']) . '" onClick="window.location = \'rental_owners_view.php?SelectedID=' . urlencode($selected_id) . '\';">', $RetMsg);
+		$RetMsg = str_replace('<Delete>', '<input type="button" class="btn btn-danger" value="' . html_attr($Translation['yes']) . '" onClick="window.location = `rental_owners_view.php?SelectedID=' . urlencode($selected_id) . '&delete_x=1&confirmed=1&csrf_token=' . urlencode(csrf_token(false, true)) . (Request::val('Embedded') ? '&Embedded=1' : '') . '`;">', $RetMsg);
+		$RetMsg = str_replace('<Cancel>', '<input type="button" class="btn btn-success" value="' . html_attr($Translation[ 'no']) . '" onClick="window.location = `rental_owners_view.php?SelectedID=' . urlencode($selected_id) . (Request::val('Embedded') ? '&Embedded=1' : '') . '`;">', $RetMsg);
 		return $RetMsg;
 	}
 
@@ -284,7 +284,7 @@ function rental_owners_form($selectedId = '', $allowUpdate = true, $allowInsert 
 	<script>
 		// initial lookup values
 
-		jQuery(function() {
+		$j(function() {
 			setTimeout(function() {
 			}, 50); /* we need to slightly delay client-side execution of the above code to allow AppGini.ajaxCache to work */
 		});
@@ -373,28 +373,26 @@ function rental_owners_form($selectedId = '', $allowUpdate = true, $allowInsert 
 	// set records to read only if user can't insert new records and can't edit current record
 	if(!$fieldsAreEditable) {
 		$jsReadOnly = '';
-		$jsReadOnly .= "\tjQuery('#first_name').replaceWith('<div class=\"form-control-static\" id=\"first_name\">' + (jQuery('#first_name').val() || '') + '</div>');\n";
-		$jsReadOnly .= "\tjQuery('#last_name').replaceWith('<div class=\"form-control-static\" id=\"last_name\">' + (jQuery('#last_name').val() || '') + '</div>');\n";
-		$jsReadOnly .= "\tjQuery('#company_name').replaceWith('<div class=\"form-control-static\" id=\"company_name\">' + (jQuery('#company_name').val() || '') + '</div>');\n";
-		$jsReadOnly .= "\tjQuery('#date_of_birth').prop('readonly', true);\n";
-		$jsReadOnly .= "\tjQuery('#date_of_birthDay, #date_of_birthMonth, #date_of_birthYear').prop('disabled', true).css({ color: '#555', backgroundColor: '#fff' });\n";
-		$jsReadOnly .= "\tjQuery('#primary_email').replaceWith('<div class=\"form-control-static\" id=\"primary_email\">' + (jQuery('#primary_email').val() || '') + '</div>');\n";
-		$jsReadOnly .= "\tjQuery('#primary_email, #primary_email-edit-link').hide();\n";
-		$jsReadOnly .= "\tjQuery('#alternate_email').replaceWith('<div class=\"form-control-static\" id=\"alternate_email\">' + (jQuery('#alternate_email').val() || '') + '</div>');\n";
-		$jsReadOnly .= "\tjQuery('#alternate_email, #alternate_email-edit-link').hide();\n";
-		$jsReadOnly .= "\tjQuery('#phone').replaceWith('<div class=\"form-control-static\" id=\"phone\">' + (jQuery('#phone').val() || '') + '</div>');\n";
-		$jsReadOnly .= "\tjQuery('#country').replaceWith('<div class=\"form-control-static\" id=\"country\">' + (jQuery('#country').val() || '') + '</div>'); jQuery('#country-multi-selection-help').hide();\n";
-		$jsReadOnly .= "\tjQuery('#street').replaceWith('<div class=\"form-control-static\" id=\"street\">' + (jQuery('#street').val() || '') + '</div>');\n";
-		$jsReadOnly .= "\tjQuery('#city').replaceWith('<div class=\"form-control-static\" id=\"city\">' + (jQuery('#city').val() || '') + '</div>');\n";
-		$jsReadOnly .= "\tjQuery('#state').replaceWith('<div class=\"form-control-static\" id=\"state\">' + (jQuery('#state').val() || '') + '</div>'); jQuery('#state-multi-selection-help').hide();\n";
-		$jsReadOnly .= "\tjQuery('#zip').replaceWith('<div class=\"form-control-static\" id=\"zip\">' + (jQuery('#zip').val() || '') + '</div>');\n";
-		$jsReadOnly .= "\tjQuery('.select2-container').hide();\n";
+		$jsReadOnly .= "\t\$j('#first_name').replaceWith('<div class=\"form-control-static\" id=\"first_name\">' + (\$j('#first_name').val() || '') + '</div>');\n";
+		$jsReadOnly .= "\t\$j('#last_name').replaceWith('<div class=\"form-control-static\" id=\"last_name\">' + (\$j('#last_name').val() || '') + '</div>');\n";
+		$jsReadOnly .= "\t\$j('#company_name').replaceWith('<div class=\"form-control-static\" id=\"company_name\">' + (\$j('#company_name').val() || '') + '</div>');\n";
+		$jsReadOnly .= "\t\$j('#date_of_birth').prop('readonly', true);\n";
+		$jsReadOnly .= "\t\$j('#date_of_birthDay, #date_of_birthMonth, #date_of_birthYear').prop('disabled', true).css({ color: '#555', backgroundColor: '#fff' });\n";
+		$jsReadOnly .= "\t\$j('#primary_email').parent().replaceWith(`<div class=\"form-control-static\" id=\"primary_email\">\${\$j('#primary_email').val() || ''}\${\$j('#primary_email').val() ? '<a target=\"_blank\" class=\"hspacer-lg\" href=\"mailto:' + \$j('#primary_email').val() + '\" target=\"_blank\"><i class=\"glyphicon glyphicon-envelope\"></i></a>' : ''}</div>`);\n";
+		$jsReadOnly .= "\t\$j('#alternate_email').parent().replaceWith(`<div class=\"form-control-static\" id=\"alternate_email\">\${\$j('#alternate_email').val() || ''}\${\$j('#alternate_email').val() ? '<a target=\"_blank\" class=\"hspacer-lg\" href=\"mailto:' + \$j('#alternate_email').val() + '\" target=\"_blank\"><i class=\"glyphicon glyphicon-envelope\"></i></a>' : ''}</div>`);\n";
+		$jsReadOnly .= "\t\$j('#phone').replaceWith('<div class=\"form-control-static\" id=\"phone\">' + (\$j('#phone').val() || '') + '</div>');\n";
+		$jsReadOnly .= "\t\$j('#country').replaceWith('<div class=\"form-control-static\" id=\"country\">' + (\$j('#country').val() || '') + '</div>'); \$j('#country-multi-selection-help').hide();\n";
+		$jsReadOnly .= "\t\$j('#street').replaceWith('<div class=\"form-control-static\" id=\"street\">' + (\$j('#street').val() || '') + '</div>');\n";
+		$jsReadOnly .= "\t\$j('#city').replaceWith('<div class=\"form-control-static\" id=\"city\">' + (\$j('#city').val() || '') + '</div>');\n";
+		$jsReadOnly .= "\t\$j('#state').replaceWith('<div class=\"form-control-static\" id=\"state\">' + (\$j('#state').val() || '') + '</div>'); \$j('#state-multi-selection-help').hide();\n";
+		$jsReadOnly .= "\t\$j('#zip').replaceWith('<div class=\"form-control-static\" id=\"zip\">' + (\$j('#zip').val() || '') + '</div>');\n";
+		$jsReadOnly .= "\t\$j('.select2-container').hide();\n";
 
 		$noUploads = true;
 	} else {
 		// temporarily disable form change handler till time and datetime pickers are enabled
-		$jsEditable = "\tjQuery('form').eq(0).data('already_changed', true);";
-		$jsEditable .= "\tjQuery('form').eq(0).data('already_changed', false);"; // re-enable form change handler
+		$jsEditable = "\t\$j('form').eq(0).data('already_changed', true);";
+		$jsEditable .= "\t\$j('form').eq(0).data('already_changed', false);"; // re-enable form change handler
 	}
 
 	// process combos
@@ -539,10 +537,6 @@ function rental_owners_form($selectedId = '', $allowUpdate = true, $allowInsert 
 		$templateCode .= $jsEditable;
 
 		if(!$hasSelectedId) {
-			$templateCode.="\n\tif(document.getElementById('primary_emailEdit')) { document.getElementById('primary_emailEdit').style.display='inline'; }";
-			$templateCode.="\n\tif(document.getElementById('primary_emailEditLink')) { document.getElementById('primary_emailEditLink').style.display='none'; }";
-			$templateCode.="\n\tif(document.getElementById('alternate_emailEdit')) { document.getElementById('alternate_emailEdit').style.display='inline'; }";
-			$templateCode.="\n\tif(document.getElementById('alternate_emailEditLink')) { document.getElementById('alternate_emailEditLink').style.display='none'; }";
 		}
 
 		$templateCode.="\n});</script>\n";

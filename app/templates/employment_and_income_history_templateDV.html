@@ -251,6 +251,7 @@
 				}
 			});
 
+			employment_and_income_historyUniqueFields.forEach(fieldName => enforce_uniqueness('employment_and_income_history', fieldName));
 
 			/* load admin tools for admin user */
 			if(!add_new_mode) {
@@ -264,4 +265,7 @@
 				);
 			}
 		});
+
+		var employment_and_income_historyUniqueFields = [
+		];
 	</script>

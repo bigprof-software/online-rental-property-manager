@@ -192,10 +192,10 @@
 	</div>
 
 	<script>
-		jQuery(function() {
-			jQuery('#username').focus();
+		$j(function() {
+			$j('#username').focus();
 			<?php  if(Request::val('emptyData')) { ?>
-				jQuery('#username, #email').parent().addClass('has-error');
+				$j('#username, #email').parent().addClass('has-error');
 			<?php } ?>
 		});
 	</script>

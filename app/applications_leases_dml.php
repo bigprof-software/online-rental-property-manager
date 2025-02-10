@@ -360,7 +360,7 @@ function applications_leases_form($selectedId = '', $allowUpdate = true, $allowI
 		AppGini.current_property__RAND__ = { text: "", value: "<?php echo addslashes($hasSelectedId ? $urow['property'] : htmlspecialchars($filterer_property, ENT_QUOTES)); ?>"};
 		AppGini.current_unit__RAND__ = { text: "", value: "<?php echo addslashes($hasSelectedId ? $urow['unit'] : htmlspecialchars($filterer_unit, ENT_QUOTES)); ?>"};
 
-		jQuery(function() {
+		$j(function() {
 			setTimeout(function() {
 				if(typeof(tenants_reload__RAND__) == 'function') tenants_reload__RAND__();
 				if(typeof(property_reload__RAND__) == 'function') property_reload__RAND__();
@@ -685,36 +685,36 @@ function applications_leases_form($selectedId = '', $allowUpdate = true, $allowI
 	// set records to read only if user can't insert new records and can't edit current record
 	if(!$fieldsAreEditable) {
 		$jsReadOnly = '';
-		$jsReadOnly .= "\tjQuery('#tenants').prop('disabled', true).css({ color: '#555', backgroundColor: '#fff' });\n";
-		$jsReadOnly .= "\tjQuery('#tenants_caption').prop('disabled', true).css({ color: '#555', backgroundColor: 'white' });\n";
-		$jsReadOnly .= "\tjQuery('input[name=status]').parent().html('<div class=\"form-control-static\">' + jQuery('input[name=status]:checked').next().text() + '</div>')\n";
-		$jsReadOnly .= "\tjQuery('#property').prop('disabled', true).css({ color: '#555', backgroundColor: '#fff' });\n";
-		$jsReadOnly .= "\tjQuery('#property_caption').prop('disabled', true).css({ color: '#555', backgroundColor: 'white' });\n";
-		$jsReadOnly .= "\tjQuery('#unit').prop('disabled', true).css({ color: '#555', backgroundColor: '#fff' });\n";
-		$jsReadOnly .= "\tjQuery('#unit_caption').prop('disabled', true).css({ color: '#555', backgroundColor: 'white' });\n";
-		$jsReadOnly .= "\tjQuery('input[name=type]').parent().html('<div class=\"form-control-static\">' + jQuery('input[name=type]:checked').next().text() + '</div>')\n";
-		$jsReadOnly .= "\tjQuery('#total_number_of_occupants').replaceWith('<div class=\"form-control-static\" id=\"total_number_of_occupants\">' + (jQuery('#total_number_of_occupants').val() || '') + '</div>');\n";
-		$jsReadOnly .= "\tjQuery('#start_date').prop('readonly', true);\n";
-		$jsReadOnly .= "\tjQuery('#start_dateDay, #start_dateMonth, #start_dateYear').prop('disabled', true).css({ color: '#555', backgroundColor: '#fff' });\n";
-		$jsReadOnly .= "\tjQuery('#end_date').prop('readonly', true);\n";
-		$jsReadOnly .= "\tjQuery('#end_dateDay, #end_dateMonth, #end_dateYear').prop('disabled', true).css({ color: '#555', backgroundColor: '#fff' });\n";
-		$jsReadOnly .= "\tjQuery('#recurring_charges_frequency').replaceWith('<div class=\"form-control-static\" id=\"recurring_charges_frequency\">' + (jQuery('#recurring_charges_frequency').val() || '') + '</div>'); jQuery('#recurring_charges_frequency-multi-selection-help').hide();\n";
-		$jsReadOnly .= "\tjQuery('#next_due_date').prop('readonly', true);\n";
-		$jsReadOnly .= "\tjQuery('#next_due_dateDay, #next_due_dateMonth, #next_due_dateYear').prop('disabled', true).css({ color: '#555', backgroundColor: '#fff' });\n";
-		$jsReadOnly .= "\tjQuery('#rent').replaceWith('<div class=\"form-control-static\" id=\"rent\">' + (jQuery('#rent').val() || '') + '</div>');\n";
-		$jsReadOnly .= "\tjQuery('#security_deposit').replaceWith('<div class=\"form-control-static\" id=\"security_deposit\">' + (jQuery('#security_deposit').val() || '') + '</div>');\n";
-		$jsReadOnly .= "\tjQuery('#security_deposit_date').prop('readonly', true);\n";
-		$jsReadOnly .= "\tjQuery('#security_deposit_dateDay, #security_deposit_dateMonth, #security_deposit_dateYear').prop('disabled', true).css({ color: '#555', backgroundColor: '#fff' });\n";
-		$jsReadOnly .= "\tjQuery('#emergency_contact').replaceWith('<div class=\"form-control-static\" id=\"emergency_contact\">' + (jQuery('#emergency_contact').val() || '') + '</div>');\n";
-		$jsReadOnly .= "\tjQuery('#co_signer_details').replaceWith('<div class=\"form-control-static\" id=\"co_signer_details\">' + (jQuery('#co_signer_details').val() || '') + '</div>');\n";
-		$jsReadOnly .= "\tjQuery('#agreement').prop('disabled', true);\n";
-		$jsReadOnly .= "\tjQuery('.select2-container').hide();\n";
+		$jsReadOnly .= "\t\$j('#tenants').prop('disabled', true).css({ color: '#555', backgroundColor: '#fff' });\n";
+		$jsReadOnly .= "\t\$j('#tenants_caption').prop('disabled', true).css({ color: '#555', backgroundColor: 'white' });\n";
+		$jsReadOnly .= "\t\$j('input[name=status]').parent().html('<div class=\"form-control-static\">' + \$j('input[name=status]:checked').next().text() + '</div>')\n";
+		$jsReadOnly .= "\t\$j('#property').prop('disabled', true).css({ color: '#555', backgroundColor: '#fff' });\n";
+		$jsReadOnly .= "\t\$j('#property_caption').prop('disabled', true).css({ color: '#555', backgroundColor: 'white' });\n";
+		$jsReadOnly .= "\t\$j('#unit').prop('disabled', true).css({ color: '#555', backgroundColor: '#fff' });\n";
+		$jsReadOnly .= "\t\$j('#unit_caption').prop('disabled', true).css({ color: '#555', backgroundColor: 'white' });\n";
+		$jsReadOnly .= "\t\$j('input[name=type]').parent().html('<div class=\"form-control-static\">' + \$j('input[name=type]:checked').next().text() + '</div>')\n";
+		$jsReadOnly .= "\t\$j('#total_number_of_occupants').replaceWith('<div class=\"form-control-static\" id=\"total_number_of_occupants\">' + (\$j('#total_number_of_occupants').val() || '') + '</div>');\n";
+		$jsReadOnly .= "\t\$j('#start_date').prop('readonly', true);\n";
+		$jsReadOnly .= "\t\$j('#start_dateDay, #start_dateMonth, #start_dateYear').prop('disabled', true).css({ color: '#555', backgroundColor: '#fff' });\n";
+		$jsReadOnly .= "\t\$j('#end_date').prop('readonly', true);\n";
+		$jsReadOnly .= "\t\$j('#end_dateDay, #end_dateMonth, #end_dateYear').prop('disabled', true).css({ color: '#555', backgroundColor: '#fff' });\n";
+		$jsReadOnly .= "\t\$j('#recurring_charges_frequency').replaceWith('<div class=\"form-control-static\" id=\"recurring_charges_frequency\">' + (\$j('#recurring_charges_frequency').val() || '') + '</div>'); \$j('#recurring_charges_frequency-multi-selection-help').hide();\n";
+		$jsReadOnly .= "\t\$j('#next_due_date').prop('readonly', true);\n";
+		$jsReadOnly .= "\t\$j('#next_due_dateDay, #next_due_dateMonth, #next_due_dateYear').prop('disabled', true).css({ color: '#555', backgroundColor: '#fff' });\n";
+		$jsReadOnly .= "\t\$j('#rent').replaceWith('<div class=\"form-control-static\" id=\"rent\">' + (\$j('#rent').val() || '') + '</div>');\n";
+		$jsReadOnly .= "\t\$j('#security_deposit').replaceWith('<div class=\"form-control-static\" id=\"security_deposit\">' + (\$j('#security_deposit').val() || '') + '</div>');\n";
+		$jsReadOnly .= "\t\$j('#security_deposit_date').prop('readonly', true);\n";
+		$jsReadOnly .= "\t\$j('#security_deposit_dateDay, #security_deposit_dateMonth, #security_deposit_dateYear').prop('disabled', true).css({ color: '#555', backgroundColor: '#fff' });\n";
+		$jsReadOnly .= "\t\$j('#emergency_contact').replaceWith('<div class=\"form-control-static\" id=\"emergency_contact\">' + (\$j('#emergency_contact').val() || '') + '</div>');\n";
+		$jsReadOnly .= "\t\$j('#co_signer_details').replaceWith('<div class=\"form-control-static\" id=\"co_signer_details\">' + (\$j('#co_signer_details').val() || '') + '</div>');\n";
+		$jsReadOnly .= "\t\$j('#agreement').prop('disabled', true);\n";
+		$jsReadOnly .= "\t\$j('.select2-container').hide();\n";
 
 		$noUploads = true;
 	} else {
 		// temporarily disable form change handler till time and datetime pickers are enabled
-		$jsEditable = "\tjQuery('form').eq(0).data('already_changed', true);";
-		$jsEditable .= "\tjQuery('form').eq(0).data('already_changed', false);"; // re-enable form change handler
+		$jsEditable = "\t\$j('form').eq(0).data('already_changed', true);";
+		$jsEditable .= "\t\$j('form').eq(0).data('already_changed', false);"; // re-enable form change handler
 	}
 
 	// process combos

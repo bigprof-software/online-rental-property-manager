@@ -37,13 +37,13 @@
 							<strong><?php printf($Translation['Only show records having filterer'], $caption, "<span class=\"text-info\" id=\"{$fltrr_name}_display_value\"></span>"); ?></strong>
 						</label>
 						<script>
-							jQuery(function() {
+							$j(function() {
 								jQuery.ajax({
 									url: 'ajax_combo.php',
 									dataType: 'json',
 									data: <?php echo json_encode(['id' => to_utf8($fltrr_val), 't' => $this->TableName, 'f' => $filterer, 'o' => 0]); ?>
 								}).done(function(resp) {
-									jQuery('#<?php echo $fltrr_name; ?>_display_value').html(resp.results[0].text);
+									$j('#<?php echo $fltrr_name; ?>_display_value').html(resp.results[0].text);
 								});
 							});
 						</script>
@@ -263,7 +263,7 @@
 		</div>
 	<?php } ?>
 	<div class="col-md-2 vspacer-lg">
-		<button onclick="jQuery('form')[0].reset();" type="submit" id="cancelFilters" class="btn btn-warning btn-block btn-lg"><i class="glyphicon glyphicon-remove"></i> <?php echo $Translation['Cancel']; ?></button>
+		<button onclick="$j('form')[0].reset();" type="submit" id="cancelFilters" class="btn btn-warning btn-block btn-lg"><i class="glyphicon glyphicon-remove"></i> <?php echo $Translation['Cancel']; ?></button>
 	</div>
 </div>
 
@@ -274,44 +274,44 @@
 	function filterGroupDisplay(groupIndex, hide, animate) {
 		for(i = ((groupIndex - 1) * FiltersPerGroup + 1); i <= (groupIndex * FiltersPerGroup); i++) {
 			if(animate) {
-				if(hide) jQuery('div.FilterSet' + i).fadeOut();
-				if(!hide) jQuery('div.FilterSet' + i).fadeIn(function() {
-					jQuery('#FilterField_' + ((groupIndex - 1) * FiltersPerGroup + 1) + '_').focus();
+				if(hide) $j('div.FilterSet' + i).fadeOut();
+				if(!hide) $j('div.FilterSet' + i).fadeIn(function() {
+					$j('#FilterField_' + ((groupIndex - 1) * FiltersPerGroup + 1) + '_').focus();
 				});
 			} else {
-				if(hide) jQuery('div.FilterSet' + i).hide();
-				if(!hide) jQuery('div.FilterSet' + i).show(function() {
-					jQuery('#FilterField_' + ((groupIndex - 1) * FiltersPerGroup + 1) + '_').focus();
+				if(hide) $j('div.FilterSet' + i).hide();
+				if(!hide) $j('div.FilterSet' + i).show(function() {
+					$j('#FilterField_' + ((groupIndex - 1) * FiltersPerGroup + 1) + '_').focus();
 				});
 			}
 		}
 	}
 
-	jQuery(function() {
+	$j(function() {
 		for(i = (FiltersPerGroup + 1); i <= (3 * FiltersPerGroup); i++) {
-			jQuery('div.FilterSet' + i).hide();
+			$j('div.FilterSet' + i).hide();
 		}
-		jQuery('#FilterAnd_' + (FiltersPerGroup + 1) + '_').change(function() {
-			filterGroupDisplay(2, (jQuery(this).val() ? false : true), true);
+		$j('#FilterAnd_' + (FiltersPerGroup + 1) + '_').change(function() {
+			filterGroupDisplay(2, ($j(this).val() ? false : true), true);
 		});
-		jQuery('#FilterAnd_' + (2 * FiltersPerGroup + 1) + '_').change(function() {
-			filterGroupDisplay(3, (jQuery(this).val() ? false : true), true);
+		$j('#FilterAnd_' + (2 * FiltersPerGroup + 1) + '_').change(function() {
+			filterGroupDisplay(3, ($j(this).val() ? false : true), true);
 		});
 
-		if(jQuery('#FilterAnd_' + (    FiltersPerGroup + 1) + '_').val()) { filterGroupDisplay(2); }
-		if(jQuery('#FilterAnd_' + (2 * FiltersPerGroup + 1) + '_').val()) { filterGroupDisplay(3); }
+		if($j('#FilterAnd_' + (    FiltersPerGroup + 1) + '_').val()) { filterGroupDisplay(2); }
+		if($j('#FilterAnd_' + (2 * FiltersPerGroup + 1) + '_').val()) { filterGroupDisplay(3); }
 
 		var DisplayRecords = <?php echo json_encode(Request::val('DisplayRecords')); ?>;
 
 		switch(DisplayRecords) {
 			case 'user':
-				jQuery('#DisplayRecordsUser').prop('checked', true);
+				$j('#DisplayRecordsUser').prop('checked', true);
 				break;
 			case 'group':
-				jQuery('#DisplayRecordsGroup').prop('checked', true);
+				$j('#DisplayRecordsGroup').prop('checked', true);
 				break;
 			default:
-				jQuery('#DisplayRecordsAll').prop('checked', true);
+				$j('#DisplayRecordsAll').prop('checked', true);
 		}
 	});
 </script>

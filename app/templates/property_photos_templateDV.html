@@ -219,6 +219,7 @@
 				}
 			});
 
+			property_photosUniqueFields.forEach(fieldName => enforce_uniqueness('property_photos', fieldName));
 
 			/* load admin tools for admin user */
 			if(!add_new_mode) {
@@ -232,4 +233,7 @@
 				);
 			}
 		});
+
+		var property_photosUniqueFields = [
+		];
 	</script>
