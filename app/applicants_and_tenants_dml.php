@@ -69,7 +69,7 @@ function applicants_and_tenants_delete($selected_id, $AllowDeleteOfParents = fal
 			return $Translation['Couldn\'t delete this record'] . (
 				!empty($args['error_message']) ?
 					'<div class="text-bold">' . strip_tags($args['error_message']) . '</div>'
-					: '' 
+					: ''
 			);
 	}
 
@@ -213,9 +213,9 @@ function applicants_and_tenants_update(&$selected_id, &$error_message = '') {
 	}
 
 	if(!update(
-		'applicants_and_tenants', 
-		backtick_keys_once($set), 
-		['`id`' => $selected_id], 
+		'applicants_and_tenants',
+		backtick_keys_once($set),
+		['`id`' => $selected_id],
 		$error_message
 	)) {
 		echo $error_message;
@@ -396,14 +396,14 @@ function applicants_and_tenants_form($selectedId = '', $allowUpdate = true, $all
 			$templateCode = str_replace('<%%DESELECT_BUTTON%%>', '', $templateCode);
 		elseif($separateDV)
 			$templateCode = str_replace(
-				'<%%DESELECT_BUTTON%%>', 
+				'<%%DESELECT_BUTTON%%>',
 				'<button
-					type="submit" 
-					class="btn btn-default" 
-					id="deselect" 
-					name="deselect_x" 
-					value="1" 
-					onclick="' . $backAction . '" 
+					type="submit"
+					class="btn btn-default"
+					id="deselect"
+					name="deselect_x"
+					value="1"
+					onclick="' . $backAction . '"
 					title="' . html_attr($Translation['Back']) . '">
 						<i class="glyphicon glyphicon-chevron-left"></i> ' .
 						$Translation['Back'] .
@@ -439,9 +439,9 @@ function applicants_and_tenants_form($selectedId = '', $allowUpdate = true, $all
 
 	// process combos
 	$templateCode = str_replace(
-		'<%%COMBO(birth_date)%%>', 
-		(!$fieldsAreEditable ? 
-			'<div class="form-control-static">' . $combo_birth_date->GetHTML(true) . '</div>' : 
+		'<%%COMBO(birth_date)%%>',
+		(!$fieldsAreEditable ?
+			'<div class="form-control-static">' . $combo_birth_date->GetHTML(true) . '</div>' :
 			$combo_birth_date->GetHTML()
 		), $templateCode);
 	$templateCode = str_replace('<%%COMBOTEXT(birth_date)%%>', $combo_birth_date->GetHTML(true), $templateCode);
@@ -523,7 +523,7 @@ function applicants_and_tenants_form($selectedId = '', $allowUpdate = true, $all
 		if(!$dvprint) $templateCode = str_replace('<%%VALUE(status)%%>', html_attr($row['status']), $templateCode);
 		$templateCode = str_replace('<%%URLVALUE(status)%%>', urlencode($urow['status']), $templateCode);
 		if($fieldsAreEditable) {
-			$templateCode = str_replace('<%%HTMLAREA(notes)%%>', '<textarea name="notes" id="notes" rows="5">' . safe_html(htmlspecialchars_decode($row['notes'])) . '</textarea>', $templateCode);
+			$templateCode = str_replace('<%%HTMLAREA(notes)%%>', '<textarea maxlength="65500" name="notes" id="notes" rows="5">' . safe_html(htmlspecialchars_decode($row['notes'])) . '</textarea>', $templateCode);
 		} else {
 			$templateCode = str_replace('<%%HTMLAREA(notes)%%>', '<div id="notes" class="form-control-static">' . $row['notes'] . '</div>', $templateCode);
 		}
@@ -556,7 +556,7 @@ function applicants_and_tenants_form($selectedId = '', $allowUpdate = true, $all
 		$templateCode = str_replace('<%%URLVALUE(assets)%%>', urlencode(''), $templateCode);
 		$templateCode = str_replace('<%%VALUE(status)%%>', 'Applicant', $templateCode);
 		$templateCode = str_replace('<%%URLVALUE(status)%%>', urlencode('Applicant'), $templateCode);
-		$templateCode = str_replace('<%%HTMLAREA(notes)%%>', '<textarea name="notes" id="notes" rows="5"></textarea>', $templateCode);
+		$templateCode = str_replace('<%%HTMLAREA(notes)%%>', '<textarea maxlength="65500" name="notes" id="notes" rows="5"></textarea>', $templateCode);
 	}
 
 	// process translations

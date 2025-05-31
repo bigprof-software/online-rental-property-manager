@@ -441,7 +441,7 @@
 		$j(function() {
 			$j('#show-intro2').on('click', function() {
 				$j('#intro1').addClass('hidden');
-				$j('#intro2')[0].appear({ duration: 2 });
+				$j('#intro2').fadeIn(1000);
 			});
 			$j('#show-login-form').on('click', function() {
 				var a = window.location.href;

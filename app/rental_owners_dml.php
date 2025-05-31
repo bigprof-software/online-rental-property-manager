@@ -72,7 +72,7 @@ function rental_owners_delete($selected_id, $AllowDeleteOfParents = false, $skip
 			return $Translation['Couldn\'t delete this record'] . (
 				!empty($args['error_message']) ?
 					'<div class="text-bold">' . strip_tags($args['error_message']) . '</div>'
-					: '' 
+					: ''
 			);
 	}
 
@@ -154,9 +154,9 @@ function rental_owners_update(&$selected_id, &$error_message = '') {
 	}
 
 	if(!update(
-		'rental_owners', 
-		backtick_keys_once($set), 
-		['`id`' => $selected_id], 
+		'rental_owners',
+		backtick_keys_once($set),
+		['`id`' => $selected_id],
 		$error_message
 	)) {
 		echo $error_message;
@@ -352,14 +352,14 @@ function rental_owners_form($selectedId = '', $allowUpdate = true, $allowInsert 
 			$templateCode = str_replace('<%%DESELECT_BUTTON%%>', '', $templateCode);
 		elseif($separateDV)
 			$templateCode = str_replace(
-				'<%%DESELECT_BUTTON%%>', 
+				'<%%DESELECT_BUTTON%%>',
 				'<button
-					type="submit" 
-					class="btn btn-default" 
-					id="deselect" 
-					name="deselect_x" 
-					value="1" 
-					onclick="' . $backAction . '" 
+					type="submit"
+					class="btn btn-default"
+					id="deselect"
+					name="deselect_x"
+					value="1"
+					onclick="' . $backAction . '"
 					title="' . html_attr($Translation['Back']) . '">
 						<i class="glyphicon glyphicon-chevron-left"></i> ' .
 						$Translation['Back'] .
@@ -397,9 +397,9 @@ function rental_owners_form($selectedId = '', $allowUpdate = true, $allowInsert 
 
 	// process combos
 	$templateCode = str_replace(
-		'<%%COMBO(date_of_birth)%%>', 
-		(!$fieldsAreEditable ? 
-			'<div class="form-control-static">' . $combo_date_of_birth->GetHTML(true) . '</div>' : 
+		'<%%COMBO(date_of_birth)%%>',
+		(!$fieldsAreEditable ?
+			'<div class="form-control-static">' . $combo_date_of_birth->GetHTML(true) . '</div>' :
 			$combo_date_of_birth->GetHTML()
 		), $templateCode);
 	$templateCode = str_replace('<%%COMBOTEXT(date_of_birth)%%>', $combo_date_of_birth->GetHTML(true), $templateCode);
@@ -481,7 +481,7 @@ function rental_owners_form($selectedId = '', $allowUpdate = true, $allowInsert 
 		if(!$dvprint) $templateCode = str_replace('<%%VALUE(zip)%%>', html_attr($row['zip']), $templateCode);
 		$templateCode = str_replace('<%%URLVALUE(zip)%%>', urlencode($urow['zip']), $templateCode);
 		if($fieldsAreEditable) {
-			$templateCode = str_replace('<%%HTMLAREA(comments)%%>', '<textarea name="comments" id="comments" rows="5">' . safe_html(htmlspecialchars_decode($row['comments'])) . '</textarea>', $templateCode);
+			$templateCode = str_replace('<%%HTMLAREA(comments)%%>', '<textarea maxlength="65500" name="comments" id="comments" rows="5">' . safe_html(htmlspecialchars_decode($row['comments'])) . '</textarea>', $templateCode);
 		} else {
 			$templateCode = str_replace('<%%HTMLAREA(comments)%%>', '<div id="comments" class="form-control-static">' . $row['comments'] . '</div>', $templateCode);
 		}
@@ -514,7 +514,7 @@ function rental_owners_form($selectedId = '', $allowUpdate = true, $allowInsert 
 		$templateCode = str_replace('<%%URLVALUE(state)%%>', urlencode(''), $templateCode);
 		$templateCode = str_replace('<%%VALUE(zip)%%>', '', $templateCode);
 		$templateCode = str_replace('<%%URLVALUE(zip)%%>', urlencode(''), $templateCode);
-		$templateCode = str_replace('<%%HTMLAREA(comments)%%>', '<textarea name="comments" id="comments" rows="5"></textarea>', $templateCode);
+		$templateCode = str_replace('<%%HTMLAREA(comments)%%>', '<textarea maxlength="65500" name="comments" id="comments" rows="5"></textarea>', $templateCode);
 	}
 
 	// process translations

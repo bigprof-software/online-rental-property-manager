@@ -89,7 +89,7 @@ class WindowMessages {
 
 		// inject window id into the buffer right after each <form> tag, as a hidden field
 		$matches = 0;
-		$buffer = preg_replace('/(<form[^>]*>)/i', '$1<input type="hidden" name="browser_window_id" value="' . $wid . '" />', $buffer, -1, $matches);
+		$buffer = preg_replace('/(<form[^>]*>)/i', '$1<input type="hidden" name="browser_window_id" value="' . $wid . '">', $buffer, -1, $matches);
 
 		return $buffer;
 	}
@@ -210,7 +210,7 @@ class WindowMessages {
 	 */
 	public static function includeWindowId() {
 		$wid = self::getExistingOrNewWindowId();
-		return '<input type="hidden" name="browser_window_id" value="' . $wid . '" />';
+		return '<input type="hidden" name="browser_window_id" value="' . $wid . '">';
 	}
 
 	/**

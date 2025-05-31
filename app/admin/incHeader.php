@@ -2,7 +2,13 @@
 	if(function_exists('set_headers')) { set_headers(); }
 	if(!defined('PREPEND_PATH')) define('PREPEND_PATH', '../');
 	$adminConfig = config('adminConfig');
-	?><!DOCTYPE html>
+
+	$theme = getUserTheme();
+	$bootstrap3d = '';
+	if($theme == 'bootstrap' && BOOTSTRAP_3D_EFFECTS) {
+		$bootstrap3d = '<link rel="stylesheet" href="' . PREPEND_PATH . 'resources/initializr/css/bootstrap-theme.css" media="screen">' . "\n";
+	}
+?><!DOCTYPE html>
 <html class="no-js">
 	<head>
 		<meta charset="<?php echo datalist_db_encoding; ?>">
@@ -13,16 +19,14 @@
 
 		<link id="browser_favicon" rel="shortcut icon" href="<?php echo PREPEND_PATH; ?>resources/table_icons/administrator.png">
 
-		<link rel="stylesheet" href="<?php echo PREPEND_PATH; ?>resources/initializr/css/bootstrap.css">
-		<link rel="stylesheet" href="<?php echo PREPEND_PATH; ?>resources/initializr/css/bootstrap-theme.css">
+		<link rel="stylesheet" href="<?php echo PREPEND_PATH; ?>resources/initializr/css/<?php echo $theme; ?>.css">
+		<?php echo $bootstrap3d; ?>
 		<link rel="stylesheet" href="<?php echo PREPEND_PATH; ?>dynamic.css?<?php echo filemtime( __DIR__ . '/../dynamic.css'); ?>">
 
 		<script src="<?php echo PREPEND_PATH; ?>resources/jquery/js/<?php echo latest_jquery(); ?>"></script>
 		<script>var $j = jQuery.noConflict(); var AppGini = AppGini || {};</script>
 		<script src="toolTips.js"></script>
 		<script src="<?php echo PREPEND_PATH; ?>resources/initializr/js/vendor/bootstrap.min.js"></script>
-		<script src="<?php echo PREPEND_PATH; ?>resources/lightbox/js/prototype.js"></script>
-		<script src="<?php echo PREPEND_PATH; ?>resources/lightbox/js/scriptaculous.js?load=effects"></script>
 		<script>
 
 			// VALIDATION FUNCTIONS FOR VARIOUS PAGES
@@ -157,7 +161,7 @@
 		</style>
 	</head>
 	<body>
-	<div class="admin-area container theme-bootstrap theme-3d theme-compact">
+	<div class="admin-area container theme-<?php echo $theme; ?> <?php echo getUserThemeCompact(); ?><?php echo BOOTSTRAP_3D_EFFECTS ? ' theme-3d' : ''; ?>">
 
 		<!-- top navbar -->
 		<nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">

@@ -1,6 +1,6 @@
 var AppGini = AppGini || {};
 
-AppGini.version = 25.10;
+AppGini.version = 25.13;
 
 /* global constants */
 const NO_GEOLOCATION_THOUGH_REQUIRED = -1;
@@ -38,7 +38,7 @@ $j(function() {
 		$j('.detail_view .img-responsive').css({'max-width' : parseInt($j('.detail_view').width() * full_img_factor) + 'px'});
 
 		/* change height of sizer div below navbar to accommodate navbar height */
-		$j('.top-margin-adjuster').height($j('.navbar-fixed-top:visible').height() ?? 10);
+		$j('.top-margin-adjuster').height($j('.navbar-fixed-top:visible > .navbar-header').height() ?? 10);
 
 		/* remove labels from truncated buttons, leaving only glyphicons */
 		$j('.btn.truncate:truncated').each(function() {
@@ -340,6 +340,9 @@ $j(function() {
 	AppGini.handleDVFormChange();
 	AppGini.handleDVFormSubmission();
 	AppGini.addTimeFieldQuickActions();
+	AppGini.handleLightbox();
+	AppGini.enhanceMobileUX();
+	AppGini.controlBackButtonBehavior();
 });
 
 /* show/hide TV action buttons based on whether records are selected or not */
@@ -591,6 +594,7 @@ function post(url, params, update, disable, loading, success_callback) {
 		type: 'POST',
 		data: params,
 		beforeSend: function() {
+			$j(`#${update}`).removeClass('alert-danger');
 			if($j('#' + disable).length) $j('#' + disable).prop('disabled', true);
 			if($j('#' + loading).length && update != loading)
 				$j('#' + loading).html(
@@ -606,6 +610,12 @@ function post(url, params, update, disable, loading, success_callback) {
 				// re-calculate fields by default if no other callback explicitly passed
 				AppGini.calculatedFields.init();
 		},
+		error: function(jqXHR, textStatus, errorThrown) {
+			/* show error message in notification area */
+			if ($j(`#${update}`).length) {
+				$j(`#${update}`).addClass('alert-danger').html(jqXHR.responseText || errorThrown);
+			}
+		},
 		complete: function() {
 			if($j('#' + disable).length) $j('#' + disable).prop('disabled', false);
 			if($j('#' + loading).length && loading != update) $j('#' + loading).html('');
@@ -614,63 +624,127 @@ function post(url, params, update, disable, loading, success_callback) {
 }
 
 function post2(url, params, notify, disable, loading, redirectOnSuccess) {
-	new Ajax.Request(
-		url, {
-			method: 'post',
-			parameters: params,
-			onCreate: function() {
-				if($j('#' + disable).length) $j('#' + disable).prop('disabled', true);
-				if($j('#' + loading).length) $j('#' + loading).show();
-			},
-			onSuccess: function(resp) {
-				/* show notification containing returned text */
-				if($j('#' + notify).length)
-					$j('#' + notify).removeClass('alert-danger').show().html(resp.responseText);
-
-				/* in case no errors returned, */
-				if(resp.responseText.indexOf(AppGini.Translate._map['error:']) == -1) {
-					/* redirect to provided url */
-					if(redirectOnSuccess !== undefined) {
-						window.location = redirectOnSuccess;
-
-					/* or hide notification after a few seconds if no url is provided */
-					} else {
-						if($j('#' + notify).length)
-							setTimeout(function() { $j('#' + notify).hide(); }, 15000);
-					}
-
-				/* in case of error, apply error class */
-				} else {
-					$j('#' + notify).addClass('alert-danger');
-				}
-			},
-			onComplete: function() {
-				$j('#' + disable).prop('disabled', false);
-				$j('#' + loading).hide();
+	$j.ajax({
+		url: url,
+		type: 'POST',
+		data: params,
+		beforeSend: function() {
+			if ($j('#' + disable).length) $j('#' + disable).prop('disabled', true);
+			if ($j('#' + loading).length) $j('#' + loading).show();
+		},
+		success: function(resp) {
+			/* show notification containing returned text */
+			if ($j('#' + notify).length) {
+				$j('#' + notify).removeClass('alert-danger').show().html(resp);
 			}
+
+			/* in case no errors returned, */
+			if (resp.indexOf(AppGini.Translate._map['error:']) === -1) {
+				/* redirect to provided url */
+				if (redirectOnSuccess !== undefined) {
+					window.location = redirectOnSuccess;
+
+				/* or hide notification after a few seconds if no url is provided */
+				} else {
+					if ($j('#' + notify).length) {
+						setTimeout(function() {
+							$j('#' + notify).hide();
+						}, 15000);
+					}
+				}
+
+			/* in case of error, apply error class */
+			} else {
+				$j('#' + notify).addClass('alert-danger');
+			}
+		},
+		error: function(jqXHR, textStatus, errorThrown) {
+			/* show error message in notification area */
+			if ($j(`#${notify}`).length) {
+				$j(`#${notify}`).addClass('alert-danger').show().html(jqXHR.responseText || errorThrown);
+			}
+		},
+		complete: function() {
+			$j('#' + disable).prop('disabled', false);
+			$j('#' + loading).hide();
 		}
-	);
+	});
 }
 
-function passwordStrength(password, username) {
-	// score calculation (out of 10)
-	var score = 0;
-	re = new RegExp(username, 'i');
-	if(username.length && password.match(re)) score -= 5;
-	if(password.length < 6) score -= 3;
-	else if(password.length > 8) score += 5;
-	else score += 3;
-	if(password.match(/(.*[0-9].*[0-9].*[0-9])/)) score += 3;
-	if(password.match(/(.*[!,@,#,$,%,^,&,*,?,_,~].*[!,@,#,$,%,^,&,*,?,_,~])/)) score += 5;
-	if(password.match(/([a-z].*[A-Z])|([A-Z].*[a-z])/)) score += 2;
-
-	if(score >= 9)
-		return 'strong';
-	else if(score >= 5)
-		return 'good';
-	else
-		return 'weak';
+// Function to get a list of common passwords
+function getCommonPasswords() {
+	return [
+		'123456', 'password', '123456789', '12345678', '12345',
+		'1234567', '1234567890', 'qwerty', 'abc123', '111111',
+		'123123', 'iloveyou', 'password1', 'admin', 'letmein',
+		'welcome', 'monkey', 'football', 'baseball', 'dragon',
+		'sunshine', 'shadow', 'master', 'superman', 'freedom',
+		'hello', 'whatever', 'qwertyuiop', 'asdfghjkl', 'zxcvbnm'
+	];
 }
+
+function passwordStrength(password, username = '') {
+	let score = 0;
+
+	// Minimum password length
+	const minLength = 8;
+
+	// Helper function to check for repeated sequences
+	const hasRepeatedSequences = (str) => /(.)\1{2,}/.test(str);
+
+	// Check if the password contains the username
+	if (username && password.toLowerCase().includes(username.toLowerCase())) {
+		score -= 5;
+	}
+
+	// Check password length
+	if (password.length < minLength) {
+		score -= 3;
+	} else if (password.length >= 12) {
+		score += 5; // Bonus for longer passwords
+	} else {
+		score += 3; // Slightly better than the minimum
+	}
+
+	// Check for numbers
+	if (/\d/.test(password)) {
+		score += 2;
+	}
+
+	// Check for special characters
+	if (/[!@#$%^&*?_~]/.test(password)) {
+		score += 3;
+	}
+
+	// Check for mixed case
+	if (/[a-z]/.test(password) && /[A-Z]/.test(password)) {
+		score += 3;
+	}
+
+	// Check for repeated sequences
+	if (hasRepeatedSequences(password)) {
+		score -= 2;
+	}
+
+	// Check for common passwords
+	const commonPasswords = getCommonPasswords();
+	if (commonPasswords.includes(password.toLowerCase())) {
+		score -= 5;
+	}
+
+	// Ensure the score is not below 0
+	score = Math.max(score, 0);
+
+	// Determine the strength label
+	if (score >= 9) {
+	  return 'strong';
+	} else if (score >= 6) {
+	  return 'good';
+	} else {
+	  return 'weak';
+	}
+}
+
 function validateEmail(email) { 
 	var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 	return re.test(email);
@@ -699,22 +773,24 @@ function loadScript(jsUrl, cssUrl, callback) {
 	head.appendChild(script);
 }
 /**
- * options object. The following members can be provided:
- *    url: iframe url to load
- *    message: instead of a url to open, you could pass a message. HTML tags allowed.
- *    id: id attribute of modal window. auto-generated if not provided
- *    title: optional modal window title
- *    size: 'default', 'full'
- *    noAnimation: optional, default is false. Set to true to disable animation effect while modal is launched
- *    show: optional function to execute after showing the modal
- *    close: optional function to execute after closing the modal
- *    footer: optional array of objects describing the buttons to display in the footer.
- *       Each button object can have the following members:
- *          label: string, label of button
- *          bs_class: string, button bootstrap class. Can be 'primary', 'default', 'success', 'warning' or 'danger'
- *          click: function to execute on clicking the button. If the button closes the modal, this
- *                 function is executed before the close handler
- *          causes_closing: boolean, default is true.
+ * Opens a modal window with the specified options.
+ * 
+ * @param {Object} options An object specifying the configuration of the modal. The following members can be provided:
+ * @param {string} [options.url] The iframe URL to load.
+ * @param {string} [options.message] Instead of a URL to open, you could pass a message. HTML tags are allowed.
+ * @param {string} [options.id] The id attribute of the modal window. Auto-generated if not provided.
+ * @param {string} [options.title] Optional modal window title.
+ * @param {'default'|'full'} [options.size] The size of the modal. Can be 'default' or 'full'.
+ * @param {boolean} [options.noAnimation=false] Set to true to disable the animation effect while launching the modal.
+ * @param {Function} [options.show] Optional function to execute after showing the modal.
+ * @param {Function} [options.close] Optional function to execute after closing the modal.
+ * @param {Array<Object>} [options.footer] Optional array of objects describing the buttons to display in the footer.
+ * @param {string} options.footer[].label A string representing the label of the button.
+ * @param {'primary'|'default'|'success'|'warning'|'danger'} options.footer[].bs_class A string representing the button's Bootstrap class.
+ * @param {Function} [options.footer[].click] A function to execute on clicking the button. If the button closes the modal, this function is executed before the close handler.
+ * @param {boolean} [options.footer[].causes_closing=true] A boolean indicating whether clicking the button causes the modal to close.
+ * 
+ * @returns {string} The id attribute of the modal window.
  */
 function modal_window(options) {
 	return $j('body').agModal(options).agModal('show').attr('id');
@@ -748,7 +824,7 @@ function print_multiple_dv_tvdv(t, ids) {
 function print_multiple_dv_sdv(t, ids) {
 	document.forms[0].NoDV.value=1;
 	document.forms[0].PrintDV.value=1;
-	document.forms[0].writeAttribute('novalidate', 'novalidate');
+	document.forms[0].setAttribute('novalidate', 'novalidate');
 	document.forms[0].submit();
 	return true;
 }
@@ -1017,7 +1093,13 @@ function add_more_actions_link() {
 	window.open('https://bigprof.com/appgini/help/advanced-topics/hooks/multiple-record-batch-actions/?r=appgini-action-menu');
 }
 
-/* detect current screen size (xs, sm, md or lg) */
+/**
+ * Checks if the screen size matches the specified size identifier.
+ * 
+ * @param {string} sz - The screen size identifier to check. 
+ *                      Possible values: `'xs'` (extra small), `'sm'` (small), `'md'` (medium), `'lg'` (large).
+ * @returns {boolean} - Returns `true` if the specified screen size is visible, otherwise `false`.
+ */
 function screen_size(sz) {
 	if(!$j('.device-xs').length) {
 		$j('body').append(
@@ -1072,46 +1154,42 @@ function enforce_uniqueness(tableName, fieldName) {
 
 /* persist expanded/collapsed chidren in DVP */
 function persist_expanded_child(id) {
-	var expand_these = JSON.parse(localStorage.getItem('rental_property_manager.dvp_expand'));
+	var expand_these = JSON.parse(localStorage.getItem(`${AppGini.config.appTitle}.dvp_expand`));
 	if(expand_these == undefined) expand_these = [];
 
 	if($j('[id=' + id + ']').hasClass('active')) {
 		if(expand_these.indexOf(id) < 0) {
 			// expanded button and not persisting in cookie? save it!
 			expand_these.push(id);
-			localStorage.setItem('rental_property_manager.dvp_expand', JSON.stringify(expand_these));
+			localStorage.setItem(`${AppGini.config.appTitle}.dvp_expand`, JSON.stringify(expand_these));
 		}
 	} else {
 		if(expand_these.indexOf(id) >= 0) {
 			// collapsed button and persisting in cookie? remove it!
 			expand_these.splice(expand_these.indexOf(id), 1);
-			localStorage.setItem('rental_property_manager.dvp_expand', JSON.stringify(expand_these));
+			localStorage.setItem(`${AppGini.config.appTitle}.dvp_expand`, JSON.stringify(expand_these));
 		}
 	}
 }
 
 /* apply expanded/collapsed status to children in DVP */
 function apply_persisting_children() {
-	var expand_these = JSON.parse(localStorage.getItem('rental_property_manager.dvp_expand'));
-	if(expand_these == undefined) return;
+	var expand_these = JSON.parse(localStorage.getItem(`${AppGini.config.appTitle}.dvp_expand`));
+	if(expand_these == undefined || !expand_these.length) return;
 
-	expand_these.each(function(id) {
+	expand_these.forEach(function(id) {
 		$j('[id=' + id + ']:not(.active)').click();
 	});
 }
 
-function select2_max_width_decrement() {
-	return ($j('div.container, div.container-fluid').eq(0).hasClass('theme-compact') ? 99 : 109);
-}
-
 /**
- *  @brief AppGini.TVScroll().more() to scroll one column more. 
- *         AppGini.TVScroll().less() to scroll one column less.
+ *  AppGini.TVScroll().more() to scroll one column more. 
+ *  AppGini.TVScroll().less() to scroll one column less.
  */
 AppGini.TVScroll = function() {
 
 	/**
-	 *  @brief Calculates the width of the first n columns of the TV table
+	 *  Calculates the width of the first n columns of the TV table
 	 *  
 	 *  @param [in] n how many columns to calculate the width for
 	 *  @return Return total width of given n columns, or 0 if n < 1 or invalid
@@ -1131,7 +1209,7 @@ AppGini.TVScroll = function() {
 	};
 
 	/**
-	 *  @brief show/hide tv-scroll buttons based on whether TV is horizontally scrollable or not
+	 *  show/hide tv-scroll buttons based on whether TV is horizontally scrollable or not
 	 *  @details should be called once on document load before hiding TV columns (by calling less())
 	 */
 	var toggle_tv_scroll_tools = function() {
@@ -1144,7 +1222,7 @@ AppGini.TVScroll = function() {
 	}
 
 	/**
-	 *  @brief Prepares variables for use by less & more
+	 *  Prepares variables for use by less & more
 	 */
 	var _TVScrollSetup = function() {
 		if(AppGini._TVColsScrolled === undefined) AppGini._TVColsScrolled = 0;
@@ -1178,7 +1256,7 @@ AppGini.TVScroll = function() {
 	};
 
 	/**
-	 *  @brief Resets all scrolling and setup values.
+	 *  Resets all scrolling and setup values.
 	 *  @details Useful after hiding/showing columns to re-setup TV scrolling
 	 */
 	var reset = function() {
@@ -1226,7 +1304,7 @@ AppGini.TVScroll = function() {
 	};
 
 	/**
-	 *  @brief Scroll the TV table 1 column more
+	 *  Scroll the TV table 1 column more
 	 */
 	var more = function() {
 		if(AppGini._TVColsScrolled >= AppGini._TVColsCount) return;
@@ -1235,7 +1313,7 @@ AppGini.TVScroll = function() {
 	};
 
 	/**
-	 *  @brief Scroll the TV table 1 column less
+	 *  Scroll the TV table 1 column less
 	 */
 	var less = function() {
 		if(AppGini._TVColsScrolled <= 0) return;
@@ -1537,16 +1615,28 @@ AppGini.TVScroll = function() {
 })(jQuery);
 
 /**
- *  @brief Used in pages loaded inside modals (e.g. those with Embedded=1) to close the containing modal.
+ * Used in pages loaded inside modals (e.g. those with Embedded=1) to close the containing modal.
  */
 AppGini.closeParentModal = function() {
-	var pm = window.parent.$j(".modal:visible");
-	if(!pm.length) {
-		pm = window.parent.$j(".inpage-modal:visible");
-	}
+	const pm = AppGini.getParentModal();
+	if(!pm) return;
+	pm.agModal('hide');
+}
 
-	if(pm.length) pm.agModal('hide');
-	return;
+/**
+ * @return boolean indicating whether the current page is inside a modal or not
+ */
+AppGini.ImInsideModal = () => AppGini.getParentModal() !== null;
+
+/**
+ *  @return the parent modal element if any, null otherwise
+ */
+AppGini.getParentModal = () => {
+	if(!window.parent || !window.parent.$j) return null;
+
+	if(window.parent.$j('.modal:visible').length) return window.parent.$j('.modal:visible').eq(0);
+	if(window.parent.$j('.inpage-modal:visible').length) return window.parent.$j('.inpage-modal:visible').eq(0);
+	return null;
 }
 
 /**
@@ -1980,7 +2070,7 @@ AppGini.alterDVTitleLinkToBack = function() {
 	if(!$j('[name=SelectedID]').length) return;
 	if(document.location.href.match(/[?&]SelectedID=/) !== null) return;
 
-	$j('.page-header > h1 > a').on('click', function(e) {
+	$j('body').on('click', 'a.title-link', function(e) {
 		e.preventDefault();
 		$j('#deselect').trigger('click');
 		return false;
@@ -1996,6 +2086,9 @@ AppGini.isRecordUpdated = () => {
 AppGini.lockUpdatesOnUserRequest = function() {
 	// if this is not DV of existing record where editing and saving a copy are both enabled, skip
 	if(!$j('#update').length || !$j('#insert').length || !AppGini.selectedID().length) return;
+
+	// if screen size is xs, skip
+	if(screen_size('xs')) return;
 
 	// if lock behavior already implemented, skip
 	if($j('#update').hasClass('locking-enabled')) return;
@@ -2030,8 +2123,15 @@ AppGini.lockUpdatesOnUserRequest = function() {
 }
 
 /* function to focus a specific element of a form, given field name */
-AppGini.focusFormElement = function(tn, fn) {
+AppGini.focusFormElement = function(tn, fn, noDelay) {
 	if(AppGini.mobileDevice()) return;
+	if(!tn || !fn) return;
+
+	// if form inside modal, delay focus for 500ms to allow modal to open first
+	if(AppGini.ImInsideModal() && !noDelay) {
+		setTimeout(() => AppGini.focusFormElement(tn, fn, true), 500);
+		return;
+	}
 
 	// if we have a visible alert, don't scroll to focused element
 	const doScroll = ($j('.alert:visible').length == 0);
@@ -2177,7 +2277,7 @@ AppGini.Validation = {
 		file: (id, insertMode) => $j(`#${id}`).val() == '' && !$j(`#${id}-link:visible`).length,
 		html: (id, insertMode) => {
 			var nic = nicEditors.findEditor(id).getContent().trim();
-			return $j(nic).text() == '' && !nic.match(/<img /);
+			return $j(`<div>${nic}</div>`).text() == '' && !nic.match(/<img /);
 		},
 		datetime: (id, insertMode) => $j(`#${id}`).val().trim() == '',
 		checkbox: (id, insertMode) => !$j(`#${id}`).prop('checked'),
@@ -2678,9 +2778,9 @@ AppGini.storedLayout = (val) => {
 	const view = $j('[name="current_view"]').val();
 
 	if(val !== undefined) {
-		localStorage.setItem(`rental_property_manager.${AppGini.currentTableName()}.${view}.layout`, val);
+		localStorage.setItem(`${AppGini.config.appTitle}.${AppGini.currentTableName()}.${view}.layout`, val);
 	}
-	return localStorage.getItem(`rental_property_manager.${AppGini.currentTableName()}.${view}.layout`);
+	return localStorage.getItem(`${AppGini.config.appTitle}.${AppGini.currentTableName()}.${view}.layout`);
 }
 
 AppGini.renderDVLayoutToolbar = () => {
@@ -2863,9 +2963,9 @@ AppGini.preparePagesMenu = (recordsPerPage, pagesMenuId, lastPage, currentPage, 
 
 AppGini.storedRecordsPerPage = (val) => {
 	if(val !== undefined) {
-		localStorage.setItem(`rental_property_manager.${AppGini.currentTableName()}.recordsPerPage`, val);
+		localStorage.setItem(`${AppGini.config.appTitle}.${AppGini.currentTableName()}.recordsPerPage`, val);
 	}
-	return localStorage.getItem(`rental_property_manager.${AppGini.currentTableName()}.recordsPerPage`);
+	return localStorage.getItem(`${AppGini.config.appTitle}.${AppGini.currentTableName()}.recordsPerPage`);
 }
 
 AppGini.renderTVRecordsPerPageSelector = () => {
@@ -2947,7 +3047,7 @@ AppGini.currentViewIs = (view) => $j('#current_view').val()?.toLowerCase() == vi
 
 AppGini.appendRecordsPerPageToTableLinks = () => {
 	// find stored records per page and extract table names from keys
-	Object.keys(localStorage).filter(k => k.match(/rental_property_manager\..*?\.recordsPerPage/)).forEach(k => {
+	Object.keys(localStorage).filter(k => k.match(new RegExp(`${AppGini.config.appTitle}\\..*?\\.recordsPerPage`))).forEach(k => {
 		const tableName = k.split('.')[1];
 		$j(`a[href*="/${tableName}_view.php"], a[href^="${tableName}_view.php"]`).each(function() {
 			const href = new URL($j(this).attr('href'), window.location.href);
@@ -3418,3 +3518,313 @@ AppGini.addTimeFieldQuickActions = () => {
 	}, 400); // wait for timepicker to initialize
 }
 
+
+/**
+ * Initializes the lightbox functionality for elements with `data-lightbox` attributes.
+ * This function should only be called once during the application's lifecycle.
+ * 
+ * The lightbox groups images by the value of the `data-lightbox` attribute and displays 
+ * them in a modal carousel. If there is only one image in the group, it is displayed 
+ * without the carousel. The modal title is determined based on associated elements 
+ * (e.g., a `<th>` with a class matching the lightbox group, or a `<label>` in the 
+ * closest `.form-group`).
+ * 
+ * @function
+ * @memberof AppGini
+ */
+AppGini.handleLightbox = () => {
+	// this function should be called only once
+	if(AppGini._handleLightboxCalled) return;
+	AppGini._handleLightboxCalled = true;
+
+	$j('body').on('click', 'a[data-lightbox]', function(e) {
+		e.preventDefault();
+
+		const lightboxGroup = $j(this).data('lightbox');
+
+		// build array of images in the lightbox group
+		const images = [];
+		$j(`a[data-lightbox="${lightboxGroup}"]`).each(function() {
+			const img = $j(this).attr('href');
+			images.push(img);
+		});
+
+		// current image index
+		const currentIndex = images.indexOf($j(this).attr('href'));
+
+		// build lightbox modal options
+		const uniqueId = `lightbox-${lightboxGroup}-${Math.random().toString(36).substring(7)}`;
+		const modalOptions = {
+			message: `
+				<div id="${uniqueId}" class="carousel slide lightbox-carousel" data-ride="carousel" data-interval="" style=" 
+					height: 100%; 
+					display: flex; 
+					align-items: center; 
+					justify-content: center;
+				">
+					${
+						images.length <= 20
+							? `
+								<ol class="carousel-indicators" style="background: rgba(0, 0, 0, 0.25); padding: 1em; border-radius: 1em; position: absolute; bottom: 0;">
+									${images.map((_, i) => `
+										<li data-target="#${uniqueId}" data-slide-to="${i}" class="${i === currentIndex ? 'active' : ''}"></li>
+									`).join('')}
+								</ol>
+							`
+							: ''
+					}
+					<div class="carousel-inner">
+						${images.map((img, i) => `
+							<div class="item ${i == currentIndex ? 'active' : ''}">
+								<img src="${img}" class="img-responsive center-block" alt="">
+							</div>
+						`).join('')}
+					</div>
+					<a class="left carousel-control" href="#${uniqueId}" role="button" data-slide="prev">
+						<span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+						<span class="sr-only">Previous</span>
+					</a>
+					<a class="right carousel-control" href="#${uniqueId}" role="button" data-slide="next">
+						<span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+						<span class="sr-only">Next</span>
+					</a>
+				</div>
+			`,
+			size: 'full',
+		};
+
+		// if only one image, show it in a modal window
+		if(images.length == 1) {
+			modalOptions.message = `<div class="lightbox-image"><img src="${images[0]}" class="img-responsive center-block" alt=""></div>`;
+			//modalOptions.size = 'default';
+		}
+
+		// if we have a th with class same as the lightbox group, use it as modal title
+		const th = $j(`th.${lightboxGroup}`);
+		if(th.length) {
+			modalOptions.title = th.text().trim();
+		} else if(images.length == 1) {
+			// try label of parent form-group
+			const formGroup = $j(this).closest('.form-group');
+			const label = formGroup.find('label');
+			if(label.length) {
+				modalOptions.title = label.eq(0).text().trim();
+			}
+		} else {
+			// try first text node in the page heading
+			const h1 = document.querySelector('h1');
+			if(h1.length) {
+				// only text of the h1, excluding any child elements
+				modalOptions.title = h1.childNodes[0].textContent.trim();
+			}
+		}
+
+		// show modal
+		modal_window(modalOptions);
+	});
+}
+
+AppGini.enhanceNavbarToggle = () => {
+	// call only once
+	if(AppGini._enhanceNavbarToggleCalled) return;
+	AppGini._enhanceNavbarToggleCalled = true;
+
+	$j('.navbar-toggle').on('click', () => {
+		$j('.navbar-toggle .glyphicon').toggleClass('glyphicon-menu-hamburger glyphicon-remove');
+	});
+}
+
+AppGini.fixDVActionButtonsToBottom = () => {
+	// call only once
+	if(AppGini._fixDVActionButtonsToBottomCalled) return;
+	AppGini._fixDVActionButtonsToBottomCalled = true;
+
+	const topNavbarBGColor = () => {
+		let refElement = $j('.navbar-fixed-top');
+		if(!refElement.length) refElement = $j('body');
+
+		let bgColor = refElement.css('background-color');
+
+		// remove transparency if any
+		if(bgColor.startsWith('rgba')) {
+			bgColor = bgColor.replace(/[^,]+(?=\))/, '1');
+		}
+
+		return bgColor;
+	}
+
+	setTimeout(() => {
+		// if mobile view, adjust DV action buttons to be a navbar.navbar-fixed-bottom
+		if(!screen_size('xs')) return;
+
+		const dvActionButtons = $j('.dv-action-buttons');
+		if(!dvActionButtons.length) return;
+
+		dvActionButtons
+			.addClass('navbar navbar-fixed-bottom')
+			.removeClass('col-md-4 col-lg-2')
+			.css({
+				padding: '.25em 0',
+				width: '100%',
+				textAlign: 'center',
+				backgroundColor: topNavbarBGColor(),
+				// top shadow
+				boxShadow: '0 -1px 5px rgba(0, 0, 0, 0.1)',
+				zIndex: 2000, // to be above powered by and any other elements
+			})
+
+		const btnContainer = $j('<div class="btn-group"></div>');
+		btnContainer.appendTo(dvActionButtons);
+
+		const prepBtn = (btnSelector) => {
+			const btn = dvActionButtons.find(btnSelector);
+			if(!btn.length) return;
+
+			btn.addClass('btn-lg').appendTo(btnContainer);
+
+			// remove non-html nodes from btn
+			const btnNodes = btn[0].childNodes;
+			let hasTextNodes = true;
+			while(hasTextNodes) {
+				hasTextNodes = false;
+				for(let i = 0; i < btnNodes.length; i++) {
+					if(btnNodes[i].nodeType != 3) continue;
+					hasTextNodes = true;
+					btnNodes[i].remove();
+					break; // restart loop
+				}
+			}              
+
+			// clear special css
+			btn.css({ margin: 0, padding: '', width: ''    });
+		}
+
+		[
+			'#deselect', '#update', '#delete', '#insert', 
+			'#dvprint', '[name=setSelectedIDPreviousPage]', '[name=previousRecordDV]', '[name=setSelectedIDNextPage]', '[name=nextRecordDV]',
+		].forEach(btn => prepBtn(btn));
+
+		// if both #update and #insert are present, hide both
+		// and add a new button `#update-insert` after the `#deselect` button
+		// to display a dropdown with both buttons in order to confirm the exact action
+		// that the user wants to take
+		const updateBtn = dvActionButtons.find('#update');
+		const insertBtn = dvActionButtons.find('#insert');
+		if(updateBtn.length && insertBtn.length) {
+			btnContainer.addClass('dropup');
+			const updateInsertBtn = $j(`
+				<button 
+					class="btn btn-lg btn-success dropdown-toggle" 
+					data-toggle="dropdown" 
+					style="border-radius: 0;" 
+					>
+						<i class="glyphicon glyphicon-ok"></i>
+						<i class="caret"></i>
+				</button>
+				<ul class="dropdown-menu" style="width: 100%;">
+					<li id="update-li"></li>
+					<li id="insert-li"></li>
+				</ul>
+			`);
+			updateInsertBtn.insertAfter(dvActionButtons.find('#deselect'));
+
+			updateBtn.css({margin: '', width: 'calc(100% - 2em)' }).addClass('hspacer-lg tspacer-lg').appendTo('#update-li');
+			updateBtn.find('i').after(` ${AppGini.Translate._map['save changes']}` || '');
+			insertBtn.css({margin: '', width: 'calc(100% - 2em)' }).addClass('hspacer-lg vspacer-lg').appendTo('#insert-li');
+			insertBtn.find('i').after(` ${AppGini.Translate._map['Save As Copy']}` || '');
+		}
+
+		// remove .btn-toolbar if empty
+		if(!dvActionButtons.find('.btn-toolbar').find('.btn').length) {
+			dvActionButtons.find('.btn-toolbar').remove();
+		}
+	}, 50);
+}
+
+AppGini.promoteTableTitle = () => {
+	// if not mobile screen, return
+	if(!screen_size('xs')) return;
+
+	// if no .table-title, return
+	const tableTitle = $j('.page-header a.table-title');
+	if(!tableTitle.length) return;
+
+	// if no .navbar-sub-brand, return
+	const navbarSubBrand = $j('.navbar-sub-brand');
+	if(!navbarSubBrand.length) return;
+
+	// if .navbar-sub-brand has text, return
+	if(navbarSubBrand.text().trim().length) return;
+
+	// hide .table-title and move its content to .navbar-sub-brand
+	navbarSubBrand.html(tableTitle.html());
+	tableTitle.addClass('hidden');
+
+	// set href of .navbar-sub-brand to same as .table-title
+	navbarSubBrand.attr('href', tableTitle.attr('href'));
+
+	// unhide .navbar-sub-brand and .navbar-sub-brand-separator
+	navbarSubBrand.removeClass('hidden');
+	$j('.navbar-sub-brand-separator').removeClass('hidden');
+}
+
+AppGini.enhanceMobileUX = () => {
+	// if i'm inside a modal that is not yet fully shown, wait sometime to allow it have its full size then call this function again
+	// note: in-page modals don't have a transition effect, so no need to wait for them to be shown
+	const pm = AppGini.getParentModal();
+	if(pm && pm.hasClass('modal') && !AppGini._enhanceMobileUXModalDeferred) {
+		AppGini._enhanceMobileUXModalDeferred = true;
+		setTimeout(AppGini.enhanceMobileUX, 300);
+		return;
+	}
+
+	// call only once
+	if(AppGini._enhanceMobileUXCalled) return;
+	AppGini._enhanceMobileUXCalled = true;
+
+	// if not mobile view, return
+	if(!screen_size('xs')) return;
+
+	AppGini.enhanceNavbarToggle();
+	AppGini.fixDVActionButtonsToBottom();
+	AppGini.promoteTableTitle();
+	AppGini.noDVPanel();
+}
+AppGini.noDVPanel = () => {
+	// if not mobile screen, return
+	if(!screen_size('xs')) return;
+
+	const dvPanel = $j('.detail_view > .panel').eq(0);
+	if(!dvPanel.length) return;
+
+	dvPanel.find('.panel-heading').removeClass('panel-heading').addClass('xs-panel-heading');
+	dvPanel.find('.panel-title').removeClass('panel-title').addClass('xs-panel-title');
+	dvPanel.find('.panel-body').removeClass('panel-body').addClass('xs-panel-body');
+	dvPanel.removeClass('panel panel-default').addClass('xs-panel');
+}
+
+AppGini.controlBackButtonBehavior = () => {
+	// Check if the app is running in standalone mode (PWA)
+	const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
+
+	if (isStandalone) {
+		// Push an initial state to the history stack to trap the back button
+		history.pushState(null, '', location.href);
+
+		// Listen for the 'popstate' event, triggered by the back button
+		window.addEventListener('popstate', (event) => {
+			// Show a confirmation dialog when the back button is pressed
+			const exitConfirmed = true; // confirm('Are you sure you want to exit the app?');
+			if (exitConfirmed) {
+				// Attempt to close the app
+				window.close();
+
+				// If `window.close()` fails (e.g., due to platform restrictions), fallback:
+				history.back(); // Navigate back if there is history
+			} else {
+				// Prevent default back action and stay on the same page
+				history.pushState(null, '', location.href);
+			}
+		});
+	}
+}

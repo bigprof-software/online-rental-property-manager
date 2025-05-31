@@ -1,19 +1,23 @@
 <?php
 	include_once(__DIR__ . '/lib.php');
-	if(MULTI_TENANTS) redirect(SaaS::profileUrl(), true);
+	if(MULTI_TENANTS) redirect(call_user_func_array('SaaS::profileUrl', []), true);
 
 	$adminConfig = config('adminConfig');
 
 	/* no access for guests */
-	$mi = getMemberInfo();
-	if(!$mi['username'] || $mi['group'] == $adminConfig['anonymousGroup']) {
-		@header('Location: index.php'); exit;
+	if(Authentication::isGuest()) {
+		@header('HTTP/1.0 403 Forbidden');
+		@header('Location: index.php?signIn=1');
+		exit;
 	}
+
+	$mi = getMemberInfo();
 
 	/* save profile */
 	if(Request::val('action') == 'saveProfile') {
 		if(!csrf_token(true)) {
-			echo $Translation['error:'];
+			@header('HTTP/1.0 403 Forbidden');
+			echo "{$Translation['error:']} {$Translation['csrf token expired or invalid']}";
 			exit;
 		}
 
@@ -26,8 +30,9 @@
 
 		/* validate email */
 		if(!$email) {
+			@header('HTTP/1.0 400 Bad Request');
 			echo "{$Translation['error:']} {$Translation['email invalid']}";
-			echo "<script>\$j('label[for=\"email\"]')[0].pulsate({ pulses: 10, duration: 4 }); \$j('#email').focus();</script>";
+			echo "<script>\$j('#email').focus();</script>";
 			exit;
 		}
 
@@ -47,7 +52,8 @@
 	/* change password */
 	if(Request::val('action') == 'changePassword' && $mi['username'] != $adminConfig['adminUsername']) {
 		if(!csrf_token(true)) {
-			echo $Translation['error:'];
+			@header('HTTP/1.0 403 Forbidden');
+			echo "{$Translation['error:']} {$Translation['csrf token expired or invalid']}";
 			exit;
 		}
 
@@ -58,6 +64,7 @@
 		/* validate password */
 		$hash = sqlValue("SELECT `passMD5` FROM `membership_users` WHERE memberID='{$mi['username']}'");
 		if(!password_match($oldPassword, $hash)) {
+			@header('HTTP/1.0 400 Bad Request');
 			echo "{$Translation['error:']} {$Translation['Wrong password']}";
 			?>
 			<script>
@@ -69,6 +76,7 @@
 			exit;
 		}
 		if(strlen($newPassword) < 4) {
+			@header('HTTP/1.0 400 Bad Request');
 			echo "{$Translation['error:']} {$Translation['password invalid']}";
 			?>
 			<script>
@@ -94,6 +102,42 @@
 		exit;
 	}
 
+	/* update theme */
+	$themes = getThemesList();
+
+	if(Request::val('action') == 'updateTheme') {
+		if(!csrf_token(true)) {
+			@header('HTTP/1.0 403 Forbidden');
+			echo "{$Translation['error:']} {$Translation['csrf token expired or invalid']}";
+			exit;
+		}
+
+		/* process inputs */
+		$theme = Request::val('theme');
+		if(!in_array($theme, $themes)) {
+			@header('HTTP/1.0 400 Bad Request');
+			echo "{$Translation['error:']} {$Translation['invalid theme']}";
+			exit;
+		}
+		$themeCompact = Request::val('themeCompact') == '1';
+
+		/* update theme in user data */
+		setUserData('theme', $theme);
+		setUserData('themeCompact', $themeCompact);
+
+		exit;
+	}
+
+	/* get user theme */
+	$theme = getUserTheme();
+
+	/* get user compact theme setting, or set it to default if not set */
+	$themeCompact = getUserData('themeCompact');
+	if($themeCompact === null) {
+		$themeCompact = THEME_COMPACT;
+		setUserData('themeCompact', $themeCompact);
+	}
+
 	/* get profile info */
 	/* 
 		$mi already contains the profile info, as documented at: 
@@ -114,7 +158,7 @@
 		<h1><?php echo sprintf($Translation['Hello user'], htmlspecialchars($mi['username'])); ?></h1>
 	</div>
 	<div id="notify" class="alert alert-success" style="display: none;"></div>
-	<div id="loader" style="display: none;"><i class="glyphicon glyphicon-refresh"></i> <?php echo $Translation['Loading ...']; ?></div>
+	<div id="loader" class="alert alert-warning" style="display: none;"><i class="glyphicon glyphicon-refresh"></i> <?php echo $Translation['Loading ...']; ?></div>
 
 	<?php echo csrf_token(); ?>
 	<div class="row">
@@ -287,6 +331,108 @@
 				</div>
 			<?php } ?>
 
+			<?php if(!NO_THEME_SELECTION) { ?>
+				<!-- theme selector -->
+				<div class="panel panel-info">
+					<div class="panel-heading">
+						<h3 class="panel-title">
+							<i class="glyphicon glyphicon-adjust"></i>
+							<?php echo $Translation['theme selector']; ?>
+						</h3>
+					</div>
+					<div class="panel-body" id="theme-selector">
+						<div class="text-center bspacer-lg">
+							<div class="btn-group" id="theme-compact" style="width: 90%; margin: 0 auto; max-width: 50em;">
+								<button type="button" class="btn btn-lg btn-default<?php echo ($themeCompact ? '' : ' active'); ?>" data-value="0" style="width: 50%;">
+									<i class="glyphicon glyphicon-plus"></i>
+									<?php echo $Translation['large text']; ?>
+									<i class="glyphicon glyphicon-text-size"></i>
+								</button>
+								<button type="button" class="btn btn-lg btn-default<?php echo ($themeCompact ? ' active' : ''); ?>" data-value="1" style="width: 50%;">
+									<i class="glyphicon glyphicon-minus"></i>
+									<?php echo $Translation['small text']; ?>
+									<i class="glyphicon glyphicon-text-size"></i>
+								</button>
+							</div>
+						</div>
+
+						<div class="block-flex flex-wrap" style="column-gap: 1em;">
+						<?php
+							foreach($themes as $i => $tn) {
+								$checked = ($theme == $tn ? ' checked' : '');
+								?>
+								<label class="text-center highlight-checked">
+									<input type="radio" name="theme" value="<?php echo $tn; ?>"<?php echo $checked; ?>>
+									<img src="resources/initializr/css/<?php echo $tn; ?>-desktop.png" class="hidden-xs" alt="<?php echo $tn; ?>" title="<?php echo $tn; ?>" style="height: 9em;">
+									<img src="resources/initializr/css/<?php echo $tn; ?>-mobile.png" class="visible-xs" alt="<?php echo $tn; ?>" title="<?php echo $tn; ?>" style="height: 9em;">
+									<div><?php echo ucfirst($tn); ?></div>
+								</label>
+								<?php
+							}
+						?>
+						</div>
+
+						<div class="text-center vspacer-lg">
+							<button id="update-theme" class="btn btn-success btn-lg vspacer-lg" type="button" style="width: 15em;">
+								<i class="glyphicon glyphicon-ok"></i>
+								<?php echo $Translation['update theme']; ?>
+							</button>
+							<span class="hspacer-lg"></span>
+							<button id="default-theme" class="btn btn-default btn-lg vspacer-lg" type="button">
+								<i class="glyphicon glyphicon-refresh"></i> <?php echo $Translation['default theme']; ?>
+							</button>
+						</div>
+					</div>
+				</div>
+
+				<script>
+					$j(() => {
+						const defaultTheme = '<?php echo DEFAULT_THEME; ?>';
+						const defaultCompact = '<?php echo THEME_COMPACT ? '1' : '0'; ?>';
+
+						// handle save theme
+						const updateTheme = () => {
+							// disable buttons and radios
+							$j('#theme-compact .btn').prop('disabled', true);
+							$j('input[name="theme"]').prop('disabled', true);
+
+							post2(
+								'<?php echo basename(__FILE__); ?>', {
+									action: 'updateTheme',
+									theme: $j('input[name="theme"]:checked').val(),
+									themeCompact: $j('#theme-compact .btn.active').data('value'),
+									csrf_token: $j('#csrf_token').val()
+								},
+								'notify', 'theme-selector', 'loader',
+								'<?php echo basename(__FILE__); ?>?notify=<?php echo urlencode($Translation['your theme was updated successfully']); ?>'
+							);
+						};
+
+						// handle click on theme compact buttons
+						$j('#theme-compact .btn').on('click', function() {
+							$j('#theme-compact .btn').removeClass('active');
+							$j(this).addClass('active');
+						});
+
+						// handle update theme button click
+						$j('#update-theme').on('click', function() {
+							updateTheme();
+						});
+
+						// handle default theme button click
+						$j('#default-theme').on('click', function() {
+							$j('input[name="theme"]').prop('checked', false);
+							$j('#theme-compact .btn').removeClass('active');
+							$j('#theme-compact .btn[data-value="' + defaultCompact + '"]').addClass('active');
+							$j('input[name="theme"][value="' + defaultTheme + '"]').prop('checked', true);
+
+							updateTheme();
+						});
+
+					});
+				</script>
+			<?php } ?>
+
 		</div>
 
 	</div>
@@ -316,7 +462,6 @@
 					if($j('#new-password').val() != $j('#confirm-password').val()) {
 						$j('#notify').addClass('alert-danger');
 						notify('<?php echo "{$Translation['error:']} ".addslashes($Translation['password no match']); ?>');
-						$j('label[for="confirm-password"]')[0].pulsate({ pulses: 10, duration: 4 });
 						$j('#confirm-password').focus();
 						return false;
 					}

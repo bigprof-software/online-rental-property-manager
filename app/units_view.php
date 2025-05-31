@@ -191,7 +191,7 @@
 	}
 
 	if(!$headerCode) {
-		include_once(__DIR__ . '/header.php'); 
+		include_once(__DIR__ . '/header.php');
 	} else {
 		ob_start();
 		include_once(__DIR__ . '/header.php');
@@ -208,7 +208,7 @@
 	}
 
 	if(!$footerCode) {
-		include_once(__DIR__ . '/footer.php'); 
+		include_once(__DIR__ . '/footer.php');
 	} else {
 		ob_start();
 		include_once(__DIR__ . '/footer.php');

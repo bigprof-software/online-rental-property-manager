@@ -102,7 +102,7 @@
 		}
 
 		/**
-		 *  @brief UTF8-encodes a string/array
+		 *  UTF8-encodes a string/array
 		 *  @see https://stackoverflow.com/a/26760943/1945185
 		 *  
 		 *  @param [in] $mixed string or array of strings to be UTF8-encoded
@@ -118,7 +118,7 @@
 		}
 
 		/**
-		 *  @brief Retrieves and validates user-specified md5_hash and checks if it matches a backup file
+		 *  Retrieves and validates user-specified md5_hash and checks if it matches a backup file
 		 *  
 		 *  @return False on error, backup file full path on success.
 		 */
@@ -341,7 +341,7 @@
 		}
 
 		/**
-		 *  @brief Retrieve a list of available backup files, with dates and times
+		 *  Retrieve a list of available backup files, with dates and times
 		 *  
 		 *  @return Array of backup files [[md5_hash => '', datetime => 'y-m-d H:i:s', size => '659888'], ..]
 		 *  
@@ -374,7 +374,7 @@
 		}
 
 		/**
-		 *  @brief create a new backup file
+		 *  create a new backup file
 		 *  
 		 *  @return Boolean indicating success or failure
 		 *  
@@ -403,7 +403,7 @@
 		}
 
 		/**
-		 *  @brief Restores a given backup file
+		 *  Restores a given backup file
 		 *  
 		 *  @return Boolean indicating success or failure
 		 *  
@@ -430,7 +430,7 @@
 		}
 
 		/**
-		 *  @brief Deletes a given backup file
+		 *  Deletes a given backup file
 		 *  
 		 *  @return Boolean indicating success or failure
 		 */

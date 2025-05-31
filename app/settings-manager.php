@@ -219,7 +219,7 @@
 	}
 
 	/**
-	 *  @brief check if given password matches given hash, preserving backward compatibility with MD5
+	 *  check if given password matches given hash, preserving backward compatibility with MD5
 	 *  
 	 *  @param [in] $password Description for $password
 	 *  @param [in] $hash Description for $hash
@@ -231,7 +231,7 @@
 	}
 
 	/**
-	 *  @brief Migrate MD5 pass hashes to BCrypt if supported
+	 *  Migrate MD5 pass hashes to BCrypt if supported
 	 *  
 	 *  @param [in] $user username to migrate
 	 *  @param [in] $pass current password

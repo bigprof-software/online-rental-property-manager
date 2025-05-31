@@ -1,6 +1,6 @@
 <?php
-	$appgini_version = '25.10.1935';
-	$generated_ts = '10/02/2025 13:50:12';
+	$appgini_version = '25.13.2052 beta';
+	$generated_ts = '31/05/2025 13:20:06';
 
 	require(__DIR__ . '/incCommon.php');
 
@@ -255,7 +255,9 @@
 				a = document.createElement('a');
 
 			a.href = url;
-			a.download = 'server-status.json';
+			const now = new Date();
+			const dateTimeString = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}-${String(now.getHours()).padStart(2, '0')}-${String(now.getMinutes()).padStart(2, '0')}-${String(now.getSeconds()).padStart(2, '0')}`;
+			a.download = `server-status-${dateTimeString}.json`;
 			document.body.appendChild(a);
 			a.click();
 			document.body.removeChild(a);

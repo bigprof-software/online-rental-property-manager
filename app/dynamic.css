@@ -1,5 +1,9 @@
-@media (min-width: 768px) { .container { width: 90% !important; } }
-@media (max-width: 767px) { .detail_view { padding: 0; } }
+/* non-mobile screens */
+@media (min-width: 768px) { 
+	.container { width: 90% !important; } 
+	.tab-content { padding: 10px 20px; border: 1px solid #DDDDDD; border-top: none; }
+}
+
 @media print {
 	a[href]:after { content: "" !important; }
 	.container { width: 98% !important; }
@@ -18,11 +22,9 @@ table a, .table a { text-decoration: none !important; }
 
 iframe { border: none; overflow: auto; }
 
-.tab-content { padding: 10px 20px; border: 1px solid #DDDDDD; border-top: none; }
-
 #pc-loading { background: none repeat scroll 0 0 yellow; font-family: arial; left: 10px; margin-top: -10px; opacity: 0.85; position: absolute; top: 20px; width: 150px; }
 
-.navbar a.btn { margin-left: 10px; margin-right: 10px; }
+.navbar-nav > a.btn, .navbar-nav > .btn-group { margin-left: 10px; margin-right: 10px; }
 
 .view-on-click a.btn { max-width: 75px; }
 
@@ -35,29 +37,23 @@ li.dropdown { display: block !important; }
 .hspacer-md { margin-left: 0.4em; margin-right: 0.4em; }
 .hspacer-lg { margin-left: 0.8em; margin-right: 0.8em; }
 
-/* right spacer in ltr context */
-.container:not(.theme-rtl) .rspacer-xs, .container-fluid:not(.theme-rtl) .rspacer-xs { margin-right: 0.1em; }
-.container:not(.theme-rtl) .rspacer-sm, .container-fluid:not(.theme-rtl) .rspacer-sm { margin-right: 0.2em; }
-.container:not(.theme-rtl) .rspacer-md, .container-fluid:not(.theme-rtl) .rspacer-md { margin-right: 0.4em; }
-.container:not(.theme-rtl) .rspacer-lg, .container-fluid:not(.theme-rtl) .rspacer-lg { margin-right: 0.8em; }
+.container:not(.theme-rtl), .container-fluid:not(.theme-rtl) { 
+	/* right spacer in ltr context */
+	.rspacer-xs { margin-right: 0.1em; }
+	.rspacer-sm { margin-right: 0.2em; }
+	.rspacer-md { margin-right: 0.4em; }
+	.rspacer-lg { margin-right: 0.8em; }
+	/* left spacer in ltr context */
+	.lspacer-xs { margin-left: 0.1em; }
+	.lspacer-sm { margin-left: 0.2em; }
+	.lspacer-md { margin-left: 0.4em; }
+	.lspacer-lg { margin-left: 0.8em; }
 
-/* right spacer in rtl context */
-.theme-rtl .rspacer-xs { margin-left: 0.1em; }
-.theme-rtl .rspacer-sm { margin-left: 0.2em; }
-.theme-rtl .rspacer-md { margin-left: 0.4em; }
-.theme-rtl .rspacer-lg { margin-left: 0.8em; }
+	/* prevent right-aligned fields in non-default TV layouts from being too wide */
+	.dl-horizontal dd.text-right, .dl-horizontal dd > div.text-right { max-width: 8em; }
 
-/* left spacer in ltr context */
-.container:not(.theme-rtl) .lspacer-xs, .container-fluid:not(.theme-rtl) .lspacer-xs { margin-left: 0.1em; }
-.container:not(.theme-rtl) .lspacer-sm, .container-fluid:not(.theme-rtl) .lspacer-sm { margin-left: 0.2em; }
-.container:not(.theme-rtl) .lspacer-md, .container-fluid:not(.theme-rtl) .lspacer-md { margin-left: 0.4em; }
-.container:not(.theme-rtl) .lspacer-lg, .container-fluid:not(.theme-rtl) .lspacer-lg { margin-left: 0.8em; }
-
-/* left spacer in rtl context */
-.theme-rtl .lspacer-xs { margin-right: 0.1em; }
-.theme-rtl .lspacer-sm { margin-right: 0.2em; }
-.theme-rtl .lspacer-md { margin-right: 0.4em; }
-.theme-rtl .lspacer-lg { margin-right: 0.8em; }
+	#admin-tools-menu-button{ display: inline-block !important; margin: 0 1em 0 0; }
+}
 
 /* vertical spacer */
 .vspacer-xs { margin-top: 0.1em; margin-bottom: 0.1em; }
@@ -88,7 +84,7 @@ div.datePicker { font-size: 1.3em; }
 /* .form-control, .help-block .alert { width: 90% !important; } */
 .input-group .form-control { width: 100% !important; }
 .admin-area .form-inline .form-control { width: auto !important; }
-.panel .btn { overflow: hidden; }
+.panel .btn, .xs-panel .btn { overflow: hidden; }
 
 .select2-container .select2-choice { height: 2.4em; line-height: 2.2em; }
 .select2-container .select2-choice .select2-arrow b { background-position: 0 -0.1em; }
@@ -106,446 +102,6 @@ img[src="blank.gif"] { max-height: 10px !important; }
 	-webkit-overflow-scrolling: touch !important;
 }
 
-th.applicants_and_tenants-last_name, td.applicants_and_tenants-last_name {
-	white-space: normal !important;
-	width: 100px !important;
-	min-width: 100px !important;
-	overflow: hidden;
-}
-th.applicants_and_tenants-first_name, td.applicants_and_tenants-first_name {
-	white-space: normal !important;
-	width: 100px !important;
-	min-width: 100px !important;
-	overflow: hidden;
-}
-th.applicants_and_tenants-email, td.applicants_and_tenants-email {
-	white-space: normal !important;
-	width: 100px !important;
-	min-width: 100px !important;
-	overflow: hidden;
-	word-break: break-all;
-}
-th.applicants_and_tenants-phone, td.applicants_and_tenants-phone {
-	white-space: normal !important;
-	width: 100px !important;
-	min-width: 100px !important;
-	overflow: hidden;
-}
-th.applicants_and_tenants-birth_date, td.applicants_and_tenants-birth_date {
-	white-space: normal !important;
-	width: 100px !important;
-	min-width: 100px !important;
-	overflow: hidden;
-}
-th.applicants_and_tenants-driver_license_number, td.applicants_and_tenants-driver_license_number {
-	white-space: normal !important;
-	width: 100px !important;
-	min-width: 100px !important;
-	overflow: hidden;
-}
-th.applicants_and_tenants-driver_license_state, td.applicants_and_tenants-driver_license_state {
-	white-space: normal !important;
-	width: 100px !important;
-	min-width: 100px !important;
-	overflow: hidden;
-}
-th.applicants_and_tenants-requested_lease_term, td.applicants_and_tenants-requested_lease_term {
-	white-space: normal !important;
-	width: 100px !important;
-	min-width: 100px !important;
-	overflow: hidden;
-}
-th.applicants_and_tenants-monthly_gross_pay, td.applicants_and_tenants-monthly_gross_pay {
-	white-space: normal !important;
-	width: 80px !important;
-	min-width: 80px !important;
-	overflow: hidden;
-}
-th.applicants_and_tenants-additional_income, td.applicants_and_tenants-additional_income {
-	white-space: normal !important;
-	width: 80px !important;
-	min-width: 80px !important;
-	overflow: hidden;
-}
-th.applicants_and_tenants-assets, td.applicants_and_tenants-assets {
-	white-space: normal !important;
-	width: 80px !important;
-	min-width: 80px !important;
-	overflow: hidden;
-}
-th.applicants_and_tenants-status, td.applicants_and_tenants-status {
-	white-space: normal !important;
-	width: 100px !important;
-	min-width: 100px !important;
-	overflow: hidden;
-}
-th.applicants_and_tenants-notes, td.applicants_and_tenants-notes {
-	white-space: normal !important;
-	width: 100px !important;
-	min-width: 100px !important;
-	overflow: hidden;
-}
-th.applications_leases-tenants, td.applications_leases-tenants {
-	white-space: normal !important;
-	width: 60px !important;
-	min-width: 60px !important;
-	overflow: hidden;
-}
-th.applications_leases-status, td.applications_leases-status {
-	white-space: normal !important;
-	width: 50px !important;
-	min-width: 50px !important;
-	overflow: hidden;
-}
-th.applications_leases-property, td.applications_leases-property {
-	white-space: normal !important;
-	width: 80px !important;
-	min-width: 80px !important;
-	overflow: hidden;
-}
-th.applications_leases-unit, td.applications_leases-unit {
-	white-space: normal !important;
-	width: 60px !important;
-	min-width: 60px !important;
-	overflow: hidden;
-}
-th.applications_leases-type, td.applications_leases-type {
-	white-space: normal !important;
-	width: 40px !important;
-	min-width: 40px !important;
-	overflow: hidden;
-}
-th.applications_leases-total_number_of_occupants, td.applications_leases-total_number_of_occupants {
-	white-space: normal !important;
-	width: 70px !important;
-	min-width: 70px !important;
-	overflow: hidden;
-}
-th.applications_leases-start_date, td.applications_leases-start_date {
-	white-space: normal !important;
-	width: 70px !important;
-	min-width: 70px !important;
-	overflow: hidden;
-}
-th.applications_leases-end_date, td.applications_leases-end_date {
-	white-space: normal !important;
-	width: 60px !important;
-	min-width: 60px !important;
-	overflow: hidden;
-}
-th.applications_leases-rent, td.applications_leases-rent {
-	white-space: normal !important;
-	width: 70px !important;
-	min-width: 70px !important;
-	overflow: hidden;
-}
-th.applications_leases-security_deposit, td.applications_leases-security_deposit {
-	white-space: normal !important;
-	width: 80px !important;
-	min-width: 80px !important;
-	overflow: hidden;
-}
-th.applications_leases-security_deposit_date, td.applications_leases-security_deposit_date {
-	white-space: normal !important;
-	width: 80px !important;
-	min-width: 80px !important;
-	overflow: hidden;
-}
-th.applications_leases-emergency_contact, td.applications_leases-emergency_contact {
-	white-space: normal !important;
-	width: 120px !important;
-	min-width: 120px !important;
-	overflow: hidden;
-}
-th.applications_leases-co_signer_details, td.applications_leases-co_signer_details {
-	white-space: normal !important;
-	width: 100px !important;
-	min-width: 100px !important;
-	overflow: hidden;
-}
-th.applications_leases-notes, td.applications_leases-notes {
-	white-space: normal !important;
-	width: 100px !important;
-	min-width: 100px !important;
-	overflow: hidden;
-}
-th.applications_leases-agreement, td.applications_leases-agreement {
-	white-space: normal !important;
-	width: 70px !important;
-	min-width: 70px !important;
-	overflow: hidden;
-}
-th.residence_and_rental_history-address, td.residence_and_rental_history-address {
-	white-space: normal !important;
-	width: 180px !important;
-	min-width: 180px !important;
-	overflow: hidden;
-}
-th.residence_and_rental_history-landlord_or_manager_name, td.residence_and_rental_history-landlord_or_manager_name {
-	white-space: normal !important;
-	width: 120px !important;
-	min-width: 120px !important;
-	overflow: hidden;
-}
-th.residence_and_rental_history-landlord_or_manager_phone, td.residence_and_rental_history-landlord_or_manager_phone {
-	white-space: normal !important;
-	width: 100px !important;
-	min-width: 100px !important;
-	overflow: hidden;
-}
-th.residence_and_rental_history-monthly_rent, td.residence_and_rental_history-monthly_rent {
-	white-space: normal !important;
-	width: 80px !important;
-	min-width: 80px !important;
-	overflow: hidden;
-}
-th.residence_and_rental_history-duration_of_residency_from, td.residence_and_rental_history-duration_of_residency_from {
-	white-space: normal !important;
-	width: 100px !important;
-	min-width: 100px !important;
-	overflow: hidden;
-}
-th.residence_and_rental_history-to, td.residence_and_rental_history-to {
-	white-space: normal !important;
-	width: 80px !important;
-	min-width: 80px !important;
-	overflow: hidden;
-}
-th.residence_and_rental_history-reason_for_leaving, td.residence_and_rental_history-reason_for_leaving {
-	white-space: normal !important;
-	width: 120px !important;
-	min-width: 120px !important;
-	overflow: hidden;
-}
-th.residence_and_rental_history-notes, td.residence_and_rental_history-notes {
-	white-space: normal !important;
-	width: 120px !important;
-	min-width: 120px !important;
-	overflow: hidden;
-}
-th.employment_and_income_history-employer_name, td.employment_and_income_history-employer_name {
-	white-space: normal !important;
-	width: 80px !important;
-	min-width: 80px !important;
-	overflow: hidden;
-}
-th.employment_and_income_history-city, td.employment_and_income_history-city {
-	white-space: normal !important;
-	width: 100px !important;
-	min-width: 100px !important;
-	overflow: hidden;
-}
-th.employment_and_income_history-employer_phone, td.employment_and_income_history-employer_phone {
-	white-space: normal !important;
-	width: 100px !important;
-	min-width: 100px !important;
-	overflow: hidden;
-}
-th.employment_and_income_history-employed_from, td.employment_and_income_history-employed_from {
-	white-space: normal !important;
-	width: 80px !important;
-	min-width: 80px !important;
-	overflow: hidden;
-}
-th.employment_and_income_history-employed_till, td.employment_and_income_history-employed_till {
-	white-space: normal !important;
-	width: 80px !important;
-	min-width: 80px !important;
-	overflow: hidden;
-}
-th.employment_and_income_history-occupation, td.employment_and_income_history-occupation {
-	white-space: normal !important;
-	width: 100px !important;
-	min-width: 100px !important;
-	overflow: hidden;
-}
-th.employment_and_income_history-notes, td.employment_and_income_history-notes {
-	white-space: normal !important;
-	width: 50px !important;
-	min-width: 50px !important;
-	overflow: hidden;
-}
-th.references-reference_name, td.references-reference_name {
-	white-space: normal !important;
-	width: 160px !important;
-	min-width: 160px !important;
-	overflow: hidden;
-}
-th.references-phone, td.references-phone {
-	white-space: normal !important;
-	width: 160px !important;
-	min-width: 160px !important;
-	overflow: hidden;
-}
-th.properties-property_name, td.properties-property_name {
-	white-space: normal !important;
-	width: 50px !important;
-	min-width: 50px !important;
-	overflow: hidden;
-}
-th.properties-photo, td.properties-photo {
-	white-space: normal !important;
-	width: 60px !important;
-	min-width: 60px !important;
-	overflow: hidden;
-}
-th.properties-type, td.properties-type {
-	white-space: normal !important;
-	width: 80px !important;
-	min-width: 80px !important;
-	overflow: hidden;
-}
-th.properties-number_of_units, td.properties-number_of_units {
-	white-space: normal !important;
-	width: 50px !important;
-	min-width: 50px !important;
-	overflow: hidden;
-}
-th.properties-owner, td.properties-owner {
-	white-space: normal !important;
-	width: 100px !important;
-	min-width: 100px !important;
-	overflow: hidden;
-}
-th.properties-operating_account, td.properties-operating_account {
-	white-space: normal !important;
-	width: 120px !important;
-	min-width: 120px !important;
-	overflow: hidden;
-}
-th.properties-property_reserve, td.properties-property_reserve {
-	white-space: normal !important;
-	width: 70px !important;
-	min-width: 70px !important;
-	overflow: hidden;
-}
-th.properties-street, td.properties-street {
-	white-space: normal !important;
-	width: 120px !important;
-	min-width: 120px !important;
-	overflow: hidden;
-}
-th.properties-City, td.properties-City {
-	white-space: normal !important;
-	width: 70px !important;
-	min-width: 70px !important;
-	overflow: hidden;
-}
-th.properties-State, td.properties-State {
-	white-space: normal !important;
-	width: 50px !important;
-	min-width: 50px !important;
-	overflow: hidden;
-}
-th.properties-ZIP, td.properties-ZIP {
-	white-space: normal !important;
-	width: 50px !important;
-	min-width: 50px !important;
-	overflow: hidden;
-}
-th.units-id, td.units-id {
-	white-space: normal !important;
-	width: 150px !important;
-	min-width: 150px !important;
-	overflow: hidden;
-}
-th.units-property, td.units-property {
-	white-space: normal !important;
-	width: 90px !important;
-	min-width: 90px !important;
-	overflow: hidden;
-}
-th.units-unit_number, td.units-unit_number {
-	white-space: normal !important;
-	width: 40px !important;
-	min-width: 40px !important;
-	overflow: hidden;
-}
-th.units-photo, td.units-photo {
-	white-space: normal !important;
-	width: 60px !important;
-	min-width: 60px !important;
-	overflow: hidden;
-}
-th.units-status, td.units-status {
-	white-space: normal !important;
-	width: 60px !important;
-	min-width: 60px !important;
-	overflow: hidden;
-}
-th.units-size, td.units-size {
-	white-space: normal !important;
-	width: 60px !important;
-	min-width: 60px !important;
-	overflow: hidden;
-}
-th.units-country, td.units-country {
-	white-space: normal !important;
-	width: 80px !important;
-	min-width: 80px !important;
-	overflow: hidden;
-}
-th.units-street, td.units-street {
-	white-space: normal !important;
-	width: 100px !important;
-	min-width: 100px !important;
-	overflow: hidden;
-}
-th.units-city, td.units-city {
-	white-space: normal !important;
-	width: 55px !important;
-	min-width: 55px !important;
-	overflow: hidden;
-}
-th.units-state, td.units-state {
-	white-space: normal !important;
-	width: 40px !important;
-	min-width: 40px !important;
-	overflow: hidden;
-}
-th.units-postal_code, td.units-postal_code {
-	white-space: normal !important;
-	width: 80px !important;
-	min-width: 80px !important;
-	overflow: hidden;
-}
-th.units-rooms, td.units-rooms {
-	white-space: normal !important;
-	width: 45px !important;
-	min-width: 45px !important;
-	overflow: hidden;
-}
-th.units-bathroom, td.units-bathroom {
-	white-space: normal !important;
-	width: 70px !important;
-	min-width: 70px !important;
-	overflow: hidden;
-}
-th.units-features, td.units-features {
-	white-space: normal !important;
-	width: 150px !important;
-	min-width: 150px !important;
-	overflow: hidden;
-}
-th.units-rental_amount, td.units-rental_amount {
-	white-space: normal !important;
-	width: 60px !important;
-	min-width: 60px !important;
-	overflow: hidden;
-}
-th.units-deposit_amount, td.units-deposit_amount {
-	white-space: normal !important;
-	width: 50px !important;
-	min-width: 50px !important;
-	overflow: hidden;
-}
-th.units-description, td.units-description {
-	white-space: normal !important;
-	width: 80px !important;
-	min-width: 80px !important;
-	overflow: hidden;
-}
-
 /* fixes for glyph icons in some themes */
 .glyphicon-camera:before { content: "\e046"; }
 .glyphicon-lock:before { content: "\e033"; }
@@ -555,8 +111,14 @@ th.units-description, td.units-description {
 .glyphicon-wrench:before { content: "\e136"; }
 .glyphicon-briefcase:before { content: "\e139"; }
 
-.navbar-right {
+.navbar-right:not(.navbar-text) {
 	margin-right: 0 !important;
+}
+.navbar-right.navbar-text {
+	margin-right: 1em !important;
+}
+.navbar-right > .navbar-btn {
+	margin-right: .5em;
 }
 
 .no-caption .field-caption-tv {  display: none; }
@@ -576,126 +138,6 @@ th.units-description, td.units-description {
 .tv-tools .btn { width: 5em; }
 
 #spm_notification { direction: ltr !important; }
-/* compact theme styles */
-.container.theme-compact, .container-fluid.theme-compact { line-height: 1.6; font-size: 0.857em; }
-
-.theme-compact { 
-	.btn {
-		font-size: 12px;
-		padding: 4px 10px;
-	}
-
-	.btn-lg, .btn-group-lg > .btn {
-		font-size: 15px;
-		padding: 6px 15px;
-	}
-
-	.form-group {
-		margin-bottom: 8px;
-	}
-
-	:not(.input-group-lg) > .form-control, :not(.input-group-lg) > .input-group-addon {
-		font-size: 12px;
-		height: auto;
-		padding: 4px 6px;
-	}
-
-	.input-sm {
-		border-radius: 3px;
-		font-size: 12px;
-		padding: 2px 6px;
-	}
-
-	select.input-sm {
-		height: 25px;
-		line-height: 25px;
-	}
-
-	.dropdown-menu {
-		font-size: 12px;
-	}
-
-	.table > thead > tr > th, .table > tbody > tr > th, .table > tfoot > tr > th, .table > thead > tr > td, .table > tbody > tr > td, .table > tfoot > tr > td {
-		padding: 4px;
-	}
-
-	h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
-		line-height: 2;
-	}
-
-	h1, .h1 {
-		font-size: 27px;
-	}
-
-	h2, .h2 {
-		font-size: 24px;
-	}
-
-	h3, .h3 {
-		font-size: 20px;
-	}
-
-	h4, .h4 {
-		font-size: 16px;
-	}
-
-	.navbar {
-		margin-bottom: 13px;
-		min-height: 40px;
-	}
-
-	.navbar-fixed-bottom {
-		margin-bottom: 0 !important;
-	}
-
-	.navbar-brand {
-		font-size: 15px;
-		height: 40px;
-		padding: 12px;
-	}
-
-	.navbar-nav > li > a {
-		padding-bottom: 9px;
-		padding-top: 9px;
-		line-height: 26px;
-	}
-
-	.navbar-text {
-		margin-bottom: 12px;
-		margin-top: 14px;
-	}
-
-	.page-header {
-		margin: 20px 0 10px;
-		padding-bottom: 0;
-	}
-
-	.navbar-nav > li > a { margin-top: 0; margin-bottom: 0; }
-
-	.panel-heading {
-		padding: 6px;
-	}
-
-	.panel-title {
-		font-size: 14px;
-	}
-
-	#quick-search {
-		margin: .5em 0;
-	}
-
-	.profile-menu-icon > .icon { padding: 6px !important; }
-}
-
-/* Add `rtl-mirror` class to an element to horizontally flip it in rtl (e.g. arrow glyphs, ... etc) */
-.theme-rtl .rtl-mirror {
-	transform: scale(-1, 1);
-}
-
-/* theme-specific compact adjustments */
-.theme-sandstone .theme-compact .btn {
-	padding: 2.5px 10px;
-}
 
 /* file upload box formatting */
 .upload-toolbox {
@@ -705,9 +147,6 @@ th.units-description, td.units-description {
 	margin-bottom: 0;
 	background-color: rgba(255, 255, 255, 0.5);
 	box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.5);
-}
-.theme-rtl .upload-toolbox {
-	text-align: right;
 }
 .upload-toolbox input[type="file"] {
 	display: inline-block;
@@ -824,25 +263,13 @@ a[href="mailto:"] { display: none; }
 }
 
 .theme-journal .profile-menu-icon > .icon { padding: 6px !important; }
-.theme-compact.theme-journal .profile-menu-icon > .icon { padding: 6px !important; }
 
 .theme-paper .profile-menu-icon > .icon { padding: 6px !important; }
-.theme-compact.theme-paper .profile-menu-icon > .icon { padding: 6px !important; }
 
 .theme-readable .profile-menu-icon > .icon { padding: 6px !important; }
-.theme-compact.theme-readable .profile-menu-icon > .icon { padding: 6px !important; }
 
 .theme-sandstone .profile-menu-icon > .icon { padding: 6px !important; }
-.theme-compact.theme-sandstone .profile-menu-icon > .icon { padding: 6px !important; }
 .profile-menu-text { margin: 0 .25em; display: none; }
-
-/* fix multi-choice layout in rtl */
-.theme-rtl .select2-search-choice { direction: ltr; }
-.theme-rtl .select2-container-multi .select2-choices li {
-	float: right;
-	margin-right: 5px;
-	margin-left: 0;
-}
 
 /* child record info in tv */
 .child-records-info > a {
@@ -863,19 +290,6 @@ dd.child-records-info > a.children-count {
 	height: .8em;
 }
 
-/* prevent right-aligned fields in non-default TV layouts from being too wide */
-.container:not(.theme-rtl) .dl-horizontal dd.text-right,
-.container:not(.theme-rtl) .dl-horizontal dd > div.text-right {
-	max-width: 8em;
-}
-.theme-rtl .dl-horizontal dd.text-left,
-.theme-rtl .dl-horizontal dd > div.text-left {
-	max-width: 8em;
-}
-.theme-rtl .child-records-info {
-	direction: ltr;
-	text-align: right;
-}
 .sql-query-container {
 	white-space: pre-wrap;
 	word-break: break-word;
@@ -1356,9 +770,6 @@ td.row .img-responsive {
 .detail_view-layout a {
 	outline: none;
 }
-.theme-rtl .detail_view-layout {
-	text-align: left;
-}
 .switch-to-single-column-layout, .switch-to-double-column-layout, .switch-to-triple-column-layout {
 	display: none;
 }
@@ -1375,10 +786,6 @@ td.row .img-responsive {
 		float: left;
 		padding: 0 1em 0 0;
 	}
-	.theme-rtl .double-column-layout {
-		float: right;
-		padding: 0 0 0 1em;
-	}
 }
 
 @media (min-width: 1700px) {
@@ -1389,10 +796,6 @@ td.row .img-responsive {
 		width: 33.33%;
 		float: left;
 		padding: 0 1em 0 0;
-	}
-	.theme-rtl .triple-column-layout {
-		float: right;
-		padding: 0 0 0 1em;
 	}
 }
 
@@ -1415,4 +818,821 @@ td.row .img-responsive {
 }
 .pagination-section > div:last-child {
 	text-align: right;
+}
+
+.table-title {
+	text-decoration: none !important;
+	color: inherit;
+}
+
+#admin-tools-menu .dl-horizontal dd, #admin-tools-menu .dl-horizontal dt{ padding: 1em 0; }
+#admin-tools-menu {
+	width: calc(100vw - 30px);
+	max-width: 500px;
+	padding: 1em 2em;
+}
+
+.block-flex {
+	width: 100%;
+	display: flex !important;
+	align-items: stretch;
+	margin: 0 auto;
+}
+.block-flex > :not(.auto-width) {
+	flex: 1;
+	margin: 0;
+}
+.block-flex > .auto-width {
+	flex: auto;
+}
+.block-flex.flex-wrap {
+	flex-wrap: wrap;
+	justify-content: space-between;
+}
+.block-flex.flex-wrap > :not(.auto-width) {
+	flex: 0 1 auto;
+}
+
+label.highlight-checked {
+	border: 2px solid transparent;
+	border-radius: 1em;
+	padding: 1em;
+	cursor: pointer;
+
+	img {
+		height: 4em;
+		display: block;
+		margin: .5em auto;
+	}
+}
+label.highlight-checked:has(:checked) {
+	border-color: rgba(64,64,64,.5);
+	background-color: rgba(125,125,125,.125);
+}
+
+.modal-body:has(.lightbox-image), .modal-body .lightbox-carousel {
+	overflow-y: auto;
+}
+/* niceditor styles */
+.nicEdit-selectTxt { color: #333; }
+body > [unselectable] { color: black; }
+
+/* compact theme styles, applicable only for non-mobile screens */
+@media (min-width: 768px) {
+	.container.theme-compact, .container-fluid.theme-compact { line-height: 1.6; font-size: 0.857em; }
+
+	.theme-compact { 
+		.btn {
+			font-size: 12px;
+			padding: 4px 10px;
+		}
+
+		.btn-lg, .btn-group-lg > .btn {
+			font-size: 15px;
+			padding: 6px 15px;
+		}
+
+		.form-group {
+			margin-bottom: 8px;
+		}
+
+		:not(.input-group-lg) > .form-control, :not(.input-group-lg) > .input-group-addon {
+			font-size: 12px;
+			height: auto;
+			padding: 4px 6px;
+		}
+
+		.input-sm {
+			border-radius: 3px;
+			font-size: 12px;
+			padding: 2px 6px;
+		}
+
+		select.input-sm {
+			height: 25px;
+			line-height: 25px;
+		}
+
+		.dropdown-menu {
+			font-size: 12px;
+		}
+
+		.table > thead > tr > th, .table > tbody > tr > th, .table > tfoot > tr > th, .table > thead > tr > td, .table > tbody > tr > td, .table > tfoot > tr > td {
+			padding: 4px;
+		}
+
+		h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
+			line-height: 2;
+		}
+
+		h1, .h1 {
+			font-size: 27px;
+		}
+
+		h2, .h2 {
+			font-size: 24px;
+		}
+
+		h3, .h3 {
+			font-size: 20px;
+		}
+
+		h4, .h4 {
+			font-size: 16px;
+		}
+
+		.navbar {
+			margin-bottom: 13px;
+			min-height: 40px;
+		}
+
+		.navbar-fixed-bottom {
+			margin-bottom: 0 !important;
+		}
+
+		.navbar-brand {
+			font-size: 15px;
+			height: 40px;
+			padding: 12px;
+		}
+
+		.navbar-nav > li > a {
+			padding-bottom: 9px;
+			padding-top: 9px;
+			line-height: 26px;
+		}
+
+		.navbar-text {
+			margin-bottom: 12px;
+			margin-top: 14px;
+		}
+
+		.page-header {
+			margin: 20px 0 10px;
+			padding-bottom: 0;
+		}
+
+		.navbar-nav > li > a { margin-top: 0; margin-bottom: 0; }
+
+		.panel-heading, .xs-panel-heading, .panel-footer {
+			padding: 6px;
+		}
+
+		.panel-title, .xs-panel-title {
+			font-size: 14px;
+		}
+
+		#quick-search {
+			margin: .5em 0;
+		}
+
+		.profile-menu-icon > .icon { padding: 6px !important; }
+	}
+
+	/* theme-specific compact adjustments */
+	.theme-sandstone .theme-compact .btn {
+		padding: 2.5px 10px;
+	}
+	.theme-compact.theme-journal .profile-menu-icon > .icon { padding: 6px !important; }
+	.theme-compact.theme-paper .profile-menu-icon > .icon { padding: 6px !important; }
+	.theme-compact.theme-readable .profile-menu-icon > .icon { padding: 6px !important; }
+	.theme-compact.theme-sandstone .profile-menu-icon > .icon { padding: 6px !important; }
+}
+
+/* styles for mobile devices (xs) */
+@media (max-width: 767px) {
+	.users-area:not(:has(.table_view)) .detail_view { padding: 0; }
+	.users-area:has(.table_view) .detail_view > .xs-panel::before {
+		/* line before */
+		content: '';
+		display: block;
+		width: 100%;
+		height: 1px;
+		background-color: #ccc;
+		margin: 1em 0;
+	}
+	.tab-content { padding: 10px 0; border: none; }
+	.xs-center-block {
+		width: fit-content;
+		display: block;
+		margin-right: auto;
+		margin-left: auto;
+	}
+	  
+	nav:has(> .navbar-collapse.in) {
+		height: 100vh;
+		overflow-y: auto;
+	}
+	.navbar-collapse.in, .navbar-collapse.collapsing {
+		max-height: 100%;
+		overflow-y: auto;
+	}
+
+	.btn-group-block {
+		width: 100%;
+	}
+	.btn-group-block > .btn:first-child:not(:last-child):not(.dropdown-toggle) {
+		width: calc(100% - 3em);
+	}
+	.btn-group-block > .dropdown-toggle:not(:first-child) {
+		width: 3em;
+	}
+	.btn-group-block > .dropdown-menu {
+		width: 100%;
+	}
+	.btn-group-block > .dropdown-menu > li {
+		margin: .5em;
+	}
+	.btn-group-block > .dropdown-menu > li > .btn {
+		width: 100%;
+	}
+	.navbar-sub-brand {
+		vertical-align: text-top;
+		display: inline-block;
+		float: none;
+
+		img {
+			height: 1em;
+			margin-right: .25em;
+			display: inline !important;
+		}
+	}
+	.navbar-collapse li.dropdown, .navbar-collapse .dropdown-menu > li {
+		font-size: x-large;
+	}
+	.table_view th, .detail_view th {
+		white-space: revert !important;
+	}
+	.page-header #addNew {
+		display: none;
+	}
+	form:has(.detail_view) > .page-header:has(.table-title.hidden) {
+		display: none;
+	}
+	.btn-group:has(.signed-in-as) {
+		.btn.signed-in-as { width: calc(88vw - 3em); }
+		.btn:not(.signed-in-as) { width: 3em; }
+	}
+	.xs-panel-heading {
+		margin-bottom: 2em;
+	}
+	.children-links {
+		margin-bottom: 2em;
+	}
+
+	#admin-tools-menu-button { margin: 0 !important; }
+
+	.children-tabs .nav-tabs {
+		display: flex; /* Use flexbox for layout */
+		flex-wrap: nowrap; /* Prevent wrapping to multiple rows */
+		overflow-x: auto; /* Allow horizontal scrolling if content overflows */
+		white-space: nowrap; /* Prevent text wrapping within the tabs */
+	}
+
+	.children-tabs .nav-tabs > li {
+		flex: 0 0 auto; /* Ensure each item remains its natural size */
+		&.active {
+			border-bottom: 3px solid rgba(0, 0, 0, 0.25);
+		}
+		&:not(.active) {
+			border-bottom: 3px solid transparent;
+			.child-tab-text { display: none; }
+		}
+	}
+
+	.dv-action-buttons, .filter-action-buttons {
+		> .btn-group {
+			width: calc(100% - 10px);
+			display: flex;
+			align-items: stretch;
+			margin: 0 auto;
+		}
+		> .btn-group > .btn {
+			flex: 1;
+			margin: 0;
+		}
+		> .btn-group > #deselect, > .btn-group > #insert, > .btn-group > .auto-width {
+			flex: auto;
+		}
+	}
+	.filter-action-buttons > .btn-group {
+		width: 100%;
+	}
+
+	.dropdown-menu {
+		width: 100%;
+	}
+	.dropdown-menu > li {
+		font-size: larger;
+	}
+}
+
+/* styles for rtl */
+.theme-rtl {
+	/* right spacer in rtl context */
+	.rspacer-xs { margin-left: 0.1em; }
+	.rspacer-sm { margin-left: 0.2em; }
+	.rspacer-md { margin-left: 0.4em; }
+	.rspacer-lg { margin-left: 0.8em; }
+	/* left spacer in rtl context */
+	.lspacer-xs { margin-right: 0.1em; }
+	.lspacer-sm { margin-right: 0.2em; }
+	.lspacer-md { margin-right: 0.4em; }
+	.lspacer-lg { margin-right: 0.8em; }
+
+	/* Add `rtl-mirror` class to an element to horizontally flip it in rtl (e.g. arrow glyphs, ... etc) */
+	.rtl-mirror { transform: scale(-1, 1); }
+
+	.upload-toolbox { text-align: right; }
+
+	/* fix multi-choice layout in rtl */
+	.select2-search-choice { direction: ltr; }
+	.select2-container-multi .select2-choices li {
+		float: right;
+		margin-right: 5px;
+		margin-left: 0;
+	}
+
+	.dl-horizontal dd.text-left, .dl-horizontal dd > div.text-left {
+		max-width: 8em;
+	}
+
+	.child-records-info {
+		direction: ltr;
+		text-align: right;
+	}
+
+	.detail_view-layout { text-align: left;    }
+
+	.navbar-sub-brand img {
+		margin-left: 0.25em;
+		margin-right: 0;
+	}
+
+	#admin-tools-menu-button{ display: inline-block !important; margin: 0 0 0 1em; }
+}
+@media (min-width: 1200px) {
+	.theme-rtl .double-column-layout {
+		float: right;
+		padding: 0 0 0 1em;
+	}
+}
+@media (min-width: 1700px) {
+	.theme-rtl .triple-column-layout {
+		float: right;
+		padding: 0 0 0 1em;
+	}
+}
+
+/* hidden-browser: hide elements if in browser rather than standalone mode */
+@media not all and (display-mode: standalone) {
+	.hidden-browser {
+		display: none !important;
+	}
+}
+/* hidden-standalone, hidden-pwa, hidden-app: hide elements if not in browser mode */
+@media (display-mode: standalone) {
+	.hidden-standalone, .hidden-pwa, .hidden-app {
+		display: none !important;
+	}
+}
+
+th.applicants_and_tenants-last_name, td.applicants_and_tenants-last_name {
+	white-space: normal !important;
+	width: 100px !important;
+	min-width: 100px !important;
+	overflow: hidden;
+}
+th.applicants_and_tenants-first_name, td.applicants_and_tenants-first_name {
+	white-space: normal !important;
+	width: 100px !important;
+	min-width: 100px !important;
+	overflow: hidden;
+}
+th.applicants_and_tenants-email, td.applicants_and_tenants-email {
+	white-space: normal !important;
+	width: 100px !important;
+	min-width: 100px !important;
+	overflow: hidden;
+	word-break: break-all;
+}
+th.applicants_and_tenants-phone, td.applicants_and_tenants-phone {
+	white-space: normal !important;
+	width: 100px !important;
+	min-width: 100px !important;
+	overflow: hidden;
+}
+th.applicants_and_tenants-birth_date, td.applicants_and_tenants-birth_date {
+	white-space: normal !important;
+	width: 100px !important;
+	min-width: 100px !important;
+	overflow: hidden;
+}
+th.applicants_and_tenants-driver_license_number, td.applicants_and_tenants-driver_license_number {
+	white-space: normal !important;
+	width: 100px !important;
+	min-width: 100px !important;
+	overflow: hidden;
+}
+th.applicants_and_tenants-driver_license_state, td.applicants_and_tenants-driver_license_state {
+	white-space: normal !important;
+	width: 100px !important;
+	min-width: 100px !important;
+	overflow: hidden;
+}
+th.applicants_and_tenants-requested_lease_term, td.applicants_and_tenants-requested_lease_term {
+	white-space: normal !important;
+	width: 100px !important;
+	min-width: 100px !important;
+	overflow: hidden;
+}
+th.applicants_and_tenants-monthly_gross_pay, td.applicants_and_tenants-monthly_gross_pay {
+	white-space: normal !important;
+	width: 80px !important;
+	min-width: 80px !important;
+	overflow: hidden;
+}
+th.applicants_and_tenants-additional_income, td.applicants_and_tenants-additional_income {
+	white-space: normal !important;
+	width: 80px !important;
+	min-width: 80px !important;
+	overflow: hidden;
+}
+th.applicants_and_tenants-assets, td.applicants_and_tenants-assets {
+	white-space: normal !important;
+	width: 80px !important;
+	min-width: 80px !important;
+	overflow: hidden;
+}
+th.applicants_and_tenants-status, td.applicants_and_tenants-status {
+	white-space: normal !important;
+	width: 100px !important;
+	min-width: 100px !important;
+	overflow: hidden;
+}
+th.applicants_and_tenants-notes, td.applicants_and_tenants-notes {
+	white-space: normal !important;
+	width: 100px !important;
+	min-width: 100px !important;
+	overflow: hidden;
+}
+th.applications_leases-tenants, td.applications_leases-tenants {
+	white-space: normal !important;
+	width: 60px !important;
+	min-width: 60px !important;
+	overflow: hidden;
+}
+th.applications_leases-status, td.applications_leases-status {
+	white-space: normal !important;
+	width: 50px !important;
+	min-width: 50px !important;
+	overflow: hidden;
+}
+th.applications_leases-property, td.applications_leases-property {
+	white-space: normal !important;
+	width: 80px !important;
+	min-width: 80px !important;
+	overflow: hidden;
+}
+th.applications_leases-unit, td.applications_leases-unit {
+	white-space: normal !important;
+	width: 60px !important;
+	min-width: 60px !important;
+	overflow: hidden;
+}
+th.applications_leases-type, td.applications_leases-type {
+	white-space: normal !important;
+	width: 40px !important;
+	min-width: 40px !important;
+	overflow: hidden;
+}
+th.applications_leases-total_number_of_occupants, td.applications_leases-total_number_of_occupants {
+	white-space: normal !important;
+	width: 70px !important;
+	min-width: 70px !important;
+	overflow: hidden;
+}
+th.applications_leases-start_date, td.applications_leases-start_date {
+	white-space: normal !important;
+	width: 70px !important;
+	min-width: 70px !important;
+	overflow: hidden;
+}
+th.applications_leases-end_date, td.applications_leases-end_date {
+	white-space: normal !important;
+	width: 60px !important;
+	min-width: 60px !important;
+	overflow: hidden;
+}
+th.applications_leases-rent, td.applications_leases-rent {
+	white-space: normal !important;
+	width: 70px !important;
+	min-width: 70px !important;
+	overflow: hidden;
+}
+th.applications_leases-security_deposit, td.applications_leases-security_deposit {
+	white-space: normal !important;
+	width: 80px !important;
+	min-width: 80px !important;
+	overflow: hidden;
+}
+th.applications_leases-security_deposit_date, td.applications_leases-security_deposit_date {
+	white-space: normal !important;
+	width: 80px !important;
+	min-width: 80px !important;
+	overflow: hidden;
+}
+th.applications_leases-emergency_contact, td.applications_leases-emergency_contact {
+	white-space: normal !important;
+	width: 120px !important;
+	min-width: 120px !important;
+	overflow: hidden;
+}
+th.applications_leases-co_signer_details, td.applications_leases-co_signer_details {
+	white-space: normal !important;
+	width: 100px !important;
+	min-width: 100px !important;
+	overflow: hidden;
+}
+th.applications_leases-notes, td.applications_leases-notes {
+	white-space: normal !important;
+	width: 100px !important;
+	min-width: 100px !important;
+	overflow: hidden;
+}
+th.applications_leases-agreement, td.applications_leases-agreement {
+	white-space: normal !important;
+	width: 70px !important;
+	min-width: 70px !important;
+	overflow: hidden;
+}
+th.residence_and_rental_history-address, td.residence_and_rental_history-address {
+	white-space: normal !important;
+	width: 180px !important;
+	min-width: 180px !important;
+	overflow: hidden;
+}
+th.residence_and_rental_history-landlord_or_manager_name, td.residence_and_rental_history-landlord_or_manager_name {
+	white-space: normal !important;
+	width: 120px !important;
+	min-width: 120px !important;
+	overflow: hidden;
+}
+th.residence_and_rental_history-landlord_or_manager_phone, td.residence_and_rental_history-landlord_or_manager_phone {
+	white-space: normal !important;
+	width: 100px !important;
+	min-width: 100px !important;
+	overflow: hidden;
+}
+th.residence_and_rental_history-monthly_rent, td.residence_and_rental_history-monthly_rent {
+	white-space: normal !important;
+	width: 80px !important;
+	min-width: 80px !important;
+	overflow: hidden;
+}
+th.residence_and_rental_history-duration_of_residency_from, td.residence_and_rental_history-duration_of_residency_from {
+	white-space: normal !important;
+	width: 100px !important;
+	min-width: 100px !important;
+	overflow: hidden;
+}
+th.residence_and_rental_history-to, td.residence_and_rental_history-to {
+	white-space: normal !important;
+	width: 80px !important;
+	min-width: 80px !important;
+	overflow: hidden;
+}
+th.residence_and_rental_history-reason_for_leaving, td.residence_and_rental_history-reason_for_leaving {
+	white-space: normal !important;
+	width: 120px !important;
+	min-width: 120px !important;
+	overflow: hidden;
+}
+th.residence_and_rental_history-notes, td.residence_and_rental_history-notes {
+	white-space: normal !important;
+	width: 120px !important;
+	min-width: 120px !important;
+	overflow: hidden;
+}
+th.employment_and_income_history-employer_name, td.employment_and_income_history-employer_name {
+	white-space: normal !important;
+	width: 80px !important;
+	min-width: 80px !important;
+	overflow: hidden;
+}
+th.employment_and_income_history-city, td.employment_and_income_history-city {
+	white-space: normal !important;
+	width: 100px !important;
+	min-width: 100px !important;
+	overflow: hidden;
+}
+th.employment_and_income_history-employer_phone, td.employment_and_income_history-employer_phone {
+	white-space: normal !important;
+	width: 100px !important;
+	min-width: 100px !important;
+	overflow: hidden;
+}
+th.employment_and_income_history-employed_from, td.employment_and_income_history-employed_from {
+	white-space: normal !important;
+	width: 80px !important;
+	min-width: 80px !important;
+	overflow: hidden;
+}
+th.employment_and_income_history-employed_till, td.employment_and_income_history-employed_till {
+	white-space: normal !important;
+	width: 80px !important;
+	min-width: 80px !important;
+	overflow: hidden;
+}
+th.employment_and_income_history-occupation, td.employment_and_income_history-occupation {
+	white-space: normal !important;
+	width: 100px !important;
+	min-width: 100px !important;
+	overflow: hidden;
+}
+th.employment_and_income_history-notes, td.employment_and_income_history-notes {
+	white-space: normal !important;
+	width: 50px !important;
+	min-width: 50px !important;
+	overflow: hidden;
+}
+th.references-reference_name, td.references-reference_name {
+	white-space: normal !important;
+	width: 160px !important;
+	min-width: 160px !important;
+	overflow: hidden;
+}
+th.references-phone, td.references-phone {
+	white-space: normal !important;
+	width: 160px !important;
+	min-width: 160px !important;
+	overflow: hidden;
+}
+th.properties-property_name, td.properties-property_name {
+	white-space: normal !important;
+	width: 50px !important;
+	min-width: 50px !important;
+	overflow: hidden;
+}
+th.properties-photo, td.properties-photo {
+	white-space: normal !important;
+	width: 60px !important;
+	min-width: 60px !important;
+	overflow: hidden;
+}
+th.properties-type, td.properties-type {
+	white-space: normal !important;
+	width: 80px !important;
+	min-width: 80px !important;
+	overflow: hidden;
+}
+th.properties-number_of_units, td.properties-number_of_units {
+	white-space: normal !important;
+	width: 50px !important;
+	min-width: 50px !important;
+	overflow: hidden;
+}
+th.properties-owner, td.properties-owner {
+	white-space: normal !important;
+	width: 100px !important;
+	min-width: 100px !important;
+	overflow: hidden;
+}
+th.properties-operating_account, td.properties-operating_account {
+	white-space: normal !important;
+	width: 120px !important;
+	min-width: 120px !important;
+	overflow: hidden;
+}
+th.properties-property_reserve, td.properties-property_reserve {
+	white-space: normal !important;
+	width: 70px !important;
+	min-width: 70px !important;
+	overflow: hidden;
+}
+th.properties-street, td.properties-street {
+	white-space: normal !important;
+	width: 120px !important;
+	min-width: 120px !important;
+	overflow: hidden;
+}
+th.properties-City, td.properties-City {
+	white-space: normal !important;
+	width: 70px !important;
+	min-width: 70px !important;
+	overflow: hidden;
+}
+th.properties-State, td.properties-State {
+	white-space: normal !important;
+	width: 50px !important;
+	min-width: 50px !important;
+	overflow: hidden;
+}
+th.properties-ZIP, td.properties-ZIP {
+	white-space: normal !important;
+	width: 50px !important;
+	min-width: 50px !important;
+	overflow: hidden;
+}
+th.units-id, td.units-id {
+	white-space: normal !important;
+	width: 150px !important;
+	min-width: 150px !important;
+	overflow: hidden;
+}
+th.units-property, td.units-property {
+	white-space: normal !important;
+	width: 90px !important;
+	min-width: 90px !important;
+	overflow: hidden;
+}
+th.units-unit_number, td.units-unit_number {
+	white-space: normal !important;
+	width: 40px !important;
+	min-width: 40px !important;
+	overflow: hidden;
+}
+th.units-photo, td.units-photo {
+	white-space: normal !important;
+	width: 60px !important;
+	min-width: 60px !important;
+	overflow: hidden;
+}
+th.units-status, td.units-status {
+	white-space: normal !important;
+	width: 60px !important;
+	min-width: 60px !important;
+	overflow: hidden;
+}
+th.units-size, td.units-size {
+	white-space: normal !important;
+	width: 60px !important;
+	min-width: 60px !important;
+	overflow: hidden;
+}
+th.units-country, td.units-country {
+	white-space: normal !important;
+	width: 80px !important;
+	min-width: 80px !important;
+	overflow: hidden;
+}
+th.units-street, td.units-street {
+	white-space: normal !important;
+	width: 100px !important;
+	min-width: 100px !important;
+	overflow: hidden;
+}
+th.units-city, td.units-city {
+	white-space: normal !important;
+	width: 55px !important;
+	min-width: 55px !important;
+	overflow: hidden;
+}
+th.units-state, td.units-state {
+	white-space: normal !important;
+	width: 40px !important;
+	min-width: 40px !important;
+	overflow: hidden;
+}
+th.units-postal_code, td.units-postal_code {
+	white-space: normal !important;
+	width: 80px !important;
+	min-width: 80px !important;
+	overflow: hidden;
+}
+th.units-rooms, td.units-rooms {
+	white-space: normal !important;
+	width: 45px !important;
+	min-width: 45px !important;
+	overflow: hidden;
+}
+th.units-bathroom, td.units-bathroom {
+	white-space: normal !important;
+	width: 70px !important;
+	min-width: 70px !important;
+	overflow: hidden;
+}
+th.units-features, td.units-features {
+	white-space: normal !important;
+	width: 150px !important;
+	min-width: 150px !important;
+	overflow: hidden;
+}
+th.units-rental_amount, td.units-rental_amount {
+	white-space: normal !important;
+	width: 60px !important;
+	min-width: 60px !important;
+	overflow: hidden;
+}
+th.units-deposit_amount, td.units-deposit_amount {
+	white-space: normal !important;
+	width: 50px !important;
+	min-width: 50px !important;
+	overflow: hidden;
+}
+th.units-description, td.units-description {
+	white-space: normal !important;
+	width: 80px !important;
+	min-width: 80px !important;
+	overflow: hidden;
 }

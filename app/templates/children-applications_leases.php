@@ -111,16 +111,18 @@
 </script>
 
 <div class="row">
-	<div class="col-xs-11 col-md-12">
+	<div class="col-xs-12">
 
-		<?php if($config['display-add-new']) { ?>
-			<?php if(stripos($_SERVER['HTTP_USER_AGENT'], 'msie ')) { ?>
-				<a href="<?php echo $parameters['ChildTable']; ?>_view.php?filterer_<?php echo $parameters['ChildLookupField']; ?>=<?php echo urlencode($parameters['SelectedID']); ?>&addNew_x=1" target="_viewchild" class="btn btn-success hspacer-sm vspacer-md"><i class="glyphicon glyphicon-plus-sign"></i> <?php echo html_attr($Translation['Add New']); ?></a>
-			<?php } else { ?>
-				<a href="#" onclick="<?php echo $current_table; ?>GetChildrenRecordsList({ Verb: 'new' }); return false;" class="btn btn-success hspacer-sm vspacer-md"><i class="glyphicon glyphicon-plus-sign"></i> <?php echo html_attr($Translation['Add New']); ?></a>
+		<div class="xs-center-block">
+			<?php if($config['display-add-new']) { ?>
+				<?php if(stripos($_SERVER['HTTP_USER_AGENT'], 'msie ')) { ?>
+					<a href="<?php echo $parameters['ChildTable']; ?>_view.php?filterer_<?php echo $parameters['ChildLookupField']; ?>=<?php echo urlencode($parameters['SelectedID']); ?>&addNew_x=1" target="_viewchild" class="btn btn-success hspacer-sm vspacer-md"><i class="glyphicon glyphicon-plus-sign"></i> <?php echo html_attr($Translation['Add New']); ?></a>
+				<?php } else { ?>
+					<a href="#" onclick="<?php echo $current_table; ?>GetChildrenRecordsList({ Verb: 'new' }); return false;" class="btn btn-success hspacer-sm vspacer-md"><i class="glyphicon glyphicon-plus-sign"></i> <?php echo html_attr($Translation['Add New']); ?></a>
+				<?php } ?>
 			<?php } ?>
-		<?php } ?>
-		<?php if($config['display-refresh']) { ?><a href="#" onclick="<?php echo $current_table; ?>GetChildrenRecordsList({ Verb: 'reload' }); return false;" class="btn btn-default hspacer-sm vspacer-md"><i class="glyphicon glyphicon-refresh"></i></a><?php } ?>
+			<?php if($config['display-refresh']) { ?><a href="#" onclick="<?php echo $current_table; ?>GetChildrenRecordsList({ Verb: 'reload' }); return false;" class="btn btn-default hspacer-sm vspacer-md"><i class="glyphicon glyphicon-refresh"></i></a><?php } ?>
+		</div>
 
 
 		<div class="table-responsive">
@@ -215,7 +217,6 @@
 			</div>
 		<?php } ?>
 	</div>
-	<div class="col-xs-1 md-hidden lg-hidden"></div>
 </div>
 
 <script>

@@ -89,7 +89,7 @@ function units_delete($selected_id, $AllowDeleteOfParents = false, $skipChecks =
 			return $Translation['Couldn\'t delete this record'] . (
 				!empty($args['error_message']) ?
 					'<div class="text-bold">' . strip_tags($args['error_message']) . '</div>'
-					: '' 
+					: ''
 			);
 	}
 
@@ -216,9 +216,9 @@ function units_update(&$selected_id, &$error_message = '') {
 	}
 
 	if(!update(
-		'units', 
-		backtick_keys_once($set), 
-		['`id`' => $selected_id], 
+		'units',
+		backtick_keys_once($set),
+		['`id`' => $selected_id],
 		$error_message
 	)) {
 		echo $error_message;
@@ -491,14 +491,14 @@ function units_form($selectedId = '', $allowUpdate = true, $allowInsert = true, 
 			$templateCode = str_replace('<%%DESELECT_BUTTON%%>', '', $templateCode);
 		elseif($separateDV)
 			$templateCode = str_replace(
-				'<%%DESELECT_BUTTON%%>', 
+				'<%%DESELECT_BUTTON%%>',
 				'<button
-					type="submit" 
-					class="btn btn-default" 
-					id="deselect" 
-					name="deselect_x" 
-					value="1" 
-					onclick="' . $backAction . '" 
+					type="submit"
+					class="btn btn-default"
+					id="deselect"
+					name="deselect_x"
+					value="1"
+					onclick="' . $backAction . '"
 					title="' . html_attr($Translation['Back']) . '">
 						<i class="glyphicon glyphicon-chevron-left"></i> ' .
 						$Translation['Back'] .
@@ -617,7 +617,7 @@ function units_form($selectedId = '', $allowUpdate = true, $allowInsert = true, 
 		if(!$dvprint) $templateCode = str_replace('<%%VALUE(deposit_amount)%%>', html_attr($row['deposit_amount']), $templateCode);
 		$templateCode = str_replace('<%%URLVALUE(deposit_amount)%%>', urlencode($urow['deposit_amount']), $templateCode);
 		if($fieldsAreEditable) {
-			$templateCode = str_replace('<%%HTMLAREA(description)%%>', '<textarea name="description" id="description" rows="5">' . safe_html(htmlspecialchars_decode($row['description'])) . '</textarea>', $templateCode);
+			$templateCode = str_replace('<%%HTMLAREA(description)%%>', '<textarea maxlength="65500" name="description" id="description" rows="5">' . safe_html(htmlspecialchars_decode($row['description'])) . '</textarea>', $templateCode);
 		} else {
 			$templateCode = str_replace('<%%HTMLAREA(description)%%>', '<div id="description" class="form-control-static">' . $row['description'] . '</div>', $templateCode);
 		}
@@ -647,7 +647,7 @@ function units_form($selectedId = '', $allowUpdate = true, $allowInsert = true, 
 		$templateCode = str_replace('<%%URLVALUE(rental_amount)%%>', urlencode(''), $templateCode);
 		$templateCode = str_replace('<%%VALUE(deposit_amount)%%>', '', $templateCode);
 		$templateCode = str_replace('<%%URLVALUE(deposit_amount)%%>', urlencode(''), $templateCode);
-		$templateCode = str_replace('<%%HTMLAREA(description)%%>', '<textarea name="description" id="description" rows="5"></textarea>', $templateCode);
+		$templateCode = str_replace('<%%HTMLAREA(description)%%>', '<textarea maxlength="65500" name="description" id="description" rows="5"></textarea>', $templateCode);
 	}
 
 	// process translations

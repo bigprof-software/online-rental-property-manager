@@ -65,41 +65,42 @@
 				<div class="dropdown-menu" id="admin-tools-menu">
 					<h5><b><?php echo $this->lang['Admin Information']; ?></b></h5>
 					<div class="alert alert-danger no-owner hidden"><?php echo $this->lang['record has no owner']; ?></div>
-					<dl class="dl-horizontal">
-						<dt><?php echo $this->lang['owner']; ?></dt>
-						<dd>
-							<div class="owner-username"></div>
-							<a class="change-owner-link" href="#"><i class="glyphicon glyphicon-user"></i> <?php echo $this->lang['Change owner']; ?></a>
-							<br>
-							<a class="user-records-link" href="" target="_blank"><i class="glyphicon glyphicon-th"></i> <?php echo str_replace('<tablename>', $tablename, $this->lang['show all user records from table']); ?></a>
-							<br>
-							<a class="user-email-link" href="" target="_blank"><i class="glyphicon glyphicon-envelope"></i> <?php echo $this->lang['email this user']; ?></a>
-						</dd>
+					<table class="table">
+						<tr>
+							<th><?php echo $this->lang['owner']; ?></th>
+							<td>
+								<p class="owner-username"></p>
 
-						<dt><?php echo $this->lang['group']; ?></dt>
-						<dd>
-							<div class="owner-group"></div>
-							<a class="group-records-link" href="" target="_blank"><i class="glyphicon glyphicon-th"></i> <?php echo str_replace('<tablename>', $tablename, $this->lang['show all group records from table']); ?></a>
-							<br>
-							<a class="group-email-link" href="" target="_blank"><i class="glyphicon glyphicon-envelope"></i> <?php echo $this->lang['email this group']; ?></a>
-						</dd>
+								<p><a class="change-owner-link" href="#"><i class="glyphicon glyphicon-user"></i> <?php echo $this->lang['Change owner']; ?></a></p>
 
-						<dt><?php echo $this->lang['created']; ?></dt>
-						<dd class="record-created"></dd>
+								<p><a class="user-records-link" href="" target="_blank"><i class="glyphicon glyphicon-th"></i> <?php echo str_replace('<tablename>', $tablename, $this->lang['show all user records from table']); ?></a></p>
 
-						<dt><?php echo $this->lang['last modified']; ?></dt>
-						<dd class="record-last-modified"></dd>
-					</dl>
+								<p><a class="user-email-link" href="" target="_blank"><i class="glyphicon glyphicon-envelope"></i> <?php echo $this->lang['email this user']; ?></a></p>
+							</td>
+						</tr>
+						<tr>
+							<th><?php echo $this->lang['group']; ?></th>
+							<td>
+								<p class="owner-group"></p>
+
+								<p><a class="group-records-link" href="" target="_blank"><i class="glyphicon glyphicon-th"></i> <?php echo str_replace('<tablename>', $tablename, $this->lang['show all group records from table']); ?></a></p>
+
+								<p><a class="group-email-link" href="" target="_blank"><i class="glyphicon glyphicon-envelope"></i> <?php echo $this->lang['email this group']; ?></a></p>
+							</td>
+						</tr>
+						<tr>
+							<th><?php echo $this->lang['created']; ?></th>
+							<td class="record-created"></td>
+						</tr>
+						<tr>
+							<th><?php echo $this->lang['last modified']; ?></th>
+							<td class="record-last-modified"></td>
+						</tr>
+					</table>
 				</div>
 			</div>
 
 			<div class="clearfix"></div>
-
-			<style>
-				#admin-tools-menu-button{ display: inline-block !important; margin: 0 1em; }
-				#admin-tools-menu{ padding: 1em 2em; }
-				#admin-tools-menu .dl-horizontal dd, #admin-tools-menu .dl-horizontal dt{ padding: 1em 0; }
-			</style>
 
 			<?php
 
@@ -124,15 +125,15 @@
 				var record_id = '<?php echo addslashes($this->request['id']); ?>';
 				var record_info = <?php echo $record_info; ?>;
 
-				$j('#admin-tools-menu-button')
-					.appendTo('.detail_view .panel-title:first')
-					.removeClass('invisible');
+				let dvPanelTitle = $j('.detail_view .panel-title:first');
+				if(dvPanelTitle.length == 0)
+					dvPanelTitle = $j('.detail_view .xs-panel-title:first');
 
-				$j(window).resize(function() {
-					var dv_width = $j('.detail_view').width();
-					var menu_width = Math.min(dv_width * .9, 500);
-					$j('#admin-tools-menu').width(menu_width);
-				}).trigger('resize');
+				if(dvPanelTitle.length == 0) return;
+
+				$j('#admin-tools-menu-button')
+					.appendTo(dvPanelTitle)
+					.removeClass('invisible');
 
 				/* change owner link */
 				$j('#admin-tools-menu .change-owner-link').click(function() {
@@ -209,7 +210,7 @@
 		}
 
 		/**
-		 *  @brief Retrieve and validate name of current table
+		 *  Retrieve and validate name of current table
 		 *  @return string|false table name, or false on error.
 		 */
 		protected function get_table() {

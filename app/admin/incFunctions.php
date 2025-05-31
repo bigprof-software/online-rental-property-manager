@@ -2419,7 +2419,7 @@
 		}
 
 		/**
-		 *  @brief Notification::show($options) displays a notification
+		 *  Notification::show($options) displays a notification
 		 *  
 		 *  @param $options assoc array
 		 *  
@@ -2580,7 +2580,7 @@
 	}
 	#########################################################
 	/**
-	 *  @brief Prepares data for a SET or WHERE clause, to be used in an INSERT/UPDATE query
+	 *  Prepares data for a SET or WHERE clause, to be used in an INSERT/UPDATE query
 	 *  
 	 *  @param [in] $set_array Assoc array of field names => values
 	 *  @param [in] $glue optional glue. Set to ' AND ' or ' OR ' if preparing a WHERE clause, or to ',' (default) for a SET clause
@@ -2604,7 +2604,7 @@
 	}
 	#########################################################
 	/**
-	 *  @brief Inserts a record to the database
+	 *  Inserts a record to the database
 	 *  
 	 *  @param [in] $tn table name where the record would be inserted
 	 *  @param [in] $set_array Assoc array of field names => values to be inserted
@@ -2624,7 +2624,7 @@
 	}
 	#########################################################
 	/**
-	 *  @brief Updates a record in the database
+	 *  Updates a record in the database
 	 *  
 	 *  @param [in] $tn table name where the record would be updated
 	 *  @param [in] $set_array Assoc array of field names => values to be updated
@@ -2648,7 +2648,7 @@
 	}
 	#########################################################
 	/**
-	 *  @brief Set/update the owner of given record
+	 *  Set/update the owner of given record
 	 *  
 	 *  @param [in] $tn name of table
 	 *  @param [in] $pk primary key value
@@ -2686,7 +2686,7 @@
 	}
 	#########################################################
 	/**
-	 *  @brief get date/time format string for use in different cases.
+	 *  get date/time format string for use in different cases.
 	 *  
 	 *  @param [in] $destination string, one of these: 'php' (see date function), 'mysql', 'moment'
 	 *  @param [in] $datetime string, one of these: 'd' = date, 't' = time, 'dt' = both
@@ -2718,7 +2718,7 @@
 	}
 	#########################################################
 	/**
-	 *  @brief perform a test and return results
+	 *  perform a test and return results
 	 *  
 	 *  @param [in] $subject string used as title of test
 	 *  @param [in] $test callable function containing the test to be performed, should return true on success, false or a log string on error
@@ -2739,7 +2739,7 @@
 	}
 	#########################################################
 	/**
-	 *  @brief invoke a method of an object -- useful to call private/protected methods
+	 *  invoke a method of an object -- useful to call private/protected methods
 	 *  
 	 *  @param [in] $object instance of object containing the method
 	 *  @param [in] $methodName string name of method to invoke
@@ -2755,7 +2755,7 @@
 	}
 	#########################################################
 	/**
-	 *  @brief retrieve the value of a property of an object -- useful to retrieve private/protected props
+	 *  retrieve the value of a property of an object -- useful to retrieve private/protected props
 	 *  
 	 *  @param [in] $object instance of object containing the method
 	 *  @param [in] $propName string name of property to retrieve
@@ -2776,7 +2776,7 @@
 
 	#########################################################
 	/**
-	 *  @brief invoke a method of a static class -- useful to call private/protected methods
+	 *  invoke a method of a static class -- useful to call private/protected methods
 	 *  
 	 *  @param [in] $class string name of the class containing the method
 	 *  @param [in] $methodName string name of method to invoke
@@ -2878,7 +2878,7 @@
 	}
 	#########################################################
 	/**
-	 *  @brief converts string from app-configured encoding to utf8
+	 *  converts string from app-configured encoding to utf8
 	 *  
 	 *  @param [in] $str string to convert to utf8
 	 *  @return utf8-encoded string
@@ -2892,7 +2892,7 @@
 	}
 	#########################################################
 	/**
-	 *  @brief converts string from utf8 to app-configured encoding
+	 *  converts string from utf8 to app-configured encoding
 	 *  
 	 *  @param [in] $str string to convert from utf8
 	 *  @return string utf8-decoded string
@@ -3338,7 +3338,7 @@
 	}
 
 	/**
-	 * @brief send a json response to the client and terminate
+	 * send a json response to the client and terminate
 	 * 
 	 * @param [in] $dataOrMsg mixed, either an array of data to send, or a string error message
 	 * @param [in] $isError bool, true if $dataOrMsg is an error message, false if it's data
@@ -3369,7 +3369,7 @@
 	}
 
 	/**
-	 * @brief Check if a string is alphanumeric.
+	 * Check if a string is alphanumeric.
 	 *        We're defining it here in case it's not defined by some PHP installations.
 	 *        It's reuired by PHPMailer.
 	 *  
@@ -3457,7 +3457,7 @@
 	}
 
 	/**
-	 * @brief Retrieve owner username of the record with the given primary key value
+	 * Retrieve owner username of the record with the given primary key value
 	 * 
 	 * @param $tn string table name
 	 * @param $pkValue string primary key value
@@ -3473,7 +3473,7 @@
 	}
 
 	/**
-	 * @brief Retrieve lookup field name that determines record owner of the given table
+	 * Retrieve lookup field name that determines record owner of the given table
 	 * 
 	 * @param $tn string table name
 	 * @return string|null lookup field name, or null if default (record owner is user that creates the record)
@@ -3486,7 +3486,7 @@
 	}
 
 	/**
-	 * @brief Retrieve not-nullable fields of the given table
+	 * Retrieve not-nullable fields of the given table
 	 * 
 	 * @param $tn string table name
 	 * @return array list of not-nullable fields
@@ -3506,4 +3506,77 @@
 
 		return $notNullFields;
 	}
+
+	/**
+	 * Get list of available themes
+	 * 
+	 * @return array list of available themes
+	 */
+	function getThemesList() {
+		static $themes = null;
+		if($themes !== null) return $themes;
+		$themes = [];
+
+		$themeDir = __DIR__ . '/../resources/initializr/css';
+		if(!is_dir($themeDir)) return $themes;
+
+		$themeFiles = glob($themeDir . '/*.css');
+		if(!$themeFiles) return $themes;
+
+		foreach($themeFiles as $themeFile) {
+			// if file size less than 100 KB, it's not a Bootstrap theme
+			if(filesize($themeFile) < 100 * 1024) continue;
+			$themeName = basename($themeFile, '.css');
+			$themes[]= $themeName;
+		}
+
+		return $themes;
+	}
+
+	/**
+	 * Get user's preferred theme
+	 * 
+	 * @return string user's preferred theme, or default theme if not set or theme selection is disabled
+	 */
+	function getUserTheme() {
+		if(NO_THEME_SELECTION || defined('APPGINI_SETUP')) return DEFAULT_THEME;
+
+		$theme = getUserData('theme');
+		if($theme) return $theme;
+
+		// if user has no preferred theme, return default theme
+		return DEFAULT_THEME;
+	}
+
+	/**
+	 * Get the user's theme compact preference. If no user preference is set or theme selection is disabled, return the default theme compact preference.
+	 * 
+	 * @return string 'theme-compact' if the user prefers a compact theme, or an empty string otherwise
+	 */
+	function getUserThemeCompact() {
+		if(NO_THEME_SELECTION || defined('APPGINI_SETUP')) return THEME_COMPACT ? 'theme-compact' : '';
+		$themeCompact = getUserData('themeCompact');
+		if($themeCompact === null) return THEME_COMPACT ? 'theme-compact' : '';
+		return $themeCompact ? 'theme-compact' : '';
+	}
+
+	/**
+	 * Clean up membership_userrecords table by removing records that no longer exist in user-space tables.
+	 */
+	function cleanUpMembershipUserRecords() {
+		// get all user-space tables
+		$tables = array_keys(getTableList(true));
+
+		// loop through each table and find the records in membership_userrecords
+		// that no longer exist in the user-space table and delete them
+		$eo = ['silentErrors' => true, 'noErrorQueryLog' => true];
+		foreach($tables as $table) {
+			// get the primary key of the table
+			$pk = getPKFieldName($table);
+
+			// get the records in membership_userrecords that no longer exist in the user-space table
+			sql("DELETE FROM membership_userrecords WHERE tableName = '$table' AND pkValue NOT IN (SELECT `$pk` FROM `$table`)", $eo);
+		}
+	}
+
 

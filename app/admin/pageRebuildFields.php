@@ -55,7 +55,7 @@
 	}
 
 	/**
-	 *  @brief creates/fixes given field according to given schema
+	 *  creates/fixes given field according to given schema
 	 *  @return integer: 0 = error, 1 = field updated, 2 = field created
 	 */
 	function fix_field($fix_table, $fix_field, $schema, &$qry) {

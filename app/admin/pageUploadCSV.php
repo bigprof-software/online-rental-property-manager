@@ -367,7 +367,7 @@
 		}
 
 		/**
-		 *  @brief retrieve and validate the csv file specified in the request parameter 'csv'
+		 *  retrieve and validate the csv file specified in the request parameter 'csv'
 		 *  
 		 *  @param [in] $options optional assoc array of options ('htmlpage' => bool, displaying errors as html page)
 		 *  @return csv filename if valid, false otherwise.
@@ -396,7 +396,7 @@
 		}
 
 		/**
-		 *  @brief Retrieve and validate name of table used for importing data
+		 *  Retrieve and validate name of table used for importing data
 		 *  
 		 *  @param [in] $silent (optional) boolean indicating no output to client if true, useful in ajax requests for example.
 		 *  @return table name, or false on error.
@@ -984,7 +984,7 @@
 		}
 
 		/**
-		 *  @brief Retrieve and validate CSV settings from REQUEST
+		 *  Retrieve and validate CSV settings from REQUEST
 		 *  
 		 *  @return false on error, or associative array (table, backup_table, update_pk, has_titles, ignore_lines, field_separator, field_delimiter, mappings[])
 		 */
@@ -1035,7 +1035,7 @@
 		}
 
 		/**
-		 *  @brief Counts non-empty lines in the current csv file. Count is cached for performance.
+		 *  Counts non-empty lines in the current csv file. Count is cached for performance.
 		 *  
 		 *  @return number of non-empty data lines in csv
 		 *  
@@ -1078,7 +1078,7 @@
 		}
 
 		/**
-		 *  @brief if this is the beginning of the import process, perform table backup if requested
+		 *  if this is the beginning of the import process, perform table backup if requested
 		 *  
 		 *  @param $start current line in csv
 		 *  @param $settings assoc arry of csv settings
@@ -1117,7 +1117,7 @@
 		}
 
 		/**
-		 *  @brief opens current csv file and reads several lines from it, starting at non-empty line $start
+		 *  opens current csv file and reads several lines from it, starting at non-empty line $start
 		 *  
 		 *  @param $start non-empty line # to start reading from
 		 *  @param $settings csv settings array as retrieved from CSV::get_csv_settings
@@ -1188,7 +1188,7 @@
 		}
 
 		/**
-		 *  @brief Prepare the insert/replace query
+		 *  Prepare the insert/replace query
 		 *  
 		 *  @param [in] $csv_data 2D numeric array of data to insert/replace
 		 *  @param [in] $settings import settings assoc. array
@@ -1444,7 +1444,7 @@
 		}
 
 		/**
-		 *  @brief UTF8-encodes a string/array
+		 *  UTF8-encodes a string/array
 		 *  @see https://stackoverflow.com/a/26760943/1945185
 		 *  
 		 *  @param [in] $mixed string or array of strings to be UTF8-encoded

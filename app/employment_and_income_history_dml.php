@@ -67,7 +67,7 @@ function employment_and_income_history_delete($selected_id, $AllowDeleteOfParent
 			return $Translation['Couldn\'t delete this record'] . (
 				!empty($args['error_message']) ?
 					'<div class="text-bold">' . strip_tags($args['error_message']) . '</div>'
-					: '' 
+					: ''
 			);
 	}
 
@@ -124,9 +124,9 @@ function employment_and_income_history_update(&$selected_id, &$error_message = '
 	}
 
 	if(!update(
-		'employment_and_income_history', 
-		backtick_keys_once($set), 
-		['`id`' => $selected_id], 
+		'employment_and_income_history',
+		backtick_keys_once($set),
+		['`id`' => $selected_id],
 		$error_message
 	)) {
 		echo $error_message;
@@ -381,14 +381,14 @@ function employment_and_income_history_form($selectedId = '', $allowUpdate = tru
 			$templateCode = str_replace('<%%DESELECT_BUTTON%%>', '', $templateCode);
 		elseif($separateDV)
 			$templateCode = str_replace(
-				'<%%DESELECT_BUTTON%%>', 
+				'<%%DESELECT_BUTTON%%>',
 				'<button
-					type="submit" 
-					class="btn btn-default" 
-					id="deselect" 
-					name="deselect_x" 
-					value="1" 
-					onclick="' . $backAction . '" 
+					type="submit"
+					class="btn btn-default"
+					id="deselect"
+					name="deselect_x"
+					value="1"
+					onclick="' . $backAction . '"
 					title="' . html_attr($Translation['Back']) . '">
 						<i class="glyphicon glyphicon-chevron-left"></i> ' .
 						$Translation['Back'] .
@@ -426,16 +426,16 @@ function employment_and_income_history_form($selectedId = '', $allowUpdate = tru
 	$templateCode = str_replace('<%%COMBOTEXT(tenant)%%>', $combo_tenant->MatchText, $templateCode);
 	$templateCode = str_replace('<%%URLCOMBOTEXT(tenant)%%>', urlencode($combo_tenant->MatchText), $templateCode);
 	$templateCode = str_replace(
-		'<%%COMBO(employed_from)%%>', 
-		(!$fieldsAreEditable ? 
-			'<div class="form-control-static">' . $combo_employed_from->GetHTML(true) . '</div>' : 
+		'<%%COMBO(employed_from)%%>',
+		(!$fieldsAreEditable ?
+			'<div class="form-control-static">' . $combo_employed_from->GetHTML(true) . '</div>' :
 			$combo_employed_from->GetHTML()
 		), $templateCode);
 	$templateCode = str_replace('<%%COMBOTEXT(employed_from)%%>', $combo_employed_from->GetHTML(true), $templateCode);
 	$templateCode = str_replace(
-		'<%%COMBO(employed_till)%%>', 
-		(!$fieldsAreEditable ? 
-			'<div class="form-control-static">' . $combo_employed_till->GetHTML(true) . '</div>' : 
+		'<%%COMBO(employed_till)%%>',
+		(!$fieldsAreEditable ?
+			'<div class="form-control-static">' . $combo_employed_till->GetHTML(true) . '</div>' :
 			$combo_employed_till->GetHTML()
 		), $templateCode);
 	$templateCode = str_replace('<%%COMBOTEXT(employed_till)%%>', $combo_employed_till->GetHTML(true), $templateCode);
@@ -492,7 +492,7 @@ function employment_and_income_history_form($selectedId = '', $allowUpdate = tru
 		if(!$dvprint) $templateCode = str_replace('<%%VALUE(occupation)%%>', html_attr($row['occupation']), $templateCode);
 		$templateCode = str_replace('<%%URLVALUE(occupation)%%>', urlencode($urow['occupation']), $templateCode);
 		if($fieldsAreEditable) {
-			$templateCode = str_replace('<%%HTMLAREA(notes)%%>', '<textarea name="notes" id="notes" rows="5">' . safe_html(htmlspecialchars_decode($row['notes'])) . '</textarea>', $templateCode);
+			$templateCode = str_replace('<%%HTMLAREA(notes)%%>', '<textarea maxlength="65500" name="notes" id="notes" rows="5">' . safe_html(htmlspecialchars_decode($row['notes'])) . '</textarea>', $templateCode);
 		} else {
 			$templateCode = str_replace('<%%HTMLAREA(notes)%%>', '<div id="notes" class="form-control-static">' . $row['notes'] . '</div>', $templateCode);
 		}
@@ -515,7 +515,7 @@ function employment_and_income_history_form($selectedId = '', $allowUpdate = tru
 		$templateCode = str_replace('<%%URLVALUE(employed_till)%%>', urlencode(''), $templateCode);
 		$templateCode = str_replace('<%%VALUE(occupation)%%>', '', $templateCode);
 		$templateCode = str_replace('<%%URLVALUE(occupation)%%>', urlencode(''), $templateCode);
-		$templateCode = str_replace('<%%HTMLAREA(notes)%%>', '<textarea name="notes" id="notes" rows="5"></textarea>', $templateCode);
+		$templateCode = str_replace('<%%HTMLAREA(notes)%%>', '<textarea maxlength="65500" name="notes" id="notes" rows="5"></textarea>', $templateCode);
 	}
 
 	// process translations

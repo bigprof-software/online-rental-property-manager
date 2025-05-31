@@ -77,7 +77,7 @@ function property_photos_delete($selected_id, $AllowDeleteOfParents = false, $sk
 			return $Translation['Couldn\'t delete this record'] . (
 				!empty($args['error_message']) ?
 					'<div class="text-bold">' . strip_tags($args['error_message']) . '</div>'
-					: '' 
+					: ''
 			);
 	}
 
@@ -147,9 +147,9 @@ function property_photos_update(&$selected_id, &$error_message = '') {
 	}
 
 	if(!update(
-		'property_photos', 
-		backtick_keys_once($set), 
-		['`id`' => $selected_id], 
+		'property_photos',
+		backtick_keys_once($set),
+		['`id`' => $selected_id],
 		$error_message
 	)) {
 		echo $error_message;
@@ -386,14 +386,14 @@ function property_photos_form($selectedId = '', $allowUpdate = true, $allowInser
 			$templateCode = str_replace('<%%DESELECT_BUTTON%%>', '', $templateCode);
 		elseif($separateDV)
 			$templateCode = str_replace(
-				'<%%DESELECT_BUTTON%%>', 
+				'<%%DESELECT_BUTTON%%>',
 				'<button
-					type="submit" 
-					class="btn btn-default" 
-					id="deselect" 
-					name="deselect_x" 
-					value="1" 
-					onclick="' . $backAction . '" 
+					type="submit"
+					class="btn btn-default"
+					id="deselect"
+					name="deselect_x"
+					value="1"
+					onclick="' . $backAction . '"
 					title="' . html_attr($Translation['Back']) . '">
 						<i class="glyphicon glyphicon-chevron-left"></i> ' .
 						$Translation['Back'] .
@@ -464,7 +464,7 @@ function property_photos_form($selectedId = '', $allowUpdate = true, $allowInser
 		if(!$dvprint) $templateCode = str_replace('<%%VALUE(photo)%%>', html_attr($row['photo']), $templateCode);
 		$templateCode = str_replace('<%%URLVALUE(photo)%%>', urlencode($urow['photo']), $templateCode);
 		if($fieldsAreEditable) {
-			$templateCode = str_replace('<%%HTMLAREA(description)%%>', '<textarea name="description" id="description" rows="5">' . safe_html(htmlspecialchars_decode($row['description'])) . '</textarea>', $templateCode);
+			$templateCode = str_replace('<%%HTMLAREA(description)%%>', '<textarea maxlength="65500" name="description" id="description" rows="5">' . safe_html(htmlspecialchars_decode($row['description'])) . '</textarea>', $templateCode);
 		} else {
 			$templateCode = str_replace('<%%HTMLAREA(description)%%>', '<div id="description" class="form-control-static">' . $row['description'] . '</div>', $templateCode);
 		}
@@ -476,7 +476,7 @@ function property_photos_form($selectedId = '', $allowUpdate = true, $allowInser
 		$templateCode = str_replace('<%%VALUE(property)%%>', '', $templateCode);
 		$templateCode = str_replace('<%%URLVALUE(property)%%>', urlencode(''), $templateCode);
 		$templateCode = str_replace('<%%VALUE(photo)%%>', 'blank.gif', $templateCode);
-		$templateCode = str_replace('<%%HTMLAREA(description)%%>', '<textarea name="description" id="description" rows="5"></textarea>', $templateCode);
+		$templateCode = str_replace('<%%HTMLAREA(description)%%>', '<textarea maxlength="65500" name="description" id="description" rows="5"></textarea>', $templateCode);
 	}
 
 	// process translations

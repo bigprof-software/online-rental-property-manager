@@ -67,7 +67,7 @@
 </script>
 
 <div class="row">
-	<div class="col-xs-12 col-md-12">
+	<div class="col-xs-12">
 
 		<div class="page-header"><h1>
 			<?php echo ($config['table-icon'] ? '<img src="' . $config['table-icon'] . '">' : ''); ?>

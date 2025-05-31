@@ -1,5 +1,5 @@
-<?php 
-	if(!isset($Translation)) { @header('Location: index.php'); exit; } 
+<?php
+	if(!isset($Translation)) { @header('Location: index.php'); exit; }
 
 	include_once(__DIR__ . '/header.php');
 	@include(__DIR__ . '/hooks/links-home.php');
@@ -208,7 +208,7 @@
 			modal_window({
 				url: tn + '_view.php?addNew_x=1&Embedded=1',
 				size: 'full',
-				title: $j(this).prev().children('.table-caption').text() + ": <?php echo html_attr($Translation['Add New']); ?>" 
+				title: $j(this).prev().children('.table-caption').text() + ": <?php echo html_attr($Translation['Add New']); ?>"
 			});
 			return false;
 		});
@@ -281,8 +281,8 @@
 				});
 			});
 
-			// focus search box if not hidden
-			$j('#homepage-search-box').focus();
+			// focus search box if not in xs screen size
+			if(!screen_size('xs')) $j('#homepage-search-box').focus();
 
 			// focus search box on pressing '/' or '?' keys
 			$j(document).keyup(function(e) {

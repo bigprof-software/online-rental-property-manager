@@ -1,6 +1,13 @@
 <?php if(function_exists('set_headers')) { set_headers(); } ?>
 <?php if(!isset($Translation)) die('No direct access allowed!'); ?><!DOCTYPE html>
 <?php if(!defined('PREPEND_PATH')) define('PREPEND_PATH', ''); ?>
+<?php
+	$theme = getUserTheme();
+	$bootstrap3d = '';
+	if($theme == 'bootstrap' && BOOTSTRAP_3D_EFFECTS) {
+		$bootstrap3d = '<link rel="stylesheet" href="' . PREPEND_PATH . 'resources/initializr/css/bootstrap-theme.css" media="screen">' . "\n";
+	}
+?>
 <html class="no-js">
 	<head>
 		<meta charset="<?php echo datalist_db_encoding; ?>">
@@ -10,10 +17,13 @@
 
 		<title><?php echo APP_TITLE . (isset($x->TableTitle) ? ' | ' . $x->TableTitle : ''); ?></title>
 		<link id="browser_favicon" rel="shortcut icon" href="<?php echo PREPEND_PATH; ?>resources/images/appgini-icon.png">
+		<?php if(!defined('APPGINI_SETUP')) { ?>
+			<link rel="manifest" href="<?php echo PREPEND_PATH; ?>manifest.json.php">
+			<meta name="theme-color" content="#000000">
+		<?php } ?>
 
-		<link rel="stylesheet" href="<?php echo PREPEND_PATH; ?>resources/initializr/css/bootstrap.css">
-		<link rel="stylesheet" href="<?php echo PREPEND_PATH; ?>resources/initializr/css/bootstrap-theme.css">
-		<link rel="stylesheet" href="<?php echo PREPEND_PATH; ?>resources/lightbox/css/lightbox.css" media="screen">
+		<link rel="stylesheet" href="<?php echo PREPEND_PATH; ?>resources/initializr/css/<?php echo $theme; ?>.css">
+		<?php echo $bootstrap3d; ?>
 		<link rel="stylesheet" href="<?php echo PREPEND_PATH; ?>resources/select2/select2.css" media="screen">
 		<link rel="stylesheet" href="<?php echo PREPEND_PATH; ?>resources/timepicker/bootstrap-timepicker.min.css" media="screen">
 		<link rel="stylesheet" href="<?php echo PREPEND_PATH; ?>resources/datepicker/css/datepicker.css" media="screen">
@@ -25,8 +35,6 @@
 		<script src="<?php echo PREPEND_PATH; ?>resources/moment/moment-with-locales.min.js"></script>
 		<script src="<?php echo PREPEND_PATH; ?>resources/jquery/js/jquery.mark.min.js"></script>
 		<script src="<?php echo PREPEND_PATH; ?>resources/initializr/js/vendor/bootstrap.min.js"></script>
-		<script src="<?php echo PREPEND_PATH; ?>resources/lightbox/js/prototype.js"></script>
-		<script src="<?php echo PREPEND_PATH; ?>resources/lightbox/js/scriptaculous.js?load=effects"></script>
 		<script src="<?php echo PREPEND_PATH; ?>resources/select2/select2.min.js"></script>
 		<script src="<?php echo PREPEND_PATH; ?>resources/timepicker/bootstrap-timepicker.min.js"></script>
 		<script src="<?php echo PREPEND_PATH; ?>resources/datepicker/js/datepicker.packed.js"></script>
@@ -41,11 +49,25 @@
 					'url' => application_url(),
 					'uri' => application_uri(),
 					'googleAPIKey' => config('adminConfig')['googleAPIKey'],
+					'appTitle' => APP_TITLE,
 				];
 			?>
 			var AppGini = AppGini || {};
 
 			AppGini.config = <?php echo json_encode($jsAppConfig, JSON_PARTIAL_OUTPUT_ON_ERROR); ?>
+
+			<?php if(!defined('APPGINI_SETUP')) { ?>
+				// register service worker for PWA and improve caching
+				if('serviceWorker' in navigator) {
+					window.addEventListener('load', function() {
+						navigator.serviceWorker.register('<?php echo PREPEND_PATH; ?>service-worker.js?<?php echo filemtime( __DIR__ . '/service-worker.js'); ?>').then(function(registration) {
+							console.info('ServiceWorker registration successful with scope: ', registration.scope);
+						}, function(err) {
+							console.error('ServiceWorker registration failed: ', err);
+						});
+					});
+				}
+			<?php } ?>
 		</script>
 
 		<?php if(!defined('APPGINI_SETUP')) { ?>
@@ -59,7 +81,7 @@
 
 	</head>
 	<body>
-		<div class="users-area container theme-bootstrap theme-3d theme-compact">
+		<div class="users-area container theme-<?php echo $theme; ?> <?php echo getUserThemeCompact(); ?><?php echo BOOTSTRAP_3D_EFFECTS ? ' theme-3d' : ''; ?>">
 			<?php if(function_exists('handle_maintenance')) echo handle_maintenance(true); ?>
 
 			<?php if(!Request::val('Embedded')) { ?>
@@ -71,7 +93,7 @@
 
 			<?php if(class_exists('Notification', false)) echo Notification::placeholder(); ?>
 
-			<?php 
+			<?php
 				// process notifications
 				if(function_exists('showNotifications')) echo showNotifications();
 			?>

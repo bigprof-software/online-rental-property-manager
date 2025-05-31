@@ -76,7 +76,7 @@ function applications_leases_delete($selected_id, $AllowDeleteOfParents = false,
 			return $Translation['Couldn\'t delete this record'] . (
 				!empty($args['error_message']) ?
 					'<div class="text-bold">' . strip_tags($args['error_message']) . '</div>'
-					: '' 
+					: ''
 			);
 	}
 
@@ -157,9 +157,9 @@ function applications_leases_update(&$selected_id, &$error_message = '') {
 	}
 
 	if(!update(
-		'applications_leases', 
-		backtick_keys_once($set), 
-		['`id`' => $selected_id], 
+		'applications_leases',
+		backtick_keys_once($set),
+		['`id`' => $selected_id],
 		$error_message
 	)) {
 		echo $error_message;
@@ -664,14 +664,14 @@ function applications_leases_form($selectedId = '', $allowUpdate = true, $allowI
 			$templateCode = str_replace('<%%DESELECT_BUTTON%%>', '', $templateCode);
 		elseif($separateDV)
 			$templateCode = str_replace(
-				'<%%DESELECT_BUTTON%%>', 
+				'<%%DESELECT_BUTTON%%>',
 				'<button
-					type="submit" 
-					class="btn btn-default" 
-					id="deselect" 
-					name="deselect_x" 
-					value="1" 
-					onclick="' . $backAction . '" 
+					type="submit"
+					class="btn btn-default"
+					id="deselect"
+					name="deselect_x"
+					value="1"
+					onclick="' . $backAction . '"
 					title="' . html_attr($Translation['Back']) . '">
 						<i class="glyphicon glyphicon-chevron-left"></i> ' .
 						$Translation['Back'] .
@@ -732,32 +732,32 @@ function applications_leases_form($selectedId = '', $allowUpdate = true, $allowI
 	$templateCode = str_replace('<%%COMBO(type)%%>', $combo_type->HTML, $templateCode);
 	$templateCode = str_replace('<%%COMBOTEXT(type)%%>', $combo_type->SelectedData, $templateCode);
 	$templateCode = str_replace(
-		'<%%COMBO(start_date)%%>', 
-		(!$fieldsAreEditable ? 
-			'<div class="form-control-static">' . $combo_start_date->GetHTML(true) . '</div>' : 
+		'<%%COMBO(start_date)%%>',
+		(!$fieldsAreEditable ?
+			'<div class="form-control-static">' . $combo_start_date->GetHTML(true) . '</div>' :
 			$combo_start_date->GetHTML()
 		), $templateCode);
 	$templateCode = str_replace('<%%COMBOTEXT(start_date)%%>', $combo_start_date->GetHTML(true), $templateCode);
 	$templateCode = str_replace(
-		'<%%COMBO(end_date)%%>', 
-		(!$fieldsAreEditable ? 
-			'<div class="form-control-static">' . $combo_end_date->GetHTML(true) . '</div>' : 
+		'<%%COMBO(end_date)%%>',
+		(!$fieldsAreEditable ?
+			'<div class="form-control-static">' . $combo_end_date->GetHTML(true) . '</div>' :
 			$combo_end_date->GetHTML()
 		), $templateCode);
 	$templateCode = str_replace('<%%COMBOTEXT(end_date)%%>', $combo_end_date->GetHTML(true), $templateCode);
 	$templateCode = str_replace('<%%COMBO(recurring_charges_frequency)%%>', $combo_recurring_charges_frequency->HTML, $templateCode);
 	$templateCode = str_replace('<%%COMBOTEXT(recurring_charges_frequency)%%>', $combo_recurring_charges_frequency->SelectedData, $templateCode);
 	$templateCode = str_replace(
-		'<%%COMBO(next_due_date)%%>', 
-		(!$fieldsAreEditable ? 
-			'<div class="form-control-static">' . $combo_next_due_date->GetHTML(true) . '</div>' : 
+		'<%%COMBO(next_due_date)%%>',
+		(!$fieldsAreEditable ?
+			'<div class="form-control-static">' . $combo_next_due_date->GetHTML(true) . '</div>' :
 			$combo_next_due_date->GetHTML()
 		), $templateCode);
 	$templateCode = str_replace('<%%COMBOTEXT(next_due_date)%%>', $combo_next_due_date->GetHTML(true), $templateCode);
 	$templateCode = str_replace(
-		'<%%COMBO(security_deposit_date)%%>', 
-		(!$fieldsAreEditable ? 
-			'<div class="form-control-static">' . $combo_security_deposit_date->GetHTML(true) . '</div>' : 
+		'<%%COMBO(security_deposit_date)%%>',
+		(!$fieldsAreEditable ?
+			'<div class="form-control-static">' . $combo_security_deposit_date->GetHTML(true) . '</div>' :
 			$combo_security_deposit_date->GetHTML()
 		), $templateCode);
 	$templateCode = str_replace('<%%COMBOTEXT(security_deposit_date)%%>', $combo_security_deposit_date->GetHTML(true), $templateCode);
@@ -843,7 +843,7 @@ function applications_leases_form($selectedId = '', $allowUpdate = true, $allowI
 		$templateCode = str_replace('<%%VALUE(co_signer_details)%%>', safe_html($urow['co_signer_details'], $fieldsAreEditable), $templateCode);
 		$templateCode = str_replace('<%%URLVALUE(co_signer_details)%%>', urlencode($urow['co_signer_details']), $templateCode);
 		if($fieldsAreEditable) {
-			$templateCode = str_replace('<%%HTMLAREA(notes)%%>', '<textarea name="notes" id="notes" rows="5">' . safe_html(htmlspecialchars_decode($row['notes'])) . '</textarea>', $templateCode);
+			$templateCode = str_replace('<%%HTMLAREA(notes)%%>', '<textarea maxlength="65500" name="notes" id="notes" rows="5">' . safe_html(htmlspecialchars_decode($row['notes'])) . '</textarea>', $templateCode);
 		} else {
 			$templateCode = str_replace('<%%HTMLAREA(notes)%%>', '<div id="notes" class="form-control-static">' . $row['notes'] . '</div>', $templateCode);
 		}
@@ -883,7 +883,7 @@ function applications_leases_form($selectedId = '', $allowUpdate = true, $allowI
 		$templateCode = str_replace('<%%URLVALUE(emergency_contact)%%>', urlencode(''), $templateCode);
 		$templateCode = str_replace('<%%VALUE(co_signer_details)%%>', '', $templateCode);
 		$templateCode = str_replace('<%%URLVALUE(co_signer_details)%%>', urlencode(''), $templateCode);
-		$templateCode = str_replace('<%%HTMLAREA(notes)%%>', '<textarea name="notes" id="notes" rows="5"></textarea>', $templateCode);
+		$templateCode = str_replace('<%%HTMLAREA(notes)%%>', '<textarea maxlength="65500" name="notes" id="notes" rows="5"></textarea>', $templateCode);
 		$templateCode = str_replace('<%%CHECKED(agreement)%%>', '', $templateCode);
 	}
 

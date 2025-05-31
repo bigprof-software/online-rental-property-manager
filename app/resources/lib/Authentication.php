@@ -24,7 +24,7 @@
 
 			$memberInfo = self::getMemberInfo($_SESSION['memberID'], $forceReload);
 
-			if(MULTI_TENANTS && !SaaS::userBelongsToTenant($memberInfo['username'], $memberInfo['tenantId']))
+			if(MULTI_TENANTS && !call_user_func_array('SaaS::userBelongsToTenant', [$memberInfo['username'], $memberInfo['tenantId']]))
 				return false;
 
 			return $memberInfo;
@@ -33,7 +33,7 @@
 		public static function tenantId() {
 			if(!MULTI_TENANTS) return '';
 
-			return SaaS::tenantId();
+			return call_user_func_array('SaaS::tenantId', []);
 		}
 
 		public static function padTenantId($tenantId, $n = 6) {
@@ -49,7 +49,7 @@
 		public static function setTenant($tenantId) {
 			if(!MULTI_TENANTS) return false;
 
-			return SaaS::setTenant($tenantId);
+			return call_user_func_array('SaaS::setTenant', [$tenantId]);
 		}
 
 		private static function setupAdminInfo($memberID) {
@@ -167,7 +167,7 @@
 		private static function passwordHash($username) {
 			$username = self::safeMemberID($username);
 
-			if(MULTI_TENANTS) return SaaS::passwordHash($username);
+			if(MULTI_TENANTS) return call_user_func_array('SaaS::passwordHash', [$username]);
 
 			return self::sqlValue("
 				SELECT `passMD5`
@@ -334,10 +334,10 @@
 			$_SESSION['memberGroupID'] = self::groupId($username);
 
 			if(MULTI_TENANTS)
-				if($tenantId && SaaS::userBelongsToTenant($username, $tenantId))
+				if($tenantId && call_user_func_array('SaaS::userBelongsToTenant', [$username, $tenantId]))
 					self::setTenant($tenantId);
 				else
-					self::setTenant(SaaS::defaultTenantId($username));
+					self::setTenant(call_user_func_array('SaaS::defaultTenantId', [$username]));
 
 			self::getUser(true); // reload user info
 
@@ -455,7 +455,7 @@
 			// hook: session_options(), if defined, $options is passed to it by reference
 			// to override default session behavior.
 			// should be defined in hooks/__bootstrap.php
-			if(function_exists('session_options')) session_options($options);
+			if(function_exists('session_options')) call_user_func_array('session_options', [&$options]);
 
 			if(session_id()) { session_write_close(); }
 

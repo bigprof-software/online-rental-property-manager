@@ -126,7 +126,7 @@
 					<hr class="hidden-md hidden-lg">
 					<label class="control-label col-lg-3" for="rent">Rental amount</label>
 					<div class="col-lg-9">
-						<input maxlength="13" type="text" class="form-control" name="rent" id="rent" value="<%%VALUE(rent)%%>">
+						<input maxlength="12" type="text" class="form-control" name="rent" id="rent" value="<%%VALUE(rent)%%>">
 					</div>
 				</div>
 
@@ -135,7 +135,7 @@
 					<hr class="hidden-md hidden-lg">
 					<label class="control-label col-lg-3" for="security_deposit">Security deposit</label>
 					<div class="col-lg-9">
-						<input maxlength="18" type="text" class="form-control" name="security_deposit" id="security_deposit" value="<%%VALUE(security_deposit)%%>">
+						<input maxlength="17" type="text" class="form-control" name="security_deposit" id="security_deposit" value="<%%VALUE(security_deposit)%%>">
 					</div>
 				</div>
 
@@ -154,7 +154,7 @@
 					<label class="control-label col-lg-3" for="emergency_contact">Emergency contact <i class="glyphicon glyphicon-info-sign text-info" data-toggle="collapse" data-target="#emergency_contact-description"></i></label>
 					<div class="col-lg-9">
 						<span class="help-block bspacer-xs collapse" id="emergency_contact-description"><div class="alert alert-info bspacer-xs">Add all details of whom to contact in case of emergency</div></span>
-						<textarea class="form-control" name="emergency_contact" id="emergency_contact" rows=" 2"><%%VALUE(emergency_contact)%%></textarea>
+						<textarea maxlength="100" class="form-control" name="emergency_contact" id="emergency_contact" rows=" 2"><%%VALUE(emergency_contact)%%></textarea>
 					</div>
 				</div>
 
@@ -164,7 +164,7 @@
 					<label class="control-label col-lg-3" for="co_signer_details">Co signer details <i class="glyphicon glyphicon-info-sign text-info" data-toggle="collapse" data-target="#co_signer_details-description"></i></label>
 					<div class="col-lg-9">
 						<span class="help-block bspacer-xs collapse" id="co_signer_details-description"><div class="alert alert-info bspacer-xs">Add all details to your co-signer, for example name, e-mail, address, phone... etc.</div></span>
-						<textarea class="form-control" name="co_signer_details" id="co_signer_details" rows=" 2"><%%VALUE(co_signer_details)%%></textarea>
+						<textarea maxlength="100" class="form-control" name="co_signer_details" id="co_signer_details" rows=" 2"><%%VALUE(co_signer_details)%%></textarea>
 					</div>
 				</div>
 
@@ -194,7 +194,7 @@
 
 		<!-- DV action buttons -->
 		<hr class="hidden-md hidden-lg">
-		<div class="col-md-4 col-lg-2" id="applications_leases_dv_action_buttons">
+		<div class="col-md-4 col-lg-2 dv-action-buttons" id="applications_leases_dv_action_buttons">
 			<div class="btn-toolbar">
 				<div class="btn-group-vertical btn-group-lg" style="width: 100%;">
 					<%%UPDATE_BUTTON%%>

@@ -17,6 +17,9 @@ class DataCombo{
 		$RadiosPerLine, // if ListType=2, this is the number of options per line
 		$AllowNull,
 
+		$table, // the table name (child table) that this combo is used in
+		$parent_table, // the table name of the parent table
+
 		$ItemCount, // this is returned. It indicates the number of items in the combo.
 		$HTML,      // this is returned. The combo html source after calling Render().
 		$MatchText; // will store the parent caption value of the matching item.

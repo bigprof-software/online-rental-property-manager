@@ -68,7 +68,7 @@ function residence_and_rental_history_delete($selected_id, $AllowDeleteOfParents
 			return $Translation['Couldn\'t delete this record'] . (
 				!empty($args['error_message']) ?
 					'<div class="text-bold">' . strip_tags($args['error_message']) . '</div>'
-					: '' 
+					: ''
 			);
 	}
 
@@ -126,9 +126,9 @@ function residence_and_rental_history_update(&$selected_id, &$error_message = ''
 	}
 
 	if(!update(
-		'residence_and_rental_history', 
-		backtick_keys_once($set), 
-		['`id`' => $selected_id], 
+		'residence_and_rental_history',
+		backtick_keys_once($set),
+		['`id`' => $selected_id],
 		$error_message
 	)) {
 		echo $error_message;
@@ -383,14 +383,14 @@ function residence_and_rental_history_form($selectedId = '', $allowUpdate = true
 			$templateCode = str_replace('<%%DESELECT_BUTTON%%>', '', $templateCode);
 		elseif($separateDV)
 			$templateCode = str_replace(
-				'<%%DESELECT_BUTTON%%>', 
+				'<%%DESELECT_BUTTON%%>',
 				'<button
-					type="submit" 
-					class="btn btn-default" 
-					id="deselect" 
-					name="deselect_x" 
-					value="1" 
-					onclick="' . $backAction . '" 
+					type="submit"
+					class="btn btn-default"
+					id="deselect"
+					name="deselect_x"
+					value="1"
+					onclick="' . $backAction . '"
 					title="' . html_attr($Translation['Back']) . '">
 						<i class="glyphicon glyphicon-chevron-left"></i> ' .
 						$Translation['Back'] .
@@ -429,16 +429,16 @@ function residence_and_rental_history_form($selectedId = '', $allowUpdate = true
 	$templateCode = str_replace('<%%COMBOTEXT(tenant)%%>', $combo_tenant->MatchText, $templateCode);
 	$templateCode = str_replace('<%%URLCOMBOTEXT(tenant)%%>', urlencode($combo_tenant->MatchText), $templateCode);
 	$templateCode = str_replace(
-		'<%%COMBO(duration_of_residency_from)%%>', 
-		(!$fieldsAreEditable ? 
-			'<div class="form-control-static">' . $combo_duration_of_residency_from->GetHTML(true) . '</div>' : 
+		'<%%COMBO(duration_of_residency_from)%%>',
+		(!$fieldsAreEditable ?
+			'<div class="form-control-static">' . $combo_duration_of_residency_from->GetHTML(true) . '</div>' :
 			$combo_duration_of_residency_from->GetHTML()
 		), $templateCode);
 	$templateCode = str_replace('<%%COMBOTEXT(duration_of_residency_from)%%>', $combo_duration_of_residency_from->GetHTML(true), $templateCode);
 	$templateCode = str_replace(
-		'<%%COMBO(to)%%>', 
-		(!$fieldsAreEditable ? 
-			'<div class="form-control-static">' . $combo_to->GetHTML(true) . '</div>' : 
+		'<%%COMBO(to)%%>',
+		(!$fieldsAreEditable ?
+			'<div class="form-control-static">' . $combo_to->GetHTML(true) . '</div>' :
 			$combo_to->GetHTML()
 		), $templateCode);
 	$templateCode = str_replace('<%%COMBOTEXT(to)%%>', $combo_to->GetHTML(true), $templateCode);
@@ -499,7 +499,7 @@ function residence_and_rental_history_form($selectedId = '', $allowUpdate = true
 		if(!$dvprint) $templateCode = str_replace('<%%VALUE(reason_for_leaving)%%>', html_attr($row['reason_for_leaving']), $templateCode);
 		$templateCode = str_replace('<%%URLVALUE(reason_for_leaving)%%>', urlencode($urow['reason_for_leaving']), $templateCode);
 		if($fieldsAreEditable) {
-			$templateCode = str_replace('<%%HTMLAREA(notes)%%>', '<textarea name="notes" id="notes" rows="5">' . safe_html(htmlspecialchars_decode($row['notes'])) . '</textarea>', $templateCode);
+			$templateCode = str_replace('<%%HTMLAREA(notes)%%>', '<textarea maxlength="65500" name="notes" id="notes" rows="5">' . safe_html(htmlspecialchars_decode($row['notes'])) . '</textarea>', $templateCode);
 		} else {
 			$templateCode = str_replace('<%%HTMLAREA(notes)%%>', '<div id="notes" class="form-control-static">' . $row['notes'] . '</div>', $templateCode);
 		}
@@ -524,7 +524,7 @@ function residence_and_rental_history_form($selectedId = '', $allowUpdate = true
 		$templateCode = str_replace('<%%URLVALUE(to)%%>', urlencode(''), $templateCode);
 		$templateCode = str_replace('<%%VALUE(reason_for_leaving)%%>', '', $templateCode);
 		$templateCode = str_replace('<%%URLVALUE(reason_for_leaving)%%>', urlencode(''), $templateCode);
-		$templateCode = str_replace('<%%HTMLAREA(notes)%%>', '<textarea name="notes" id="notes" rows="5"></textarea>', $templateCode);
+		$templateCode = str_replace('<%%HTMLAREA(notes)%%>', '<textarea maxlength="65500" name="notes" id="notes" rows="5"></textarea>', $templateCode);
 	}
 
 	// process translations
