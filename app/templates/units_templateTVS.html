@@ -5,23 +5,23 @@
 <!-- add the following to the units_init() hook (in hooks/units.php file) -->
 <!--     $options->ShowTableHeader = 0;     -->
 
-		<td id="units-property-<%%VALUE(id)%%>" class="units-property text-bold"><%%VALUE(property)%%></td>
-		<td id="units-unit_number-<%%VALUE(id)%%>" class="units-unit_number text-bold"><%%VALUE(unit_number)%%></td>
-		<td id="units-photo-<%%VALUE(id)%%>" class="units-photo text-bold"><a href="<%%BASE_UPLOAD_PATH%%><%%VALUE(photo)%%>" data-lightbox="units-photo"><img src="thumbnail.php?i=<%%VALUE(photo)%%>&t=units&f=photo&v=tv" class="img-thumbnail"></a></td>
-		<td id="units-status-<%%VALUE(id)%%>" class="units-status text-bold"><%%VALUE(status)%%></td>
+		<td id="units-property-<%%VALUE(id)%%>" class="units-property rtl-left text-bold"><%%VALUE(property)%%></td>
+		<td id="units-unit_number-<%%VALUE(id)%%>" class="units-unit_number rtl-left text-bold"><%%VALUE(unit_number)%%></td>
+		<td id="units-photo-<%%VALUE(id)%%>" class="units-photo rtl-left text-bold"><a href="<%%BASE_UPLOAD_PATH%%><%%VALUE(photo)%%>" data-lightbox="units-photo"><img src="thumbnail.php?i=<%%VALUE(photo)%%>&t=units&f=photo&v=tv" class="img-thumbnail"></a></td>
+		<td id="units-status-<%%VALUE(id)%%>" class="units-status rtl-left text-bold"><%%VALUE(status)%%></td>
 		<td id="units-size-<%%VALUE(id)%%>" class="units-size text-center text-bold"><%%VALUE(size)%%></td>
-		<td id="units-street-<%%VALUE(id)%%>" class="units-street text-bold"><%%VALUE(street)%%></td>
-		<td id="units-city-<%%VALUE(id)%%>" class="units-city text-bold"><%%VALUE(city)%%></td>
+		<td id="units-street-<%%VALUE(id)%%>" class="units-street rtl-left text-bold"><%%VALUE(street)%%></td>
+		<td id="units-city-<%%VALUE(id)%%>" class="units-city rtl-left text-bold"><%%VALUE(city)%%></td>
 		<td id="units-state-<%%VALUE(id)%%>" class="units-state text-center text-bold"><%%VALUE(state)%%></td>
 		<td id="units-rooms-<%%VALUE(id)%%>" class="units-rooms text-center text-bold"><%%VALUE(rooms)%%></td>
 		<td id="units-bathroom-<%%VALUE(id)%%>" class="units-bathroom text-center text-bold"><%%VALUE(bathroom)%%></td>
-		<td id="units-features-<%%VALUE(id)%%>" class="units-features text-bold"><%%VALUE(features)%%></td>
+		<td id="units-features-<%%VALUE(id)%%>" class="units-features rtl-left text-bold"><%%VALUE(features)%%></td>
 		<td id="units-rental_amount-<%%VALUE(id)%%>" class="units-rental_amount text-right text-bold"><%%VALUE(rental_amount)%%></td>
 		<td class="child-applications_leases-unit child-records-info" data-id="<%%VALUE(id)%%>" data-table="applications_leases" data-lookup-field="unit">
-			<a href="applications_leases_view.php?filterer_unit=<%%VALUE(id)%%>&Embedded=1" target="_blank" title="<%%TRANSLATION(view)%%> (Applications/Leases)" class="modal-link children-count" style="visibility: hidden;"><span class="count-children">0</span> <i class="glyphicon glyphicon-new-window"></i></a>
+			<a href="applications_leases_view.php?filterer_unit=<%%VALUE(id)%%>&Embedded=1" target="_blank" title="<%%TRANSLATION(view)%%> (Applications/Leases)" class="modal-link children-count-link" style="visibility: hidden;"><span class="children-count">0</span> <i class="glyphicon glyphicon-new-window"></i></a>
 			<a href="applications_leases_view.php?filterer_unit=<%%VALUE(id)%%>&addNew_x=1&Embedded=1" target="_blank" class="modal-link new-child" title="<%%TRANSLATION(Add New)%%> (Applications/Leases)" style="visibility: hidden;"><i class="text-success glyphicon glyphicon-plus"></i></a>
 		</td>
 		<td class="child-unit_photos-unit child-records-info" data-id="<%%VALUE(id)%%>" data-table="unit_photos" data-lookup-field="unit">
-			<a href="unit_photos_view.php?filterer_unit=<%%VALUE(id)%%>&Embedded=1" target="_blank" title="<%%TRANSLATION(view)%%> (Unit photos)" class="modal-link children-count" style="visibility: hidden;"><span class="count-children">0</span> <i class="glyphicon glyphicon-new-window"></i></a>
+			<a href="unit_photos_view.php?filterer_unit=<%%VALUE(id)%%>&Embedded=1" target="_blank" title="<%%TRANSLATION(view)%%> (Unit photos)" class="modal-link children-count-link" style="visibility: hidden;"><span class="children-count">0</span> <i class="glyphicon glyphicon-new-window"></i></a>
 			<a href="unit_photos_view.php?filterer_unit=<%%VALUE(id)%%>&addNew_x=1&Embedded=1" target="_blank" class="modal-link new-child" title="<%%TRANSLATION(Add New)%%> (Unit photos)" style="visibility: hidden;"><i class="text-success glyphicon glyphicon-plus"></i></a>
 		</td>

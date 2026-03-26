@@ -1,47 +1,47 @@
 		<td colspan="11" class="row">
 			<div id="properties-property_name-<%%VALUE(id)%%>" class="properties-property_name col-sm-12 h5 text-bold"><%%VALUE(property_name)%%></div>
-			<div class="col-md-3"><div id="properties-photo-<%%VALUE(id)%%>" class="properties-photo"><a href="<%%BASE_UPLOAD_PATH%%><%%VALUE(photo)%%>" data-lightbox="properties-photo"><img src="thumbnail.php?i=<%%VALUE(photo)%%>&t=properties&f=photo&v=tv" class="img-thumbnail"></a></div></div>
+			<div class="col-md-3"><div id="properties-photo-<%%VALUE(id)%%>" class="properties-photo rtl-left"><a href="<%%BASE_UPLOAD_PATH%%><%%VALUE(photo)%%>" data-lightbox="properties-photo"><img src="thumbnail.php?i=<%%VALUE(photo)%%>&t=properties&f=photo&v=tv" class="img-thumbnail"></a></div></div>
 			<div class="col-md-9">				<dl class="dl-horizontal">
 					<dt class="properties-type-caption field-caption-tv">Type</dt>
-					<dd id="properties-type-<%%VALUE(id)%%>" class="properties-type text-bold"><%%VALUE(type)%%></dd>
+					<dd id="properties-type-<%%VALUE(id)%%>" class="properties-type rtl-left text-bold"><%%VALUE(type)%%></dd>
 
 					<dt class="properties-number_of_units-caption field-caption-tv">Number of units</dt>
-					<dd id="properties-number_of_units-<%%VALUE(id)%%>" class="properties-number_of_units text-bold"><%%VALUE(number_of_units)%%></dd>
+					<dd id="properties-number_of_units-<%%VALUE(id)%%>" class="properties-number_of_units rtl-left text-bold"><%%VALUE(number_of_units)%%></dd>
 
 					<dt class="properties-owner-caption field-caption-tv">Owner</dt>
-					<dd id="properties-owner-<%%VALUE(id)%%>" class="properties-owner text-bold"><%%VALUE(owner)%%></dd>
+					<dd id="properties-owner-<%%VALUE(id)%%>" class="properties-owner rtl-left text-bold"><%%VALUE(owner)%%></dd>
 
 					<dt class="properties-operating_account-caption field-caption-tv">Operating account</dt>
-					<dd id="properties-operating_account-<%%VALUE(id)%%>" class="properties-operating_account text-bold"><%%VALUE(operating_account)%%></dd>
+					<dd id="properties-operating_account-<%%VALUE(id)%%>" class="properties-operating_account rtl-left text-bold"><%%VALUE(operating_account)%%></dd>
 
 					<dt class="properties-property_reserve-caption field-caption-tv">Property reserve</dt>
 					<dd id="properties-property_reserve-<%%VALUE(id)%%>" class="properties-property_reserve text-right text-bold"><%%VALUE(property_reserve)%%></dd>
 
 					<dt class="properties-street-caption field-caption-tv">Street</dt>
-					<dd id="properties-street-<%%VALUE(id)%%>" class="properties-street text-bold"><%%VALUE(street)%%></dd>
+					<dd id="properties-street-<%%VALUE(id)%%>" class="properties-street rtl-left text-bold"><%%VALUE(street)%%></dd>
 
 					<dt class="properties-City-caption field-caption-tv">City</dt>
-					<dd id="properties-City-<%%VALUE(id)%%>" class="properties-City text-bold"><%%VALUE(City)%%></dd>
+					<dd id="properties-City-<%%VALUE(id)%%>" class="properties-City rtl-left text-bold"><%%VALUE(City)%%></dd>
 
 					<dt class="properties-State-caption field-caption-tv">State</dt>
-					<dd id="properties-State-<%%VALUE(id)%%>" class="properties-State text-bold"><%%VALUE(State)%%></dd>
+					<dd id="properties-State-<%%VALUE(id)%%>" class="properties-State rtl-left text-bold"><%%VALUE(State)%%></dd>
 
 					<dt class="properties-ZIP-caption field-caption-tv">ZIP</dt>
-					<dd id="properties-ZIP-<%%VALUE(id)%%>" class="properties-ZIP text-bold"><%%VALUE(ZIP)%%></dd>
+					<dd id="properties-ZIP-<%%VALUE(id)%%>" class="properties-ZIP rtl-left text-bold"><%%VALUE(ZIP)%%></dd>
 
 					<dt class="child-applications_leases-property-caption field-caption-tv" title="Applications/leases">Applications/leases</dt>
 					<dd class="child-applications_leases-property child-records-info" data-id="<%%VALUE(id)%%>" data-table="applications_leases" data-lookup-field="property">
-						<a href="applications_leases_view.php?filterer_property=<%%VALUE(id)%%>&Embedded=1" target="_blank" title="<%%TRANSLATION(view)%%> (Applications/leases)" class="modal-link children-count" style="visibility: hidden;"><span class="count-children">0</span> <i class="glyphicon glyphicon-new-window"></i></a>
+						<a href="applications_leases_view.php?filterer_property=<%%VALUE(id)%%>&Embedded=1" target="_blank" title="<%%TRANSLATION(view)%%> (Applications/leases)" class="modal-link children-count-link" style="visibility: hidden;"><span class="children-count">0</span> <i class="glyphicon glyphicon-new-window"></i></a>
 						<a href="applications_leases_view.php?filterer_property=<%%VALUE(id)%%>&addNew_x=1&Embedded=1" target="_blank" class="modal-link new-child" title="<%%TRANSLATION(Add New)%%> (Applications/leases)" style="visibility: hidden;"><i class="text-success glyphicon glyphicon-plus"></i></a>
 					</dd>
 					<dt class="child-units-property-caption field-caption-tv" title="Units">Units</dt>
 					<dd class="child-units-property child-records-info" data-id="<%%VALUE(id)%%>" data-table="units" data-lookup-field="property">
-						<a href="units_view.php?filterer_property=<%%VALUE(id)%%>&Embedded=1" target="_blank" title="<%%TRANSLATION(view)%%> (Units)" class="modal-link children-count" style="visibility: hidden;"><span class="count-children">0</span> <i class="glyphicon glyphicon-new-window"></i></a>
+						<a href="units_view.php?filterer_property=<%%VALUE(id)%%>&Embedded=1" target="_blank" title="<%%TRANSLATION(view)%%> (Units)" class="modal-link children-count-link" style="visibility: hidden;"><span class="children-count">0</span> <i class="glyphicon glyphicon-new-window"></i></a>
 						<a href="units_view.php?filterer_property=<%%VALUE(id)%%>&addNew_x=1&Embedded=1" target="_blank" class="modal-link new-child" title="<%%TRANSLATION(Add New)%%> (Units)" style="visibility: hidden;"><i class="text-success glyphicon glyphicon-plus"></i></a>
 					</dd>
 					<dt class="child-property_photos-property-caption field-caption-tv" title="Property photos">Property photos</dt>
 					<dd class="child-property_photos-property child-records-info" data-id="<%%VALUE(id)%%>" data-table="property_photos" data-lookup-field="property">
-						<a href="property_photos_view.php?filterer_property=<%%VALUE(id)%%>&Embedded=1" target="_blank" title="<%%TRANSLATION(view)%%> (Property photos)" class="modal-link children-count" style="visibility: hidden;"><span class="count-children">0</span> <i class="glyphicon glyphicon-new-window"></i></a>
+						<a href="property_photos_view.php?filterer_property=<%%VALUE(id)%%>&Embedded=1" target="_blank" title="<%%TRANSLATION(view)%%> (Property photos)" class="modal-link children-count-link" style="visibility: hidden;"><span class="children-count">0</span> <i class="glyphicon glyphicon-new-window"></i></a>
 						<a href="property_photos_view.php?filterer_property=<%%VALUE(id)%%>&addNew_x=1&Embedded=1" target="_blank" class="modal-link new-child" title="<%%TRANSLATION(Add New)%%> (Property photos)" style="visibility: hidden;"><i class="text-success glyphicon glyphicon-plus"></i></a>
 					</dd>
 				</dl>

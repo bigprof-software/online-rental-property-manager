@@ -153,6 +153,9 @@
 	if($fix_all) {
 		foreach($schema as $tn => $fields) {
 			foreach($fields as $fn => $fd) {
+				// special cases to skip: appgini_saved_filters.username, appgini_saved_filters.title
+				if($tn == 'appgini_saved_filters' && in_array($fn, ['username', 'title'])) continue;
+
 				if(prepare_def($fd['appgini']) == prepare_def($fd['db'])) continue;
 				fix_field($tn, $fn, $schema, $qry);
 			}
@@ -194,7 +197,7 @@
 				information_schema.`COLLATION_CHARACTER_SET_APPLICABILITY` c
 				WHERE c.collation_name = t.table_collation
 				AND t.table_schema = '$dbDatabase'
-				AND t.table_name = '$tn'" 
+				AND t.table_name = '$tn'"
 			);
 
 		$encodingError = (
@@ -208,7 +211,7 @@
 	<div class="alert alert-info alert-dismissable">
 		<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
 		<i class="glyphicon glyphicon-info-sign"></i>
-		<?php 
+		<?php
 			$originalValues = ['<ACTION>', '<FIELD>', '<TABLE>', '<QUERY>'];
 			$action = ($fix_status == 2 ? 'create' : 'update');
 			$replaceValues = [$action, $fix_field, $fix_table, $qry];
@@ -265,7 +268,7 @@
 	<?php foreach($schema as $tn => $fields) { ?>
 		<tr class="info"><th colspan="5">
 			<h4>
-				<img src="../<?php echo $table_captions[$tn][2]; ?>" class="hspacer-md"> 
+				<img src="../<?php echo $table_captions[$tn][2]; ?>" class="hspacer-md">
 				<span  data-placement="auto top" data-toggle="tooltip" title="<?php echo html_attr(str_replace( "<TABLENAME>", $tn, $Translation['table name title'])); ?>">
 					<?php echo $table_captions[$tn][0]; ?>
 				</span>
@@ -276,7 +279,7 @@
 						<i class="glyphicon glyphicon-info-sign"></i> <span class="caret"></span>
 					</button>
 					<ul class="dropdown-menu sql-display">
-						<li><?php echo createTableIfNotExists($tn, true); ?></li>
+						<li class="text-left ltr"><?php echo createTableIfNotExists($tn, true); ?></li>
 					</ul>
 				</div>
 			</h4>
@@ -287,6 +290,10 @@
 		</th></tr>
 		<?php foreach($fields as $fn => $fd) { ?>
 			<?php $diff = ((prepare_def($fd['appgini']) == prepare_def($fd['db'])) ? false : true); ?>
+			<?php
+				// special cases to skip: appgini_saved_filters.username, appgini_saved_filters.title
+				if($tn == 'appgini_saved_filters' && in_array($fn, ['username', 'title'])) $diff = false;
+			?>
 			<?php $no_db = ($fd['db'] ? false : true); ?>
 			<tr class="<?php echo ($diff ? 'warning' : 'field_ok'); ?>">
 				<td></td>
@@ -298,9 +305,9 @@
 				<td class="<?php echo ($diff ? 'bold text-danger' : ''); ?>"><?php echo thisOr("<samp>{$fd['db']}</samp>", $Translation['does not exist']); ?></td>
 				<td>
 					<?php if($diff && $no_db) { ?>
-						<a href="pageRebuildFields.php?t=<?php echo $tn; ?>&f=<?php echo $fn; ?>" class="btn btn-success btn-xs btn_create" data-toggle="tooltip" data-placement="auto top" title="<?php echo $Translation['create field'] ; ?>"><i class="glyphicon glyphicon-plus"></i> <?php echo $Translation['create it'] ; ?></a>
+						<a href="pageRebuildFields.php?t=<?php echo $tn; ?>&f=<?php echo $fn; ?>" class="btn btn-success btn-xs btn_create" data-toggle="tooltip" data-placement="auto top" title="<?php echo html_attr($Translation['create field']); ?>"><i class="glyphicon glyphicon-plus"></i> <?php echo $Translation['create it'] ; ?></a>
 					<?php } elseif($diff) { ?>
-						<a href="pageRebuildFields.php?t=<?php echo $tn; ?>&f=<?php echo $fn; ?>" class="btn btn-warning btn-xs btn_update" data-toggle="tooltip" data-placement="auto top" title="<?php echo $Translation['fix field'] ; ?>"><i class="glyphicon glyphicon-cog"></i> <?php echo $Translation['fix it'] ; ?></a>
+						<a href="pageRebuildFields.php?t=<?php echo $tn; ?>&f=<?php echo $fn; ?>" class="btn btn-warning btn-xs btn_update" data-toggle="tooltip" data-placement="auto top" title="<?php echo html_attr($Translation['fix field']); ?>"><i class="glyphicon glyphicon-cog"></i> <?php echo $Translation['fix it'] ; ?></a>
 					<?php } ?>
 				</td>
 			</tr>
@@ -344,7 +351,7 @@
 		});
 
 		$j('.btn_update, #fix_all').click(function() {
-			return confirm('<?php echo addslashes($Translation['field update warning']); ?>');
+			return confirm(<?php echo json_encode($Translation['field update warning']); ?>);
 		});
 
 		var count_updates = $j('.btn_update').length;
@@ -359,8 +366,8 @@
 			$j('.summary')
 				.addClass('alert-warning')
 				.html(
-					fieldsCount + 
-					'<br><br>' + 
+					fieldsCount +
+					'<br><br>' +
 					'<a href="pageBackupRestore.php" class="alert-link">' +
 						'<b><?php echo addslashes($Translation['backup before fix']); ?></b>' +
 					'</a>'

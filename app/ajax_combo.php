@@ -367,7 +367,7 @@
 
 			$eo = ['silentErrors' => true];
 
-			/* 
+			/*
 			if unique text (ut=1), we don't care about IDs and can group by text.
 			initiate array to hold unique texts.
 			*/

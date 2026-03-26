@@ -22,3 +22,6 @@
 
 	if(!Authentication::getAdmin()) Authentication::signIn();
 	if(!Authentication::getAdmin()) redirect('index.php');
+
+	loadLanguage();
+

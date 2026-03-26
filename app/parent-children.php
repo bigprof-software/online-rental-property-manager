@@ -200,7 +200,7 @@
 
 			// build the count query
 			$forcedWhere = $currentConfig['forced-where'];
-			$query = 
+			$query =
 				preg_replace('/^select .* from /i', "SELECT `$ChildTable`.`$ChildLookupField`, COUNT(1) FROM ", $currentConfig['query']) .
 				$permissionsJoin . " WHERE " .
 				($permissionsWhere ? "( $permissionsWhere )" : "( 1=1 )") . " AND " .
@@ -236,7 +236,7 @@
 
 			// build the count query
 			$forcedWhere = $currentConfig['forced-where'];
-			$query = 
+			$query =
 				preg_replace('/^select .* from /i', 'SELECT count(1) FROM ', $currentConfig['query']) .
 				$permissionsJoin . " WHERE " .
 				($permissionsWhere ? "( $permissionsWhere )" : "( 1=1 )") . " AND " .
@@ -267,12 +267,12 @@
 			// build the data query
 			if($totalMatches) { // if we have at least one record, proceed with fetching data
 				$startRecord = $currentConfig['records-per-page'] * ($Page - 1);
-				$data['query'] = 
+				$data['query'] =
 					$currentConfig['query'] .
 					$permissionsJoin . " WHERE " .
 					($permissionsWhere ? "( $permissionsWhere )" : "( 1=1 )") . " AND " .
 					($forcedWhere ? "( $forcedWhere )" : "( 2=2 )") . " AND " .
-					"`$ChildTable`.`$ChildLookupField`='" . makeSafe($SelectedID) . "'" . 
+					"`$ChildTable`.`$ChildLookupField`='" . makeSafe($SelectedID) . "'" .
 					($SortBy !== false && $currentConfig['sortable-fields'][$SortBy] ? " ORDER BY {$currentConfig['sortable-fields'][$SortBy]} $SortDirection" : '') .
 					" LIMIT $startRecord, {$currentConfig['records-per-page']}";
 				$res = sql($data['query'], $eo);

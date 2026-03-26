@@ -34,7 +34,26 @@
 	// check if captcha supported and verified
 	if(FORCE_SETUP_CAPTCHA && Captcha::available() && !Captcha::verified()) {
 		http_response_code(401); // Unauthorized to allow blocking of brute force attacks in WAFs
-		die(Captcha::standAloneForm('setup.php'));
+
+		$errorHtml = '';
+		if($_SERVER['REQUEST_METHOD'] == 'POST') {
+			$errorHtml = '<div style="
+					color: #a40332;
+					border: 1px solid #a40332;
+					padding: 1em;
+					background-color: #fdf2f5;
+					border-radius: 4px;
+				">' .
+				sprintf(
+					$Translation['setup captcha trouble'],
+					"<pre>@define('FORCE_SETUP_CAPTCHA', true);</pre>",
+					'<code>definitions.php</code>',
+					"<pre>@define('FORCE_SETUP_CAPTCHA', false);</pre>"
+				) .
+				'</div>';
+		}
+
+		die(str_replace('</form>', "$errorHtml</form>", Captcha::standAloneForm('setup.php')));
 	}
 
 	/* include page header, unless we're testing db connection (ajax) */
@@ -57,7 +76,19 @@
 		$db_password = Request::val('db_password');
 		$db_server = Request::val('db_server');
 		$db_username = Request::val('db_username');
-		$db_port = Request::val('db_port', DEFAULT_MYSQL_PORT);
+		$db_port = Request::val('db_port', DEFAULT_MYSQL_PORT) ?: NULL;
+		$db_use_compression = Request::val('db_use_compression') ? true : false;
+
+		$ssl = [];
+		$db_ssl_chk = Request::val('db_ssl_chk') ? true : false;
+		if($db_ssl_chk) {
+			$ssl = [
+				'key' => Request::val('db_ssl_key') ?: NULL,
+				'cert' => Request::val('db_ssl_cert') ?: NULL,
+				'ca' => Request::val('db_ssl_ca') ?: NULL,
+				'no_verify' => Request::val('db_ssl_no_verify') ? true : false,
+			];
+		}
 
 		/* validate data */
 		$errors = [];
@@ -77,14 +108,9 @@
 		}
 
 		/* test database connection */
-		if(strlen($db_port))
-			if(!($connection = @db_connect($db_server, $db_username, $db_password, NULL, $db_port))) {
-				$errors[] = $Translation['Database connection error'];
-			}
-		else
-			if(!($connection = @db_connect($db_server, $db_username, $db_password))) {
-				$errors[] = $Translation['Database connection error'];
-			}
+		if(!($connection = @db_connect($db_server, $db_username, $db_password, NULL, $db_port, NULL, $ssl, $db_use_compression))) {
+			$errors[] = $Translation['Database connection error'];
+		}
 
 		if($connection !== false && !@db_select_db($db_name, $connection)) {
 			// attempt to create the database
@@ -115,6 +141,32 @@
 			exit;
 		}
 
+		// if ssl, check session ssl status
+		if($test && $db_ssl_chk) {
+			$res = mysqli_query($connection, "SHOW SESSION STATUS WHERE Variable_name IN ('Ssl_cipher', 'Ssl_version')");
+			$status = [];
+			while($row = mysqli_fetch_assoc($res)) {
+				$status[$row['Variable_name']] = $row['Value'];
+			}
+			if(empty($status['Ssl_cipher'])) {
+				?><span class="text-danger">
+					<i class="glyphicon glyphicon-warning-sign"></i>
+					<?php echo $Translation['mysql connection not encrypted']; ?>
+				</span><?php
+				exit;
+			} else {
+				?>
+				<span>
+					<i class="glyphicon glyphicon-lock"></i>
+					<?php echo $Translation['mysql connection encrypted']; ?>
+					<?php if(!empty($status['Ssl_version'])) {
+						echo " -- {$status['Ssl_version']} ({$status['Ssl_cipher']})";
+					} ?>
+				</span><?php
+				exit;
+			}
+		}
+
 		/* if db test is successful, exit with HTTP status 200 OK */
 		if($test) exit;
 
@@ -132,6 +184,9 @@
 			'dbPort' => $db_port,
 			'appURI' => formatUri(dirname($_SERVER['SCRIPT_NAME'])),
 			'host' => (isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : $_SERVER['SERVER_NAME'] . ($_SERVER['SERVER_PORT'] == '80' || $_SERVER['SERVER_PORT'] == '443' ? '' : ":{$_SERVER['SERVER_PORT']}")),
+
+			'dbSSL' => $ssl,
+			'dbUseCompression' => $db_use_compression,
 
 			'adminConfig' => [
 				'adminUsername' => $username,
@@ -325,18 +380,80 @@
 					</div>
 				</div>
 
-				<div class="form-group">
-					<label for="db_port" class="control-label col-sm-4"><?php echo $Translation['mysql port']; ?></label>
-					<div class="col-sm-8">
-						<div class="input-group">
-							<input type="number" class="form-control" id="db_port" name="db_port" placeholder="<?php echo htmlspecialchars($Translation['mysql port']); ?>" value="<?php echo htmlspecialchars(DEFAULT_MYSQL_PORT); ?>">
-							<span class="input-group-btn">
-								<button data-toggle="collapse" tabindex="-1" data-target="#db_port-help" class="btn btn-info" type="button"><i class="glyphicon glyphicon-info-sign"></i></button>
-							</span>
+				<details id="advanced-settings">
+					<summary class="text-right h5 pointer"><?php echo $Translation['advanced settings']; ?> <small class="glyphicon glyphicon-chevron-down"></small></summary>
+					<div class="well">
+						<div class="form-group">
+							<label for="db_port" class="control-label col-sm-4"><?php echo $Translation['mysql port']; ?></label>
+							<div class="col-sm-8">
+								<input type="number" class="form-control" id="db_port" name="db_port" placeholder="<?php echo htmlspecialchars($Translation['mysql port']); ?>" value="<?php echo htmlspecialchars(DEFAULT_MYSQL_PORT); ?>">
+								<span class="help-block" id="db_port-help"><?php printf($Translation['db_port help'], DEFAULT_MYSQL_PORT); ?></span>
+							</div>
 						</div>
-						<span class="help-block collapse" id="db_port-help"><?php printf($Translation['db_port help'], DEFAULT_MYSQL_PORT); ?></span>
+
+						<div class="form-group">
+							<div class="col-sm-offset-4 col-sm-8">
+								<div class="checkbox">
+									<label>
+										<input type="checkbox" id="db_use_compression" name="db_use_compression" value="1">
+										<strong><?php echo $Translation['mysql compression']; ?></strong>
+									</label>
+								</div>
+								<span class="help-block" id="db_use_compression-help"><?php echo $Translation['mysql compression help']; ?></span>
+							</div>
+						</div>
+
+						<div class="form-group">
+							<div class="col-sm-offset-4 col-sm-8">
+								<div class="checkbox">
+									<label>
+										<input type="checkbox" id="db_ssl_chk" name="db_ssl_chk" value="1">
+										<strong><?php echo $Translation['mysql ssl']; ?></strong>
+									</label>
+								</div>
+								<span class="help-block" id="db_ssl_chk-help"><?php echo $Translation['mysql ssl help']; ?></span>
+							</div>
+						</div>
+
+						<div id="ssl-inputs" class="collapse">
+							<div class="form-group">
+								<label for="db_ssl_key" class="control-label col-sm-4"><?php echo $Translation['mysql ssl key']; ?></label>
+								<div class="col-sm-8">
+									<input type="text" class="form-control" id="db_ssl_key" name="db_ssl_key" placeholder="<?php echo htmlspecialchars($Translation['mysql ssl key']); ?>">
+									<span class="help-block" id="db_ssl_key-help"><?php echo $Translation['mysql ssl key help']; ?></span>
+								</div>
+							</div>
+
+							<div class="form-group">
+								<label for="db_ssl_cert" class="control-label col-sm-4"><?php echo $Translation['mysql ssl cert']; ?></label>
+								<div class="col-sm-8">
+									<input type="text" class="form-control" id="db_ssl_cert" name="db_ssl_cert" placeholder="<?php echo htmlspecialchars($Translation['mysql ssl cert']); ?>">
+									<span class="help-block" id="db_ssl_cert-help"><?php echo $Translation['mysql ssl cert help']; ?></span>
+								</div>
+							</div>
+
+							<div class="form-group">
+								<label for="db_ssl_ca" class="control-label col-sm-4"><?php echo $Translation['mysql ssl ca']; ?></label>
+								<div class="col-sm-8">
+									<input type="text" class="form-control" id="db_ssl_ca" name="db_ssl_ca" placeholder="<?php echo htmlspecialchars($Translation['mysql ssl ca']); ?>">
+									<span class="help-block" id="db_ssl_ca-help"><?php echo $Translation['mysql ssl ca help']; ?></span>
+								</div>
+							</div>
+
+							<div class="form-group">
+								<div class="col-sm-offset-4 col-sm-8">
+									<div class="checkbox">
+										<label>
+											<input type="checkbox" name="db_ssl_no_verify" id="db_ssl_no_verify" value="1">
+											<?php echo $Translation['mysql ssl no verify']; ?>
+										</label>
+									</div>
+									<span class="help-block" id="db_ssl_no_verify-help"><?php echo $Translation['mysql ssl no verify help']; ?></span>
+								</div>
+							</div>
+						</div>
 					</div>
-				</div>
+				</details>
 
 				<div id="db_test" class="alert hidden"></div>
 			</fieldset>
@@ -395,7 +512,7 @@
 			<div class="row" style="margin-top: 2em;">
 				<div class="col-sm-offset-3 col-sm-6 col-lg-offset-4 col-lg-4">
 					<button class="btn btn-primary btn-lg btn-block" value="submit" id="submit" type="submit" name="submit">
-						<i class="glyphicon glyphicon-ok"></i> 
+						<i class="glyphicon glyphicon-ok"></i>
 						<?php echo $Translation['Submit']; ?>
 					</button>
 				</div>
@@ -421,14 +538,29 @@
 			<p style="background-color: white; padding: 20px; margin-bottom: 40px; border-radius: 4px;"><img src="logo.png"></p>
 			<div class="panel panel-success">
 				<div class="panel-heading">
-					<h3 class="panel-title"><i class="glyphicon glyphicon-ok"></i> <?php echo $Translation['setup finished']; ?></h3>
+					<h3 class="panel-title text-center" style="padding: 1em; line-height: 1.25;"><i class="glyphicon glyphicon-ok"></i> <?php echo $Translation['setup finished']; ?></h3>
 				</div>
 				<div class="panel-content">
-					<ul id="next-actions" class="nav nav-pills nav-stacked">
-						<li class="acive"><a href="index.php"><i class="glyphicon glyphicon-play"></i> <b><?php echo $Translation['setup next 1']; ?></b></a></li>
-						<li><a href="import-csv.php"><i class="glyphicon glyphicon-upload"></i> <?php echo $Translation['setup next 2']; ?></a></li>
-						<li><a href="admin/pageHome.php"><i class="glyphicon glyphicon-cog"></i> <?php echo $Translation['setup next 3']; ?></a></li>
-					</ul>
+					<div id="next-actions" style="padding: 2em; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); grid-gap: 1em;">
+						<div class="text-center well hspacer-lg vspacer-lg">
+							<a href="index.php">
+								<h2 style="font-size: 4em;"><i class="glyphicon glyphicon-play"></i></h2>
+								<?php echo $Translation['setup next 1']; ?>
+							</a>
+						</div>
+						<div class="text-center well hspacer-lg vspacer-lg">
+							<a href="import-csv.php">
+								<h2 style="font-size: 4em;"><i class="glyphicon glyphicon-upload"></i></h2>
+								<?php echo $Translation['setup next 2']; ?>
+							</a>
+						</div>
+						<div class="text-center well hspacer-lg vspacer-lg">
+							<a href="admin/pageHome.php">
+								<h2 style="font-size: 4em;"><i class="glyphicon glyphicon-cog"></i></h2>
+								<?php echo $Translation['setup next 3']; ?>
+							</a>
+						</div>
+					</div>
 				</div>
 			</div>
 		</div>
@@ -486,7 +618,12 @@
 
 			$j('#login-form').fadeIn(1000, function() { $j('#db_name').focus(); });
 
-			$j('#db_name, #db_password, #db_server, #db_username, #db_port')
+			$j('#db_ssl_chk').on('change', function(){
+				if($j(this).prop('checked')) $j('#ssl-inputs').collapse('show');
+				else $j('#ssl-inputs').collapse('hide');
+			});
+
+			$j('#db_name, #db_password, #db_server, #db_username, #db_port, #db_ssl_chk, #db_use_compression, #db_ssl_key, #db_ssl_cert, #db_ssl_ca, #db_ssl_no_verify')
 				.on('change', () => db_test(true));
 		});
 
@@ -539,11 +676,11 @@
 				$j.ajax({
 					url: '<?php echo basename(__FILE__); ?>?test=1',
 					type: 'POST',
-					data: $j('#db_name, #db_server, #db_password, #db_username, #db_port').serialize(),
+					data: $j('#db_name, #db_server, #db_password, #db_username, #db_port, #db_ssl_chk, #db_use_compression, #db_ssl_key, #db_ssl_cert, #db_ssl_ca, #db_ssl_no_verify').serialize(),
 					success: (resp) => {
 						testFeedback
 							.addClass('alert-success')
-							.html(<?php echo json_encode($Translation['Database info is correct']); ?>)
+							.html(<?php echo json_encode($Translation['Database info is correct']); ?> + (resp.length ? `<br><small>${resp}</small>` : ''));
 					},
 					error: () => {
 						testFeedback
@@ -579,7 +716,11 @@
 			margin: 30px auto;
 		}
 		ul#next-actions li { font-size: 1.3em; }
-		ul#next-actions { padding: 2em;     }
+		ul#next-actions { padding: 2em; }
+		details[open] summary .glyphicon-chevron-down {
+			/* rotate the arrow when details is open */
+			transform: rotate(180deg);
+		}
 	</style>
 
 <?php include_once(__DIR__ . '/footer.php');

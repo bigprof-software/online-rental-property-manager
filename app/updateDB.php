@@ -119,7 +119,7 @@
 					setupTable($tableName); // no Alter queries passed ...
 				}
 			} else { // tableName doesn't exist and no rename, so just create the table
-				echo str_replace("<TableName>", $tableName, $Translation["creating table"]);
+				echo str_replace("<TableName>", $tableName, $Translation['creating table']);
 				if(!@db_query($createSQL)) {
 					echo '<span class="label label-danger">' . $Translation['failed'] . '</span>';
 					echo '<div class="text-danger">' . $Translation['mysql said'] . db_error(db_link()) . '</div>';

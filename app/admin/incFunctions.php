@@ -105,7 +105,7 @@
 		];
 
 		$all_tables = [
-			/* ['table_name' => [table props assoc array] */   
+			/* ['table_name' => [table props assoc array] */
 				'applicants_and_tenants' => [
 					'Caption' => 'Applicants and tenants',
 					'Description' => 'List of applicants/tenants and their current status. Each tenant might have an application or a lease.',
@@ -191,7 +191,7 @@
 	function getTableList($skip_authentication = false, $include_internal_tables = false) {
 		$arrAccessTables = [];
 		$arrTables = [
-			/* 'table_name' => ['table caption', 'homepage description', 'icon', 'table group name'] */   
+			/* 'table_name' => ['table caption', 'homepage description', 'icon', 'table group name'] */
 			'applicants_and_tenants' => ['Applicants and tenants', 'List of applicants/tenants and their current status. Each tenant might have an application or a lease.', 'resources/table_icons/account_balances.png', 'Leases'],
 			'applications_leases' => ['Applications/Leases', 'This is the application form filled by an applicant to apply for leasing a unit. The application might be changed to a lease when approved.', 'resources/table_icons/curriculum_vitae.png', 'Leases'],
 			'residence_and_rental_history' => ['Residence and rental history', 'Records of the tenant residence and rental history.', 'resources/table_icons/document_comment_above.png', 'Leases'],
@@ -208,21 +208,13 @@
 			if($include_internal_tables) {
 				// merge internal tables with user tables
 				$internalIcon = 'resources/images/appgini-icon.png';
-				$internalTables = [
-					'appgini_csv_import_jobs',
-					'appgini_query_log',
-					'membership_cache',
-					'membership_grouppermissions',
-					'membership_groups',
-					'membership_userpermissions',
-					'membership_userrecords',
-					'membership_users',
-					'membership_usersessions',
-				];
+				$allTables = array_keys(get_table_fields(null, true));
+				$userTables = array_keys($arrTables);
+				$internalTables = array_diff($allTables, $userTables);
 
 				// format internal tables as 'tn' => ['tn', '', icon, ''] and merge with user tables
 				$arrTables = array_merge($arrTables, array_combine(
-					$internalTables, 
+					$internalTables,
 					array_map(function($tn) use($internalIcon) { return [$tn, '', $internalIcon, '']; }, $internalTables)
 				));
 			}
@@ -275,6 +267,7 @@
 	function makeSafe($string, $is_gpc = true) {
 		static $cached = []; /* str => escaped_str */
 
+		if($string === null) return '';
 		if(!strlen($string)) return '';
 		if(is_numeric($string)) return db_escape($string); // don't cache numbers to avoid cases like '3.5' being equivelant to '3' in array indexes
 
@@ -331,6 +324,9 @@
 		$dbDatabase = config('dbDatabase');
 		$dbPort = config('dbPort');
 
+		$ssl = config('dbSSL');
+		$dbUseCompression = config('dbUseCompression');
+
 		if($connected) return $db_link;
 
 		global $Translation;
@@ -344,7 +340,7 @@
 		}
 
 		/****** Connect to MySQL ******/
-		if(!($db_link = @db_connect($dbServer, $dbUsername, $dbPassword, NULL, $dbPort))) {
+		if(!($db_link = @db_connect($dbServer, $dbUsername, $dbPassword, NULL, $dbPort, NULL, $ssl, $dbUseCompression))) {
 			$o['error'] = db_error($db_link, true);
 			if(!empty($o['silentErrors'])) return false;
 
@@ -395,7 +391,7 @@
 					logErrorQuery($statement, $o['error']);
 
 				if(getLoggedAdmin())
-					$o['error'] = htmlspecialchars($o['error']) . 
+					$o['error'] = htmlspecialchars($o['error']) .
 						"<pre class=\"ltr\">{$Translation['query:']}\n" . htmlspecialchars($statement) . '</pre>' .
 						"<p><i class=\"text-right\">{$Translation['admin-only info']}</i></p>" .
 						"<p><a href=\"" . application_url('admin/pageRebuildFields.php') . "\">{$Translation['try rebuild fields']}</a></p>";
@@ -591,7 +587,7 @@
 
 		Authentication::signInAs($payload['user']);
 
-		// for API calls that just trigger an action and then close connection, 
+		// for API calls that just trigger an action and then close connection,
 		// we need to continue running
 		@ignore_user_abort(true);
 		@set_time_limit(120);
@@ -624,7 +620,7 @@
 			/* this is a localhost request so need to verify SSL */
 			CURLOPT_SSL_VERIFYPEER => false,
 
-			// the following option allows sending request and then 
+			// the following option allows sending request and then
 			// closing the connection without waiting for response
 			// see https://stackoverflow.com/a/10895361/1945185
 			CURLOPT_TIMEOUT => 8,
@@ -706,6 +702,12 @@
 		echo "<div class=\"alert alert-danger\">{$msg}</div>";
 	}
 	########################################################################
+	/**
+	 * Redirect to the given URL and exit.
+	 * @param string $url - the URL to redirect to
+	 * @param bool $absolute - if true, $url is treated as an absolute URL, otherwise it's treated as relative to application root and prepended with application URL
+	 * @return never
+	 */
 	function redirect($url, $absolute = false) {
 		$fullURL = ($absolute ? $url : application_url($url));
 
@@ -831,16 +833,16 @@
 
 		/* abort if current page is one of the following exceptions */
 		if(in_array(basename($_SERVER['PHP_SELF']), [
-			'pageEditMember.php', 
-			'membership_passwordReset.php', 
-			'membership_profile.php', 
-			'membership_signup.php', 
-			'pageChangeMemberStatus.php', 
-			'pageDeleteGroup.php', 
-			'pageDeleteMember.php', 
-			'pageEditGroup.php', 
-			'pageEditMemberPermissions.php', 
-			'pageRebuildFields.php', 
+			'pageEditMember.php',
+			'membership_passwordReset.php',
+			'membership_profile.php',
+			'membership_signup.php',
+			'pageChangeMemberStatus.php',
+			'pageDeleteGroup.php',
+			'pageDeleteMember.php',
+			'pageEditGroup.php',
+			'pageEditMemberPermissions.php',
+			'pageRebuildFields.php',
 			'pageSettings.php',
 			'ajax_check_login.php',
 			'parent-children.php',
@@ -887,27 +889,27 @@
 
 		/* create anonymous group if not there and get its ID */
 		$same_fields = "`allowSignup`=0, `needsApproval`=0";
-		sql("INSERT INTO `membership_groups` SET 
-				`name`='{$anon_group_safe}', {$same_fields}, 
+		sql("INSERT INTO `membership_groups` SET
+				`name`='{$anon_group_safe}', {$same_fields},
 				`description`='Anonymous group created automatically on {$today}'
-			ON DUPLICATE KEY UPDATE {$same_fields}", 
+			ON DUPLICATE KEY UPDATE {$same_fields}",
 		$eo);
 
 		$anon_group_id = sqlValue("SELECT `groupID` FROM `membership_groups` WHERE `name`='{$anon_group_safe}'");
 		if(!$anon_group_id) return;
 
 		/* create guest user if not there or if guest name in config differs from that in db */
-		$anon_user_db = sqlValue("SELECT LCASE(`memberID`) FROM `membership_users` 
+		$anon_user_db = sqlValue("SELECT LCASE(`memberID`) FROM `membership_users`
 			WHERE `groupID`='{$anon_group_id}'");
 		if(!$anon_user_db || $anon_user_db != $anon_user) {
 			sql("DELETE FROM `membership_users` WHERE `groupID`='{$anon_group_id}'", $eo);
-			sql("INSERT INTO `membership_users` SET 
-				`memberID`='{$anon_user_safe}', 
-				`signUpDate`='{$today}', 
-				`groupID`='{$anon_group_id}', 
-				`isBanned`=0, 
-				`isApproved`=1, 
-				`comments`='Anonymous member created automatically on {$today}'", 
+			sql("INSERT INTO `membership_users` SET
+				`memberID`='{$anon_user_safe}',
+				`signUpDate`='{$today}',
+				`groupID`='{$anon_group_id}',
+				`isBanned`=0,
+				`isApproved`=1,
+				`comments`='Anonymous member created automatically on {$today}'",
 			$eo);
 		}
 	}
@@ -924,24 +926,24 @@
 
 		/* create admin group if not there and get its ID */
 		$same_fields = "`allowSignup`=0, `needsApproval`=1";
-		sql("INSERT INTO `membership_groups` SET 
-				`name`='{$admin_group_safe}', {$same_fields}, 
+		sql("INSERT INTO `membership_groups` SET
+				`name`='{$admin_group_safe}', {$same_fields},
 				`description`='Admin group created automatically on {$today}'
-			ON DUPLICATE KEY UPDATE {$same_fields}", 
+			ON DUPLICATE KEY UPDATE {$same_fields}",
 		$eo);
 		$admin_group_id = sqlValue("SELECT `groupID` FROM `membership_groups` WHERE `name`='{$admin_group_safe}'");
 		if(!$admin_group_id) return;
 
 		/* create super-admin user if not there (if exists, query would abort with suppressed error) */
-		sql("INSERT INTO `membership_users` SET 
-			`memberID`='{$admin_user_safe}', 
-			`passMD5`='{$admin_hash_safe}', 
-			`email`='{$admin_email_safe}', 
-			`signUpDate`='{$today}', 
-			`groupID`='{$admin_group_id}', 
-			`isBanned`=0, 
-			`isApproved`=1, 
-			`comments`='Admin member created automatically on {$today}'", 
+		sql("INSERT INTO `membership_users` SET
+			`memberID`='{$admin_user_safe}',
+			`passMD5`='{$admin_hash_safe}',
+			`email`='{$admin_email_safe}',
+			`signUpDate`='{$today}',
+			`groupID`='{$admin_group_id}',
+			`isBanned`=0,
+			`isApproved`=1,
+			`comments`='Admin member created automatically on {$today}'",
 		$eo);
 
 		/* insert/update admin group permissions to allow full access to all tables */
@@ -1775,6 +1777,12 @@
 					'memberID' => "VARCHAR(200)",
 					'uri' => "VARCHAR(200)",
 				],
+				'appgini_saved_filters' => [
+					'username' => "VARCHAR(100) NOT NULL",
+					'title' => "VARCHAR(150) NOT NULL",
+					'link' => "TEXT NOT NULL",
+					'created_at' => "TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP",
+				],
 				'membership_cache' => [
 					'request' => "VARCHAR(100) NOT NULL PRIMARY KEY",
 					'request_ts' => "INT",
@@ -1796,6 +1804,7 @@
 					'allowSignup' => "TINYINT",
 					'needsApproval' => "TINYINT",
 					'allowCSVImport' => "TINYINT NOT NULL DEFAULT '0'",
+					'allow_2fa' => "TINYINT NOT NULL DEFAULT '0'",
 				],
 				'membership_userpermissions' => [
 					'permissionID' => "INT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT",
@@ -1833,7 +1842,14 @@
 					'flags' => "TEXT",
 					'allowCSVImport' => "TINYINT NOT NULL DEFAULT '0'",
 					'data' => "LONGTEXT",
-				]
+				],
+				'membership_2fa_requests' => [
+					'request_id' => "VARCHAR(32) NOT NULL PRIMARY KEY",
+					'memberID' => "VARCHAR(100) NOT NULL",
+					'otp' => "VARCHAR(10) NOT NULL",
+					'expiry_ts' => "INT UNSIGNED NOT NULL",
+					'remember_me' => "TINYINT NOT NULL DEFAULT '0'",
+				],
 			];
 
 			$internalTables = [];
@@ -1979,6 +1995,7 @@
 		updateField($tn, 'name', 'VARCHAR(100)', true);
 		addIndex($tn, 'name', true);
 		updateField($tn, 'allowCSVImport', 'TINYINT', true, '0');
+		updateField($tn, 'allow_2fa', 'TINYINT', true, '0');
 	}
 	########################################################################
 	function update_membership_users() {
@@ -1993,6 +2010,13 @@
 		updateField($tn, 'flags', 'TEXT');
 		updateField($tn, 'allowCSVImport', 'TINYINT', true, '0');
 		updateField($tn, 'data', 'LONGTEXT');
+	}
+	########################################################################
+	function update_membership_2fa_requests() {
+		$tn = 'membership_2fa_requests';
+		createTableIfNotExists($tn);
+
+		addIndex($tn, 'expiry_ts');
 	}
 	########################################################################
 	function update_membership_userrecords() {
@@ -2047,6 +2071,16 @@
 		createTableIfNotExists($tn);
 
 		updateField($tn, 'response', 'LONGTEXT');
+	}
+	########################################################################
+	function update_appgini_saved_filters() {
+		$tn = 'appgini_saved_filters';
+		createTableIfNotExists($tn);
+
+		// Create indexes
+		addIndex($tn, ['username', 'title'], true); // Primary key
+		addIndex($tn, 'username');
+		addIndex($tn, 'title');
 	}
 	########################################################################
 	function thisOr($this_val, $or = '&nbsp;') {
@@ -2374,9 +2408,9 @@
 
 						/* append notification to notifications container */
 						$j(
-							'<div class="alert alert-' + options['class'] + dismiss_class + '" id="' + notif_id + '">' + 
+							'<div class="alert alert-' + options['class'] + dismiss_class + '" id="' + notif_id + '">' +
 								dismiss_icon +
-								options.message + 
+								options.message +
 							'</div>'
 						).appendTo('#<?php echo self::$placeholder_id; ?>');
 
@@ -2420,9 +2454,9 @@
 
 		/**
 		 *  Notification::show($options) displays a notification
-		 *  
+		 *
 		 *  @param $options assoc array
-		 *  
+		 *
 		 *  @return html code for displaying the notifcation
 		 */
 		public static function show($options = []) {
@@ -2475,6 +2509,21 @@
 		}
 	}
 	#########################################################
+	/**
+	 * Sends an email using PHPMailer
+	 * @param array $mail An associative array with the following keys:
+	 *   - `to`: string or array of recipients. If string, it's the email address of the recipient. If array, it's an array of arrays, each containing the email address and optionally the name of the recipient.
+	 *         Example (array): `'to' => [['email@example.com', 'Name'], ['another@example.com']]`.
+	 *         Example (string): `'to' => 'email@example.com'`.
+	 *  - `name`: (optional) string, name of the recipient if `to` is a string
+	 *  - `cc`: (optional) string or array of CC recipients, same format as `to`
+	 *  - `bcc`: (optional) string or array of BCC recipients, same format as `to`
+	 *  - `subject`: (optional) string, subject of the email
+	 *  - `message`: (optional) string, body of the email. If the message contains no HTML tags, new lines will be converted to `<br>` tags.
+	 *  - `debug`: (optional) integer, SMTP debug level (0-4). Only applicable if SMTP is used. Debug output should be captured via output buffering functions.
+	 *  - `tag`: (optional) mixed, any value to be attached to the PHPMailer object for use in `sendmail_handler` hook.
+	 * @return true on success, or a string with the error message on failure.
+	 */
 	function sendmail($mail) {
 		if(empty($mail['to'])) return 'No recipient defined';
 
@@ -2482,7 +2531,7 @@
 		if(is_string($mail['to']))
 			$mail['to'] = [
 				[
-					$mail['to'], 
+					$mail['to'],
 					empty($mail['name']) ? '' : $mail['name']
 				]
 			];
@@ -2509,6 +2558,7 @@
 		}
 
 		$pm->setFrom($cfg['senderEmail'], $cfg['senderName']);
+		$pm->addReplyTo($cfg['senderEmail'], $cfg['senderName']);
 		$pm->Subject = isset($mail['subject']) ? $mail['subject'] : '';
 
 		// handle recipients
@@ -2524,7 +2574,7 @@
 		$pm->msgHTML($mail['message'], realpath(__DIR__ . '/..'));
 
 		/*
-		 * pass 'tag' as-is if provided in $mail .. 
+		 * pass 'tag' as-is if provided in $mail ..
 		 * this is useful for passing any desired values to sendmail_handler
 		 */
 		if(!empty($mail['tag'])) $pm->tag = $mail['tag'];
@@ -2581,7 +2631,7 @@
 	#########################################################
 	/**
 	 *  Prepares data for a SET or WHERE clause, to be used in an INSERT/UPDATE query
-	 *  
+	 *
 	 *  @param [in] $set_array Assoc array of field names => values
 	 *  @param [in] $glue optional glue. Set to ' AND ' or ' OR ' if preparing a WHERE clause, or to ',' (default) for a SET clause
 	 *  @return string containing the prepared SET or WHERE clause
@@ -2605,7 +2655,7 @@
 	#########################################################
 	/**
 	 *  Inserts a record to the database
-	 *  
+	 *
 	 *  @param [in] $tn table name where the record would be inserted
 	 *  @param [in] $set_array Assoc array of field names => values to be inserted
 	 *  @param [out] $error optional string containing error message if insert fails
@@ -2625,7 +2675,7 @@
 	#########################################################
 	/**
 	 *  Updates a record in the database
-	 *  
+	 *
 	 *  @param [in] $tn table name where the record would be updated
 	 *  @param [in] $set_array Assoc array of field names => values to be updated
 	 *  @param [in] $where_array Assoc array of field names => values used to build the WHERE clause
@@ -2649,7 +2699,7 @@
 	#########################################################
 	/**
 	 *  Set/update the owner of given record
-	 *  
+	 *
 	 *  @param [in] $tn name of table
 	 *  @param [in] $pk primary key value
 	 *  @param [in] $user username to set as owner. If not provided (or false), update dateUpdated only
@@ -2687,7 +2737,7 @@
 	#########################################################
 	/**
 	 *  get date/time format string for use in different cases.
-	 *  
+	 *
 	 *  @param [in] $destination string, one of these: 'php' (see date function), 'mysql', 'moment'
 	 *  @param [in] $datetime string, one of these: 'd' = date, 't' = time, 'dt' = both
 	 *  @return string
@@ -2719,7 +2769,7 @@
 	#########################################################
 	/**
 	 *  perform a test and return results
-	 *  
+	 *
 	 *  @param [in] $subject string used as title of test
 	 *  @param [in] $test callable function containing the test to be performed, should return true on success, false or a log string on error
 	 *  @return test result
@@ -2740,7 +2790,7 @@
 	#########################################################
 	/**
 	 *  invoke a method of an object -- useful to call private/protected methods
-	 *  
+	 *
 	 *  @param [in] $object instance of object containing the method
 	 *  @param [in] $methodName string name of method to invoke
 	 *  @param [in] $parameters array of parameters to pass to the method
@@ -2756,7 +2806,7 @@
 	#########################################################
 	/**
 	 *  retrieve the value of a property of an object -- useful to retrieve private/protected props
-	 *  
+	 *
 	 *  @param [in] $object instance of object containing the method
 	 *  @param [in] $propName string name of property to retrieve
 	 *  @return the returned value of the given property, or null if property doesn't exist
@@ -2777,7 +2827,7 @@
 	#########################################################
 	/**
 	 *  invoke a method of a static class -- useful to call private/protected methods
-	 *  
+	 *
 	 *  @param [in] $class string name of the class containing the method
 	 *  @param [in] $methodName string name of method to invoke
 	 *  @param [in] $parameters array of parameters to pass to the method
@@ -2812,9 +2862,9 @@
 		$time_regex = str_replace(
 			array('H', 'h', ':i', ':s'),
 			array(
-				'(1[0-9]|2[0-3]|0?[0-9])', 
-				'(1[012]|0?[0-9])', 
-				'(:([1-5][0-9]|0?[0-9]))', 
+				'(1[0-9]|2[0-3]|0?[0-9])',
+				'(1[012]|0?[0-9])',
+				'(:([1-5][0-9]|0?[0-9]))',
 				'(:([1-5][0-9]|0?[0-9]))?'
 			),
 			$time_format
@@ -2856,9 +2906,9 @@
 	 *  @param [in] $mysql_datetime string, Mysql-formatted datetime
 	 *  @param [in] $datetime string, one of these: 'd' = date, 't' = time, 'dt' = both
 	 *  @return string, app-formatted datetime, or empty string on error
-	 *  
+	 *
 	 *  @details works for formatting date, time and datetime, based on 2nd param
-	 */  
+	 */
 	function app_datetime($mysql_datetime, $datetime = 'd') {
 		$pyear = $myear = substr($mysql_datetime, 0, 4);
 
@@ -2879,10 +2929,10 @@
 	#########################################################
 	/**
 	 *  converts string from app-configured encoding to utf8
-	 *  
+	 *
 	 *  @param [in] $str string to convert to utf8
 	 *  @return utf8-encoded string
-	 *  
+	 *
 	 *  @details if the constant 'datalist_db_encoding' is not defined, original string is returned
 	 */
 	function to_utf8($str) {
@@ -2893,10 +2943,10 @@
 	#########################################################
 	/**
 	 *  converts string from utf8 to app-configured encoding
-	 *  
+	 *
 	 *  @param [in] $str string to convert from utf8
 	 *  @return string utf8-decoded string
-	 *  
+	 *
 	 *  @details if the constant 'datalist_db_encoding' is not defined, original string is returned
 	 */
 	function from_utf8($str) {
@@ -2958,9 +3008,9 @@
 		return array_combine(
 			/* add backticks to keys */
 			array_map(
-				function($e) { return '`' . trim($e, '`') . '`'; }, 
+				function($e) { return '`' . trim($e, '`') . '`'; },
 				array_keys($arr_data)
-			), 
+			),
 			/* and combine with values */
 			array_values($arr_data)
 		);
@@ -3044,8 +3094,8 @@
 
 		if($phpVersion < $minPHP)
 			$reqErrors[] = str_replace(
-				['<PHP_VERSION>', '<minPHP>'], 
-				[$phpVersion, $minPHP], 
+				['<PHP_VERSION>', '<minPHP>'],
+				[$phpVersion, $minPHP],
 				$Translation['old php version']
 			);
 
@@ -3089,7 +3139,7 @@
 		if(!(preg_match('/^[0-9]{4}-(0?[1-9]|1[0-2])-([1-2][0-9]|30|31|0?[1-9])$/', $date) && strtotime($date)))
 			if(!$date = mysql_datetime($date)) return false;
 
-		// if time 
+		// if time
 		if($t = time12(trim("$time $ampm")))
 			$time = time24($t);
 		elseif($t = time24($time))
@@ -3101,7 +3151,7 @@
 	}
 	#########################################################
 	function lookupQuery($tn, $lookupField) {
-		/* 
+		/*
 			This is the query accessible from the 'Advanced' window under the 'Lookup field' tab in AppGini.
 			For auto-fill lookups, this is the same as the query of the main lookup field, except the second
 			column is replaced by the caption of the auto-fill lookup field.
@@ -3273,8 +3323,8 @@
 		$data[$key] = $value;
 
 		return update(
-			'membership_users', 
-			['data' => @json_encode($data, JSON_PARTIAL_OUTPUT_ON_ERROR)], 
+			'membership_users',
+			['data' => @json_encode($data, JSON_PARTIAL_OUTPUT_ON_ERROR)],
 			['memberID' => $user]
 		);
 	}
@@ -3339,11 +3389,11 @@
 
 	/**
 	 * send a json response to the client and terminate
-	 * 
+	 *
 	 * @param [in] $dataOrMsg mixed, either an array of data to send, or a string error message
 	 * @param [in] $isError bool, true if $dataOrMsg is an error message, false if it's data
 	 * @param [in] $errorStatusCode int, HTTP status code to send
-	 * 
+	 *
 	 * @details if $isError is true, $dataOrMsg is assumed to be an error message and $errorStatusCode is sent as the HTTP status code
 	 *     example error response: `{"status":"error","message":"Access denied"}`
 	 *     if $isError is false, $dataOrMsg is assumed to be data and $errorStatusCode is ignored
@@ -3372,7 +3422,7 @@
 	 * Check if a string is alphanumeric.
 	 *        We're defining it here in case it's not defined by some PHP installations.
 	 *        It's reuired by PHPMailer.
-	 *  
+	 *
 	 * @param [in] $str string to check
 	 * @return bool, true if $str is alphanumeric, false otherwise
 	 */
@@ -3384,16 +3434,17 @@
 
 	/**
 	 * Perform an HTTP request and return the response, including headers and body, with support to cookies
-	 * 
+	 *
 	 * @param string $url  URL to request
 	 * @param array $payload  payload to send with the request
 	 * @param array $headers  headers to send with the request, in the format ['header' => 'value']
 	 * @param string $type  request type, either 'GET' or 'POST'
 	 * @param string $cookieJar  path to a file to read/store cookies in
-	 * 
+	 * @param bool $skipCertVerification  whether to skip SSL certificate verification (default: false)
+	 *
 	 * @return array  response, including `'headers'` and `'body'`, or error info if request failed
 	 */
-	function httpRequest($url, $payload = [], $headers = [], $type = 'GET', $cookieJar = null) {
+	function httpRequest($url, $payload = [], $headers = [], $type = 'GET', $cookieJar = null, $skipCertVerification = false) {
 		// prep raw headers
 		if(!isset($headers['User-Agent'])) $headers['User-Agent'] = $_SERVER['HTTP_USER_AGENT'];
 		if(!isset($headers['Accept'])) $headers['Accept'] = $_SERVER['HTTP_ACCEPT'];
@@ -3422,8 +3473,8 @@
 			CURLOPT_RETURNTRANSFER => true,
 		];
 
-		/* if this is a localhost request, no need to verify SSL */
-		if(preg_match('/^https?:\/\/(localhost|127\.0\.0\.1)/i', $url)) {
+		/* if this is a localhost request, or explicitly skipping cert verify, no need to verify SSL */
+		if(preg_match('/^https?:\/\/(localhost|127\.0\.0\.1)/i', $url) || $skipCertVerification) {
 			$options[CURLOPT_SSL_VERIFYPEER] = false;
 			$options[CURLOPT_SSL_VERIFYHOST] = false;
 		}
@@ -3458,7 +3509,7 @@
 
 	/**
 	 * Retrieve owner username of the record with the given primary key value
-	 * 
+	 *
 	 * @param $tn string table name
 	 * @param $pkValue string primary key value
 	 * @return string|null username of the record owner, or null if not found
@@ -3474,7 +3525,7 @@
 
 	/**
 	 * Retrieve lookup field name that determines record owner of the given table
-	 * 
+	 *
 	 * @param $tn string table name
 	 * @return string|null lookup field name, or null if default (record owner is user that creates the record)
 	 */
@@ -3487,7 +3538,7 @@
 
 	/**
 	 * Retrieve not-nullable fields of the given table
-	 * 
+	 *
 	 * @param $tn string table name
 	 * @return array list of not-nullable fields
 	 */
@@ -3509,7 +3560,7 @@
 
 	/**
 	 * Get list of available themes
-	 * 
+	 *
 	 * @return array list of available themes
 	 */
 	function getThemesList() {
@@ -3535,7 +3586,7 @@
 
 	/**
 	 * Get user's preferred theme
-	 * 
+	 *
 	 * @return string user's preferred theme, or default theme if not set or theme selection is disabled
 	 */
 	function getUserTheme() {
@@ -3550,7 +3601,7 @@
 
 	/**
 	 * Get the user's theme compact preference. If no user preference is set or theme selection is disabled, return the default theme compact preference.
-	 * 
+	 *
 	 * @return string 'theme-compact' if the user prefers a compact theme, or an empty string otherwise
 	 */
 	function getUserThemeCompact() {
@@ -3580,3 +3631,187 @@
 	}
 
 
+	/**
+	 * Get a link to the Mass Update plugin if the user is an admin and the plugin is not installed
+	 *
+	 * @return array|null link to the Mass Update plugin, or null if not applicable
+	 */
+	function adminMassUpdateLink() {
+		if(!getLoggedAdmin()) return null;
+
+		$plugins = get_plugins();
+		foreach($plugins as $pl) {
+			if($pl['title'] == 'Mass Update') return null;
+		}
+
+		return [
+			'function' => 'linkToMassUpdatePlugin',
+			'title' => 'Want easy bulk updates? <i class="glyphicon glyphicon-new-window"></i>',
+			'icon' => 'plus-sign',
+			'class' => 'text-bold',
+		];
+	}
+
+	/**
+	 * Get a list of available languages from the language folders.
+	 *
+	 * @return array assoc array of language codes to language names
+	 */
+	function getLanguagesList() {
+		static $cached = null;
+		if($cached !== null) return $cached;
+
+		$languages = ['en' => 'English'];
+		$langDir = APP_DIR . '/language';
+		if(!is_dir($langDir)) return $cached = $languages;
+
+		$entries = @scandir($langDir);
+		if(!$entries) return $cached = $languages;
+
+		foreach($entries as $entry) {
+			if($entry[0] == '.') continue;
+			if(!preg_match('/^[a-z]{2}$/i', $entry)) continue;
+
+			$langFile = "{$langDir}/{$entry}/language.php";
+			if(!is_file($langFile)) continue;
+
+			$Translation = [];
+			include $langFile;
+
+			if(!empty($Translation['language'])) {
+				$languages[$entry] = $Translation['language'];
+			} else {
+				$languages[$entry] = $entry;
+			}
+		}
+
+		asort($languages, SORT_NATURAL | SORT_FLAG_CASE);
+		return $cached = $languages;
+	}
+
+	/**
+	 * Get or set the user's preferred language. If no preferred language is set, return the default language.
+	 *
+	 * @param string|null $languageCode two-letter language code to set as the user's preferred language, or null to get the current preferred language
+	 * @return string user's preferred language code, or the default language code if not set
+	 */
+	function userLanguage($languageCode = null) {
+		if(defined('APPGINI_SETUP')) return DEFAULT_LANGUAGE;
+
+		if($languageCode != null && strlen($languageCode) == 2) {
+			// set user language
+			setUserData('language', $languageCode);
+		}
+
+		// get user language
+		return getUserData('language') ?: DEFAULT_LANGUAGE;
+	}
+
+	/**
+	 * Get the path to the user's language file. If the user's language file does not exist, or user is not logged in, fall back to the default language file. If the default language file does not exist, fall back to English.
+	 *
+	 * @return string path to the user's language file
+	 */
+	function userLanguageFile() {
+		$languageCode = userLanguage();
+
+		if($languageCode == 'en') return APP_DIR . '/defaultLang.php';
+
+		$langFile = APP_DIR . "/language/{$languageCode}/language.php";
+
+		if(!is_file($langFile)) {
+			// fallback to default language
+			$languageCode = DEFAULT_LANGUAGE;
+			$langFile = APP_DIR . "/language/{$languageCode}/language.php";
+		}
+
+		if(!is_file($langFile)) {
+			// fallback to English
+			$languageCode = 'en';
+			$langFile = APP_DIR . "/defaultLang.php";
+		}
+
+		return $langFile;
+	}
+
+	/**
+	 * Get the last modified timestamp of the user's language file. If the user's language file does not exist, or user is not logged in, fall back to the default language file. If the default language file does not exist, fall back to English.
+	 *
+	 * @return int last modified timestamp of the user's language file
+	 */
+	function userLanguageLastModified() {
+		$langFile = userLanguageFile();
+		return filemtime($langFile);
+	}
+
+	/**
+	 * Load the user's preferred language translations into the global `$Translation` array. If a translation is missing in the user's language, fall back to the English translation. If user is not logged in, load the default language translations as set in `definitions.php`.
+	 *
+	 * @return string the language code of the loaded language
+	 */
+	function loadLanguage() {
+		global $Translation;
+		static $TranslationEn = [];
+
+		// load English first, which sets the $TranslationEn array
+		require_once APP_DIR . '/defaultLang.php';
+
+		// then load user language. This might set $Translation array only if not English
+		include_once userLanguageFile();
+
+		// now merge $TranslationEn and $Translation, giving precedence to $Translation, and only using $TranslationEn for missing keys
+		$Translation = array_merge($TranslationEn, $Translation ?? []);
+
+		return $Translation['language'];
+	}
+
+	/**
+	 * Determine if the user's preferred language is a right-to-left (RTL) language and optionally return values based on the language direction.
+	 * @param string $returnIfRtl value to return if the language is RTL.
+	 * @param string $returnIfLtr value to return if the language is LTR.
+	 * @return mixed true/false if no parameters are given, or $returnIfRtl/$returnIfLtr based on the language direction.
+	 *
+	 * @example
+	 * ```php
+	 * rtl(); // returns true if RTL, false if LTR
+	 * rtl('rtl-class', 'ltr-class'); // returns 'rtl-class' if RTL, 'ltr-class' if LTR
+	 * rtl('rtl-class'); // returns 'rtl-class' if RTL, '' if LTR
+	 * rtl('', 'ltr-class'); // returns '' if RTL, 'ltr-class' if LTR
+	 * ```
+	 */
+	function rtl($returnIfRtl = '', $returnIfLtr = '') {
+		global $Translation;
+		$rtlLanguages = ['ar', 'he', 'fa', 'ur', 'ps'];
+		$langCode = userLanguage();
+
+		if(in_array($langCode, $rtlLanguages)) {
+			return $returnIfRtl === '' && $returnIfLtr === '' ? true : $returnIfRtl;
+		}
+
+		return $returnIfLtr === '' && $returnIfRtl === '' ? false : $returnIfLtr;
+	}
+
+	/**
+	 * Get the MIME type of a file.
+	 *
+	 * @param string $filePath The path to the file.
+	 * @return string|false The MIME type of the file, or false if the file does not exist.
+	 */
+	function getMimeType($filePath) {
+		if(!is_file($filePath)) return false;
+
+		$mimeType = 'application/octet-stream';
+		if(function_exists('finfo_open')) {
+			$finfo = finfo_open(FILEINFO_MIME_TYPE);
+			if($finfo) {
+				$detected = finfo_file($finfo, $filePath);
+				if($detected) $mimeType = $detected;
+				finfo_close($finfo);
+			}
+		} elseif(function_exists('mime_content_type')) {
+			$detected = mime_content_type($filePath);
+			if($detected) $mimeType = $detected;
+		}
+
+		return $mimeType;
+	}

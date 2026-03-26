@@ -1,6 +1,6 @@
 <?php
 	/**
-	 * Checks if the value of a specific unique field already exists 
+	 * Checks if the value of a specific unique field already exists
 	 * @param t table name
 	 * @param f field name
 	 * @param id the value of the PK of the record if it already exists

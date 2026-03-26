@@ -77,11 +77,11 @@
 
 						<div class="form-group">
 							<label for="email" class="control-label"><?php echo $Translation['email']; ?></label>
-							<input type="email" class="form-control" id="email" name="email" required>
+							<input type="email" class="form-control ltr" id="email" name="email" required>
 						</div>
 						<div class="form-group">
 							<label for="orderNum" class="control-label"><?php echo $Translation['order number']; ?></label>
-							<input type="text" class="form-control" id="orderNum" name="orderNum" required>
+							<input type="text" class="form-control ltr" id="orderNum" name="orderNum" required>
 						</div>
 						<button type="button" class="btn btn-lg btn-primary">
 							<span class="glyphicon glyphicon-refresh loop-rotate hidden"></span>
@@ -287,7 +287,7 @@
 					// if no plugins selected, return
 					if(!plugins.length) return;
 
-					expandStep(3);                    
+					expandStep(3);
 
 					// POST each plugin separately
 					plugins.each((i, plugin) => {

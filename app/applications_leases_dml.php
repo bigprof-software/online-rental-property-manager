@@ -392,7 +392,7 @@ function applications_leases_form($selectedId = '', $allowUpdate = true, $allowI
 					});
 				},
 				width: '100%',
-				formatNoMatches: function(term) { return '<?php echo addslashes($Translation['No matches found!']); ?>'; },
+				formatNoMatches: function(term) { return <?php echo json_encode($Translation['No matches found!']); ?>; },
 				minimumResultsForSearch: 5,
 				loadMorePadding: 200,
 				ajax: {
@@ -407,7 +407,9 @@ function applications_leases_form($selectedId = '', $allowUpdate = true, $allowI
 				AppGini.current_tenants__RAND__.value = e.added.id;
 				AppGini.current_tenants__RAND__.text = e.added.text;
 				$j('[name="tenants"]').val(e.added.id);
-				if(e.added.id == '<?php echo empty_lookup_value; ?>') { $j('.btn[id=applicants_and_tenants_view_parent]').hide(); } else { $j('.btn[id=applicants_and_tenants_view_parent]').show(); }
+				$j(this).parents('.form-group')
+					.find('.btn[id=applicants_and_tenants_view_parent]')
+					.toggleClass('hidden', e.added.id == '<?php echo empty_lookup_value; ?>');
 
 
 				if(typeof(tenants_update_autofills__RAND__) == 'function') tenants_update_autofills__RAND__();
@@ -470,7 +472,7 @@ function applications_leases_form($selectedId = '', $allowUpdate = true, $allowI
 					});
 				},
 				width: '100%',
-				formatNoMatches: function(term) { return '<?php echo addslashes($Translation['No matches found!']); ?>'; },
+				formatNoMatches: function(term) { return <?php echo json_encode($Translation['No matches found!']); ?>; },
 				minimumResultsForSearch: 5,
 				loadMorePadding: 200,
 				ajax: {
@@ -485,7 +487,9 @@ function applications_leases_form($selectedId = '', $allowUpdate = true, $allowI
 				AppGini.current_property__RAND__.value = e.added.id;
 				AppGini.current_property__RAND__.text = e.added.text;
 				$j('[name="property"]').val(e.added.id);
-				if(e.added.id == '<?php echo empty_lookup_value; ?>') { $j('.btn[id=properties_view_parent]').hide(); } else { $j('.btn[id=properties_view_parent]').show(); }
+				$j(this).parents('.form-group')
+					.find('.btn[id=properties_view_parent]')
+					.toggleClass('hidden', e.added.id == '<?php echo empty_lookup_value; ?>');
 
 						if(typeof(unit_reload__RAND__) == 'function') unit_reload__RAND__(AppGini.current_property__RAND__.value);
 
@@ -548,7 +552,7 @@ function applications_leases_form($selectedId = '', $allowUpdate = true, $allowI
 					});
 				},
 				width: '100%',
-				formatNoMatches: function(term) { return '<?php echo addslashes($Translation['No matches found!']); ?>'; },
+				formatNoMatches: function(term) { return <?php echo json_encode($Translation['No matches found!']); ?>; },
 				minimumResultsForSearch: 5,
 				loadMorePadding: 200,
 				ajax: {
@@ -563,7 +567,9 @@ function applications_leases_form($selectedId = '', $allowUpdate = true, $allowI
 				AppGini.current_unit__RAND__.value = e.added.id;
 				AppGini.current_unit__RAND__.text = e.added.text;
 				$j('[name="unit"]').val(e.added.id);
-				if(e.added.id == '<?php echo empty_lookup_value; ?>') { $j('.btn[id=units_view_parent]').hide(); } else { $j('.btn[id=units_view_parent]').show(); }
+				$j(this).parents('.form-group')
+					.find('.btn[id=units_view_parent]')
+					.toggleClass('hidden', e.added.id == '<?php echo empty_lookup_value; ?>');
 
 
 				if(typeof(unit_update_autofills__RAND__) == 'function') unit_update_autofills__RAND__();
@@ -649,7 +655,7 @@ function applications_leases_form($selectedId = '', $allowUpdate = true, $allowI
 		else
 			$templateCode = str_replace('<%%DELETE_BUTTON%%>', '', $templateCode);
 
-		$templateCode = str_replace('<%%DESELECT_BUTTON%%>', '<button type="submit" class="btn btn-default" id="deselect" name="deselect_x" value="1" onclick="' . $backAction . '" title="' . html_attr($Translation['Back']) . '"><i class="glyphicon glyphicon-chevron-left"></i> ' . $Translation['Back'] . '</button>', $templateCode);
+		$templateCode = str_replace('<%%DESELECT_BUTTON%%>', '<button type="submit" class="btn btn-default ltr" id="deselect" name="deselect_x" value="1" onclick="' . $backAction . '" title="' . html_attr($Translation['Back']) . '"><i class="glyphicon glyphicon-chevron-left"></i> ' . $Translation['Back'] . '</button>', $templateCode);
 	} else {
 		$templateCode = str_replace('<%%UPDATE_BUTTON%%>', '', $templateCode);
 		$templateCode = str_replace('<%%DELETE_BUTTON%%>', '', $templateCode);
@@ -667,7 +673,7 @@ function applications_leases_form($selectedId = '', $allowUpdate = true, $allowI
 				'<%%DESELECT_BUTTON%%>',
 				'<button
 					type="submit"
-					class="btn btn-default"
+					class="btn btn-default ltr"
 					id="deselect"
 					name="deselect_x"
 					value="1"
@@ -889,6 +895,16 @@ function applications_leases_form($selectedId = '', $allowUpdate = true, $allowI
 
 	// process translations
 	$templateCode = parseTemplate($templateCode);
+
+	// populate autoCloseParentTables
+	$lookupFields = getLookupFields()['applications_leases'] ?? [];
+	$autoCloseParentTables = [];
+	foreach($lookupFields as $field => $info) {
+		if($info['auto-close']) {
+			$autoCloseParentTables[] = $info['parent-table'];
+		}
+	}
+	$templateCode = str_replace('<%%AUTO_CLOSE_PARENT_TABLES%%>', json_encode($autoCloseParentTables), $templateCode);
 
 	// clear scrap
 	$templateCode = str_replace('<%%', '<!-- ', $templateCode);

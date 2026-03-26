@@ -21,7 +21,7 @@
 	/*
 		update_calc_fields($table, $id, $calc[$table])
 
-		then, for each parent of $table and its parent's $parent_id 
+		then, for each parent of $table and its parent's $parent_id
 		stored in record $id of $table:
 		update_calc_fields($parent_table, $parent_id, $calc[$parent_table])
 	 */

@@ -26,11 +26,11 @@
 				<form method="post" action="index.php">
 					<div class="form-group">
 						<label class="control-label" for="username"><?php echo $Translation['username']; ?></label>
-						<input class="form-control" name="username" id="username" type="text" placeholder="<?php echo $Translation['username']; ?>" required>
+						<input class="form-control" name="username" id="username" type="text" placeholder="<?php echo html_attr($Translation['username']); ?>" required>
 					</div>
 					<div class="form-group">
 						<label class="control-label" for="password"><?php echo $Translation['password']; ?></label>
-						<input class="form-control" name="password" id="password" type="password" placeholder="<?php echo $Translation['password']; ?>" required>
+						<input class="form-control" name="password" id="password" type="password" placeholder="<?php echo html_attr($Translation['password']); ?>" required>
 						<span class="help-block"><?php echo $Translation['forgot password']; ?></span>
 					</div>
 					<div class="checkbox">

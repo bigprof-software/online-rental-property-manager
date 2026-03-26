@@ -48,10 +48,10 @@
 		$mailMessage = strip_tags($mmr->raw);
 
 		$isGroup = ($memberID->raw != '' ? false : true);
-		$recipient = ($sendToAll ? $Translation["all groups"] : ($isGroup ? sqlValue("select name from membership_groups where groupID='$groupID'") : sqlValue("select lcase(memberID) from membership_users where lcase(memberID)='{$memberID->sql}'")));
+		$recipient = ($sendToAll ? $Translation['all groups'] : ($isGroup ? sqlValue("select name from membership_groups where groupID='$groupID'") : sqlValue("select lcase(memberID) from membership_users where lcase(memberID)='{$memberID->sql}'")));
 		if(!$recipient) {
 			echo Notification::show([
-				'message' => $Translation["no recipient"],
+				'message' => $Translation['no recipient'],
 				'class' => 'danger',
 				'dismiss_seconds' => 3600
 			]);
@@ -139,7 +139,7 @@
 	$messages_plugin_installed = false;
 	$plugins = get_plugins();
 
-	foreach($plugins as $plugin) 
+	foreach($plugins as $plugin)
 		if($plugin['title'] == 'Messages')
 			$messages_plugin_installed = true;
 
@@ -147,11 +147,11 @@
 		<div class="row">
 			<div class="col-sm-8 col-sm-offset-4 col-md-9 col-md-offset-3 col-lg-6 col-lg-offset-4">
 				<a
-					type="button" 
-					style="white-space: normal; word-wrap: break-word; margin: 2em 0;" 
-					class="btn btn-success btn-lg btn-block" 
-					href="https://bigprof.com/appgini/applications/messages-plugin" 
-					target="_blank" 
+					type="button"
+					style="white-space: normal; word-wrap: break-word; margin: 2em 0;"
+					class="btn btn-success btn-lg btn-block"
+					href="https://bigprof.com/appgini/applications/messages-plugin"
+					target="_blank"
 					>&#128161; <?php echo $Translation['messages plugin cta']; ?> &#128172;
 				</a>
 			</div>
@@ -168,7 +168,7 @@
 	<?php } ?>
 
 	<div class="form-group">
-		<label class="col-sm-4 col-md-3 col-lg-2 col-lg-offset-2 control-label"><?php echo $Translation["from"]; ?></label>
+		<label class="col-sm-4 col-md-3 col-lg-2 col-lg-offset-2 control-label"><?php echo $Translation['from']; ?></label>
 		<div class="col-sm-8 col-md-9 col-lg-6">
 			<p class="form-control-static">
 				<?php echo strip_tags($adminConfig['senderName']) . " &lt;{$adminConfig['senderEmail']}&gt;"; ?>
@@ -205,14 +205,14 @@
 	</div>
 
 	<div class="form-group">
-		<label for="mailSubject" class="col-sm-4 col-md-3 col-lg-2 col-lg-offset-2 control-label"><?php echo $Translation["subject"]; ?></label>
+		<label for="mailSubject" class="col-sm-4 col-md-3 col-lg-2 col-lg-offset-2 control-label"><?php echo $Translation['subject']; ?></label>
 		<div class="col-sm-8 col-md-9 col-lg-6">
 			<input class="form-control" name="mailSubject" id="mailSubject" autofocus>
 		</div>
 	</div>
 
 	<div class="form-group">
-		<label for="mailMessage" class="col-sm-4 col-md-3 col-lg-2 col-lg-offset-2 control-label"><?php echo $Translation["message"]; ?></label>
+		<label for="mailMessage" class="col-sm-4 col-md-3 col-lg-2 col-lg-offset-2 control-label"><?php echo $Translation['message']; ?></label>
 		<div class="col-sm-8 col-md-9 col-lg-6">
 			<textarea rows="10" class="form-control" name="mailMessage" id="mailMessage"></textarea>
 		</div>
@@ -232,7 +232,7 @@
 
 	<div class="form-group">
 		<div class="col-sm-4 col-sm-offset-8 col-md-4 col-md-offset-8 col-lg-2 col-lg-offset-8">
-			<button name="saveChanges" type="submit" class="btn btn-primary btn-lg btn-block"><i class="glyphicon glyphicon-envelope"></i> <?php echo $Translation["send message"]; ?></button>
+			<button name="saveChanges" type="submit" class="btn btn-primary btn-lg btn-block"><i class="glyphicon glyphicon-envelope"></i> <?php echo $Translation['send message']; ?></button>
 		</div>
 	</div>
 </form>

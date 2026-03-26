@@ -132,14 +132,14 @@
 		<?php
 			if(!db_num_rows($res2)) {
 				echo Notification::show([
-					'message' => '<i class="glyphicon glyphicon-user"></i> ' . $Translation["no member permissions"],
+					'message' => '<i class="glyphicon glyphicon-user"></i> ' . $Translation['no member permissions'],
 					'class' => 'info',
 					'dismiss_seconds' => 3600
 				]);
 			} else {
 				?>
 					<button type="submit" name="resetPermissions" value="1" class="btn btn-warning btn-lg reset-permissions">
-						<i class="glyphicon glyphicon-refresh"></i> 
+						<i class="glyphicon glyphicon-refresh"></i>
 						<?php echo html_attr($Translation['reset member permissions']); ?>
 					</button>
 				<?php
@@ -149,18 +149,18 @@
 			$arrPermVal = [0, 1, 2, 3];
 			$arrPermText = [$Translation['no'], $Translation['owner'], $Translation['group'], $Translation['all']];
 		?>
-		<button type="submit" name="saveChanges" value="1" class="btn btn-primary btn-lg"><i class="glyphicon glyphicon-ok"></i> <?php echo $Translation["save changes"]; ?></button>
+		<button type="submit" name="saveChanges" value="1" class="btn btn-primary btn-lg"><i class="glyphicon glyphicon-ok"></i> <?php echo $Translation['save changes']; ?></button>
 	</div>
 
 	<div class="table-responsive">
 		<table class="table table-striped table-hover">
 			<thead>
 				<tr>
-					<th width="30%"><?php echo $Translation["table"]; ?></th>
-					<th width="10%" class="text-center"><?php echo $Translation["insert"]; ?></th>
-					<th width="20%"><?php echo $Translation["view"]; ?></th>
-					<th width="20%"><?php echo $Translation["edit"]; ?></th>
-					<th width="20%"><?php echo $Translation["delete"]; ?></th>
+					<th width="30%"><?php echo $Translation['table']; ?></th>
+					<th width="10%" class="text-center"><?php echo $Translation['insert']; ?></th>
+					<th width="20%"><?php echo $Translation['view']; ?></th>
+					<th width="20%"><?php echo $Translation['edit']; ?></th>
+					<th width="20%"><?php echo $Translation['delete']; ?></th>
 				</tr>
 			</thead>
 			<tbody>
@@ -196,8 +196,8 @@
 	</div>
 
 	<div class="text-right">
-		<button type="submit" name="saveChanges" value="1" class="hidden-xs hidden-sm btn btn-primary btn-lg"><i class="glyphicon glyphicon-ok"></i> <?php echo $Translation["save changes"]; ?></button>
-		<button type="submit" name="saveChanges" value="1" class="hidden-md hidden-lg btn btn-primary btn-lg btn-block"><i class="glyphicon glyphicon-ok"></i> <?php echo $Translation["save changes"]; ?></button>
+		<button type="submit" name="saveChanges" value="1" class="hidden-xs hidden-sm btn btn-primary btn-lg"><i class="glyphicon glyphicon-ok"></i> <?php echo $Translation['save changes']; ?></button>
+		<button type="submit" name="saveChanges" value="1" class="hidden-md hidden-lg btn btn-primary btn-lg btn-block"><i class="glyphicon glyphicon-ok"></i> <?php echo $Translation['save changes']; ?></button>
 	</div>
 </form>
 
@@ -215,7 +215,7 @@
 		}
 
 		$j('button.reset-permissions').click(function() {
-			return confirm(<?php echo json_encode($Translation["remove special permissions"]); ?>);
+			return confirm(<?php echo json_encode($Translation['remove special permissions']); ?>);
 		})
 
 		$j('input[type=radio]').change(highlight_selections);

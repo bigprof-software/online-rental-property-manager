@@ -53,10 +53,10 @@
 				break;
 			case 'new': /* new record */
 				var parentId = $j('[name=SelectedID]').val();
-				var url = param.ChildTable + '_view.php?' + 
+				var url = param.ChildTable + '_view.php?' +
 					'filterer_' + param.ChildLookupField + '=' + encodeURIComponent(parentId) +
-					'&addNew_x=1' + 
-					'&Embedded=1' + 
+					'&addNew_x=1' +
+					'&Embedded=1' +
 					(param.AutoClose ? '&AutoClose=1' : '');
 				modal_window({
 					url: url,
@@ -65,15 +65,16 @@
 							parentTable: $j('.detail_view').data('table'),
 							parentId: param.SelectedID,
 							childTable: param.ChildTable,
-							childId: localStorage.getItem(param.ChildTable + '_last_added_id')
+							childId: AppGini.localStorage.getItem(`${param.ChildTable}_last_added_id`)
 						});
-						localStorage.removeItem(param.ChildTable + '_last_added_id');
+						AppGini.localStorage.removeItem(`${param.ChildTable}_last_added_id`);
 						<?php echo $current_table; ?>GetChildrenRecordsList({ Verb: 'reload' });
 						AppGini.calculatedFields.init();
 						AppGini.scrollTo('children-tabs');
 					},
+					beforeClose: AppGini.confirmBeforeClosingModal,
 					size: 'full',
-					title: '<?php echo addslashes("{$config['tab-label']}: {$Translation['Add New']}"); ?>'
+					title: <?php echo json_encode("{$config['tab-label']}: {$Translation['Add New']}"); ?>
 				});
 				break;
 			case 'open': /* opens the detail view for given child record PK provided in 'ChildID' */
@@ -91,8 +92,9 @@
 						AppGini.calculatedFields.init();
 						AppGini.scrollTo('children-tabs');
 					},
+					beforeClose: AppGini.confirmBeforeClosingModal,
 					size: 'full',
-					title: '<?php echo addslashes($config['tab-label']); ?>'
+					title: <?php echo json_encode($config['tab-label']); ?>
 				});
 				break;
 			case 'reload': /* just a way of refreshing children, retaining sorting and pagination & without reloading the whole page */
@@ -133,7 +135,7 @@
 							<th>&nbsp;</th>
 						<?php } ?>
 						<?php if(is_array($config['display-fields'])) foreach($config['display-fields'] as $fieldIndex => $fieldLabel) { ?>
-							<th 
+							<th
 								<?php if($config['sortable-fields'][$fieldIndex]) { ?>
 									onclick="<?php echo $current_table; ?>GetChildrenRecordsList({
 										Verb: 'sort',
@@ -165,18 +167,18 @@
 							<?php } ?>
 						<?php } ?>
 
-						<td class="<?php echo "{$parameters['ChildTable']}-{$config['display-field-names'][1]}"; ?>" id="<?php echo "{$parameters['ChildTable']}-{$config['display-field-names'][1]}-" . html_attr($record[$config['child-primary-key-index']]); ?>"><?php echo safe_html($record[1]); ?></td>
-						<td class="<?php echo "{$parameters['ChildTable']}-{$config['display-field-names'][2]}"; ?>" id="<?php echo "{$parameters['ChildTable']}-{$config['display-field-names'][2]}-" . html_attr($record[$config['child-primary-key-index']]); ?>"><?php echo safe_html($record[2]); ?></td>
-						<td class="<?php echo "{$parameters['ChildTable']}-{$config['display-field-names'][3]}"; ?>" id="<?php echo "{$parameters['ChildTable']}-{$config['display-field-names'][3]}-" . html_attr($record[$config['child-primary-key-index']]); ?>"><?php echo safe_html($record[3]); ?></td>
-						<td class="<?php echo "{$parameters['ChildTable']}-{$config['display-field-names'][5]}"; ?>" id="<?php echo "{$parameters['ChildTable']}-{$config['display-field-names'][5]}-" . html_attr($record[$config['child-primary-key-index']]); ?>"><a href="mailto:<?php echo html_attr($record[5]); ?>" class="btn btn-info" title="<?php echo html_attr($record[5]); ?>"><i class="glyphicon glyphicon-envelope"></i></a></td>
-						<td class="<?php echo "{$parameters['ChildTable']}-{$config['display-field-names'][6]}"; ?>" id="<?php echo "{$parameters['ChildTable']}-{$config['display-field-names'][6]}-" . html_attr($record[$config['child-primary-key-index']]); ?>"><a href="mailto:<?php echo html_attr($record[6]); ?>" class="btn btn-info" title="<?php echo html_attr($record[6]); ?>"><i class="glyphicon glyphicon-envelope"></i></a></td>
-						<td class="<?php echo "{$parameters['ChildTable']}-{$config['display-field-names'][7]}"; ?>" id="<?php echo "{$parameters['ChildTable']}-{$config['display-field-names'][7]}-" . html_attr($record[$config['child-primary-key-index']]); ?>"><?php echo safe_html($record[7]); ?></td>
-						<td class="<?php echo "{$parameters['ChildTable']}-{$config['display-field-names'][8]}"; ?>" id="<?php echo "{$parameters['ChildTable']}-{$config['display-field-names'][8]}-" . html_attr($record[$config['child-primary-key-index']]); ?>"><?php echo safe_html($record[8]); ?></td>
-						<td class="<?php echo "{$parameters['ChildTable']}-{$config['display-field-names'][9]}"; ?>" id="<?php echo "{$parameters['ChildTable']}-{$config['display-field-names'][9]}-" . html_attr($record[$config['child-primary-key-index']]); ?>"><?php echo safe_html($record[9]); ?></td>
-						<td class="<?php echo "{$parameters['ChildTable']}-{$config['display-field-names'][10]}"; ?>" id="<?php echo "{$parameters['ChildTable']}-{$config['display-field-names'][10]}-" . html_attr($record[$config['child-primary-key-index']]); ?>"><?php echo safe_html($record[10]); ?></td>
-						<td class="<?php echo "{$parameters['ChildTable']}-{$config['display-field-names'][11]}"; ?>" id="<?php echo "{$parameters['ChildTable']}-{$config['display-field-names'][11]}-" . html_attr($record[$config['child-primary-key-index']]); ?>"><?php echo safe_html($record[11]); ?></td>
+						<td class="<?php echo "{$parameters['ChildTable']}-{$config['display-field-names'][1]}"; ?> rtl-left" id="<?php echo "{$parameters['ChildTable']}-{$config['display-field-names'][1]}-" . html_attr($record[$config['child-primary-key-index']]); ?>"><?php echo safe_html($record[1]); ?></td>
+						<td class="<?php echo "{$parameters['ChildTable']}-{$config['display-field-names'][2]}"; ?> rtl-left" id="<?php echo "{$parameters['ChildTable']}-{$config['display-field-names'][2]}-" . html_attr($record[$config['child-primary-key-index']]); ?>"><?php echo safe_html($record[2]); ?></td>
+						<td class="<?php echo "{$parameters['ChildTable']}-{$config['display-field-names'][3]}"; ?> rtl-left" id="<?php echo "{$parameters['ChildTable']}-{$config['display-field-names'][3]}-" . html_attr($record[$config['child-primary-key-index']]); ?>"><?php echo safe_html($record[3]); ?></td>
+						<td class="<?php echo "{$parameters['ChildTable']}-{$config['display-field-names'][5]}"; ?> rtl-left" id="<?php echo "{$parameters['ChildTable']}-{$config['display-field-names'][5]}-" . html_attr($record[$config['child-primary-key-index']]); ?>"><a href="mailto:<?php echo html_attr($record[5]); ?>" class="btn btn-info" title="<?php echo html_attr($record[5]); ?>"><i class="glyphicon glyphicon-envelope"></i></a></td>
+						<td class="<?php echo "{$parameters['ChildTable']}-{$config['display-field-names'][6]}"; ?> rtl-left" id="<?php echo "{$parameters['ChildTable']}-{$config['display-field-names'][6]}-" . html_attr($record[$config['child-primary-key-index']]); ?>"><a href="mailto:<?php echo html_attr($record[6]); ?>" class="btn btn-info" title="<?php echo html_attr($record[6]); ?>"><i class="glyphicon glyphicon-envelope"></i></a></td>
+						<td class="<?php echo "{$parameters['ChildTable']}-{$config['display-field-names'][7]}"; ?> rtl-left" id="<?php echo "{$parameters['ChildTable']}-{$config['display-field-names'][7]}-" . html_attr($record[$config['child-primary-key-index']]); ?>"><?php echo safe_html($record[7]); ?></td>
+						<td class="<?php echo "{$parameters['ChildTable']}-{$config['display-field-names'][8]}"; ?> rtl-left" id="<?php echo "{$parameters['ChildTable']}-{$config['display-field-names'][8]}-" . html_attr($record[$config['child-primary-key-index']]); ?>"><?php echo safe_html($record[8]); ?></td>
+						<td class="<?php echo "{$parameters['ChildTable']}-{$config['display-field-names'][9]}"; ?> rtl-left" id="<?php echo "{$parameters['ChildTable']}-{$config['display-field-names'][9]}-" . html_attr($record[$config['child-primary-key-index']]); ?>"><?php echo safe_html($record[9]); ?></td>
+						<td class="<?php echo "{$parameters['ChildTable']}-{$config['display-field-names'][10]}"; ?> rtl-left" id="<?php echo "{$parameters['ChildTable']}-{$config['display-field-names'][10]}-" . html_attr($record[$config['child-primary-key-index']]); ?>"><?php echo safe_html($record[10]); ?></td>
+						<td class="<?php echo "{$parameters['ChildTable']}-{$config['display-field-names'][11]}"; ?> rtl-left" id="<?php echo "{$parameters['ChildTable']}-{$config['display-field-names'][11]}-" . html_attr($record[$config['child-primary-key-index']]); ?>"><?php echo safe_html($record[11]); ?></td>
 						<td class="<?php echo "{$parameters['ChildTable']}-{$config['display-field-names'][12]}"; ?> text-right" id="<?php echo "{$parameters['ChildTable']}-{$config['display-field-names'][12]}-" . html_attr($record[$config['child-primary-key-index']]); ?>"><?php echo safe_html($record[12]); ?></td>
-						<td class="<?php echo "{$parameters['ChildTable']}-{$config['display-field-names'][13]}"; ?>" id="<?php echo "{$parameters['ChildTable']}-{$config['display-field-names'][13]}-" . html_attr($record[$config['child-primary-key-index']]); ?>"><?php echo safe_html($record[13]); ?></td>
+						<td class="<?php echo "{$parameters['ChildTable']}-{$config['display-field-names'][13]}"; ?> rtl-left" id="<?php echo "{$parameters['ChildTable']}-{$config['display-field-names'][13]}-" . html_attr($record[$config['child-primary-key-index']]); ?>"><?php echo safe_html($record[13]); ?></td>
 					</tr>
 					<?php } ?>
 				</tbody>
@@ -202,14 +204,14 @@
 			<div class="row hidden-print">
 				<div class="col-xs-12">
 					<button
-						type="button" 
-						class="btn btn-default btn-previous" 
+						type="button"
+						class="btn btn-default btn-previous"
 						<?php echo $parameters['Page'] <= 1 ? 'disabled' : ''; ?>
 						><i class="glyphicon glyphicon-chevron-left"></i>
 					</button>
 					<button
-						type="button" 
-						class="btn btn-default btn-next" 
+						type="button"
+						class="btn btn-default btn-next"
 						<?php echo ($firstRecord + count($records) - 1) == $totalMatches ? 'disabled' : ''; ?>
 						><i class="glyphicon glyphicon-chevron-right"></i>
 					</button>

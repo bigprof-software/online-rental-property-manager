@@ -9,20 +9,22 @@
 	<!-- child links -->
 	<div class="row vspacer-md">
 		<div class="col-xs-12 children-links">
+			<button class="btn btn-default btn-lg pull-left dv-form-toggle hidden-xs" type="button" data-toggle="collapse" data-target="#units_dv_form_container" aria-expanded="true" aria-controls="units_dv_form_container" data-title="Hide DV"><i class="glyphicon glyphicon-chevron-up" style="line-height: 32px;"></i></button>
 			<a class="hidden-xs btn btn-default btn-lg pull-right hidden hspacer-sm vspacer-sm" href="applications_leases_view.php?filterer_unit=<%%URLVALUE(id)%%>&<%%EMBEDDED%%>" id="applications_leases_link"><img src="resources/table_icons/curriculum_vitae.png"> Applications/Leases</a>
 			<a class="visible-xs btn btn-default btn-lg btn-block hidden vspacer-sm" href="applications_leases_view.php?filterer_unit=<%%URLVALUE(id)%%>&<%%EMBEDDED%%>" id="xs_applications_leases_link"><img src="resources/table_icons/curriculum_vitae.png"> Applications/Leases</a>
 			<input type="hidden" id="applications_leases_hclink" value="applications_leases_view.php?filterer_unit=<%%URLVALUE(id)%%>&<%%EMBEDDED%%>">
 			<a class="hidden-xs btn btn-default btn-lg pull-right hidden hspacer-sm vspacer-sm" href="unit_photos_view.php?filterer_unit=<%%URLVALUE(id)%%>&<%%EMBEDDED%%>" id="unit_photos_link"><img src="resources/table_icons/camera_link.png"> Unit photos</a>
 			<a class="visible-xs btn btn-default btn-lg btn-block hidden vspacer-sm" href="unit_photos_view.php?filterer_unit=<%%URLVALUE(id)%%>&<%%EMBEDDED%%>" id="xs_unit_photos_link"><img src="resources/table_icons/camera_link.png"> Unit photos</a>
 			<input type="hidden" id="unit_photos_hclink" value="unit_photos_view.php?filterer_unit=<%%URLVALUE(id)%%>&<%%EMBEDDED%%>">
+			<button class="btn btn-default btn-lg btn-block visible-xs dv-form-toggle" type="button" data-toggle="collapse" data-target="#units_dv_form_container" aria-expanded="true" aria-controls="units_dv_form_container"><i class="glyphicon glyphicon-chevron-up" style="line-height: 32px;"></i> <span data-translate="Hide DV"></span></button>
 			<div class="clearfix"></div>
 		</div>
 	</div>
-	<hr class="hidden-xs hidden-sm">
 
-	<div class="row">
+	<div class="row collapse in" id="units_dv_form_container">
+		<hr class="hidden-xs hidden-sm dv-form-top-border">
 		<!-- form inputs -->
-		<div class="col-md-8 col-lg-10" id="units_dv_form">
+		<div class="col-md-8 col-lg-9 dv-form" id="units_dv_form" data-tablename="units">
 			<fieldset class="form-horizontal">
 
 				<!-- Field: ID -->
@@ -60,9 +62,9 @@
 						<span class="help-block bspacer-xs collapse" id="photo-description"><div class="alert alert-info bspacer-xs">Maximum file size allowed: 2000 KB.<br>Allowed file types: jpg, jpeg, gif, png</div></span>
 						<div class="form-control-static well well-sm">
 							<div class="row" style="margin-right: 0; margin-left: 0;">
-								<div class="col-lg-8 col-md-6" style="padding-left: 0;"><a href="<%%BASE_UPLOAD_PATH%%><%%VALUE(photo)%%>" data-lightbox="units_dv"><img src="thumbnail.php?i=<%%VALUE(photo)%%>&t=units&f=photo&v=dv" class="img-thumbnail" id="photo-image"></a></div>
+								<div class="col-md-6" style="padding-left: 0;"><a href="<%%BASE_UPLOAD_PATH%%><%%VALUE(photo)%%>" data-lightbox="units_dv"><img src="thumbnail.php?i=<%%VALUE(photo)%%>&t=units&f=photo&v=dv" class="img-thumbnail" id="photo-image"></a></div>
 								<div class="hidden-md hidden-lg vspacer-lg"></div>
-								<div class="col-lg-4 col-md-6 well upload-toolbox">
+								<div class="col-md-6 well upload-toolbox">
 									<%%REMOVEFILE(photo)%%>
 									<%%UPLOADFILE(photo)%%>
 									<div class="text-bold text-danger file-type-error hidden"><%%TRANSLATION(invalid file type)%%></div>
@@ -151,7 +153,7 @@
 					<hr class="hidden-md hidden-lg">
 					<label class="control-label col-lg-3" for="bathroom">Bathroom</label>
 					<div class="col-lg-9">
-						<input maxlength="17" type="text" class="form-control" name="bathroom" id="bathroom" value="<%%VALUE(bathroom)%%>">
+						<input maxlength="17" type="text" class="form-control" name="bathroom" id="bathroom" value="<%%VALUE(bathroom)%%>" onchange="AppGini.Validation.decimal('bathroom', 15, 0)">
 					</div>
 				</div>
 
@@ -169,7 +171,7 @@
 					<hr class="hidden-md hidden-lg">
 					<label class="control-label col-lg-3" for="rental_amount">Rental amount</label>
 					<div class="col-lg-9">
-						<input maxlength="12" type="text" class="form-control" name="rental_amount" id="rental_amount" value="<%%VALUE(rental_amount)%%>">
+						<input maxlength="12" type="text" class="form-control" name="rental_amount" id="rental_amount" value="<%%VALUE(rental_amount)%%>" onchange="AppGini.Validation.decimal('rental_amount', 10, 2)">
 					</div>
 				</div>
 
@@ -187,7 +189,7 @@
 
 		<!-- DV action buttons -->
 		<hr class="hidden-md hidden-lg">
-		<div class="col-md-4 col-lg-2 dv-action-buttons" id="units_dv_action_buttons">
+		<div class="col-md-4 col-lg-3 dv-action-buttons" id="units_dv_action_buttons" data-tablename="units">
 			<div class="btn-toolbar">
 				<div class="btn-group-vertical btn-group-lg" style="width: 100%;">
 					<%%UPDATE_BUTTON%%>
@@ -278,10 +280,7 @@
 						}
 					);
 				}
-				setTimeout(append_embedded, 500);
-				setTimeout(append_embedded, 1500);
-				setTimeout(append_embedded, 2500);
-				setTimeout(append_embedded, 3500);
+				setInterval(append_embedded, 1000);
 			}
 
 			/* when no record is selected ('add new' mode) */
@@ -299,29 +298,34 @@
 				);
 			}
 
+			const autoCloseTables = <%%AUTO_CLOSE_PARENT_TABLES%%>;
+
 			if(true /* !embedded_mode */) {
 				$j('.add_new_parent').click(function() {
-					var pt = $j(this).attr('id').replace(/_add_new$/, '');
+					const fieldId = $j(this).prevAll('input:hidden').eq(0).attr('id');
+					const pt = $j(this).attr('id').replace(/_add_new$/, '');
+					const autoCloseParam = (autoCloseTables.includes(pt) ? '&AutoClose=1' : '');
+
 					modal_window({
-						url: pt + '_view.php?addNew_x=1&Embedded=1',
+						url: `${pt}_view.php?addNew_x=1&Embedded=1${autoCloseParam}`,
 						close: function() {
-							var field_id = $j('#' + pt + '_add_new').prevAll('input:hidden').eq(0).attr('id');
-							$j('#' + field_id + '-container').select2('focus').select2('focus');
+							$j(`#${fieldId}-container`).select2('focus').select2('focus');
 
 							/* if a new parent was added, select it */
-							var new_id = localStorage.getItem(pt + '_last_added_id');
+							var new_id = AppGini.localStorage.getItem(`${pt}_last_added_id`);
 							if(new_id === null) return;
 
-							localStorage.removeItem(pt + '_last_added_id');
+							AppGini.localStorage.removeItem(`${pt}_last_added_id`);
 							AppGini.lookupText({
 								id: new_id,
-								table: 'units',
-								field: field_id,
+								table: AppGini.currentTableName(),
+								field: fieldId,
 								callback: function(data) {
-									$j('#' + field_id + '-container').select2('data', data, true);
+									$j(`#${fieldId}-container`).select2('data', data, true);
 								}
 							});
 						},
+						beforeClose: AppGini.confirmBeforeClosingModal,
 						size: 'full',
 						title: $j(this).attr('title')
 					});
@@ -331,44 +335,56 @@
 			AppGini.hideViewParentLinks();
 
 			$j('form').on('click', '.view_parent', function() {
-				var pt = $j(this).attr('id').replace(/_view_parent$/, '');
-				if($j(this).prevAll('input:hidden').length) {
-					var parent_id = $j(this).prevAll('input:hidden').eq(0).val();
-				} else {
-					var parent_id = $j(this).prevAll().children('input:hidden').eq(0).val();
-				}
+				const pt = $j(this).attr('id').replace(/_view_parent$/, '');
+				const fieldId = $j(this).prevAll('input:hidden').eq(0).attr('id');
+				const autoCloseParam = (autoCloseTables.includes(pt) ? '&AutoClose=1' : '');
 
-				/* handle radio lookups */
-				if($j(this).prevAll('[type=radio]').length) {
+				let parent_id = '{empty_value}';
+				if(fieldId) {
+					parent_id = $j(`#${fieldId}`).val();
+				} else if($j(this).prevAll('[type=radio]').length) { /* handle radio lookups */
 					parent_id = $j(this).prevAll('[type=radio]').eq(0).val();
+				} else {
+					parent_id = $j(this).prevAll().children('input:hidden').eq(0).val();
 				}
 
-				if(parent_id != '{empty_value}' && parent_id != undefined && parent_id != '') {
-					var parent_link = $j(this).parents('.form-group').children('label').data('parent_link');
+				if(parent_id != '{empty_value}' && parent_id !== undefined && parent_id !== '') {
+					const parent_link = $j(this).parents('.form-group').children('label').data('parent_link');
 					switch(parent_link) {
 						case 'view_parent_hidden':
 							break;
 						case 'view_parent_modal':
 							modal_window({
-								url: pt + '_view.php?Embedded=1&SelectedID=' + encodeURIComponent(parent_id),
+								url: `${pt}_view.php?Embedded=1&SelectedID=${encodeURIComponent(parent_id)}${autoCloseParam}`,
 								close: function() {
-									var field_id = $j('#' + pt + '_view_parent').prevAll('input:hidden').eq(0).attr('id');
-									$j('#' + field_id + '-container').select2('focus').select2('focus');
+									$j(`#${fieldId}-container`).select2('focus').select2('focus');
 
-									// in case the parent record was updated, we should update auto-fills
-									var updaterName = field_id + '_update_autofills';
-									if(typeof(window[updaterName]) == 'function')
-										window[updaterName]();
+									// update lookup text in case the parent record was updated
+									AppGini.lookupText({
+										id: parent_id,
+										table: AppGini.currentTableName(),
+										field: fieldId,
+										cache: false,
+										callback: function(data) {
+											$j(`#${fieldId}-container`).select2('data', data, true);
+
+											// update auto-fills
+											const updaterName = `${fieldId}_update_autofills`;
+											if(typeof(window[updaterName]) == 'function')
+												window[updaterName]();
+										}
+									});
 								},
+								beforeClose: AppGini.confirmBeforeClosingModal,
 								size: 'full',
 								title: $j(this).attr('title')
 							});
 							break;
 						case 'view_parent_same_window':
-							window.location = pt + '_view.php?Embedded=' + (embedded_mode ? '1' : '') + '&SelectedID=' + encodeURIComponent(parent_id);
+							window.location = `${pt}_view.php?Embedded=${embedded_mode ? '1' : ''}&SelectedID=${encodeURIComponent(parent_id)}`;
 							break;
 						case 'view_parent_new_window':
-							window.open(pt + '_view.php?SelectedID=' + encodeURIComponent(parent_id));
+							window.open(`${pt}_view.php?SelectedID=${encodeURIComponent(parent_id)}`);
 							break;
 					}
 

@@ -335,14 +335,21 @@
 	#########################################################
 
 	function htmlUserBar() {
+		if(Request::val('Embedded')) return ''; // skip if in embedded mode
+
 		global $Translation;
 		if(!defined('PREPEND_PATH')) define('PREPEND_PATH', '');
 
 		$mi = getMemberInfo();
-		$adminConfig = config('adminConfig');
-		$home_page = (basename($_SERVER['PHP_SELF']) == 'index.php');
-		ob_start();
+		$home_page = defined('HOMEPAGE') && HOMEPAGE;
 
+		$navMenu = getUserData('navMenu');
+		if(!$navMenu) {
+			setUserData('navMenu', DEFAULT_NAV_MENU);
+			$navMenu = DEFAULT_NAV_MENU;
+		}
+
+		ob_start();
 		?>
 		<nav class="navbar navbar-default navbar-fixed-top hidden-print" role="navigation">
 			<div class="navbar-header">
@@ -350,40 +357,33 @@
 					<span class="glyphicon glyphicon-menu-hamburger"></span>
 				</button>
 				<!-- application title is obtained from the name besides the yellow database icon in AppGini, use underscores for spaces -->
-				<a class="navbar-brand" href="<?php echo PREPEND_PATH; ?>index.php"><i class="glyphicon glyphicon-home"></i> <?php echo APP_TITLE; ?></a>
+				<a class="navbar-brand" href="<?= PREPEND_PATH ?>index.php"><i class="glyphicon glyphicon-home"></i> <?php echo APP_TITLE; ?></a>
 				<p class="navbar-text pull-left navbar-sub-brand-separator hidden">/</p>
 				<a class="navbar-brand navbar-sub-brand title-link hidden"></a>
 			</div>
 			<div class="collapse navbar-collapse">
 
 				<?php if(!Authentication::isGuest()) { ?>
+					<div class="filter-links navbar-form navbar-text hidden">
+						<div class="form-group">
+							<input id="filter-links-select2-placeholder" type="hidden">
+						</div>
+					</div>
 					<ul class="nav navbar-nav visible-xs">
 						<div class="btn-group">
-							<a class="btn navbar-btn btn-default btn-lg signed-in-as" href="<?php echo PREPEND_PATH; ?>membership_profile.php">
+							<a class="btn navbar-btn btn-default btn-lg signed-in-as" href="<?= PREPEND_PATH ?>membership_profile.php">
 								<i class="glyphicon glyphicon-user"></i>
 								<strong class="username"><?php echo $mi['username']; ?></strong>
 							</a>
-							<a class="btn navbar-btn btn-default btn-lg" href="<?php echo PREPEND_PATH; ?>index.php?signOut=1">
+							<a class="btn navbar-btn btn-default btn-lg" href="<?= PREPEND_PATH ?>index.php?signOut=1">
 								<i class="glyphicon glyphicon-log-out"></i>
 							</a>
 						</div>
 					</ul>
 				<?php } ?>
 
-				<ul class="nav navbar-nav"><?php echo ($home_page && !HOMEPAGE_NAVMENUS ? '' : NavMenus()); ?></ul>
-
-				<?php if(userCanImport()){ ?>
-					<ul class="nav navbar-nav">
-						<a href="<?php echo PREPEND_PATH; ?>import-csv.php" class="btn btn-default navbar-btn hidden-xs btn-import-csv" title="<?php echo html_attr($Translation['import csv file']); ?>"><i class="glyphicon glyphicon-th"></i> <?php echo $Translation['import CSV']; ?></a>
-						<a href="<?php echo PREPEND_PATH; ?>import-csv.php" class="btn btn-default navbar-btn visible-xs btn-lg btn-import-csv" title="<?php echo html_attr($Translation['import csv file']); ?>"><i class="glyphicon glyphicon-th"></i> <?php echo $Translation['import CSV']; ?></a>
-					</ul>
-				<?php } ?>
-
-				<?php if(getLoggedAdmin() !== false) { ?>
-					<ul class="nav navbar-nav">
-						<a href="<?php echo PREPEND_PATH; ?>admin/pageHome.php" class="btn btn-danger navbar-btn hidden-xs" title="<?php echo html_attr($Translation['admin area']); ?>"><i class="glyphicon glyphicon-cog"></i> <?php echo $Translation['admin area']; ?></a>
-						<a href="<?php echo PREPEND_PATH; ?>admin/pageHome.php" class="btn btn-danger navbar-btn visible-xs btn-lg" title="<?php echo html_attr($Translation['admin area']); ?>"><i class="glyphicon glyphicon-cog"></i> <?php echo $Translation['admin area']; ?></a>
-					</ul>
+				<?php if(!$home_page || HOMEPAGE_NAVMENUS) { ?>
+					<ul class="nav navbar-nav horizontal-navlinks<?php echo $navMenu != 'horizontal' ? ' hidden' : ''; ?>"><?php echo NavMenus(); ?></ul>
 				<?php } ?>
 
 				<?php if(!Request::val('signIn') && !Request::val('loginFailed')) { ?>
@@ -392,11 +392,11 @@
 						<a href="#" class="btn btn-default navbar-btn hidden-xs hidden-browser navbar-right hspacer-lg exit-pwa" title="<?php echo html_attr($Translation['exit']); ?>">
 							<i class="glyphicon glyphicon-remove"></i> <?php echo $Translation['exit']; ?>
 						</a>
-						<a href="<?php echo PREPEND_PATH; ?>index.php?signIn=1" class="btn btn-success navbar-btn navbar-right hidden-xs"><?php echo $Translation['sign in']; ?></a>
+						<a href="<?= PREPEND_PATH ?>index.php?signIn=1" class="btn btn-success navbar-btn navbar-right hidden-xs"><?php echo $Translation['sign in']; ?></a>
 						<p class="navbar-text navbar-right hidden-xs">
 							<?php echo $Translation['not signed in']; ?>
 						</p>
-						<a href="<?php echo PREPEND_PATH; ?>index.php?signIn=1" class="btn btn-success btn-block btn-lg navbar-btn visible-xs">
+						<a href="<?= PREPEND_PATH ?>index.php?signIn=1" class="btn btn-success btn-block btn-lg navbar-btn visible-xs">
 							<?php echo $Translation['not signed in']; ?>
 							<i class="glyphicon glyphicon-chevron-right"></i>
 							<?php echo $Translation['sign in']; ?>
@@ -408,16 +408,16 @@
 								<a href="#" class="dropdown-toggle profile-menu-icon" data-toggle="dropdown"><i class="glyphicon glyphicon-user icon"></i><span class="profile-menu-text"><?php echo $mi['username']; ?></span><b class="caret"></b></a>
 								<ul class="dropdown-menu profile-menu">
 									<li class="user-profile-menu-item" title="<?php echo html_attr($Translation['Your info']); ?>">
-										<a href="<?php echo PREPEND_PATH; ?>membership_profile.php"><i class="glyphicon glyphicon-user"></i> <?php echo $Translation['my account']; ?> <span class="label label-default username"><?php echo $mi['username']; ?></span></a>
+										<a href="<?= PREPEND_PATH ?>membership_profile.php"><i class="glyphicon glyphicon-user"></i> <?php echo $Translation['my account']; ?> <span class="label label-default username"><?php echo $mi['username']; ?></span></a>
 									</li>
 									<li class="keyboard-shortcuts-menu-item hidden-xs" title="<?php echo html_attr($Translation['keyboard shortcuts']); ?>">
 										<a href="#" class="help-shortcuts-launcher">
-											<img src="<?php echo PREPEND_PATH; ?>resources/images/keyboard.png">
+											<img src="<?= PREPEND_PATH ?>resources/images/keyboard.png">
 											<?php echo html_attr($Translation['keyboard shortcuts']); ?>
 										</a>
 									</li>
 									<li class="sign-out-menu-item" title="<?php echo html_attr($Translation['sign out']); ?>">
-										<a href="<?php echo PREPEND_PATH; ?>index.php?signOut=1"><i class="glyphicon glyphicon-log-out"></i> <?php echo $Translation['sign out']; ?></a>
+										<a href="<?= PREPEND_PATH ?>index.php?signOut=1"><i class="glyphicon glyphicon-log-out"></i> <?php echo $Translation['sign out']; ?></a>
 									</li>
 									<li class="hidden-browser">
 										<a href="#" class="exit-pwa" title="<?php echo html_attr($Translation['exit']); ?>">
@@ -431,14 +431,28 @@
 							/* periodically check if user is still signed in */
 							setInterval(function() {
 								$j.ajax({
-									url: '<?php echo PREPEND_PATH; ?>ajax_check_login.php',
+									url: '<?= PREPEND_PATH ?>ajax_check_login.php',
 									success: function(username) {
-										if(!username.length) window.location = '<?php echo PREPEND_PATH; ?>index.php?signIn=1';
+										if(!username.length) window.location = '<?= PREPEND_PATH ?>index.php?signIn=1';
 									}
 								});
 							}, 60000);
 						</script>
 					<?php } ?>
+				<?php } ?>
+
+				<?php if(getLoggedAdmin() !== false) { ?>
+					<ul class="nav navbar-nav navbar-right">
+						<a href="<?= PREPEND_PATH ?>admin/pageHome.php" class="btn btn-danger navbar-btn hidden-xs btn-admin-area" title="<?php echo html_attr($Translation['admin area']); ?>"><i class="glyphicon glyphicon-cog"></i> <?php echo $Translation['admin area']; ?></a>
+						<a href="<?= PREPEND_PATH ?>admin/pageHome.php" class="btn btn-danger navbar-btn visible-xs btn-lg btn-admin-area" title="<?php echo html_attr($Translation['admin area']); ?>"><i class="glyphicon glyphicon-cog"></i> <?php echo $Translation['admin area']; ?></a>
+					</ul>
+				<?php } ?>
+
+				<?php if(userCanImport()){ ?>
+					<ul class="nav navbar-nav navbar-right">
+						<a href="<?= PREPEND_PATH ?>import-csv.php" class="btn btn-default navbar-btn hidden-xs btn-import-csv" title="<?php echo html_attr($Translation['import csv file']); ?>"><i class="glyphicon glyphicon-th"></i> <?php echo $Translation['import CSV']; ?></a>
+						<a href="<?= PREPEND_PATH ?>import-csv.php" class="btn btn-default navbar-btn visible-xs btn-lg btn-import-csv" title="<?php echo html_attr($Translation['import csv file']); ?>"><i class="glyphicon glyphicon-th"></i> <?php echo $Translation['import CSV']; ?></a>
+					</ul>
 				<?php } ?>
 
 				<ul class="nav navbar-nav">
@@ -467,8 +481,8 @@
 
 						// if user dismissed the install prompt, don't show it again for some time
 						if(
-							localStorage.getItem('AppGini.PWApromptDismissedAt')
-							&& (new Date().getTime() - localStorage.getItem('AppGini.PWApromptDismissedAt')) < silentPeriod
+							AppGini.localStorage.getItem('PWApromptDismissedAt')
+							&& (new Date().getTime() - AppGini.localStorage.getItem('PWApromptDismissedAt')) < silentPeriod
 						) return;
 
 						// unhide .install-pwa-btn by removing .hidden
@@ -481,7 +495,7 @@
 								e.prompt();
 
 								// add a localStorage item to prevent showing the install button for some time
-								localStorage.setItem('AppGini.PWApromptDismissedAt', new Date().getTime());
+								AppGini.localStorage.setItem('PWApromptDismissedAt', new Date().getTime());
 							});
 						});
 					});
@@ -493,6 +507,7 @@
 				</script>
 			</div>
 		</nav>
+		<div style="min-height: 70px;" class="hidden-print top-margin-adjuster"></div>
 		<?php
 
 		return ob_get_clean();
@@ -536,7 +551,7 @@
 		ob_start();
 		// notification template
 		?>
-		<div id="%%ID%%" class="alert alert-dismissable %%CLASS%%" style="opacity: 1; padding-top: 6px; padding-bottom: 6px; animation: fadeIn 1.5s ease-out; z-index: 100; position: relative;">
+		<div id="%%ID%%" class="alert alert-dismissable %%CLASS%%" style="opacity: 1; padding-top: 6px; padding-bottom: 6px; animation: fadeIn 1.5s ease-out; z-index: 2500; position: relative;">
 			<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
 			%%MSG%%
 		</div>
@@ -716,7 +731,7 @@
 
 	function addFilter($index, $filterAnd, $filterField, $filterOperator, $filterValue) {
 		// validate input
-		if($index < 1 || $index > 80 || !is_int($index)) return false;
+		if($index < 1 || $index > FILTER_GROUPS * FILTERS_PER_GROUP || !is_int($index)) return false;
 		if($filterAnd != 'or')   $filterAnd = 'and';
 		$filterField = intval($filterField);
 
@@ -745,7 +760,7 @@
 	#########################################################
 
 	function clearFilters() {
-		for($i=1; $i<=80; $i++) {
+		for($i = 1; $i <= FILTER_GROUPS * FILTERS_PER_GROUP; $i++) {
 			addFilter($i, '', 0, '', '');
 		}
 	}
@@ -1128,6 +1143,31 @@
 
 	#########################################################
 
+	function tablesHiddenInNavMenu() {
+		return ['residence_and_rental_history','employment_and_income_history','references','property_photos','unit_photos',];
+	}
+
+	#########################################################
+
+	function tablesHiddenInHomepage() {
+		return ['residence_and_rental_history','employment_and_income_history','references','property_photos','unit_photos',];
+	}
+
+
+	#########################################################
+
+	function tablesWithAddNewInHomepage() {
+		return ['applicants_and_tenants','applications_leases','rental_owners','properties','units',];
+	}
+
+	#########################################################
+
+	function tablesToFilterBeforeTV() {
+		return [];
+	}
+
+	#########################################################
+
 	function NavMenus($options = []) {
 		if(!defined('PREPEND_PATH')) define('PREPEND_PATH', '');
 		global $Translation;
@@ -1149,10 +1189,10 @@
 		if(is_array($arrTables)) {
 			foreach($arrTables as $tn => $tc) {
 				/* ---- list of tables where hide link in nav menu is set ---- */
-				$tChkHL = array_search($tn, ['residence_and_rental_history','employment_and_income_history','references','property_photos','unit_photos']);
+				$tChkHL = array_search($tn, tablesHiddenInNavMenu());
 
 				/* ---- list of tables where filter first is set ---- */
-				$tChkFF = array_search($tn, []);
+				$tChkFF = array_search($tn, tablesToFilterBeforeTV());
 				if($tChkFF !== false && $tChkFF !== null) {
 					$searchFirst = '&Filter_x=1';
 				} else {
@@ -1165,14 +1205,14 @@
 			}
 		}
 
-		// custom nav links, as defined in "hooks/links-navmenu.php"
+		// custom nav links, as defined in hooks/links-navmenu.php
 		global $navLinks;
 		if(is_array($navLinks)) {
 			$memberInfo = getMemberInfo();
 			$links_added = [];
 			foreach($navLinks as $link) {
 				if(!isset($link['url']) || !isset($link['title'])) continue;
-				if(getLoggedAdmin() !== false || @in_array($memberInfo['group'], $link['groups']) || @in_array('*', $link['groups'])) {
+				if(getLoggedAdmin() !== false || $link['groups'] == '*' || @in_array($memberInfo['group'], $link['groups']) || @in_array('*', $link['groups'])) {
 					$menu_index = intval($link['table_group']);
 					if(!$links_added[$menu_index]) $menu[$menu_index] .= '<li class="divider"></li>';
 
@@ -1207,11 +1247,13 @@ EOT;
 		$mtime = filemtime( __DIR__ . '/dynamic.css');
 		$theme = getUserTheme();
 		$theme3d = ($theme == 'bootstrap' && BOOTSTRAP_3D_EFFECTS ? '<link rel="stylesheet" href="' . PREPEND_PATH . 'resources/initializr/css/bootstrap-theme.css">' . "\n" : '');
+		$themeRTL = rtl('<link rel="stylesheet" href="' . PREPEND_PATH . 'resources/initializr/css/rtl.css?' . APP_VERSION . '">' . "\n");
 
 		$css_links = <<<EOT
 
 			<link rel="stylesheet" href="{$prepend_path}resources/initializr/css/{$theme}.css">
 			{$theme3d}
+			{$themeRTL}
 			<link rel="stylesheet" href="{$prepend_path}resources/select2/select2.css" media="screen">
 			<link rel="stylesheet" href="{$prepend_path}resources/timepicker/bootstrap-timepicker.min.css" media="screen">
 			<link rel="stylesheet" href="{$prepend_path}dynamic.css?{$mtime}">
@@ -1763,19 +1805,15 @@ EOT;
 	 */
 	function compactFilters(&$FilterAnd, &$FilterField, &$FilterOperator, &$FilterValue) {
 
-		// TODO: move to definitions.php as constants
-		$filterConditionsPerGroup = 4; // Number of filter conditions per group
-		$filterGroups = datalist_filters_count / $filterConditionsPerGroup; // Number of filter groups
-
 		$filterConditionIsEmpty = function($i) use ($FilterField, $FilterOperator) {
 			// check if filter is empty
 			return !$FilterField[$i] || !$FilterOperator[$i];
 		};
 
-		$filterGroupIsEmpty = function($i) use ($filterConditionIsEmpty, $filterConditionsPerGroup) {
+		$filterGroupIsEmpty = function($i) use ($filterConditionIsEmpty) {
 			// check if filter group is empty
-			for($j = 1; $j <= $filterConditionsPerGroup; $j++) {
-				if(!$filterConditionIsEmpty(($i - 1) * $filterConditionsPerGroup + $j)) {
+			for($j = 1; $j <= FILTERS_PER_GROUP; $j++) {
+				if(!$filterConditionIsEmpty(($i - 1) * FILTERS_PER_GROUP + $j)) {
 					return false;
 				}
 			}
@@ -1784,19 +1822,19 @@ EOT;
 
 		// 'compact' filter conditions by removing gaps inside each group and removing empty groups
 		$compactedGroups = [];
-		for($gi = 1; $gi <= $filterGroups; $gi++) {
+		for($gi = 1; $gi <= FILTER_GROUPS; $gi++) {
 			$compactedGroups[$gi] = [];
-			for($fi = 1; $fi <= $filterConditionsPerGroup; $fi++) {
-				$filterIndex = (($gi - 1) * $filterConditionsPerGroup) + $fi;
+			for($fi = 1; $fi <= FILTERS_PER_GROUP; $fi++) {
+				$filterIndex = (($gi - 1) * FILTERS_PER_GROUP) + $fi;
 				if(!$filterConditionIsEmpty($filterIndex)) {
 					$compactedGroups[$gi][] = $filterIndex;
 				}
 			}
 		}
 
-		// rmove empty groups
+		// remove empty groups
 		$compactedGroups = array_filter($compactedGroups, function($group) {
-			return count($group) > 0;
+			return is_array($group) && count($group) > 0;
 		});
 
 		// re-index groups
@@ -1806,7 +1844,7 @@ EOT;
 		$newFilterAnd = $newFilterField = $newFilterOperator = $newFilterValue = [];
 		foreach($compactedGroups as $gi0b => $group) {
 			foreach($group as $fi0b => $fi) {
-				$filterIndex = $gi0b * $filterConditionsPerGroup + $fi0b + 1;
+				$filterIndex = $gi0b * FILTERS_PER_GROUP + $fi0b + 1;
 				$newFilterAnd[$filterIndex] = $FilterAnd[$fi];
 				$newFilterField[$filterIndex] = $FilterField[$fi];
 				$newFilterOperator[$filterIndex] = $FilterOperator[$fi];

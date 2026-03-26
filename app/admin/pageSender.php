@@ -54,8 +54,8 @@
 		$mail_status = (rand(1, 10) % 3 ? true : false);
 		if(!$simulate) {
 			$mail_status = sendmail([
-				'to' => $email, 
-				'subject' => $escaped_mailSubject, 
+				'to' => $email,
+				'subject' => $escaped_mailSubject,
 				'message' => nl2br($escaped_mailMessage),
 				'debug' => ($_SESSION["debug_{$queue}"] ? 2 : 0)
 			]);

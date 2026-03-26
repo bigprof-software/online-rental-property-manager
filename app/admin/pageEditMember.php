@@ -101,7 +101,7 @@
 			$non_superadmin_sql = "passMD5=" . ($password != '' ? "'" . password_hash($password, PASSWORD_DEFAULT) . "'" : "passMD5") . ", email='{$email}', groupID='{$groupID}', isBanned='{$isBanned}', isApproved='{$isApproved}', ";
 			foreach($customs as $i => $cust_value) {
 				$customs_sql .= "custom{$i}='{$cust_value}', ";
-			}      
+			}
 
 			if($superadmin) {
 				$admin_pass_hash = makeSafe($adminConfig['adminPassword'], false);
@@ -186,10 +186,10 @@
 
 	$userPermissionsNote = '';
 	if($memberID != '' && $groupID != sqlValue("select groupID from membership_groups where name='Admins'")) {
-		$userPermissionsNote = '<span class="help-block">' . str_replace('<GROUPID>', $groupID, $Translation["user has group permissions"]) . '</span>';
+		$userPermissionsNote = '<span class="help-block">' . str_replace('<GROUPID>', $groupID, $Translation['user has group permissions']) . '</span>';
 
 		if(sqlValue("select count(1) from membership_userpermissions where memberID='$memberID'") > 0) {
-			$userPermissionsNote = '<span class="help-block">' . $Translation["user has special permissions"] . '</span>';
+			$userPermissionsNote = '<span class="help-block">' . $Translation['user has special permissions'] . '</span>';
 		}
 
 		$userPermissionsNote .= '<button type="button" class="btn btn-danger" id="special-permissions">' . html_attr($Translation['set user special permissions']) . '</button>';
@@ -198,8 +198,8 @@
 
 <div class="page-header">
 	<h1>
-		<?php echo ($memberID ? str_replace('<MEMBERID>', '<span class="text-primary">' . $memberID . '</span>', $Translation["edit member"]) : $Translation["add new member"] . $addend); ?>
-		<div class="pull-right">
+		<?php echo ($memberID ? str_replace('<MEMBERID>', '<span class="text-primary">' . $memberID . '</span>', $Translation['edit member']) : $Translation['add new member'] . $addend); ?>
+		<div class="pull-right flip">
 			<div class="btn-group">
 				<a href="pageViewMembers.php" class="btn btn-default btn-lg"><i class="glyphicon glyphicon-arrow-left"></i> <span class="hidden-xs hidden-sm"><?php echo $Translation['back to members']; ?></span></a>
 				<?php if($memberID) { ?>
@@ -216,7 +216,7 @@
 <div style="height: 3em;"></div>
 
 <?php if($superadmin) { ?>
-	<div class="alert alert-warning text-center"><?php echo $Translation["admin member"]; ?></div>
+	<div class="alert alert-warning text-center"><?php echo $Translation['admin member']; ?></div>
 <?php } ?>
 
 <form method="post" action="pageEditMember.php" class="form-horizontal">
@@ -225,7 +225,7 @@
 
 	<?php if(!$superadmin) { /* non-admin user fields */ ?>
 		<div class="form-group ">
-			<label for="memberID" class="label-classes control-label"><?php echo $Translation["member username"]; ?></label>
+			<label for="memberID" class="label-classes control-label"><?php echo $Translation['member username']; ?></label>
 			<div class="input-classes">
 				<input type="text" class="form-control" name="memberID" id="memberID" value="<?php echo html_attr($memberID); ?>" autofocus>
 				<div class="input-group hidden" id="memberID-input-group">
@@ -246,29 +246,29 @@
 		</div>
 
 		<div class="form-group">
-			<label for="password" class="label-classes control-label"><?php echo $Translation["password"]; ?></label>
+			<label for="password" class="label-classes control-label"><?php echo $Translation['password']; ?></label>
 			<div class="input-classes">
 				<input  class="form-control" type="password" name="password" id="password" value="" autocomplete="new-password">
-				<?php echo ($memberID ? "<span class='help-block'>" . $Translation["change password"] : "" . "</span>"); ?>
+				<?php echo ($memberID ? "<span class='help-block'>" . $Translation['change password'] : "" . "</span>"); ?>
 			</div>
 		</div>
 
 		<div class="form-group">
-			<label for="confirmPassword" class="label-classes control-label"><?php echo $Translation["confirm password"]; ?> </label>
+			<label for="confirmPassword" class="label-classes control-label"><?php echo $Translation['confirm password']; ?> </label>
 			<div class="input-classes">
 				<input class="form-control" type="password" name="confirmPassword" id="confirmPassword" value="" autocomplete="new-password">
 			</div>
 		</div>
 
 		<div class="form-group">
-			<label for="email" class="label-classes control-label"><?php echo $Translation["email"]; ?> </label>
+			<label for="email" class="label-classes control-label"><?php echo $Translation['email']; ?> </label>
 			<div class="input-classes">
 				<input class="form-control" type="email" id="email" name="email" value="<?php echo $email; ?>" required>
 			</div>
 		</div>
 
 		<div class="form-group">
-			<label for="group" class="label-classes control-label"><?php echo $Translation["group"]; ?></label>
+			<label for="group" class="label-classes control-label"><?php echo $Translation['group']; ?></label>
 			<div class="input-classes">
 				<?php
 					$safe_anonGroup = makeSafe($anonGroup, false);
@@ -284,7 +284,7 @@
 				<div class="checkbox">
 					<label>
 						<input  type="checkbox" name="isApproved" value="1" <?php echo ($isApproved ? "checked" : ($memberID ? "" : "checked")); ?>>
-						<?php echo $Translation["approved"]; ?>
+						<?php echo $Translation['approved']; ?>
 					</label>
 				</div>
 			</div>
@@ -315,7 +315,7 @@
 	<?php } ?>
 
 	<div class="form-group">
-		<label for="comments" class="label-classes control-label"><?php echo $Translation["comments"]; ?> </label>
+		<label for="comments" class="label-classes control-label"><?php echo $Translation['comments']; ?> </label>
 		<div class="input-classes">
 			<textarea id="comments" name="comments" rows="10" class="form-control"><?php echo $comments; ?></textarea>
 		</div>
@@ -324,7 +324,7 @@
 	<div class="form-group">
 		<label class="label-classes control-label"></label>
 		<div class="input-classes">
-			<button type="button" id="saveChanges" class="btn btn-primary btn-lg"><i class="glyphicon glyphicon-ok"></i> <?php echo $Translation["save changes"]; ?></button>
+			<button type="button" id="saveChanges" class="btn btn-primary btn-lg"><i class="glyphicon glyphicon-ok"></i> <?php echo $Translation['save changes']; ?></button>
 			<?php if($memberID != '') { /* for existing members, cancel reloads the member */ ?>
 				<a href="pageEditMember.php?memberID=<?php echo urlencode($memberID); ?>" class="btn btn-warning btn-lg hspacer-md"><i class="glyphicon glyphicon-remove"></i> <?php echo $Translation['cancel']; ?></a>
 				<a href="pageViewMembers.php" class="btn btn-default btn-lg hspacer-md"><i class="glyphicon glyphicon-arrow-left"></i> <?php echo $Translation['back to members']; ?></a>

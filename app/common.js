@@ -1,6 +1,6 @@
 var AppGini = AppGini || {};
 
-AppGini.version = 25.13;
+AppGini.version = 26.13;
 
 /* global constants */
 const NO_GEOLOCATION_THOUGH_REQUIRED = -1;
@@ -138,6 +138,11 @@ $j(function() {
 	/* remove empty email links */
 	$j('a[href="mailto:"]').remove();
 
+	if($j('.theme-rtl').length) {
+		/* for RTL languages, flip *-right and *-left classes */
+		$j('.navbar-left, .navbar-right, .pull-left, .pull-right').addClass('flip');
+	}
+
 	/* fix links inside alerts */
 	$j('.alert a:not(.btn)').addClass('alert-link');
 
@@ -274,10 +279,18 @@ $j(function() {
 	// open links that have a .modal-link class in a modal window
 	$j('body').on('click', 'a[href].modal-link', function(e) {
 		e.preventDefault();
+		let title = $j(this).attr('title') || $j(this).text();
+
+		// if link has .children-count-link class or .escape-embedded class, append a link to the title that opens the url in a new tab, after removing 'Embedded=1' from it
+		if($j(this).hasClass('children-count-link') || $j(this).hasClass('escape-embedded'))
+			title += ` <a href="${$j(this).attr('href').replace(/&?Embedded=1/, '')}" target="_blank" class="btn btn-default btn-xs" title="${AppGini.Translate._map['open in new tab']}" onclick="AppGini.getModal().agModal('hide');"><i class="glyphicon glyphicon-new-window"></i></a>`;
+
 		modal_window({
 			url: $j(this).attr('href'),
-			title: $j(this).attr('title') || $j(this).text(),
+			title,
 			size: 'full',
+			// if link has .new-child or .confirm-before-closing, add beforeClose callback to AppGini.confirmBeforeClosingModal
+			beforeClose: $j(this).hasClass('new-child') || $j(this).hasClass('confirm-before-closing') ? AppGini.confirmBeforeClosingModal : undefined,
 		});
 	})
 
@@ -324,6 +337,11 @@ $j(function() {
 		});
 	}
 
+	// if embedded, remove record selectors from TV
+	if(AppGini.isEmbedded()) {
+		$j('.select_all_records, .record_selector').remove();
+	}
+
 	// render the DV layout toolbar
 	AppGini.renderDVLayoutToolbar();
 
@@ -343,6 +361,10 @@ $j(function() {
 	AppGini.handleLightbox();
 	AppGini.enhanceMobileUX();
 	AppGini.controlBackButtonBehavior();
+	AppGini.handleSaveFilters();
+	AppGini.handleSavedFiltersList();
+	AppGini.Translate.apply();
+	AppGini.handleToggleDV();
 });
 
 /* show/hide TV action buttons based on whether records are selected or not */
@@ -388,7 +410,7 @@ AppGini.ajaxCache = function() {
 	};
 
 	var _jqAjaxData = function(opt) { /* */
-		var opt = opt || {};   
+		var opt = opt || {};
 		var url = opt.url || '';
 		var data = opt.data || {};
 
@@ -418,6 +440,11 @@ AppGini.ajaxCache = function() {
 				oUrl = originalOptions.url || '',
 				url = oUrl.match(/\?/) ? oUrl.match(/(.*)\?/)[1] : oUrl;
 
+			// skip cache checks if options.cache is false
+			if(originalOptions.cache === false) {
+				return true;
+			}
+
 			options.beforeSend = function() { /* */
 				var req, cached = false, resp;
 
@@ -442,6 +469,7 @@ AppGini.ajaxCache = function() {
 
 function applicants_and_tenants_validateData(insertMode) {
 	$j('.has-error').removeClass('has-error');
+	$j('.help-block.error').remove();
 	var errors = false;
 
 	// check all required fields have values
@@ -459,10 +487,17 @@ function applicants_and_tenants_validateData(insertMode) {
 
 	if(errors) return false;
 
+	if(!AppGini.Validation.decimal('monthly_gross_pay', 8, 2)) errors = true;
+
+	if(!AppGini.Validation.decimal('additional_income', 8, 2)) errors = true;
+
+	if(!AppGini.Validation.decimal('assets', 8, 2)) errors = true;
+
 	return !errors;
 }
 function applications_leases_validateData(insertMode) {
 	$j('.has-error').removeClass('has-error');
+	$j('.help-block.error').remove();
 	var errors = false;
 
 	// check all required fields have values
@@ -482,34 +517,47 @@ function applications_leases_validateData(insertMode) {
 
 	if(errors) return false;
 
+	if(!AppGini.Validation.decimal('rent', 10, 2)) errors = true;
+
+	if(!AppGini.Validation.decimal('security_deposit', 15, 2)) errors = true;
+
 	return !errors;
 }
 function residence_and_rental_history_validateData(insertMode) {
 	$j('.has-error').removeClass('has-error');
+	$j('.help-block.error').remove();
 	var errors = false;
+
+	if(!AppGini.Validation.decimal('monthly_rent', 10, 2)) errors = true;
 
 	return !errors;
 }
 function employment_and_income_history_validateData(insertMode) {
 	$j('.has-error').removeClass('has-error');
+	$j('.help-block.error').remove();
 	var errors = false;
 
 	return !errors;
 }
 function references_validateData(insertMode) {
 	$j('.has-error').removeClass('has-error');
+	$j('.help-block.error').remove();
 	var errors = false;
 
 	return !errors;
 }
 function rental_owners_validateData(insertMode) {
 	$j('.has-error').removeClass('has-error');
+	$j('.help-block.error').remove();
 	var errors = false;
+
+	if(!AppGini.Validation.decimal('zip', 15, 0)) errors = true;
 
 	return !errors;
 }
 function properties_validateData(insertMode) {
 	$j('.has-error').removeClass('has-error');
+	$j('.help-block.error').remove();
 	var errors = false;
 
 	// check all required fields have values
@@ -534,10 +582,15 @@ function properties_validateData(insertMode) {
 		return false;
 	}
 
+	if(!AppGini.Validation.decimal('number_of_units', 15, 0)) errors = true;
+
+	if(!AppGini.Validation.decimal('ZIP', 15, 0)) errors = true;
+
 	return !errors;
 }
 function property_photos_validateData(insertMode) {
 	$j('.has-error').removeClass('has-error');
+	$j('.help-block.error').remove();
 	var errors = false;
 
 	// check file uploads (file type and size)
@@ -550,6 +603,7 @@ function property_photos_validateData(insertMode) {
 }
 function units_validateData(insertMode) {
 	$j('.has-error').removeClass('has-error');
+	$j('.help-block.error').remove();
 	var errors = false;
 
 	// check all required fields have values
@@ -573,10 +627,15 @@ function units_validateData(insertMode) {
 		return false;
 	}
 
+	if(!AppGini.Validation.decimal('bathroom', 15, 0)) errors = true;
+
+	if(!AppGini.Validation.decimal('rental_amount', 10, 2)) errors = true;
+
 	return !errors;
 }
 function unit_photos_validateData(insertMode) {
 	$j('.has-error').removeClass('has-error');
+	$j('.help-block.error').remove();
 	var errors = false;
 
 	// check file uploads (file type and size)
@@ -737,15 +796,15 @@ function passwordStrength(password, username = '') {
 
 	// Determine the strength label
 	if (score >= 9) {
-	  return 'strong';
+		return 'strong';
 	} else if (score >= 6) {
-	  return 'good';
+		return 'good';
 	} else {
-	  return 'weak';
+		return 'weak';
 	}
 }
 
-function validateEmail(email) { 
+function validateEmail(email) {
 	var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 	return re.test(email);
 }
@@ -764,7 +823,7 @@ function loadScript(jsUrl, cssUrl, callback) {
 		head.appendChild(css);
 	}
 
-	// then bind the event to the callback function 
+	// then bind the event to the callback function
 	// there are several events for cross browser compatibility
 	if(script.onreadystatechange != undefined) { script.onreadystatechange = callback; }
 	if(script.onload != undefined) { script.onload = callback; }
@@ -774,7 +833,7 @@ function loadScript(jsUrl, cssUrl, callback) {
 }
 /**
  * Opens a modal window with the specified options.
- * 
+ *
  * @param {Object} options An object specifying the configuration of the modal. The following members can be provided:
  * @param {string} [options.url] The iframe URL to load.
  * @param {string} [options.message] Instead of a URL to open, you could pass a message. HTML tags are allowed.
@@ -782,14 +841,15 @@ function loadScript(jsUrl, cssUrl, callback) {
  * @param {string} [options.title] Optional modal window title.
  * @param {'default'|'full'} [options.size] The size of the modal. Can be 'default' or 'full'.
  * @param {boolean} [options.noAnimation=false] Set to true to disable the animation effect while launching the modal.
- * @param {Function} [options.show] Optional function to execute after showing the modal.
- * @param {Function} [options.close] Optional function to execute after closing the modal.
+ * @param {Function} [options.show] Optional function to execute after showing the modal. The 'shown.bs.modal'  event object is passed as argument.
+ * @param {Function} [options.beforeClose] Optional function to execute right before closing the modal. The 'hide.bs.modal' event object is passed as argument. If this function returns false, the modal is not closed.
+ * @param {Function} [options.close] Optional function to execute after closing the modal. The 'hidden.bs.modal' event object is passed as argument.
  * @param {Array<Object>} [options.footer] Optional array of objects describing the buttons to display in the footer.
- * @param {string} options.footer[].label A string representing the label of the button.
- * @param {'primary'|'default'|'success'|'warning'|'danger'} options.footer[].bs_class A string representing the button's Bootstrap class.
+ * @param {string} [options.footer[].label] A string representing the label of the button.
+ * @param {'primary'|'default'|'success'|'warning'|'danger'} [options.footer[].bs_class] A string representing the button's Bootstrap class.
  * @param {Function} [options.footer[].click] A function to execute on clicking the button. If the button closes the modal, this function is executed before the close handler.
  * @param {boolean} [options.footer[].causes_closing=true] A boolean indicating whether clicking the button causes the modal to close.
- * 
+ *
  * @returns {string} The id attribute of the modal window.
  */
 function modal_window(options) {
@@ -834,7 +894,7 @@ function mass_delete(t, ids) {
 	if(!ids.length) return;
 
 	var confirm_message = '<div class="alert alert-danger">' +
-			'<i class="glyphicon glyphicon-warning-sign"></i> ' + 
+			'<i class="glyphicon glyphicon-warning-sign"></i> ' +
 			AppGini.Translate._map['<n> records will be deleted. Are you sure you want to do this?'] +
 		'</div>';
 	var confirm_title = AppGini.Translate._map['Confirm deleting multiple records'];
@@ -860,7 +920,7 @@ function mass_delete(t, ids) {
 						message: '' +
 							'<div class="progress">' +
 								'<div class="progress-bar progress-bar-warning" role="progressbar" style="width: 0;"></div>' +
-							'</div>' + 
+							'</div>' +
 							'<button type="button" class="btn btn-default details_toggle" onclick="' +
 								'$j(this).children(\'.glyphicon\').toggleClass(\'glyphicon-chevron-right glyphicon-chevron-down\'); ' +
 								'$j(\'.well.details_list\').toggleClass(\'hidden\');'
@@ -941,7 +1001,7 @@ function mass_delete(t, ids) {
 			},
 			{
 				label: '<i class="glyphicon glyphicon-ok"></i> ' + label_no,
-				bs_class: 'success' 
+				bs_class: 'success'
 			}
 		]
 	});
@@ -951,7 +1011,7 @@ function mass_change_owner(t, ids) {
 	if(ids == undefined) return;
 	if(!ids.length) return;
 
-	var update_form = AppGini.Translate._map['Change owner of <n> selected records to'] + 
+	var update_form = AppGini.Translate._map['Change owner of <n> selected records to'] +
 		'<span id="new_owner_for_selected_records"></span>' +
 		'<input type="hidden" name="new_owner_for_selected_records" value="">';
 	var confirm_title = AppGini.Translate._map['Change owner'];
@@ -979,7 +1039,7 @@ function mass_change_owner(t, ids) {
 						message: '' +
 							'<div class="progress">' +
 								'<div class="progress-bar progress-bar-success" role="progressbar" style="width: 0;"></div>' +
-							'</div>' + 
+							'</div>' +
 							'<button type="button" class="btn btn-default details_toggle" onclick="' +
 								'$j(this).children(\'.glyphicon\').toggleClass(\'glyphicon-chevron-right glyphicon-chevron-down\'); ' +
 								'$j(\'.well.details_list\').toggleClass(\'hidden\');'
@@ -1059,7 +1119,7 @@ function mass_change_owner(t, ids) {
 			},
 			{
 				label: '<i class="glyphicon glyphicon-remove"></i> ' + label_no,
-				bs_class: 'warning' 
+				bs_class: 'warning'
 			}
 		]
 	});
@@ -1095,8 +1155,8 @@ function add_more_actions_link() {
 
 /**
  * Checks if the screen size matches the specified size identifier.
- * 
- * @param {string} sz - The screen size identifier to check. 
+ *
+ * @param {string} sz - The screen size identifier to check.
  *                      Possible values: `'xs'` (extra small), `'sm'` (small), `'md'` (medium), `'lg'` (large).
  * @returns {boolean} - Returns `true` if the specified screen size is visible, otherwise `false`.
  */
@@ -1154,27 +1214,27 @@ function enforce_uniqueness(tableName, fieldName) {
 
 /* persist expanded/collapsed chidren in DVP */
 function persist_expanded_child(id) {
-	var expand_these = JSON.parse(localStorage.getItem(`${AppGini.config.appTitle}.dvp_expand`));
+	var expand_these = AppGini.localStorage.getItem('dvp_expand');
 	if(expand_these == undefined) expand_these = [];
 
 	if($j('[id=' + id + ']').hasClass('active')) {
 		if(expand_these.indexOf(id) < 0) {
 			// expanded button and not persisting in cookie? save it!
 			expand_these.push(id);
-			localStorage.setItem(`${AppGini.config.appTitle}.dvp_expand`, JSON.stringify(expand_these));
+			AppGini.localStorage.setItem('dvp_expand', expand_these);
 		}
 	} else {
 		if(expand_these.indexOf(id) >= 0) {
 			// collapsed button and persisting in cookie? remove it!
 			expand_these.splice(expand_these.indexOf(id), 1);
-			localStorage.setItem(`${AppGini.config.appTitle}.dvp_expand`, JSON.stringify(expand_these));
+			AppGini.localStorage.setItem('dvp_expand', expand_these);
 		}
 	}
 }
 
 /* apply expanded/collapsed status to children in DVP */
 function apply_persisting_children() {
-	var expand_these = JSON.parse(localStorage.getItem(`${AppGini.config.appTitle}.dvp_expand`));
+	var expand_these = AppGini.localStorage.getItem('dvp_expand');
 	if(expand_these == undefined || !expand_these.length) return;
 
 	expand_these.forEach(function(id) {
@@ -1183,14 +1243,14 @@ function apply_persisting_children() {
 }
 
 /**
- *  AppGini.TVScroll().more() to scroll one column more. 
+ *  AppGini.TVScroll().more() to scroll one column more.
  *  AppGini.TVScroll().less() to scroll one column less.
  */
 AppGini.TVScroll = function() {
 
 	/**
 	 *  Calculates the width of the first n columns of the TV table
-	 *  
+	 *
 	 *  @param [in] n how many columns to calculate the width for
 	 *  @return Return total width of given n columns, or 0 if n < 1 or invalid
 	 */
@@ -1252,7 +1312,7 @@ AppGini.TVScroll = function() {
 			/* show/hide #tv-scroll buttons based on TV scroll state */
 			$j(window).resize(toggle_tv_scroll_tools);
 			toggle_tv_scroll_tools();
-		}  
+		}
 	};
 
 	/**
@@ -1463,7 +1523,7 @@ AppGini.TVScroll = function() {
 							'</div>' +
 							(footer_buttons ? '<div class="modal-footer">' + footer_buttons + '</div>' : '') +
 						'</div>' +
-					'</div>' + 
+					'</div>' +
 				'</div>'
 			);
 
@@ -1482,7 +1542,7 @@ AppGini.TVScroll = function() {
 
 				if(op.footer[i].causes_closing !== false) { op.footer[i].causes_closing = true; }
 				op.footer[i].bs_class = op.footer[i].bs_class || 'default';
-				op.footer[i].id = op.id + '_footer_button_' + random_string(10);           
+				op.footer[i].id = op.id + '_footer_button_' + random_string(10);
 
 				closer_class = (op.footer[i].causes_closing ? ' closes-inpage-modal' : '');
 
@@ -1494,7 +1554,7 @@ AppGini.TVScroll = function() {
 
 			var imc = $j(
 				'<div id="' + op.id + '" ' +
-					'class="inpage-modal hide ' + $j('.container, .container-fluid').eq(0).attr('class') + '" ' + 
+					'class="inpage-modal hide ' + $j('.container, .container-fluid').eq(0).attr('class') + '" ' +
 					'style="' +
 						'padding-left: 0; padding-right: 0;' +
 						'width: 100% !important;' +
@@ -1510,7 +1570,7 @@ AppGini.TVScroll = function() {
 						'<div class="inpage-modal-content">' +
 							( op.title != undefined ?
 								'<div class="inpage-modal-header" style="border-bottom: solid 1px;">' +
-									'<div class="row" style="margin: 0;">' + 
+									'<div class="row" style="margin: 0;">' +
 										'<div class="col-xs-10 col-sm-11 inpage-modal-title">' +
 											'<div class="h4">' + op.title + '</div>' +
 										'</div>' +
@@ -1579,7 +1639,7 @@ AppGini.TVScroll = function() {
 			/* hide main page to avoid all scrolling/panning hell on touch screens! */
 			$j('.container, .container-fluid').eq(0).hide();
 		})
-		.on('shown.bs.modal', function() {
+		.on('shown.bs.modal', function(e) {
 			if(op.size != 'full') return;
 
 			var id = op.id, rsz = _resize;
@@ -1587,16 +1647,20 @@ AppGini.TVScroll = function() {
 			$j(window).resize(function() { rsz(id); });
 
 			if(typeof(op.show) == 'function') {
-				op.show();
+				op.show(e);
 			}
 		})
-		//.agModal('show')
-		.on('hidden.bs.modal', function() {
+		.on('hide.bs.modal', function(e) {
+			if(typeof(op.beforeClose) == 'function') {
+				if(op.beforeClose(e) === false) { e.preventDefault(); return false; }
+			}
+		})
+		.on('hidden.bs.modal', function(e) {
 			/* display main page again */
 			if(op.size == 'full') $j('.container, .container-fluid').eq(0).show();
 
 			if(typeof(op.close) == 'function') {
-				op.close();
+				op.close(e);
 			}
 
 			if(!auto_id) return;
@@ -1640,12 +1704,20 @@ AppGini.getParentModal = () => {
 }
 
 /**
+ *  @return the currently open modal element, or null if no modal is open
+ */
+AppGini.getModal = () => {
+	if($j('.modal:visible').length) return $j('.modal:visible').eq(0);
+	if($j('.inpage-modal:visible').length) return $j('.inpage-modal:visible').eq(0);
+	return null;
+};
+
+/**
  *  @return boolean indicating whether a modal is currently open or not
  */
 AppGini.modalOpen = function() { /* */
 	return $j('.modal-dialog:visible').length > 0 || $j('.inpage-modal-dialog:visible').length > 0;
 };
-
 
 /**
  *  @return true for mobile devices, false otherwise
@@ -1709,21 +1781,22 @@ AppGini.filterURIComponents = function(filterIndex, andOr, fieldIndex, operator,
 
 /*
 	retrieve the lookup text for given id by querying ajax_combo.php
-	options: { id, table, field, callback }
+	options: { id, table, field, callback, cache }
 	callback is called on success, passing { id, text }
 */
 AppGini.lookupText = function(options) {
-	if(undefined == options) return 'options?';
-	if(undefined == options.id) return 'options.id?';
-	if(undefined == options.table) return 'options.table?';
-	if(undefined == options.field) return 'options.field?';
-	if(undefined == options.callback) return 'options.callback?';
-	if(typeof(options.callback) != 'function') return 'options.callback!';
+	if(!options) return 'options?';
+	if(!options.id) return 'options.id?';
+	if(!options.table) return 'options.table?';
+	if(!options.field) return 'options.field?';
+	if(!options.callback) return 'options.callback?';
+	if(typeof options.callback !== 'function') return 'options.callback!';
+	if(options.cache === undefined) options.cache = true;
 
 	$j.ajax({
 		url: 'ajax_combo.php',
 		dataType: 'json',
-		cache: true,
+		cache: options.cache,
 		data: { id: options.id, t: options.table, f: options.field },
 		success: function(resp) {
 			options.callback(resp.results[0]);
@@ -1765,7 +1838,7 @@ AppGini.calculatedFields = {
 
 		// init TV update of calculated fields
 		if($j('.table_view').length) AppGini.calculatedFields.updateServerSide(
-			table, 
+			table,
 			// array of record IDs
 			$j('.table_view tr[data-id]').map(function() {
 				return $j(this).data('id');
@@ -1783,7 +1856,7 @@ AppGini.calculatedFields = {
 		for(var cti = 0; cti < childTables.length; cti++) {
 			var tn = childTables[cti];
 			AppGini.calculatedFields.updateServerSide(
-				tn, 
+				tn,
 				$j('[id^="panel_' + tn + '-"] tr[data-id]').map(function() {
 					return $j(this).data('id');
 				}).get()
@@ -2001,7 +2074,7 @@ AppGini.once = function(config) {
 			callback: setInterval(function() {
 				// timeout configured and passed?
 				if(
-					timeout > 0 && 
+					timeout > 0 &&
 					(AppGini.unixTimestamp().msec - AppGini._onceIntervals[id].started) > timeout
 				) {
 					clearInterval(AppGini._onceIntervals[id].callback);
@@ -2031,7 +2104,7 @@ AppGini.unixTimestamp = function() {
 /* function to trigger form change event for contenteditable elements */
 AppGini.detectContentEditableChanges = function() {
 	AppGini.repeatUntil({
-		condition: function() { return $j('.has-input-handler').length > 0;    },
+		condition: () => $j('.has-input-handler').length > 0,
 		action: function() {
 			$j('[contenteditable="true"]:not(.has-input-handler)')
 				.addClass('has-input-handler')
@@ -2095,7 +2168,7 @@ AppGini.lockUpdatesOnUserRequest = function() {
 
 	$j('#update')
 		.addClass('locking-enabled')
-		.css({ width: '75%', overflow: 'hidden' })
+		.css({ width: 'calc(100% - 3em)', overflow: 'hidden' })
 		.after('<button type="button" class="btn btn-success btn-update-locker"><i class="glyphicon glyphicon-lock"></i></button>')
 		.parents('.btn-group-vertical')
 			.toggleClass('btn-group-vertical btn-group vspacer-lg')
@@ -2103,7 +2176,7 @@ AppGini.lockUpdatesOnUserRequest = function() {
 
 	$j('.btn-update-locker')
 		.css({
-			width: '25%',
+			width: '3em',
 			overflow: 'hidden',
 			'padding-right': 0,
 			'padding-left': 0
@@ -2144,7 +2217,7 @@ AppGini.focusFormElement = function(tn, fn, noDelay) {
 		'input[type=radio][name=' + fn + ']',
 		'input[type=checkbox][id=' + fn + ']',
 		'textarea[id=' + fn + ']',
-		'.' + tn + '-' + fn  + ' .nicEdit-main'    
+		'.' + tn + '-' + fn  + ' .nicEdit-main',
 	].join(',')).not(':disabled').not('.select2-offscreen').filter(':visible').eq(0);
 
 	if(inputElem.length) {
@@ -2179,7 +2252,7 @@ AppGini.scrollTo = function(id, useName) {
 		obj = $j('#' + id);
 
 	// if obj is invisible, scroll to its parent
-	if(obj.length && obj.is(':hidden'))    obj = obj.parent();
+	if(obj.length && obj.is(':hidden')) obj = obj.parent();
 
 	AppGini.scrollToDOMElement(obj.get(0));
 }
@@ -2220,6 +2293,72 @@ AppGini.Validation = {
 		$j('#' + mow).one('shown.bs.modal', function() {
 			$j(this).find('.modal-footer .btn').eq(0).focus();
 		});
+
+		return false;
+	},
+
+	integer: function(name, min, max) {
+		const val = $j('#' + name).val().trim();
+		const intVal = parseInt(val);
+		const self = AppGini.Validation;
+
+		if(val == '' || (intVal >= min && intVal <= max)) {
+			$j(`#${name}`).parents('.form-group').removeClass('has-error').find('.help-block.error').remove();
+			return true;
+		}
+
+		// add error help block after the input if not already present
+		if(!$j(`#${name}`).parents('.form-group').find('.help-block.error').length) {
+			$j(`<div class="help-block error">${AppGini.Translate._map['field must be integer between x and y']
+				.replace('[x]', `<code class="locale-int">${min}</code>`)
+				.replace('[y]', `<code class="locale-int">${max}</code>`)}</div>`).insertAfter($j(`#${name}`));
+		}
+		self._focusError.text(name);
+
+		return false;
+	},
+
+	float: function(name, min, max) {
+		const val = $j('#' + name).val().trim();
+		const floatVal = parseFloat(val);
+		const self = AppGini.Validation;
+
+		if(val == '' || (floatVal >= min && floatVal <= max)) {
+			$j(`#${name}`).parents('.form-group').removeClass('has-error').find('.help-block.error').remove();
+			return true;
+		}
+
+		// add error help block after the input if not already present
+		if(!$j(`#${name}`).parents('.form-group').find('.help-block.error').length) {
+			$j(`<div class="help-block error">${AppGini.Translate._map['field must be number between x and y']
+				.replace('[x]', `<code class="locale-float">${min}</code>`)
+				.replace('[y]', `<code class="locale-float">${max}</code>`)}</div>`).insertAfter($j(`#${name}`));
+		}
+		self._focusError.text(name);
+
+		return false;
+	},
+
+	decimal: function(name, digits, precision) {
+		// for decimal validation, all that matters is that the max length of the value before the decimal point doesn't exceed {digits - precision}.
+		// values after the decimal point don't matter as extras would be truncated on server side anyway.
+		// also, the sign doesn't matter as well, so we can ignore it for validation purposes.
+		const val = $j('#' + name).val().trim();
+		const intVal = parseInt(val);
+		const self = AppGini.Validation;
+
+		if(val == '' || (intVal.toString().replace('-', '').length <= (digits - precision))) {
+			$j(`#${name}`).parents('.form-group').removeClass('has-error').find('.help-block.error').remove();
+			return true;
+		}
+
+		// add error help block after the input if not already present
+		if(!$j(`#${name}`).parents('.form-group').find('.help-block.error').length) {
+			$j(`<div class="help-block error">${AppGini.Translate._map['field must be number with max x digits and y decimals']
+				.replace('[x]', `<code class="locale-int">${digits}</code>`)
+				.replace('[y]', `<code class="locale-int">${precision}</code>`)}</div>`).insertAfter($j(`#${name}`));
+		}
+		self._focusError.text(name);
 
 		return false;
 	},
@@ -2292,7 +2431,7 @@ AppGini.newRecord = function(callback, params) {
 }
 
 AppGini.updateKeyboardShortcutsStatus = function() {
-	var shortcutsEnabled = JSON.parse(localStorage.getItem('AppGini.shortcutKeysEnabled')) || false;
+	var shortcutsEnabled = AppGini.localStorage.getItem('shortcutKeysEnabled') || false;
 	var img = $j('nav .help-shortcuts-launcher img');
 
 	img.length ? img.attr('src', img.attr('src').replace(/\/keyboard.*/, '/keyboard' + (shortcutsEnabled ? '' : '-disabled') + '.png')) : null;
@@ -2311,23 +2450,22 @@ AppGini.handleKeyboardShortcuts = function() {
 		shortcuts are disabled by default
 		to enable them by default:
 
-		if(localStorage.getItem('AppGini.shortcutKeysEnabled') === null)
-			localStorage.setItem('AppGini.shortcutKeysEnabled', true)
-	*/ 
+		if(AppGini.localStorage.getItem('shortcutKeysEnabled') === null)
+			AppGini.localStorage.setItem('shortcutKeysEnabled', true)
+	*/
 
 	// code for enabling/disabling shortcuts
 	$j('body').on('click', '.enable-shortcuts, .disable-shortcuts', function() {
-		localStorage.setItem('AppGini.shortcutKeysEnabled', $j(this).hasClass('enable-shortcuts'));
+		AppGini.localStorage.setItem('shortcutKeysEnabled', $j(this).hasClass('enable-shortcuts'));
 
 		AppGini.updateKeyboardShortcutsStatus();
 
 		// close shortcuts window
-		var modal = $j('.inpage-modal:visible, .modal:visible');
-		if(modal.length) modal.eq(0).agModal('hide');
+		AppGini.getModal()?.agModal('hide');
 
 		// reopen shortcuts window when old one fully removed
 		AppGini.once({
-			condition: function() { return !$j('.inpage-modal:visible, .modal:visible').length; },
+			condition: function() { return !AppGini.getModal(); },
 			action: AppGini.showKeyboardShortcuts
 		});
 	})
@@ -2349,17 +2487,19 @@ AppGini.handleKeyboardShortcuts = function() {
 		(function(k, conf) {
 			$j(document).bind('keydown', k, function(e) {
 				// don't handle shortcut if shortcuts disabled, except if F1 pressed
-				// >> JSON.parse is necessary because localStorage stores booleans as strings :/
-				// >> https://stackoverflow.com/a/3263222/1945185
-				if(!JSON.parse(localStorage.getItem('AppGini.shortcutKeysEnabled')) && !/F1$/i.test(k)) return;
+				// >> AppGini.localStorage automatically handles JSON parsing
+				if(!AppGini.localStorage.getItem('shortcutKeysEnabled') && !/F1$/i.test(k)) return;
 
 				if(conf.trigger == 'function' && typeof(conf.handler) == 'function') {
 					conf.handler();
 					return;
 				}
 
-				// find first element matching selector
-				var elm = $j(conf.css).eq(0);
+				// find first (visible) element matching selector
+				var elm = $j(conf.css);
+				if(!elm.length) return;
+
+				if(elm.length > 1) elm = elm.filter(':visible').eq(0);
 				if(!elm.length) return;
 
 				if(conf.trigger == 'focus') AppGini.scrollToDOMElement(elm.get(0));
@@ -2387,6 +2527,9 @@ AppGini.showKeyboardShortcuts = (e) => {
 
 	for(var k in kmap) {
 		var ckmap = kmap[k];
+
+		if(ckmap.purpose === null) continue;
+
 		if(!$j(ckmap.css).length && ckmap.trigger !== false && ckmap.trigger !== 'function') continue;
 
 		// if ckmap.purpose contains a placeholder <x>, replace with target text
@@ -2394,51 +2537,66 @@ AppGini.showKeyboardShortcuts = (e) => {
 			.replace('<x>', $j(ckmap.css).eq(0).text().trim().match(/.{0,30}/)[0]);
 		if(!purpose) continue;
 
-		keys.push(
-			'<div style="margin-bottom: 1em; white-space: nowrap; overflow: hidden;">' +
-				'<kbd>' +
-					k
-						.replace('ArrowLeft', '&larr;')
-						.replace('ArrowRight', '&rarr;')
-						.replace('ArrowUp', '&uarr;')
-						.replace('ArrowDown', '&darr;')
-						.split('/').join('</kbd> ' + $t['or'] + ' <kbd>')
-						.split('+').join('</kbd> + <kbd>')
-						.split(',').join('</kbd> , <kbd>') +
-				'</kbd>' +
-				'<span class="hspacer-lg">' + purpose + '</span>' +
-			'</div>'
-		);
+		// target (based on css selector) is a button or link?
+		const targetClickable = $j(ckmap.css).eq(0).is('button, a, input[type=button], input[type=submit]');
+		const showEnter = ckmap.trigger == 'focus' && targetClickable && !k.match(/F2/i);
+
+		keys.push(`
+			<div class="shortcut-keys">
+				<kbd>
+					${
+						k
+							.replace('ArrowLeft', '&larr;')
+							.replace('ArrowRight', '&rarr;')
+							.replace('ArrowUp', '&uarr;')
+							.replace('ArrowDown', '&darr;')
+							.split('/').join('</kbd> ' + $t['or'] + ' <kbd>')
+							.split('+').join('</kbd> + <kbd>')
+							.split(',').join('</kbd> , <kbd>')
+					}
+				</kbd>
+				${showEnter ? ' , <kbd>Enter</kbd>' : ''}
+				<span class="hspacer-lg">${purpose}</span>
+			</div>
+		`);
 	}
 
 	// button to disable/enable shortcut keys
 	// related code in AppGini.handleKeyboardShortcuts
-	var shortcutsEnabled = JSON.parse(localStorage.getItem('AppGini.shortcutKeysEnabled')) || false;
-	var toggler = '<button type="button" class="hspacer-lg btn btn-xs btn-$color $actionClass"><i class="glyphicon glyphicon-$icon"></i> $label</button>'
-					.replace('$color', shortcutsEnabled ? 'default' : 'success')
-					.replace('$actionClass', shortcutsEnabled ? 'disable-shortcuts' : 'enable-shortcuts')
-					.replace('$icon', shortcutsEnabled ? 'ban-circle' : 'ok')
-					.replace('$label', shortcutsEnabled ? $t['Disable'] : $t['Enable'])
+	const shortcutsEnabled = AppGini.localStorage.getItem('shortcutKeysEnabled') || false;
+	const toggler = `
+		<button type="button" class="
+			hspacer-lg btn btn-lg btn-${shortcutsEnabled ? 'default' : 'success'}
+			${shortcutsEnabled ? 'disable-shortcuts' : 'enable-shortcuts'}"
+		>
+			<i class="glyphicon glyphicon-${shortcutsEnabled ? 'ban-circle' : 'ok'}"></i> ${shortcutsEnabled ? $t['Disable'] : $t['Enable']}
+		</button>
+	`;
 
-	var title = '<img style="$style" src="$src"> <span class="text-$color">$title</span> $toggler'
-				.replace('$style', 'height: 1.75em; vertical-align: bottom;')
-				.replace('$src', $j('.help-shortcuts-launcher img').attr('src'))
-				.replace('$color', shortcutsEnabled ? 'success' : 'danger')
-				.replace('$title', shortcutsEnabled ? $t['keyboard shortcuts enabled'] : $t['keyboard shortcuts disabled'])
-				.replace('$toggler', toggler)
+	const title = `
+		<div class="text-center">
+			<img style="height: 1.75em; vertical-align: sub;" src="${$j('.help-shortcuts-launcher img').attr('src')}">
+			<span class="text-${shortcutsEnabled ? 'success' : 'danger'}">
+				${shortcutsEnabled ? $t['keyboard shortcuts enabled'] : $t['keyboard shortcuts disabled']}
+			</span>
+			${toggler}
+		</div>
+	`;
 
-
-	var modalId = modal_window({
-		message: '<div style="' +
-					'margin-top: .75em; ' +
-					'overflow: auto; ' +
-					'height: inherit; ' +
-					'width: inherit; ' +
-					'columns: 3 25em; ' +
-					'column-gap: 4em; ' +
-					'column-rule: 1px dotted #ddd;">' + 
-						keys.join('') + 
-				'</div>',
+	const modalId = modal_window({
+		message: `
+			<div style="
+				margin: 1em 2em;
+				overflow: auto;
+				height: inherit;
+				width: inherit;
+				columns: 3 25em;
+				column-gap: 4em;
+				column-rule: 1px dotted var(--navbar-border-color);
+			">
+				${keys.join('')}
+			</div>
+		`,
 		title: title,
 		size: 'full',
 		noAnimation: true
@@ -2449,22 +2607,22 @@ AppGini.showKeyboardShortcuts = (e) => {
 	 <script>_noShortcutsReference = true;</script>
 	 */
 	if(typeof(_noShortcutsReference) == 'undefined')
-		$j(
-			'<a href="https://bigprof.com/appgini/help/working-with-generated-web-database-application/shortcut-keys/" target="_blank">' +
-			AppGini.Translate._map['keyboard shorcuts reference'] +
-			'</a>'
-		).appendTo('#' + modalId + ' .modal-footer');
+		$j(`
+			<a href="https://bigprof.com/appgini/help/working-with-generated-web-database-application/shortcut-keys/" target="_blank">
+				${AppGini.Translate._map['keyboard shorcuts reference']}
+			</a>
+		`).appendTo(`#${modalId} .modal-footer`);
 }
 
-/* copy .warning colors to a separate class .highlighted-record */
+/* create css class .highlighted-record */
 AppGini.defineHighlightClass = function() {
 	if(AppGini._defineHighlightClassOk != undefined) return;
 
 	AppGini._defineHighlightClassOk = true;
-	$j('<div class="bg-warning defineHighlightClass">.</div>').appendTo('.container, .container-fluid');
-	var bgColor = $j('.bg-warning').css('background-color'), textColor = $j('.bg-warning').css('color');
+	$j('<div class="bg-info defineHighlightClass">.</div>').appendTo('.container, .container-fluid');
+	var bgColor = $j(`.defineHighlightClass`).css('background-color'), textColor = $j(`.defineHighlightClass`).css('color');
 	$j('.defineHighlightClass').remove();
-	$j('<style>.highlighted-record { background-color: ' + bgColor + ' !important; color: ' + textColor + ' !important; }</style>')
+	$j('<style>.highlighted-record { background-color: ' + bgColor + ' !important; color: ' + textColor + ' !important; a{ color: ' + textColor + ' !important; } }</style>')
 		.appendTo('.container, .container-fluid');
 }
 
@@ -2498,7 +2656,7 @@ AppGini.applyNiceditBgColors = function() {
 		var e = $j(this);
 		if(e.hasClass('nicedit-bg-applied')) return;
 
-		e.addClass('nicedit-bg-applied').css({ backgroundColor: 'rgb(' + 
+		e.addClass('nicedit-bg-applied').css({ backgroundColor: 'rgb(' +
 			[
 				e.data('nicedit_r'),
 				e.data('nicedit_g'),
@@ -2512,21 +2670,21 @@ AppGini.applyNiceditBgColors = function() {
  * Examples:
  *    To append a divider to the menu:
  *       AppGini.addToProfileMenu('--')
- * 
+ *
  *    To append a text-only link labeled 'Test link' that opens a page 'test'
- *    in the same tab: 
+ *    in the same tab:
  *       AppGini.addToProfileMenu({ href: 'test', text: 'Test link' })
- * 
+ *
  *    To append a link labeled 'Test link' with an image
- *    that opens a page 'test' in the same tab: 
+ *    that opens a page 'test' in the same tab:
  *       AppGini.addToProfileMenu({
  *          href: 'test',
  *          text: 'Test link',
  *          img: 'path/to/img'
  *       })
- * 
+ *
  *    To append a link labeled 'Test link' with a checkmark glyphicon
- *    that opens a page 'test' in a new tab: 
+ *    that opens a page 'test' in a new tab:
  *       AppGini.addToProfileMenu({
  *          href: 'test',
  *          text: 'Test link',
@@ -2572,7 +2730,7 @@ AppGini.addToProfileMenu = (link) => {
  * Creates a CSS class with the provided name and properties.
  * Properties are retrieved from the provided class(es) plus the provided
  * additional properties.
- * 
+ *
  * @param {string} className The name of the CSS class to create.
  * @param {string} sourceElmClass The class(es) to retrieve properties from.
  * @param {string[]} sourceElmProps The properties to retrieve from the source class(es).
@@ -2617,12 +2775,12 @@ AppGini.createCSSClass = (className, sourceElmClass, sourceElmProps = [], additi
  * @param {boolean} scheduleNextCall If true, schedule next call to this function.
  */
 AppGini.updateChildrenCount = (scheduleNextCall = true) => {
-	if(!$j('.count-children').length) return;
+	if(!$j('.children-count').length) return;
 
 	AppGini._childrenCount = AppGini._childrenCount || {};
 
-	// if there are no visible .count-children elements, schedule next call and return
-	if(!$j('.count-children:visible').length && scheduleNextCall) {
+	// if there are no visible .children-count elements, schedule next call and return
+	if(!$j('.children-count:visible').length && scheduleNextCall) {
 		setTimeout(AppGini.updateChildrenCount, 1000);
 		return;
 	}
@@ -2630,13 +2788,13 @@ AppGini.updateChildrenCount = (scheduleNextCall = true) => {
 	// TVP?
 	if(AppGini.currentViewIs('TVP') && !AppGini._childRecordsInfoAdaptedToTVP) {
 		// show only the count, no link, no add new
-		$j('.child-records-info').not('th').html('<div class="text-right count-children"></div>');
+		$j('.child-records-info').not('th').html('<div class="text-right children-count"></div>');
 		AppGini._childRecordsInfoAdaptedToTVP = true;
 	}
 
-	// for each .count-children element, get the nearest parent .child-records-info
+	// for each .children-count element, get the nearest parent .child-records-info
 	const countEls = {};
-	$j('.count-children').each(function() {
+	$j('.children-count').each(function() {
 		const countEl = $j(this);
 		const parentEl = countEl.closest('.child-records-info');
 		const childTable = parentEl.data('table');
@@ -2677,7 +2835,7 @@ AppGini.updateChildrenCount = (scheduleNextCall = true) => {
 
 					// resp.data is an object with keys = IDs and values = count
 					for(const id in resp.data.counts) {
-						const currentCell = childInfoContainers.filter(`[data-id=${id}]`).find('.count-children')
+						const currentCell = childInfoContainers.filter(`[data-id=${id}]`).find('.children-count')
 						if(currentCell.length == 0) continue;
 
 						if(AppGini._childrenCount[ChildTable]?.[ChildLookupField]?.[id] != resp.data.counts[id]) {
@@ -2717,8 +2875,8 @@ AppGini.updateChildrenCount = (scheduleNextCall = true) => {
 
 AppGini.copyToClipboard = (text) => {
 	if(navigator.clipboard) {
-	   navigator.clipboard.writeText(text);
-	   return;
+		navigator.clipboard.writeText(text);
+		return;
 	}
 
 	const textArea = document.createElement('textarea');
@@ -2778,9 +2936,9 @@ AppGini.storedLayout = (val) => {
 	const view = $j('[name="current_view"]').val();
 
 	if(val !== undefined) {
-		localStorage.setItem(`${AppGini.config.appTitle}.${AppGini.currentTableName()}.${view}.layout`, val);
+		AppGini.localStorage.setItem(`${AppGini.currentTableName()}.${view}.layout`, val);
 	}
-	return localStorage.getItem(`${AppGini.config.appTitle}.${AppGini.currentTableName()}.${view}.layout`);
+	return AppGini.localStorage.getItem(`${AppGini.currentTableName()}.${view}.layout`);
 }
 
 AppGini.renderDVLayoutToolbar = () => {
@@ -2807,9 +2965,9 @@ AppGini.renderDVLayoutToolbar = () => {
 
 	// apply user preference if found
 	const windowWidth = $j(window).width();
-	if(dvLayout == 'double-column-layout' && windowWidth >= 1200) {
+	if(dvLayout == 'double-column-layout' && windowWidth >= 900) {
 		AppGini.applyDoubleColumnLayout();
-	} else if(dvLayout == 'triple-column-layout' && windowWidth >= 1700) {
+	} else if(dvLayout == 'triple-column-layout' && windowWidth >= 1550) {
 		AppGini.applyTripleColumnLayout();
 	}
 
@@ -2921,7 +3079,7 @@ AppGini.preparePagesMenu = (recordsPerPage, pagesMenuId, lastPage, currentPage, 
 
 		if(ellipsesIndex > 0) {
 			pagesMenu.options[ellipsesIndex].text = " ... ";
-		}      
+		}
 	}
 
 	// empty the pages menu and clear any previous event handlers
@@ -2963,9 +3121,9 @@ AppGini.preparePagesMenu = (recordsPerPage, pagesMenuId, lastPage, currentPage, 
 
 AppGini.storedRecordsPerPage = (val) => {
 	if(val !== undefined) {
-		localStorage.setItem(`${AppGini.config.appTitle}.${AppGini.currentTableName()}.recordsPerPage`, val);
+		AppGini.localStorage.setItem(`${AppGini.currentTableName()}.recordsPerPage`, val);
 	}
-	return localStorage.getItem(`${AppGini.config.appTitle}.${AppGini.currentTableName()}.recordsPerPage`);
+	return AppGini.localStorage.getItem(`${AppGini.currentTableName()}.recordsPerPage`);
 }
 
 AppGini.renderTVRecordsPerPageSelector = () => {
@@ -2976,7 +3134,7 @@ AppGini.renderTVRecordsPerPageSelector = () => {
 	if($j('#records-per-page-selector').length) return;
 
 	// to override the default records per page options,
-	// set AppGini.config.recordsPerPageOptions as an array of integers 
+	// set AppGini.config.recordsPerPageOptions as an array of integers
 	// in hooks/header-extras.php or hooks/footer-extras.php
 	let rppOptions = [5, 10, 20, 30, 40, 50, 100, 200];
 	if(AppGini.config.recordsPerPageOptions) {
@@ -2985,7 +3143,7 @@ AppGini.renderTVRecordsPerPageSelector = () => {
 
 	// create the records per page selector and append to .record-count-info
 	$j('.record-count-info').append(`
-		<div class="form-inline pull-right">
+		<div class="form-inline pull-right flip">
 			<label style="font-weight: normal;">
 				<i class="glyphicon glyphicon-menu-hamburger text-muted"></i>
 				${AppGini.Translate._map['records per page']}
@@ -3035,8 +3193,8 @@ AppGini.renderTVRecordsPerPageSelector = () => {
 	const defaultRecordsPerPage = $j('[name=RecordsPerPage]').val();
 	const storedRecordsPerPage = AppGini.storedRecordsPerPage();
 	if(storedRecordsPerPage > 0 && storedRecordsPerPage != defaultRecordsPerPage && storedRecordsPerPage <= 200) {
-	   $j('#records-per-page-selector').val(storedRecordsPerPage).trigger('change');
-	   return;
+		$j('#records-per-page-selector').val(storedRecordsPerPage).trigger('change');
+		return;
 	}
 
 	// set the selected option based on the current records per page
@@ -3045,13 +3203,22 @@ AppGini.renderTVRecordsPerPageSelector = () => {
 
 AppGini.currentViewIs = (view) => $j('#current_view').val()?.toLowerCase() == view?.toLowerCase();
 
+/**
+ * Append records per page to table links in the current page.
+ * This function looks for links to table views and appends the stored
+ * records per page value to their URLs.
+ */
 AppGini.appendRecordsPerPageToTableLinks = () => {
-	// find stored records per page and extract table names from keys
-	Object.keys(localStorage).filter(k => k.match(new RegExp(`${AppGini.config.appTitle}\\..*?\\.recordsPerPage`))).forEach(k => {
-		const tableName = k.split('.')[1];
+	AppGini.localStorage.findKeys(/^(\w+)\.recordsPerPage$/).forEach(({ key, value, match }) => {
+		const tableName = match[1];
 		$j(`a[href*="/${tableName}_view.php"], a[href^="${tableName}_view.php"]`).each(function() {
-			const href = new URL($j(this).attr('href'), window.location.href);
-			href.searchParams.set('RecordsPerPage', localStorage.getItem(k));
+			let href;
+			try {
+				href = new URL($j(this).attr('href'), window.location.href);
+			} catch {
+				return;
+			}
+			href.searchParams.set('RecordsPerPage', value);
 			$j(this).attr('href', href.toString());
 		});
 	});
@@ -3192,9 +3359,9 @@ AppGini.handleCaptureLocation = () => {
 					googleMapContainer.html(`
 						<iframe
 							allowfullscreen
-							loading="lazy" 
-							frameborder="0" 
-							style="border: none; width: 100%; height: 300px;" 
+							loading="lazy"
+							frameborder="0"
+							style="border: none; width: 100%; height: 300px;"
 							src="https://www.google.com/maps/embed/v1/place?key=${AppGini.config.googleAPIKey}&q=${lat},${lng}&zoom=15&maptype=roadmap">
 						</iframe>
 					`);
@@ -3219,19 +3386,19 @@ AppGini.handleCaptureLocation = () => {
 AppGini.handleSubmitRecord = (e, insertMode) => {
 	e.preventDefault();
 
-	const form = e.target.closest('form'), 
+	const form = e.target.closest('form'),
 		table = AppGini.currentTableName(),
 		validationFunction = window[`${table}_validateData`],
 		/*
 		 * custom validation function should return true if all custom validations pass,
 		 * or false if any custom validation fails.
-		 * 
+		 *
 		 * function signature: {tableName}_customValidateData(insertMode) => boolean
-		 * 
+		 *
 		 * @param {boolean} insertMode true if form is in insert mode, false if in update mode
-		 * 
+		 *
 		 * You can define custom validation functions in any of the following locations:
-		 * 
+		 *
 		 * hooks/header-extras.php,
 		 * hooks/footer-extras.php,
 		 * {tableName}-dv.js,
@@ -3282,6 +3449,11 @@ AppGini.handleSubmitRecord = (e, insertMode) => {
 
 		AppGini.suppressBeforeUnloadWarning = true;
 
+		// if form inside modal, clear 'unsaved_changes' from parent window to prevent warning on closing the modal
+		if(AppGini.ImInsideModal()) {
+			AppGini.getParentModal()?.data('unsaved_changes', false);
+		}
+
 		form.submit();
 	}, insertMode);
 }
@@ -3306,8 +3478,11 @@ AppGini.handleDVFormChange = () => {
 	// if no #insert or #update buttons, return
 	if(!$j('#insert').length && !$j('#update').length) return;
 
-	$j('form').eq(0).on('change', function() {
+	$j('form').eq(0).on('change', function(e) {
 		if($j(this).data('already_changed')) return;
+
+		// skip if triggered by quick search
+		if($j(e.target).attr('id') == 'SearchString') return;
 
 		if($j('#deselect').length) {
 			$j('#deselect')
@@ -3317,15 +3492,21 @@ AppGini.handleDVFormChange = () => {
 		}
 
 		// handle onbeforeunload event to warn user before leaving the page without saving changes
-		window.onbeforeunload = (e) => {
-			// if AppGini.suppressBeforeUnloadWarning is not set (i.e. requested action is not insert/update/delete),
-			// warn user before leaving the page
-			if(!AppGini.suppressBeforeUnloadWarning) {
-				e.preventDefault();
-				e.returnValue = AppGini.Translate._map['discard changes confirm'];
-				return e.returnValue;
+		// but do so only if the page is not a modal in another page
+		if(AppGini.ImInsideModal()) {
+			// add a data attribute to the parent modal indicating that the embedded page has unsaved changes
+			AppGini.getParentModal()?.data('unsaved_changes', true);
+		} else {
+			window.onbeforeunload = (e) => {
+				// if AppGini.suppressBeforeUnloadWarning is not set (i.e. requested action is not insert/update/delete),
+				// warn user before leaving the page
+				if(!AppGini.suppressBeforeUnloadWarning) {
+					e.preventDefault();
+					e.returnValue = AppGini.Translate._map['discard changes confirm'];
+					return e.returnValue;
+				}
 			}
-		}  
+		}
 
 		$j(this).data('already_changed', true);
 	});
@@ -3403,7 +3584,7 @@ AppGini.checkUnique = (tableName, fieldName, excludeSelectedID = true, async = t
  * - hooks/footer-extras.php
  * - hooks/{tableName}-dv.js
  * - {tableName}_dv() function in hooks/{tableName}.php
- * 
+ *
  * AppGini.config.disableTimeFieldQuickActions: set to true to disable time field quick actions.
  * AppGini.config.timeFieldMinutesStep: set to the number of minutes to increment/decrement the time by. Default is 5.
  */
@@ -3522,13 +3703,13 @@ AppGini.addTimeFieldQuickActions = () => {
 /**
  * Initializes the lightbox functionality for elements with `data-lightbox` attributes.
  * This function should only be called once during the application's lifecycle.
- * 
- * The lightbox groups images by the value of the `data-lightbox` attribute and displays 
- * them in a modal carousel. If there is only one image in the group, it is displayed 
- * without the carousel. The modal title is determined based on associated elements 
- * (e.g., a `<th>` with a class matching the lightbox group, or a `<label>` in the 
+ *
+ * The lightbox groups images by the value of the `data-lightbox` attribute and displays
+ * them in a modal carousel. If there is only one image in the group, it is displayed
+ * without the carousel. The modal title is determined based on associated elements
+ * (e.g., a `<th>` with a class matching the lightbox group, or a `<label>` in the
  * closest `.form-group`).
- * 
+ *
  * @function
  * @memberof AppGini
  */
@@ -3556,10 +3737,10 @@ AppGini.handleLightbox = () => {
 		const uniqueId = `lightbox-${lightboxGroup}-${Math.random().toString(36).substring(7)}`;
 		const modalOptions = {
 			message: `
-				<div id="${uniqueId}" class="carousel slide lightbox-carousel" data-ride="carousel" data-interval="" style=" 
-					height: 100%; 
-					display: flex; 
-					align-items: center; 
+				<div id="${uniqueId}" class="carousel slide lightbox-carousel" data-ride="carousel" data-interval="" style="
+					height: 100%;
+					display: flex;
+					align-items: center;
 					justify-content: center;
 				">
 					${
@@ -3662,7 +3843,7 @@ AppGini.fixDVActionButtonsToBottom = () => {
 
 		dvActionButtons
 			.addClass('navbar navbar-fixed-bottom')
-			.removeClass('col-md-4 col-lg-2')
+			.removeClass('col-md-4 col-lg-3')
 			.css({
 				padding: '.25em 0',
 				width: '100%',
@@ -3693,14 +3874,14 @@ AppGini.fixDVActionButtonsToBottom = () => {
 					btnNodes[i].remove();
 					break; // restart loop
 				}
-			}              
+			}
 
 			// clear special css
-			btn.css({ margin: 0, padding: '', width: ''    });
+			btn.css({ margin: 0, padding: '', width: '' });
 		}
 
 		[
-			'#deselect', '#update', '#delete', '#insert', 
+			'#deselect', '#update', '#delete', '#insert',
 			'#dvprint', '[name=setSelectedIDPreviousPage]', '[name=previousRecordDV]', '[name=setSelectedIDNextPage]', '[name=nextRecordDV]',
 		].forEach(btn => prepBtn(btn));
 
@@ -3713,10 +3894,10 @@ AppGini.fixDVActionButtonsToBottom = () => {
 		if(updateBtn.length && insertBtn.length) {
 			btnContainer.addClass('dropup');
 			const updateInsertBtn = $j(`
-				<button 
-					class="btn btn-lg btn-success dropdown-toggle" 
-					data-toggle="dropdown" 
-					style="border-radius: 0;" 
+				<button
+					class="btn btn-lg btn-success dropdown-toggle"
+					data-toggle="dropdown"
+					style="border-radius: 0;"
 					>
 						<i class="glyphicon glyphicon-ok"></i>
 						<i class="caret"></i>
@@ -3827,4 +4008,410 @@ AppGini.controlBackButtonBehavior = () => {
 			}
 		});
 	}
+}
+
+AppGini.darkThemes = [
+	'.theme-cyborg',
+	'.theme-darkly',
+	'.theme-slate',
+	'.theme-superhero',
+];
+AppGini.darkTheme = () => AppGini.darkThemes.some(theme => $j(theme).length > 0);
+AppGini.lightTheme = () => AppGini.darkThemes.every(theme => $j(theme).length == 0);
+
+/**
+ * AppGini.localStorage
+ * --------------------
+ * Purpose:
+ *   Provides a safe, namespaced, and JSON-friendly wrapper for working with `localStorage`.
+ *   All keys are automatically prefixed with the app's title to avoid collisions between different apps on same hostname.
+ *   Values are automatically JSON-encoded/decoded for easy storage of objects and arrays.
+ *
+ * Methods:
+ *   - `setItem(key, value)`: Store a value under a namespaced key (objects/arrays supported).
+ *   - `getItem(key)`: Retrieve and decode a value by key.
+ *   - `removeItem(key)`: Remove a namespaced key.
+ *   - `clear()`: Remove all keys for the current app.
+ *   - `findKeys(pattern)`: Find all app-localStorage keys matching a regex pattern (pattern is matched against un-prefixed keys).
+ *
+ * Example usage:
+ * ```javascript
+ * AppGini.localStorage.setItem('xyz', 25);
+ * AppGini.localStorage.setItem('abc', { x: 1, y: 2 });
+ * const val = AppGini.localStorage.getItem('xyz'); // val will be 25
+ * const obj = AppGini.localStorage.getItem('abc'); // obj will be { x: 1, y: 2 }
+ * AppGini.localStorage.removeItem('xyz');
+ * AppGini.localStorage.clear();
+ * const found = AppGini.localStorage.findKeys(/(\w+)\.recordsPerPage$/);
+ *
+ * // Iterate found
+ * found.forEach(({ key, value, match }) => {
+ *   const table = match[1];
+ *   console.log(`Table "${table}" has recordsPerPage = ${value}`);
+ * });
+ * ```
+ */
+AppGini.localStorage = class {
+	/** @type {string} */
+	static prefix = (window.AppGini?.config?.appTitle ?? 'app') + '-';
+
+	/**
+	 * Store a value under a namespaced key. Value can be any serializable object.
+	 * @param {string} key - The unprefixed key to store under the app namespace.
+	 * @param {*} value - Any value to store (will be JSON-encoded).
+	 */
+	static setItem(key, value) {
+		const namespacedKey = this.prefix + key;
+		try {
+			localStorage.setItem(namespacedKey, JSON.stringify(value));
+		} catch (e) {
+			console.error(`Error storing value for key "${namespacedKey}":`, e);
+		}
+	}
+
+	/**
+	 * Retrieve a value by key. Will be JSON-decoded if possible.
+	 * @param {string} key - The unprefixed key to retrieve.
+	 * @returns {*} The parsed value (or null if not found).
+	 */
+	static getItem(key) {
+		const namespacedKey = this.prefix + key;
+		const value = localStorage.getItem(namespacedKey);
+		if (value === null) return null;
+		try {
+			return JSON.parse(value);
+		} catch (e) {
+			return value;
+		}
+	}
+
+	/**
+	 * Remove a namespaced key.
+	 * @param {string} key - The unprefixed key to remove.
+	 */
+	static removeItem(key) {
+		const namespacedKey = this.prefix + key;
+		localStorage.removeItem(namespacedKey);
+	}
+
+	/**
+	 * Remove all app-specific localStorage keys.
+	 */
+	static clear() {
+		Object.keys(localStorage)
+			.filter(k => k.startsWith(this.prefix))
+			.forEach(k => localStorage.removeItem(k));
+	}
+
+	/**
+	 * Find all app-localStorage keys matching a regex pattern.
+	 * @param {RegExp|string} pattern - Regex or string to match un-prefixed keys.
+	 * @returns {Array<{key: string, value: any, match: Array}>}
+	 *   Array of objects: { key: string, value: any, match: Array }
+	 */
+	static findKeys(pattern) {
+		const regex = typeof pattern === 'string' ? new RegExp(pattern) : pattern;
+		const keys = Object.keys(localStorage).filter(k => k.startsWith(this.prefix));
+		const results = [];
+		for (const namespacedKey of keys) {
+			const unprefixedKey = namespacedKey.slice(this.prefix.length);
+			const match = unprefixedKey.match(regex);
+			if (match) {
+				results.push({
+					key: unprefixedKey,
+					value: this.getItem(unprefixedKey),
+					match // The RegExp match array
+				});
+			}
+		}
+		return results;
+	}
+}
+
+/**
+ * Confirm before closing a modal window if there are unsaved changes.
+ * This function should be called when the modal is about to be closed
+ * by passing it to the `beforeClose` option of `modal_window`.
+ *
+ * It works by checking if the modal has a data attribute `unsaved_changes` set to true.
+ * (This attribute is assumed to be set to true when the user makes changes in the modal form.)
+ * If the attribute is set, it prompts the user to confirm before closing the modal.
+ * If the user confirms, it removes the `unsaved_changes` attribute and closes the modal.
+ * * If the user cancels, it prevents the modal from closing.
+ *
+ * @param {Event} e - The event triggered when the modal is about to be closed.
+ * @returns {boolean} true if the modal can be closed, false if the user cancelled the close action.
+ */
+AppGini.confirmBeforeClosingModal = (e) => {
+	// if the modal is not open or has no unsaved changes, return true
+	if(!AppGini.getModal()?.data('unsaved_changes')) return true;
+
+	// change detected; ask user to confirm before closing
+	e.preventDefault();
+	if(!confirm(AppGini.Translate._map['you made changes without saving'])) {
+		// user cancelled the close action
+		return false;
+	}
+
+	// close the modal but first remove the unsaved changes flag
+	AppGini.getModal()?.data('unsaved_changes', false);
+	AppGini.getModal()?.agModal('hide');
+	return true; // allow the modal to close
+}
+/**
+ * Check if the current page is embedded in another page (e.g. in a modal window).
+ * This is determined by checking if the current page URL contains `Embedded=1` query parameter
+ * or if there is a hidden input field with name `Embedded` and value `1`.
+ * @returns {boolean} true if the current page is embedded, false otherwise.
+ */
+AppGini.isEmbedded = () => {
+	// check if the current page url contains `Embedded=1` query parameter
+	const urlParams = new URLSearchParams(window.location.search);
+	if(urlParams.has('Embedded') && urlParams.get('Embedded') === '1') return true;
+
+	// check if the page has a hidden input field with name `Embedded` and value `1`
+	const embeddedInput = $j('input[name="Embedded"]');
+	if(embeddedInput.length && embeddedInput.val() == '1') return true;
+
+	return false;
+}
+const linkToMassUpdatePlugin = () => {
+	// open mass update link in new tab
+	const link = 'https://bigprof.com/appgini/applications/mass-update-plugin';
+
+	// open the link in a new tab
+	window.open(link, '_blank');
+}
+AppGini.handleSaveFilters = () => {
+	// run only once
+	if(AppGini._handleSaveFiltersApplied != undefined) return;
+	AppGini._handleSaveFiltersApplied = true;
+
+	// if no #save-filter-panel, return
+	const savedFilterPanel = $j('#save-filter-panel');
+	if(!savedFilterPanel.length) return;
+
+	const savedFilterTitle = $j('#save-filter-title'),
+		saveFilterBtn = $j('#save-filter-btn'),
+		savedFilterLink = $j('#save-filter-link');
+
+	// on type in savedFilterTitle, enable/disable saveFilterBtn if trimmed value is non-empty/empty
+	savedFilterTitle.on('input', function() {
+		const title = $j(this).val().trim();
+		saveFilterBtn.prop('disabled', title.length == 0);
+	});
+
+	// on click of saveFilterBtn, send ajax request to save the filter to ajax-save-filters.php
+	// and on success, hide the saved filter panel (TODO: reload saved filters menu)
+	saveFilterBtn.on('click', function() {
+		const title = savedFilterTitle.val().trim();
+		if(title.length == 0) return;
+
+		// get csrf token
+		const csrfToken = $j('input[name="csrf_token"]').val();
+		let link = savedFilterLink.attr('href');
+
+		$j.ajax({
+			url: `${AppGini.config.url}ajax-saved-filters.php`,
+			method: 'POST',
+			data: {
+				csrf_token: csrfToken,
+				title: title,
+				link: link,
+			},
+			success: function(response) {
+				// append `filterLinkTitle` parameter to the link then redirect to it
+				link += (link.includes('?') ? '&' : '?') + `filterLinkTitle=${encodeURIComponent(title)}`;
+				window.location.href = link;
+			},
+			error: function(xhr, status, error) {
+				AppGini.modalError(`${AppGini.Translate._map['Error saving filter']}: ${error}`);
+			},
+			complete: function() {
+				savedFilterPanel.remove();
+			}
+		});
+	});
+}
+
+AppGini.handleSavedFiltersList = () => {
+	// run only once
+	if(AppGini._handleSavedFiltersListApplied != undefined) return;
+	AppGini._handleSavedFiltersListApplied = true;
+
+	// if no #filter-links-select2-placeholder, return
+	const savedFiltersList = $j('#filter-links-select2-placeholder');
+	if(!savedFiltersList.length) return;
+
+	// if url includes `filterLinkTitle` parameter, show title after page header
+	const urlParams = new URLSearchParams(window.location.search);
+	if(urlParams.has('filterLinkTitle')) {
+		const filterTitle = AppGini.sanitizeString(urlParams.get('filterLinkTitle')).trim();
+		if(filterTitle.length) {
+			const filterTitleEl = $j(`
+				<div class="well applied-saved-filter">
+                   <i class="glyphicon glyphicon-filter"></i>
+                   ${filterTitle}
+
+					<button class="btn btn-link btn-sm" type="button" onclick="$j('#NoFilter').click();">
+						<i class="glyphicon glyphicon-remove-circle"></i>
+						<span class="hidden-xs">${AppGini.Translate._map['Reset Filters']}</span>
+					</button>
+
+					<button class="btn btn-link btn-sm pull-right" type="button" onclick="AppGini.deleteSavedFilter('${filterTitle}')">
+						<i class="glyphicon glyphicon-trash text-danger"></i>
+						<span class="text-danger hidden-xs">${AppGini.Translate._map['delete saved filter']}</span>
+					</button>
+				</div>
+			`);
+			filterTitleEl.insertBefore('.page-header');
+		}
+	}
+
+	$j.ajax({
+		url: `${AppGini.config.url}ajax-saved-filters.php`,
+		method: 'GET',
+		success: function(response) {
+			AppGini.populateSavedFiltersList(response.filters);
+		},
+		error: function(xhr, status, error) {
+			AppGini.modalError(error);
+		}
+	});
+}
+
+AppGini.populateSavedFiltersList = (filters) => {
+	if(!Array.isArray(filters) || filters.length === 0) {
+		$j('.filter-links').addClass('hidden');
+		return;
+	}
+
+	// prepare data for select2
+	const select2Data = filters.map((filter, index) => ({
+		id: `filter-${index}-${Date.now()}`,
+		text: filter.title,
+		link: filter.link,
+		icon: filter.icon || 'table.gif',
+	}));
+
+	const filtersList = $j('#filter-links-select2-placeholder');
+	// show filter icon in selection, and if screen size is xs, also show 'saved filters' text
+	const selectionHtml = `<div class="text-center"><i class="glyphicon glyphicon-filter"></i>${screen_size('xs') ? ' ' + AppGini.Translate._map['saved filters'] : ''}</div>`;
+
+	filtersList.select2('destroy');
+	filtersList.select2({
+		data: { results: select2Data, text: 'text' },
+		allowClear: true,
+		dropdownAutoWidth: true,
+		width: '100%',
+		formatResult: (item) => {
+			if(!item.id) return item.text; // optgroup
+			// Create link element using jQuery to properly escape attributes
+			// append `filterLinkTitle` parameter to the link to identify the filter being applied
+			item.link += (item.link.includes('?') ? '&' : '?') + `filterLinkTitle=${encodeURIComponent(item.text)}`;
+			const link = $j('<a/>')
+				.attr('href', item.link)
+				.css({
+					display: 'block',
+					textDecoration: 'none',
+					color: 'inherit'
+				})
+				.html(`<img src="${AppGini.config.url}${item.icon}" alt="" style="vertical-align: middle; height: 1.2em;"> ${item.text}`);
+			return link[0].outerHTML;
+		},
+		escapeMarkup: (m) => m, // Don't escape since we're handling it manually
+		formatSelection: () => selectionHtml,
+	});
+
+	// Set placeholder as filter icon
+	filtersList.data('select2').container.find('.select2-choice .select2-chosen').html(selectionHtml);
+
+	// Navigate to the filter link when a selection is made
+	filtersList.on('change', function(e) {
+		if(e.val && e.added?.link) {
+			window.location.href = e.added.link;
+		}
+	});
+
+	// Append recordsPerPage to filter links
+	AppGini.appendRecordsPerPageToTableLinks();
+
+	// Show the filter links container
+	$j('.filter-links').removeClass('hidden');
+}
+
+AppGini.deleteSavedFilter = (filterTitle) => {
+	// confirm deletion
+	if(!confirm(`${AppGini.Translate._map['confirm delete saved filter']} "${filterTitle}"?`)) {
+		return;
+	}
+
+	// get csrf token
+	const csrfToken = $j('input[name="csrf_token"]').val();
+
+	$j.ajax({
+		url: `${AppGini.config.url}ajax-saved-filters.php`,
+		method: 'DELETE',
+		data: {
+			csrf_token: csrfToken,
+			title: filterTitle
+		},
+		success: function(response) {
+			AppGini.populateSavedFiltersList(response.filters);
+
+			// strip filterLinkTitle parameter from url without reloading the page
+			// this prevents re-displaying the deleted filter title after deletion
+			const url = new URL(window.location.href);
+			url.searchParams.delete('filterLinkTitle');
+			window.history.replaceState({}, document.title, url.toString());
+
+			$j('.applied-saved-filter').html(`
+				<i class="glyphicon glyphicon-ok"></i>
+				${AppGini.Translate._map['saved filter deleted successfully']}
+			`);
+			setTimeout(() => {
+				$j('.applied-saved-filter').fadeOut({ duration: 500, complete: function() { $j(this).remove(); } });
+			}, 2000);
+		},
+		error: function(xhr, status, error) {
+			AppGini.modalError(error);
+		}
+	});
+}
+AppGini.sanitizeString = (str) => {
+	// strip html from str
+	const tempDiv = document.createElement('div');
+	tempDiv.innerHTML = str;
+	return tempDiv.textContent || tempDiv.innerText || '';
+}
+AppGini.handleToggleDV = () => {
+	// run only once
+	if(AppGini._handleToggleDVApplied != undefined) return;
+	AppGini._handleToggleDVApplied = true;
+
+	const toggle = $j('.dv-form-toggle');
+	if(!toggle.length) return;
+
+	// if parent of .dv-form-toggle has no visible buttons, hide the toggle button as well
+	let linksCheckInterval = setInterval(() => {
+		if(toggle.parent().find('a.btn:visible').length == 0) {
+			toggle.addClass('hidden');
+			$j('.dv-form-top-border').addClass('hidden');
+			clearInterval(linksCheckInterval);
+		}
+	}, 100);
+
+	toggle.on('click', (e) => {
+		// if has .collapsed class, set title to 'Show DV', else set title to 'Hide DV'
+		const toggle = $j(e.currentTarget);
+
+		// as this is triggered before the collapse action, the presence of 'collapsed' class indicates the current state, not the state after toggle
+		const isCollapsed = !toggle.hasClass('collapsed');
+
+		const title = isCollapsed ? AppGini.Translate._map['Show DV'] : AppGini.Translate._map['Hide DV'];
+		toggle.attr('title', title);
+
+		// find child span that has a data-translate attribute and set its text to the translated title
+		toggle.find('span[data-translate]').text(title);
+	});
 }

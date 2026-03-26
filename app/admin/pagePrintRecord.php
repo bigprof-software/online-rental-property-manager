@@ -47,14 +47,14 @@
 
 	?>
 	<div class="page-header"><h1>
-		<?php echo str_replace("<TABLENAME>", $tableName, $Translation["table name"]); ?>
+		<?php echo str_replace("<TABLENAME>", $tableName, $Translation['table name']); ?>
 	</h1></div>
 
 	<table class="table table-striped table-bordered table-hover">
 		<thead>
 			<tr>
-				<th><?php echo $Translation["field name"]; ?></th>
-				<th><?php echo $Translation["value"]; ?></th>
+				<th><?php echo $Translation['field name']; ?></th>
+				<th><?php echo $Translation['value']; ?></th>
 			</tr>
 		</thead>
 

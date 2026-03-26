@@ -54,10 +54,10 @@
 				}
 
 				if ($memberID) {
-					$tempStatus = $Translation["assigned table records to group and member"];
+					$tempStatus = $Translation['assigned table records to group and member'];
 					$tempStatus = str_replace ( "<MEMBERID>" , $memberID , $tempStatus );
 				} else {
-					$tempStatus = $Translation["assigned table records to group"];   
+					$tempStatus = $Translation['assigned table records to group'];
 				}
 
 				$originalValues =  array ('<NUMBER>','<TABLE>' , '<GROUP>' );
@@ -67,7 +67,7 @@
 				$tempStatus = str_replace ( $originalValues , $replaceValues , $tempStatus );
 
 				$status.= $tempStatus. ".<br>";
-			} 
+			}
 		}
 
 		// refresh the list of tables with records that have no owners
@@ -150,10 +150,10 @@
 
 	<div class="table-responsive"><table class="table">
 		<thead><tr>
-			<th><?php echo  $Translation["table"] ; ?></th>
-			<th><?php echo  $Translation["records with no owners"] ; ?></th>
-			<th><?php echo  $Translation["new owner group"] ; ?></th>
-			<th><?php echo  $Translation["new owner member"] ; ?></th>
+			<th><?php echo  $Translation['table'] ; ?></th>
+			<th><?php echo  $Translation['records with no owners'] ; ?></th>
+			<th><?php echo  $Translation['new owner group'] ; ?></th>
+			<th><?php echo  $Translation['new owner member'] ; ?></th>
 		</tr></thead>
 
 		<tbody>
@@ -170,8 +170,8 @@
 	}
 ?>
 		<tr><td colspan="4" class="text-center">
-			<input type="button" value="<?php echo $Translation['cancel'] ; ?>" onclick="window.location='pageHome.php';">
-			<input type="button" name="assignOwners" value="<?php echo $Translation["assign new owners"] ; ?>" onclick="this.value='<?php echo $Translation["please wait"] ; ?>'; this.onclick='return FALSE;'; this.disabled=true; document.getElementsByTagName('form')[0].submit();">
+			<input type="button" value="<?php echo html_attr($Translation['cancel'] ); ?>" onclick="window.location='pageHome.php';">
+			<input type="button" name="assignOwners" value="<?php echo html_attr($Translation['assign new owners'] ); ?>" onclick="this.value='<?php echo $Translation['please wait'] ; ?>'; this.onclick='return FALSE;'; this.disabled=true; document.getElementsByTagName('form')[0].submit();">
 			</td></tr>
 		</tbody>
 		</table></div>

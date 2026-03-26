@@ -150,7 +150,7 @@
 		}
 	}
 
-	function db_connect($host = NULL, $username = NULL, $passwd = NULL, $dbname = NULL, $port = NULL, $socket = NULL) {
+	function db_connect($host = NULL, $username = NULL, $passwd = NULL, $dbname = NULL, $port = NULL, $socket = NULL, $ssl = [], $compression = false) {
 		switch(DATABASE) {
 			case 'mysql':
 				if($host === NULL) $host = ini_get("mysql.default_host");
@@ -167,15 +167,33 @@
 				if($username === NULL) $username = ini_get("mysqli.default_user");
 				if($passwd === NULL) $passwd = ini_get("mysqli.default_pw");
 				if($dbname === NULL) $dbname = "";
-				if($port === NULL) $port = ini_get("mysqli.default_port");
 				if($socket === NULL) $socket = ini_get("mysqli.default_socket");
 
 				// revert PHP 8.1 mysql error reporting behavior
 				// @see https://php.watch/versions/8.1/mysqli-error-mode
 				@mysqli_report(MYSQLI_REPORT_OFF);
 
-				$link = mysqli_connect($host, $username, $passwd, $dbname, $port, $socket);
+				$link = mysqli_init();
 				if(!$link) return false;
+
+				$mysqlFlags = $compression ? MYSQLI_CLIENT_COMPRESS : 0;
+
+				if(!empty($ssl)) {
+					@mysqli_ssl_set(
+						$link,
+						$ssl['key'] ?? null,
+						$ssl['cert'] ?? null,
+						$ssl['no_verify'] ? null : ($ssl['ca'] ?? null),
+						null,
+						null
+					);
+					$mysqlFlags |= MYSQLI_CLIENT_SSL;
+					if($ssl['no_verify']) $mysqlFlags |= MYSQLI_CLIENT_SSL_DONT_VERIFY_SERVER_CERT;
+				}
+
+				$connected = mysqli_real_connect($link, $host, $username, $passwd, $dbname, $port, $socket, $mysqlFlags);
+				if(!$connected) return false;
+
 				db_link($link); /* db_link() can now be used to retrieve the db link from anywhere */
 				mysqli_set_charset($link, mysql_charset);
 				return $link;

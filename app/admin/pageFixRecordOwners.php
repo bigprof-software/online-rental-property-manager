@@ -69,7 +69,7 @@
 
 			<?php echo batchRunnerJSCode(); ?>
 
-		<?php } ?> 
+		<?php } ?>
 
 		<style>
 			#start {
@@ -159,13 +159,13 @@
 						// reset total records
 						$j(`#total-records-${tn}`).html('0');
 
-						batch(tn, run); 
+						batch(tn, run);
 					});
 
 					// keep watching until all table progress bars are done, then start next run
 					const interval = setInterval(() => {
 						// if there are still active progress bars, keep watching
-						if($j('.progress-bar-table.progress-bar-striped').length > 0) return; 
+						if($j('.progress-bar-table.progress-bar-striped').length > 0) return;
 
 						// all progress bars are done, clear interval to stop watching
 						clearInterval(interval);
@@ -243,9 +243,9 @@
 		// get all distinct lookup values as keys and their corresponding record owners as values, [lookupValue => recordOwner]
 		while(withinTimeLimit() && !$store['lookupOwnersDone']) {
 			$start = count($store['lookupOwners']);
-			$res = sql(" 
+			$res = sql("
 				SELECT `pkValue` AS `lookupValue`, `memberID` AS `recordOwner`
-				FROM `membership_userrecords` 
+				FROM `membership_userrecords`
 				WHERE `tableName` = '{$ptn}'
 				ORDER BY `pkValue`
 				LIMIT {$start}, " . BATCH_READ_SIZE, $eo
@@ -266,9 +266,9 @@
 		$pk = getPKFieldName($tn);
 		while(withinTimeLimit() && !$store['recordsDone']) {
 			$start = count($store['records']);
-			$res = sql(" 
-				SELECT `{$pk}` AS `id`, `{$lookupField}` AS `lookupValue` 
-				FROM `{$tn}` 
+			$res = sql("
+				SELECT `{$pk}` AS `id`, `{$lookupField}` AS `lookupValue`
+				FROM `{$tn}`
 				WHERE `{$lookupField}` IS NOT NULL
 				ORDER BY `{$lookupField}`
 				LIMIT {$start}, " . BATCH_READ_SIZE, $eo

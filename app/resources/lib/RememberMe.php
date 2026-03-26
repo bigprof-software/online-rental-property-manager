@@ -331,7 +331,7 @@
 			@header("Set-Cookie:" .
 				" {$cookie_name}=" . urlencode($val) . 
 				"; Max-Age=" . ($val ? self::$_expiry : -1) . 
-				"; path=" . urlencode($appUri) . 
+				"; path=$appUri" . 
 				"; samesite=Lax; HttpOnly"
 			);
 

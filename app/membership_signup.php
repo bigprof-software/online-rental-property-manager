@@ -114,7 +114,7 @@
 					<form method="post" action="membership_signup.php">
 						<div class="form-group">
 							<label for="username" class="control-label"><?php echo $Translation['username']; ?></label>
-							<input class="form-control input-lg" type="text" required="" placeholder="<?php echo $Translation['username']; ?>" id="username" name="newUsername">
+							<input class="form-control input-lg" type="text" required="" placeholder="<?php echo html_attr($Translation['username']); ?>" id="username" name="newUsername">
 							<span id="usernameAvailable" class="help-block hidden pull-left"><i class="glyphicon glyphicon-ok"></i> <?php echo str_ireplace(["'", '"', '<memberid>'], '', $Translation['user available']); ?></span>
 							<span id="usernameNotAvailable" class="help-block hidden pull-left"><i class="glyphicon glyphicon-remove"></i> <?php echo str_ireplace(["'", '"', '<memberid>'], '', $Translation['username invalid']); ?></span>
 							<div class="clearfix"></div>
@@ -124,20 +124,20 @@
 							<div class="col-sm-6">
 								<div class="form-group">
 									<label for="password" class="control-label"><?php echo $Translation['password']; ?></label>
-									<input class="form-control" type="password" autocomplete="new-password" required="" placeholder="<?php echo $Translation['password']; ?>" id="password" name="password">
+									<input class="form-control" type="password" autocomplete="new-password" required="" placeholder="<?php echo html_attr($Translation['password']); ?>" id="password" name="password">
 								</div>
 							</div>
 							<div class="col-sm-6">
 								<div class="form-group">
 									<label for="confirmPassword" class="control-label"><?php echo $Translation['confirm password']; ?></label>
-									<input class="form-control" type="password" autocomplete="new-password" required="" placeholder="<?php echo $Translation['confirm password']; ?>" id="confirmPassword" name="confirmPassword">
+									<input class="form-control" type="password" autocomplete="new-password" required="" placeholder="<?php echo html_attr($Translation['confirm password']); ?>" id="confirmPassword" name="confirmPassword">
 								</div>
 							</div>
 						</div>
 
 						<div class="form-group">
 							<label for="email" class="control-label"><?php echo $Translation['email']; ?></label>
-							<input class="form-control" type="text" required="" placeholder="<?php echo $Translation['email']; ?>" id="email" name="email">
+							<input class="form-control" type="text" required="" placeholder="<?php echo html_attr($Translation['email']); ?>" id="email" name="email">
 						</div>
 
 						<div class="form-group">
@@ -152,8 +152,8 @@
 									if($adminConfig['custom'.$cf] != '') {
 										?>
 										<div class="row form-group">
-										   <div class="col-sm-3"><label class="control-label" for="custom<?php echo $cf; ?>"><?php echo htmlspecialchars($adminConfig['custom'.$cf]); ?></label></div>
-										   <div class="col-sm-9"><input class="form-control" type="text" placeholder="<?php echo html_attr($adminConfig['custom'.$cf]); ?>" id="custom<?php echo $cf; ?>" name="custom<?php echo $cf; ?>"></div>
+											<div class="col-sm-3"><label class="control-label" for="custom<?php echo $cf; ?>"><?php echo htmlspecialchars($adminConfig['custom'.$cf]); ?></label></div>
+											<div class="col-sm-9"><input class="form-control" type="text" placeholder="<?php echo html_attr($adminConfig['custom'.$cf]); ?>" id="custom<?php echo $cf; ?>" name="custom<?php echo $cf; ?>"></div>
 										</div>
 										<?php
 									}

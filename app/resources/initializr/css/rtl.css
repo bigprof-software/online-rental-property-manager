@@ -935,6 +935,10 @@ th {
   right: auto;
   float: right;
 }
+.pull-right > .dropdown-menu {
+	left: 0;
+	right: auto;
+}
 .dropdown-menu-right {
   left: auto;
   right: 0;
@@ -1471,6 +1475,13 @@ th {
 }
 
 .text-left.flip {
+	text-align: right !important;
+}
+
+.rtl-left {
+	text-align: left !important;
+}
+.rtl-right {
 	text-align: right !important;
 }
 

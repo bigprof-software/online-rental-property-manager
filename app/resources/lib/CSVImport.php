@@ -223,6 +223,11 @@
 				) {
 					$line = @fgetcsv($fpClean, 0, $this->config['fieldSeparator'], $this->config['fieldWrapper']);
 
+					 // Strip leading single quote from each field
+					if(is_array($line)) {
+						$line = array_map(function($v) { return ltrim($v, "'"); }, $line);
+					}
+
 					// record current position in clean csv
 					$this->config['cleanIndex'] = ftell($fpClean);
 
@@ -696,6 +701,11 @@
 			) {
 				$this->config['rawIndex'] = ftell($fpRaw);
 
+				 // Strip leading single quote from each field
+				if(is_array($line)) {
+					$line = array_map(function($v) { return ltrim($v, "'"); }, $line);
+				}
+
 				// skip blanks
 				if(!trim(implode('', $line))) continue;
 
@@ -775,6 +785,11 @@
 				!$this->timeUp()
 			) {
 				$line = @fgetcsv($fpRaw, 0, $this->config['fieldSeparator'], $this->config['fieldWrapper']);
+
+				 // Strip leading single quote from each field
+				if(is_array($line)) {
+					$line = array_map(function($v) { return ltrim($v, "'"); }, $line);
+				}
 
 				// if $line is not an array, it means we've reached EOF, or there is some other error
 				// so, to avoid an unnecessary freeze we should break the loop

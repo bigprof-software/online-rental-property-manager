@@ -10,7 +10,7 @@
 		<meta name="description" content="">
 
 		<title><?php echo APP_TITLE . ' | ' . $Translation['offline mode']; ?></title>
-		<link id="browser_favicon" rel="shortcut icon" href="<?php echo PREPEND_PATH; ?>resources/images/appgini-icon.png">
+		<link id="browser_favicon" rel="shortcut icon" href="<?= PREPEND_PATH ?>resources/images/appgini-icon.png">
 		<?php echo StyleSheet(); ?>
 	</head>
 	<body>

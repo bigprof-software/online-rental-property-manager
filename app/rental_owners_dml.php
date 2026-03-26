@@ -337,7 +337,7 @@ function rental_owners_form($selectedId = '', $allowUpdate = true, $allowInsert 
 		else
 			$templateCode = str_replace('<%%DELETE_BUTTON%%>', '', $templateCode);
 
-		$templateCode = str_replace('<%%DESELECT_BUTTON%%>', '<button type="submit" class="btn btn-default" id="deselect" name="deselect_x" value="1" onclick="' . $backAction . '" title="' . html_attr($Translation['Back']) . '"><i class="glyphicon glyphicon-chevron-left"></i> ' . $Translation['Back'] . '</button>', $templateCode);
+		$templateCode = str_replace('<%%DESELECT_BUTTON%%>', '<button type="submit" class="btn btn-default ltr" id="deselect" name="deselect_x" value="1" onclick="' . $backAction . '" title="' . html_attr($Translation['Back']) . '"><i class="glyphicon glyphicon-chevron-left"></i> ' . $Translation['Back'] . '</button>', $templateCode);
 	} else {
 		$templateCode = str_replace('<%%UPDATE_BUTTON%%>', '', $templateCode);
 		$templateCode = str_replace('<%%DELETE_BUTTON%%>', '', $templateCode);
@@ -355,7 +355,7 @@ function rental_owners_form($selectedId = '', $allowUpdate = true, $allowInsert 
 				'<%%DESELECT_BUTTON%%>',
 				'<button
 					type="submit"
-					class="btn btn-default"
+					class="btn btn-default ltr"
 					id="deselect"
 					name="deselect_x"
 					value="1"
@@ -519,6 +519,16 @@ function rental_owners_form($selectedId = '', $allowUpdate = true, $allowInsert 
 
 	// process translations
 	$templateCode = parseTemplate($templateCode);
+
+	// populate autoCloseParentTables
+	$lookupFields = getLookupFields()['rental_owners'] ?? [];
+	$autoCloseParentTables = [];
+	foreach($lookupFields as $field => $info) {
+		if($info['auto-close']) {
+			$autoCloseParentTables[] = $info['parent-table'];
+		}
+	}
+	$templateCode = str_replace('<%%AUTO_CLOSE_PARENT_TABLES%%>', json_encode($autoCloseParentTables), $templateCode);
 
 	// clear scrap
 	$templateCode = str_replace('<%%', '<!-- ', $templateCode);

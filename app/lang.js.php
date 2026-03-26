@@ -19,9 +19,9 @@ header('Cache-Control: public, max-age=' . $cacheDuration);
 // We set it to the current time plus the cache duration
 header('Expires: ' . gmdate('D, d M Y H:i:s', time() + $cacheDuration) . ' GMT');
 
-// Set the Last-Modified header to the last modified time of language.php
+// Set the Last-Modified header to the last modified time of the user's language file
 // This helps with conditional requests and validation
-$lastModifiedTime = filemtime(__DIR__ . '/language.php');
+$lastModifiedTime = userLanguageLastModified();
 header('Last-Modified: ' . gmdate('D, d M Y H:i:s', $lastModifiedTime) . ' GMT');
 
 // make a UTF8 version of $Translation
@@ -36,7 +36,7 @@ var AppGini = AppGini || {};
 
 /* translation strings */
 AppGini.Translate = {
-	_map: <?php echo json_encode($translationUTF8, JSON_PRETTY_PRINT); ?>,
+	_map: <?php echo str_replace('\\\\n', '\n', json_encode($translationUTF8, JSON_PRETTY_PRINT)); ?>,
 	_encoding: '<?php echo datalist_db_encoding; ?>',
 	apply: () => {
 		// find elements with data-translate attribute that don't have .translated class

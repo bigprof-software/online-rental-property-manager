@@ -34,6 +34,12 @@
 					$uri = '',
 					$appDir = '',
 					$csvFile = '',
+					$transformFunctions = [],
+					$filterFunctions = [],
+					$jobId = '', // holds the jobId if a job is in progress
+					$table = '', // current table name
+					$importJob = null, // holds the CSVImport instance
+					$error = '', // holds error messages
 					$routes = [
 						'import-ui' => 'viewImportUI', // default if no params provided
 						'upload-csv' => 'viewUploadCSV',
@@ -42,7 +48,9 @@
 						'ajax-save-job-config' => 'ajaxSaveJobConfig',
 						'job-progress-ui' => 'viewJobProgressUI', // default if a jobId param provided
 						'ajax-job-progress' => 'ajaxJobProgress',
-					];
+					],
+					$_tablesInsert = null,
+					$_tablesEdit = null;
 
 		public function __construct($transformFunctions, $filterFunctions, $uri = '', $request = false) {
 			global $Translation;

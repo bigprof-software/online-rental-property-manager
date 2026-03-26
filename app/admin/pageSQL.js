@@ -89,7 +89,7 @@ $j(function() {
 								.css({
 									'max-width': 'unset',
 									overflow: 'auto'
-								})                     
+								})
 						} else { // expanded (default), requesting collapse
 							me.addClass('rotate180');
 							$j('tbody > tr > td:nth-child(' + (index + 1) + ')')
@@ -199,7 +199,7 @@ $j(function() {
 	$j('#auto-execute').on('click', function() {
 		var enable = $j(this).hasClass('active');
 		$j(this).toggleClass('active', !enable);
-		$j('#execute').prop('disabled', !enable);  
+		$j('#execute').prop('disabled', !enable);
 	})
 
 	// retrieve stored queries
@@ -214,7 +214,7 @@ $j(function() {
 			storedQueries = storedQueries.filter(function(i) {
 				return typeof i.name == 'string' && typeof i.query == 'string';
 			}).map(function(i) {
-				return { name: cleanName(i.name), query: i.query }; 
+				return { name: cleanName(i.name), query: i.query };
 			});
 
 			listStoredQueries();

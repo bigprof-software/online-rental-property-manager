@@ -53,10 +53,10 @@
 				break;
 			case 'new': /* new record */
 				var parentId = $j('[name=SelectedID]').val();
-				var url = param.ChildTable + '_view.php?' + 
+				var url = param.ChildTable + '_view.php?' +
 					'filterer_' + param.ChildLookupField + '=' + encodeURIComponent(parentId) +
-					'&addNew_x=1' + 
-					'&Embedded=1' + 
+					'&addNew_x=1' +
+					'&Embedded=1' +
 					(param.AutoClose ? '&AutoClose=1' : '');
 				modal_window({
 					url: url,
@@ -65,15 +65,16 @@
 							parentTable: $j('.detail_view').data('table'),
 							parentId: param.SelectedID,
 							childTable: param.ChildTable,
-							childId: localStorage.getItem(param.ChildTable + '_last_added_id')
+							childId: AppGini.localStorage.getItem(`${param.ChildTable}_last_added_id`)
 						});
-						localStorage.removeItem(param.ChildTable + '_last_added_id');
+						AppGini.localStorage.removeItem(`${param.ChildTable}_last_added_id`);
 						<?php echo $current_table; ?>GetChildrenRecordsList({ Verb: 'reload' });
 						AppGini.calculatedFields.init();
 						AppGini.scrollTo('children-tabs');
 					},
+					beforeClose: AppGini.confirmBeforeClosingModal,
 					size: 'full',
-					title: '<?php echo addslashes("{$config['tab-label']}: {$Translation['Add New']}"); ?>'
+					title: <?php echo json_encode("{$config['tab-label']}: {$Translation['Add New']}"); ?>
 				});
 				break;
 			case 'open': /* opens the detail view for given child record PK provided in 'ChildID' */
@@ -91,8 +92,9 @@
 						AppGini.calculatedFields.init();
 						AppGini.scrollTo('children-tabs');
 					},
+					beforeClose: AppGini.confirmBeforeClosingModal,
 					size: 'full',
-					title: '<?php echo addslashes($config['tab-label']); ?>'
+					title: <?php echo json_encode($config['tab-label']); ?>
 				});
 				break;
 			case 'reload': /* just a way of refreshing children, retaining sorting and pagination & without reloading the whole page */
@@ -133,7 +135,7 @@
 							<th>&nbsp;</th>
 						<?php } ?>
 						<?php if(is_array($config['display-fields'])) foreach($config['display-fields'] as $fieldIndex => $fieldLabel) { ?>
-							<th 
+							<th
 								<?php if($config['sortable-fields'][$fieldIndex]) { ?>
 									onclick="<?php echo $current_table; ?>GetChildrenRecordsList({
 										Verb: 'sort',
@@ -165,8 +167,8 @@
 							<?php } ?>
 						<?php } ?>
 
-						<td class="<?php echo "{$parameters['ChildTable']}-{$config['display-field-names'][2]}"; ?>" id="<?php echo "{$parameters['ChildTable']}-{$config['display-field-names'][2]}-" . html_attr($record[$config['child-primary-key-index']]); ?>"><a href="<?php echo getUploadDir('') . urlencode($record[2]); ?>" data-lightbox="property_photos-photo"><img src="thumbnail.php?i=<?php echo urlencode($record[2]); ?>&t=property_photos&f=photo&v=tv" class="img-thumbnail"></a></td>
-						<td class="<?php echo "{$parameters['ChildTable']}-{$config['display-field-names'][3]}"; ?>" id="<?php echo "{$parameters['ChildTable']}-{$config['display-field-names'][3]}-" . html_attr($record[$config['child-primary-key-index']]); ?>"><?php echo safe_html($record[3]); ?></td>
+						<td class="<?php echo "{$parameters['ChildTable']}-{$config['display-field-names'][2]}"; ?> rtl-left" id="<?php echo "{$parameters['ChildTable']}-{$config['display-field-names'][2]}-" . html_attr($record[$config['child-primary-key-index']]); ?>"><a href="<?php echo getUploadDir('') . urlencode($record[2]); ?>" data-lightbox="property_photos-photo"><img src="thumbnail.php?i=<?php echo urlencode($record[2]); ?>&t=property_photos&f=photo&v=tv" class="img-thumbnail"></a></td>
+						<td class="<?php echo "{$parameters['ChildTable']}-{$config['display-field-names'][3]}"; ?> rtl-left" id="<?php echo "{$parameters['ChildTable']}-{$config['display-field-names'][3]}-" . html_attr($record[$config['child-primary-key-index']]); ?>"><?php echo safe_html($record[3]); ?></td>
 					</tr>
 					<?php } ?>
 				</tbody>
@@ -192,14 +194,14 @@
 			<div class="row hidden-print">
 				<div class="col-xs-12">
 					<button
-						type="button" 
-						class="btn btn-default btn-previous" 
+						type="button"
+						class="btn btn-default btn-previous"
 						<?php echo $parameters['Page'] <= 1 ? 'disabled' : ''; ?>
 						><i class="glyphicon glyphicon-chevron-left"></i>
 					</button>
 					<button
-						type="button" 
-						class="btn btn-default btn-next" 
+						type="button"
+						class="btn btn-default btn-next"
 						<?php echo ($firstRecord + count($records) - 1) == $totalMatches ? 'disabled' : ''; ?>
 						><i class="glyphicon glyphicon-chevron-right"></i>
 					</button>

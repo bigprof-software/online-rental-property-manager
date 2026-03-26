@@ -92,7 +92,7 @@
 		</div>
 		<div class="col-xs-2 col-sm-1">
 			<a class="btn btn-default" title="<?php echo html_attr($Translation['view all records by group']); ?>" href="pageViewRecords.php?groupID=<?php echo urlencode($groupID); ?>">
-				<i class="glyphicon glyphicon-chevron-right"></i> 
+				<i class="glyphicon glyphicon-chevron-right"></i>
 			</a>
 		</div>
 	</div>
@@ -109,7 +109,7 @@
 		</div>
 		<div class="col-xs-2 col-sm-1">
 			<a class="btn btn-default" title="<?php echo html_attr($Translation['view all records by member']); ?>" href="pageViewRecords.php?memberID=<?php echo urlencode($memberID); ?>">
-				<span class="glyphicon glyphicon-chevron-right"></span> 
+				<span class="glyphicon glyphicon-chevron-right"></span>
 			</a>
 		</div>
 	</div>
@@ -155,14 +155,14 @@
 			<p class="form-control-static">
 				<a href="pageViewRecords.php?tableName=<?php echo urlencode($tableName); ?>" title="<?php echo html_attr($Translation['view all records of table']); ?>">
 					<?php echo $tableName; ?>
-					<i class="glyphicon glyphicon-th"></i> 
+					<i class="glyphicon glyphicon-th"></i>
 				</a>
 			</p>
 		</div>
 	</div>
 
 	<div class="form-group ">
-		<label for="member username" class="col-sm-4 col-md-3 col-lg-2 col-lg-offset-2 control-label"> 
+		<label for="member username" class="col-sm-4 col-md-3 col-lg-2 col-lg-offset-2 control-label">
 			<div><?php echo $Translation['record data']; ?></div>
 		</label>
 		<div class="col-sm-8 col-md-9 col-lg-6">
@@ -193,17 +193,17 @@
 									foreach ($row as $field_name => $field_value) {
 										$field_link = false;
 										if(@is_file(__DIR__ . '/../' . getUploadDir('') . $field_value)) {
-										   $field_value = "<a href=\"../" . getUploadDir('') . "{$field_value}\" target=\"_blank\">" . html_attr($field_value) . "</a>";
-										   $field_link = true;
+											$field_value = "<a href=\"../" . getUploadDir('') . "{$field_value}\" target=\"_blank\">" . html_attr($field_value) . "</a>";
+											$field_link = true;
 										}
 										?>
 										<tr>
-										   <td><?php echo $field_name; ?></td>
-										   <?php if($field_link) { ?>
-										       <td><?php echo $field_value; ?></td>
-										   <?php } else { ?>
-										       <td><?php echo nl2br(htmlspecialchars($field_value, ENT_NOQUOTES | ENT_COMPAT | ENT_HTML401, datalist_db_encoding)); ?></td>
-										   <?php } ?>
+											<td><?php echo $field_name; ?></td>
+											<?php if($field_link) { ?>
+												<td><?php echo $field_value; ?></td>
+											<?php } else { ?>
+												<td><?php echo nl2br(htmlspecialchars($field_value, ENT_NOQUOTES | ENT_COMPAT | ENT_HTML401, datalist_db_encoding)); ?></td>
+											<?php } ?>
 										</tr>
 										<?php
 									}

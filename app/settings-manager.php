@@ -3,6 +3,12 @@
 
 	error_reporting(E_ERROR | E_PARSE);
 
+	// no direct access to this file
+	if(basename($_SERVER['SCRIPT_NAME']) == basename(__FILE__)) {
+		header('Location: index.php');
+		exit;
+	}
+
 	// if hooks/__bootstrap.php is found, it's included before any other files
 	// to define the very first booting steps performed by app. Useful for controlling
 	// session behavior, overriding definitions ... etc.
@@ -17,10 +23,6 @@
 
 	@date_default_timezone_set(TIMEZONE);
 
-	require_once(APP_DIR . '/defaultLang.php');
-	include_once(APP_DIR . '/language.php');
-	$Translation = array_merge($TranslationEn, $Translation);
-
 	require_once(APP_DIR . '/db.php');
 	require_once(APP_DIR . '/admin/incFunctions.php');
 
@@ -30,6 +32,8 @@
 		$class = str_replace('\\', '/', $class);
 		@include_once(APP_DIR . "/resources/lib/{$class}.php");
 	});
+
+	loadLanguage();
 
 	/* trim $_POST, $_GET, $_REQUEST */
 	if(count($_POST)) $_POST = array_trim($_POST);
@@ -52,6 +56,9 @@
 			'dbPort' => '',
 			'appURI' => '',
 			'host' => (isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : $_SERVER['SERVER_NAME'] . ($_SERVER['SERVER_PORT'] == '80' || $_SERVER['SERVER_PORT'] == '443' ? '' : ":{$_SERVER['SERVER_PORT']}")),
+
+			'dbSSL' => [],
+			'dbUseCompression' => false,
 
 			'adminConfig' => [
 				'adminUsername' => '',
@@ -84,6 +91,8 @@
 				'smtp_pass' => '',
 				'googleAPIKey' => '',
 				'baseUploadPath' => 'images',
+				'dbBackupCommand' => DB_BACKUP_COMMAND,
+				'dbRestoreCommand' => DB_RESTORE_COMMAND,
 			]
 		];
 	}
@@ -164,7 +173,7 @@
 		foreach($config_array['adminConfig'] as $admin_var => $admin_val)
 			$new_admin_config .= "\t\t'" . addslashes($admin_var) . "' => \"" . str_replace(["\n", "\r", '"', '$'], ['\n', '\r', '\"', '\$'], $admin_val) . "\",\n";
 
-		$new_config = "<?php\n" . 
+		$new_config = "<?php\n" .
 			"\t\$dbServer = '" . addslashes($config_array['dbServer']) . "';\n" .
 			"\t\$dbUsername = '" . addslashes($config_array['dbUsername']) . "';\n" .
 			"\t\$dbPassword = '" . addslashes($config_array['dbPassword']) . "';\n" .
@@ -174,7 +183,16 @@
 			(isset($config_array['appURI']) ? "\t\$appURI = '" . addslashes($config_array['appURI']) . "';\n" : '') .
 			(isset($config_array['host']) ? "\t\$host = '" . addslashes($config_array['host']) . "';\n" : '') .
 
-			"\n\t\$adminConfig = [\n" . 
+			"\t\$dbSSL = [\n";
+			if(!empty($config_array['dbSSL']) && is_array($config_array['dbSSL'])) {
+				foreach($config_array['dbSSL'] as $ssl_key => $ssl_val) {
+					$new_config .= "\t\t'" . addslashes($ssl_key) . "' => '" . str_replace(["\n", "\r", "'", '$'], ['\n', '\r', "\'", '\$'], $ssl_val) . "',\n";
+				}
+			}
+			$new_config .= "\t];\n";
+			$new_config .= "\t\$dbUseCompression = " . (!empty($config_array['dbUseCompression']) ? 'true' : 'false') . ";\n\n" .
+
+			"\n\t\$adminConfig = [\n" .
 				$new_admin_config .
 			"\t];";
 
@@ -211,6 +229,8 @@
 			$config['dbPort'] = $dbPort;
 			$config['appURI'] = $appURI;
 			$config['host'] = $host;
+			$config['dbSSL'] = isset($dbSSL) ? $dbSSL : [];
+			$config['dbUseCompression'] = isset($dbUseCompression) ? $dbUseCompression : false;
 			$config['adminConfig'] = $adminConfig;
 			if(empty($config['adminConfig']['baseUploadPath'])) $config['adminConfig']['baseUploadPath'] = 'images';
 		}
@@ -220,7 +240,7 @@
 
 	/**
 	 *  check if given password matches given hash, preserving backward compatibility with MD5
-	 *  
+	 *
 	 *  @param [in] $password Description for $password
 	 *  @param [in] $hash Description for $hash
 	 *  @return Boolean indicating match or no match
@@ -232,7 +252,7 @@
 
 	/**
 	 *  Migrate MD5 pass hashes to BCrypt if supported
-	 *  
+	 *
 	 *  @param [in] $user username to migrate
 	 *  @param [in] $pass current password
 	 *  @param [in] $hash stored hash of password
@@ -269,6 +289,8 @@
 			'dbPort' => $dbPort,
 			'appURI' => formatUri(dirname($_SERVER['SCRIPT_NAME'])),
 			'host' => (isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : $_SERVER['SERVER_NAME'] . ($_SERVER['SERVER_PORT'] == '80' || $_SERVER['SERVER_PORT'] == '443' ? '' : ":{$_SERVER['SERVER_PORT']}")),
+			'dbSSL' => isset($dbSSL) ? $dbSSL : [],
+			'dbUseCompression' => isset($dbUseCompression) ? $dbUseCompression : false,
 			'adminConfig' => $adminConfig
 		]);
 	}

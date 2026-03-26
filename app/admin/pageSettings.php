@@ -83,6 +83,8 @@
 			'dbPort' => config('dbPort'),
 			'appURI' => formatUri(preg_replace('/admin$/', '', dirname($_SERVER['SCRIPT_NAME']))),
 			'host' => config('host'),
+			'dbSSL' => config('dbSSL'),
+			'dbUseCompression' => config('dbUseCompression'),
 
 			'adminConfig' => array_merge([
 				'adminUsername' => strtolower($post['adminUsername']),
@@ -115,6 +117,8 @@
 				'smtp_pass' => $post['smtp_pass'],
 				'googleAPIKey' => $post['googleAPIKey'],
 				'baseUploadPath' => ($post['baseUploadPath'] ? $post['baseUploadPath'] : 'images'),
+				'dbBackupCommand' => $post['dbBackupCommand'],
+				'dbRestoreCommand' => $post['dbRestoreCommand'],
 			],
 			LDAP::postToSettings($post)
 			),
@@ -125,8 +129,8 @@
 		if($save_result === true) {
 			// update admin member
 			$newComment = str_replace(
-				'<DATE>', 
-				@date('Y-m-d'), 
+				'<DATE>',
+				@date('Y-m-d'),
 				makeSafe($Translation['record updated automatically'])
 			);
 
@@ -165,10 +169,10 @@
 			}
 
 			// display status
-			echo "<div class=\"alert alert-success\"><h2>{$Translation['admin settings saved']}</h2></div>";
+			echo "<div class=\"alert alert-success\"><h3>{$Translation['admin settings saved']}</h3></div>";
 		} else {
 			// display status
-			echo "<div class=\"alert alert-danger\"><h2>" . str_replace('<ERROR>', $save_result['error'], $Translation['admin settings not saved']) . "</h2></div>";
+			echo "<div class=\"alert alert-danger\"><h3>" . str_replace('<ERROR>', $save_result['error'], $Translation['admin settings not saved']) . "</h3></div>";
 		}
 
 		// exit
@@ -222,10 +226,10 @@
 				<?php foreach($options as $val => $display) { ?>
 					<div class="radio-inline">
 						<label>
-							<input type="radio" 
-								name="<?php echo $name; ?>" 
-								id="<?php echo $name; ?><?php echo html_attr($val); ?>" 
-								value="<?php echo html_attr($val); ?>" 
+							<input type="radio"
+								name="<?php echo $name; ?>"
+								id="<?php echo $name; ?><?php echo html_attr($val); ?>"
+								value="<?php echo html_attr($val); ?>"
 								<?php if($value == $val) { ?>checked<?php } ?>
 							>
 							<?php echo $display; ?>
@@ -247,10 +251,10 @@
 			<div class="col-sm-8 col-md-9 col-lg-6">
 				<div class="checkbox">
 					<label>
-						<input type="checkbox" 
-							name="<?php echo $name; ?>" 
-							id="<?php echo $name; ?>" 
-							value="<?php echo html_attr($value); ?>" 
+						<input type="checkbox"
+							name="<?php echo $name; ?>"
+							id="<?php echo $name; ?>"
+							value="<?php echo html_attr($value); ?>"
 							<?php if($value == $set_value) { ?>checked<?php } ?>
 						>
 						<?php echo str_ireplace('<br>', ' ', $label); ?>
@@ -315,28 +319,28 @@
 			<div style="height: 3em;"></div>
 			<?php
 				echo settings_radiogroup(
-					'notifyAdminNewMembers', 
-					$Translation['admin notifications'], 
-					intval($adminConfig['notifyAdminNewMembers']), 
+					'notifyAdminNewMembers',
+					$Translation['admin notifications'],
+					intval($adminConfig['notifyAdminNewMembers']),
 					array(
 						0 => $Translation['no email notifications'],
 						1 => $Translation['member waiting approval'],
 						2 => $Translation['new sign-ups']
 					)
-				); 
+				);
 			?>
 
 			<?php
 				echo settings_radiogroup(
-					'visitorSignup', 
-					$Translation['default sign-up mode'], 
-					intval($adminConfig['defaultSignUp']), 
+					'visitorSignup',
+					$Translation['default sign-up mode'],
+					intval($adminConfig['defaultSignUp']),
 					array(
 						0 => $Translation['no sign-up allowed'],
 						1 => $Translation['admin approve members'],
 						2 => $Translation['automatically approve members']
 					)
-				); 
+				);
 			?>
 
 			<hr>
@@ -358,31 +362,95 @@
 			<?php echo settings_textbox('senderName', $Translation['sender name'], $adminConfig['senderName']); ?>
 			<?php
 				echo settings_radiogroup(
-					'mail_function', 
-					$Translation['mail_function'], 
-					thisOr($adminConfig['mail_function'], 'mail'), 
+					'mail_function',
+					$Translation['mail_function'],
+					thisOr($adminConfig['mail_function'], 'mail'),
 					array(
 						'mail' => 'PHP mail()',
 						'smtp' => 'SMTP'
 					)
-				); 
+				);
 			?>
 			<?php echo settings_textbox('smtp_server', $Translation['smtp_server'], $adminConfig['smtp_server']); ?>
 			<?php
 				echo settings_radiogroup(
-					'smtp_encryption', 
-					$Translation['smtp_encryption'], 
-					$adminConfig['smtp_encryption'], 
+					'smtp_encryption',
+					$Translation['smtp_encryption'],
+					$adminConfig['smtp_encryption'],
 					array(
 						'' => $Translation['none'],
 						'ssl' => 'SSL',
 						'tls' => 'TLS'
 					)
-				); 
+				);
 			?>
 			<?php echo settings_textbox('smtp_port', $Translation['smtp_port'], $adminConfig['smtp_port'], $Translation['smtp_port_hint']); ?>
 			<?php echo settings_textbox('smtp_user', $Translation['smtp_user'], $adminConfig['smtp_user']); ?>
 			<?php echo settings_textbox('smtp_pass', $Translation['smtp_pass'], $adminConfig['smtp_pass'], '', 'password'); ?>
+
+			<div class="text-center">
+				<button type="button" class="btn btn-info" onclick="sendTestEmail();"><i class="glyphicon glyphicon-send hspacer-sm"></i> <?php echo $Translation['send test email']; ?></button>
+			</div>
+			<!-- hidden modal to show test email error/output -->
+			<div id="testEmailModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="testEmailModalLabel" aria-hidden="true">
+				<div class="modal-dialog modal-lg">
+					<div class="modal-content">
+						<div class="modal-header">
+							<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+							<h4 class="modal-title" id="testEmailModalLabel"><?php echo $Translation['test email output']; ?></h4>
+						</div>
+						<div class="modal-body">
+							<pre id="testEmailOutput" style="white-space: pre-wrap; word-wrap: break-word;"></pre>
+						</div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-default" data-dismiss="modal"><?php echo $Translation['close']; ?></button>
+						</div>
+					</div>
+				</div>
+			</div>
+			<script>
+				function sendTestEmail() {
+					const originalBtnHTML = $j('.btn-info').html();
+					$j('.btn-info').prop('disabled', true).html('<i class="glyphicon glyphicon-refresh spin"></i> <?php echo $Translation['send test email']; ?>');
+
+					const mailFunction = $j('input[name=mail_function]:checked').val();
+					const data = {
+						csrf_token: $j('input[name=csrf_token]').val(),
+						senderEmail: $j('input[name=senderEmail]').val(),
+						senderName: $j('input[name=senderName]').val(),
+						mailFunction: mailFunction,
+					};
+
+					if(mailFunction === 'smtp') {
+						data.smtpServer = $j('#smtp_server').val();
+						data.smtpEncryption = $j('input[name=smtp_encryption]:checked').val();
+						data.smtpPort = $j('#smtp_port').val();
+						data.smtpUser = $j('#smtp_user').val();
+						data.smtpPass = $j('#smtp_pass').val();
+					}
+
+					$j.ajax({
+						url: 'ajax-send-test-email.php',
+						type: 'POST',
+						data,
+						success: function(response) {
+							$j('#testEmailOutput').text(response.message);
+							$j('#testEmailModal').modal('show');
+						},
+						error: function(xhr, status, error) {
+							var errMsg = error || status || xhr.statusText;
+							if(xhr.responseJSON && xhr.responseJSON.status == 'error' && xhr.responseJSON.message) {
+								errMsg = xhr.responseJSON.message;
+							}
+							$j('#testEmailOutput').text(errMsg);
+							$j('#testEmailModal').modal('show');
+						},
+						complete: function() {
+							$j('.btn-info').prop('disabled', false).html(originalBtnHTML);
+						}
+					});
+				}
+			</script>
 		</div>
 
 		<div class="tab-pane" id="users-settings">
@@ -403,14 +471,31 @@
 			<?php echo settings_textbox('googleAPIKey', $Translation['google API key'], $adminConfig['googleAPIKey'], "<a target=\"_blank\" href=\"https://bigprof.com/appgini/google-maps-api-key\">{$Translation['google API key instructions']}</a> <div class=\"text-danger\">{$Translation['restrict API key']}</div>"); ?>
 
 			<?php echo settings_textbox(
-				'baseUploadPath', 
-				$Translation['base upload path'], 
-				$adminConfig['baseUploadPath'], 
+				'baseUploadPath',
+				$Translation['base upload path'],
+				$adminConfig['baseUploadPath'],
 				$Translation['base upload path instructions'] .
 				'<div class="text-danger hidden text-bold" id="baseUploadPath-change-warning">' .
 					$Translation['base upload path change warning'] .
 				'</div>'
 			); ?>
+
+			<hr>
+
+			<?php echo settings_textbox(
+				'dbBackupCommand',
+				$Translation['db backup command'],
+				thisOr($adminConfig['dbBackupCommand'], DB_BACKUP_COMMAND),
+				$Translation['db backup command hint']
+			); ?>
+
+			<?php echo settings_textbox(
+				'dbRestoreCommand',
+				$Translation['db restore command'],
+				thisOr($adminConfig['dbRestoreCommand'], DB_RESTORE_COMMAND),
+				$Translation['db restore command hint']
+			); ?>
+
 		</div>
 
 		<?php echo LDAP::settingsTabContent(); ?>

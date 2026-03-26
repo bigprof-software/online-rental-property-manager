@@ -237,7 +237,7 @@ function references_form($selectedId = '', $allowUpdate = true, $allowInsert = t
 					});
 				},
 				width: '100%',
-				formatNoMatches: function(term) { return '<?php echo addslashes($Translation['No matches found!']); ?>'; },
+				formatNoMatches: function(term) { return <?php echo json_encode($Translation['No matches found!']); ?>; },
 				minimumResultsForSearch: 5,
 				loadMorePadding: 200,
 				ajax: {
@@ -252,7 +252,9 @@ function references_form($selectedId = '', $allowUpdate = true, $allowInsert = t
 				AppGini.current_tenant__RAND__.value = e.added.id;
 				AppGini.current_tenant__RAND__.text = e.added.text;
 				$j('[name="tenant"]').val(e.added.id);
-				if(e.added.id == '<?php echo empty_lookup_value; ?>') { $j('.btn[id=applicants_and_tenants_view_parent]').hide(); } else { $j('.btn[id=applicants_and_tenants_view_parent]').show(); }
+				$j(this).parents('.form-group')
+					.find('.btn[id=applicants_and_tenants_view_parent]')
+					.toggleClass('hidden', e.added.id == '<?php echo empty_lookup_value; ?>');
 
 
 				if(typeof(tenant_update_autofills__RAND__) == 'function') tenant_update_autofills__RAND__();
@@ -338,7 +340,7 @@ function references_form($selectedId = '', $allowUpdate = true, $allowInsert = t
 		else
 			$templateCode = str_replace('<%%DELETE_BUTTON%%>', '', $templateCode);
 
-		$templateCode = str_replace('<%%DESELECT_BUTTON%%>', '<button type="submit" class="btn btn-default" id="deselect" name="deselect_x" value="1" onclick="' . $backAction . '" title="' . html_attr($Translation['Back']) . '"><i class="glyphicon glyphicon-chevron-left"></i> ' . $Translation['Back'] . '</button>', $templateCode);
+		$templateCode = str_replace('<%%DESELECT_BUTTON%%>', '<button type="submit" class="btn btn-default ltr" id="deselect" name="deselect_x" value="1" onclick="' . $backAction . '" title="' . html_attr($Translation['Back']) . '"><i class="glyphicon glyphicon-chevron-left"></i> ' . $Translation['Back'] . '</button>', $templateCode);
 	} else {
 		$templateCode = str_replace('<%%UPDATE_BUTTON%%>', '', $templateCode);
 		$templateCode = str_replace('<%%DELETE_BUTTON%%>', '', $templateCode);
@@ -356,7 +358,7 @@ function references_form($selectedId = '', $allowUpdate = true, $allowInsert = t
 				'<%%DESELECT_BUTTON%%>',
 				'<button
 					type="submit"
-					class="btn btn-default"
+					class="btn btn-default ltr"
 					id="deselect"
 					name="deselect_x"
 					value="1"
@@ -441,6 +443,16 @@ function references_form($selectedId = '', $allowUpdate = true, $allowInsert = t
 
 	// process translations
 	$templateCode = parseTemplate($templateCode);
+
+	// populate autoCloseParentTables
+	$lookupFields = getLookupFields()['references'] ?? [];
+	$autoCloseParentTables = [];
+	foreach($lookupFields as $field => $info) {
+		if($info['auto-close']) {
+			$autoCloseParentTables[] = $info['parent-table'];
+		}
+	}
+	$templateCode = str_replace('<%%AUTO_CLOSE_PARENT_TABLES%%>', json_encode($autoCloseParentTables), $templateCode);
 
 	// clear scrap
 	$templateCode = str_replace('<%%', '<!-- ', $templateCode);

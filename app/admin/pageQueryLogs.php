@@ -75,19 +75,19 @@
 		<li class="query-type slow"><a href="#" class="bg-warning">
 			<span class="text-warning">
 				<?php echo $Translation['slow queries']; ?>
-				<span class="badge"><?php echo $counts['slow']; ?></span>      
+				<span class="badge"><?php echo $counts['slow']; ?></span>
 			</span>
 		</a></li>
 		<li class="query-type error"><a href="#" class="bg-danger">
 			<span class="text-danger">
 				<?php echo $Translation['error queries']; ?>
-				<span class="badge"><?php echo $counts['error']; ?></span>      
+				<span class="badge"><?php echo $counts['error']; ?></span>
 			</span>
 		</a></li>
 	</ul>
 
 	<div class="alert alert-success hidden" id="noMatches">
-		<i class="glyphicon glyphicon-ok"></i> 
+		<i class="glyphicon glyphicon-ok"></i>
 		<?php echo $Translation['no matching results found']; ?>
 	</div>
 
@@ -107,7 +107,7 @@
 		</a>
 	</div>
 
-	<div class="table-responsive">       
+	<div class="table-responsive">
 		<table class="table table-striped table-hover table-bordered" id="queryLogs">
 			<thead>
 				<tr>
@@ -140,8 +140,8 @@
 				<tr class="records-pagination">
 					<th colspan="4">
 						<div class="row">
-							<div class="col-xs-4 text-left">
-								<button type="button" class="btn btn-default btn-previous"><i class="glyphicon glyphicon-chevron-left"></i> <?php echo $Translation['previous']; ?></button>
+							<div class="col-xs-4 text-left flip">
+								<button type="button" class="btn btn-default btn-previous"><i class="glyphicon glyphicon-chevron-left rtl-mirror"></i> <?php echo $Translation['previous']; ?></button>
 							</div>
 							<div class="col-xs-4 text-center">
 								<?php echo str_replace(
@@ -150,10 +150,10 @@
 									$Translation['total # queries'] . ' ' . $Translation['page x of y']
 								); ?>
 							</div>
-							<div class="col-xs-4 text-right">
-								<button type="button" class="btn btn-default btn-next"><?php echo $Translation['next']; ?> <i class="glyphicon glyphicon-chevron-right"></i></button>
+							<div class="col-xs-4 text-right flip">
+								<button type="button" class="btn btn-default btn-next"><?php echo $Translation['next']; ?> <i class="glyphicon glyphicon-chevron-right rtl-mirror"></i></button>
 							</div>
-						</div>                 
+						</div>
 					</th>
 				</tr>
 			</tfoot>

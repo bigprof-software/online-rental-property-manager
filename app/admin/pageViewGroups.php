@@ -35,10 +35,62 @@
 <div class="page-header">
 	<h1>
 		<?php echo $Translation['groups']; ?>
-		<span class="pull-right"><a href="pageEditGroup.php" class="btn btn-success btn-lg"><i class="glyphicon glyphicon-plus"></i> <?php echo $Translation['add group']; ?></a></span>
+		<span class="pull-right flip"><a href="pageEditGroup.php" class="btn btn-success btn-lg"><i class="glyphicon glyphicon-plus"></i> <?php echo $Translation['add group']; ?></a></span>
 		<div class="clearfix"></div>
 	</h1>
 </div>
+
+<div class="form-group">
+	<div class="checkbox">
+		<label class="text-bold">
+			<input type="checkbox" id="toggle-2fa-all">
+			<?php echo $Translation['Require 2FA for all groups']; ?>
+			<i class="glyphicon glyphicon-lock hspacer-sm text-warning"></i>
+		</label>
+	</div>
+</div>
+
+<script>
+	$j(function() {
+		$j('#toggle-2fa-all').on('change', function() {
+			var enable = $j(this).prop('checked');
+
+			// remove success/error status if any and disable during the ajax call
+			$j(this).closest('.form-group').removeClass('has-success has-error');
+			$j(this).prop('disabled', true);
+
+			$j.ajax({
+				url: 'ajax-toggle-2fa.php',
+				data: {
+					enable: enable ? 1 : 0,
+					csrf_token: <?php echo json_encode(csrf_token(false, true)); ?>
+				},
+				success: function() {
+					// add success status to the checkbox briefly
+					$j('#toggle-2fa-all').closest('.form-group').removeClass('has-error').addClass('has-success');
+					setTimeout(function() {
+						$j('#toggle-2fa-all').closest('.form-group').removeClass('has-success');
+					}, 2000);
+					$j('#toggle-2fa-all').prop('disabled', false);
+				},
+				error: function() {
+					$j('#toggle-2fa-all').closest('.form-group').removeClass('has-success').addClass('has-error');
+					$j('#toggle-2fa-all')
+						.prop('checked', !enable) // revert checkbox state
+						.prop('disabled', false);
+					setTimeout(function() {
+						$j('#toggle-2fa-all').closest('.form-group').removeClass('has-error');
+					}, 4000);
+				}
+			});
+		});
+
+		// Set initial state based on check that all groups have 2FA enabled
+		<?php if(TFA::enabledForAllGroups()) { ?>
+			$j('#toggle-2fa-all').prop('checked', true);
+		<?php } ?>
+	});
+</script>
 
 <table class="table table-striped table-bordered table-hover">
 	<thead>
@@ -59,8 +111,8 @@
 			</th>
 		</tr>
 		<tr>
-			<th><?php echo $Translation["group"]  ; ?></th>
-			<th><?php echo $Translation["description"] ; ?></th>
+			<th><?php echo $Translation['group']  ; ?></th>
+			<th><?php echo $Translation['description'] ; ?></th>
 			<th><?php echo $Translation['members count'] ; ?></th>
 			<th>&nbsp;</th>
 		</tr>
@@ -84,16 +136,16 @@
 					<td><a href="pageEditGroup.php?groupID=<?php echo $row[0]; ?>"><?php echo htmlspecialchars($row[1]); ?></a></td>
 					<td><?php echo htmlspecialchars(trim($row[2] ?? '')); ?></td>
 					<td class="text-right"><?php echo $groupMembersCount; ?></td>
-					<td class="text-center">
+					<td class="text-center h4">
 						<!-- edit -->
-						<a href="pageEditGroup.php?groupID=<?php echo $row[0]; ?>" title="<?php echo $Translation['Edit group']; ?>"><i class="glyphicon glyphicon-pencil"></i></a>
+						<a href="pageEditGroup.php?groupID=<?php echo $row[0]; ?>" title="<?php echo html_attr($Translation['Edit group']); ?>"><i class="glyphicon glyphicon-pencil"></i></a>
 						<span class="hspacer-sm"></span>
 
 						<!-- delete -->
 						<?php if(!$groupMembersCount) { ?>
-							<a href="pageDeleteGroup.php?groupID=<?php echo $row[0]; ?>&csrf_token=<?php echo urlencode(csrf_token(false, true)); ?>" 
-								title="<?php echo $Translation['delete group'] ; ?>" 
-								onClick="return confirm('<?php echo addslashes($Translation['confirm delete group']); ?>');">
+							<a href="pageDeleteGroup.php?groupID=<?php echo $row[0]; ?>&csrf_token=<?php echo urlencode(csrf_token(false, true)); ?>"
+								title="<?php echo html_attr($Translation['delete group']); ?>"
+								onClick="return confirm(<?php echo json_encode($Translation['confirm delete group']); ?>);">
 								<i class="glyphicon glyphicon-trash text-danger"></i>
 							</a>
 						<?php } else { ?>
@@ -103,19 +155,19 @@
 
 						<!-- add member -->
 						<?php if(!$isAnonGroup) { ?>
-							<a href="pageEditMember.php?groupID=<?php echo $row[0]; ?>" title="<?php echo $Translation["add new member"]; ?>"><i class="glyphicon glyphicon-plus text-success"></i></a>
+							<a href="pageEditMember.php?groupID=<?php echo $row[0]; ?>" title="<?php echo html_attr($Translation['add new member']); ?>"><i class="glyphicon glyphicon-plus text-success"></i></a>
 						<?php } else { ?>
 							<i class="glyphicon glyphicon-plus text-muted"></i>
 						<?php } ?>
 						<span class="hspacer-sm"></span>
 
 						<!-- view records -->
-						<a href="pageViewRecords.php?groupID=<?php echo $row[0]; ?>" title="<?php echo $Translation['view group records'] ; ?>"><i class="glyphicon glyphicon-th"></i></a>
+						<a href="pageViewRecords.php?groupID=<?php echo $row[0]; ?>" title="<?php echo html_attr($Translation['view group records']); ?>"><i class="glyphicon glyphicon-th"></i></a>
 						<span class="hspacer-sm"></span>
 
 						<!-- view members -->
 						<?php if($groupMembersCount) { ?>
-							<a href="pageViewMembers.php?groupID=<?php echo $row[0]; ?>" title="<?php echo $Translation['view group members'] ; ?>"><i class="glyphicon glyphicon-user"></i></a>
+							<a href="pageViewMembers.php?groupID=<?php echo $row[0]; ?>" title="<?php echo html_attr($Translation['view group members']); ?>"><i class="glyphicon glyphicon-user"></i></a>
 						<?php } else { ?>
 							<i class="glyphicon glyphicon-user text-muted"></i>
 						<?php } ?>
@@ -123,7 +175,7 @@
 
 						<!-- send message -->
 						<?php if($groupMembersCount && !$isAnonGroup) { ?>
-							<a href="pageMail.php?groupID=<?php echo $row[0]; ?>" title="<?php echo $Translation['send message to group']; ?>"><i class="glyphicon glyphicon-envelope"></i></a>
+							<a href="pageMail.php?groupID=<?php echo $row[0]; ?>" title="<?php echo html_attr($Translation['send message to group']); ?>"><i class="glyphicon glyphicon-envelope"></i></a>
 						<?php } else { ?>
 							<i class="glyphicon glyphicon-envelope text-muted"></i>
 						<?php } ?>
@@ -149,7 +201,7 @@
 							<?php } ?>
 						</th>
 						<th class="text-center" width="33%">
-							<?php 
+							<?php
 								$originalValues = ['<GROUPNUM1>', '<GROUPNUM2>', '<GROUPS>'];
 								$replaceValues = [$start + 1, $start + db_num_rows($res), $numGroups];
 								echo str_replace($originalValues, $replaceValues, $Translation['displaying groups']);
@@ -182,6 +234,7 @@
 
 <style>
 	.form-inline .form-group{ margin: 0.5em 1em; }
+	td { vertical-align: middle !important; }
 </style>
 
 <?php include(__DIR__ . '/incFooter.php');

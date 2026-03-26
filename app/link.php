@@ -30,7 +30,14 @@
 	// receive user input
 	$t = Request::val('t'); // table name
 	$f = Request::val('f'); // field name
-	$i = makeSafe(Request::val('i')); // id
+	$i = Request::val('i'); // id
+	$v = Request::val('v'); // in case value rather than id is sent, e.g. for lookup fields from other tables
+
+	// in case value is sent instead of id, get the id using the value
+	if($v && $t && $f && isset($p[$t][$f])) {
+		$pk = $p[$t]['primary key'];
+		$i = sqlValue("SELECT `$pk` FROM `$t` WHERE `$f`='" . makeSafe($v) . "'");
+	}
 
 	// validate input
 	if(!in_array($t, array_keys($p))) getLink();
@@ -38,13 +45,16 @@
 	if(!$i && !$dL[$t][$f]) getLink();
 
 	// user has view access to the requested table?
-	if(!check_record_permission($t, Request::val('i'))) getLink();
+	if(!check_record_permission($t, $i)) getLink();
 
 	// send default link if no id provided, e.g. new record
 	if(!$i) {
 		$path = $p[$t][$f];
-		if(preg_match('/^(http|ftp)/i', $dL[$t][$f])) $path = '';
-		@header("Location: {$path}{$dL[$t][$f]}");
+		$defaultLink = $dL[$t][$f];
+		if(!$defaultLink) getLink();
+
+		if(preg_match('/^(http|ftp)/i', $defaultLink)) $path = '';
+		@header("Location: {$path}{$defaultLink}");
 		exit;
 	}
 
@@ -53,6 +63,8 @@
 	function getLink($table = '', $linkField = '', $pk = '', $id = '', $path = '') {
 		if(!$id || !$table || !$linkField || !$pk) // default link to return
 			exit;
+
+		$id = makeSafe($id);
 
 		if(preg_match('/^Lookup: (.*?)::(.*?)::(.*?)$/', $path, $m)) {
 			$linkID = makeSafe(sqlValue("SELECT `$linkField` FROM `$table` WHERE `$pk`='$id'"));
@@ -63,12 +75,24 @@
 
 		if(!$link) exit;
 
-		if(preg_match('/^(http|ftp)/i', $link)) {    // if the link points to an external url, don't prepend path
-			$path = '';
+		if(preg_match('/^(http|ftp)/i', $link)) {    // if the link points to an external url, redirect to it directly
+			@header("Location: $link");
+			exit;
 		} elseif(!is_file(__DIR__ . "/{$path}{$link}")) {    // if the file doesn't exist in the given path, try to find it without the path
 			$path = '';
 		}
 
-		@header("Location: $path$link");
+		// if not found, send 404 header
+		$filePath = __DIR__ . "/{$path}{$link}";
+		if(!is_file($filePath)) {
+			header($_SERVER["SERVER_PROTOCOL"] . " 404 Not Found");
+			exit;
+		}
+
+		// pass through the file to the browser
+		$mimeType = getMimeType($filePath);
+		header("Content-Type: $mimeType");
+		header('Content-Disposition: inline; filename="' . $link . '"');
+		readfile($filePath);
 		exit;
 	}

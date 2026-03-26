@@ -381,7 +381,7 @@ function applicants_and_tenants_form($selectedId = '', $allowUpdate = true, $all
 		else
 			$templateCode = str_replace('<%%DELETE_BUTTON%%>', '', $templateCode);
 
-		$templateCode = str_replace('<%%DESELECT_BUTTON%%>', '<button type="submit" class="btn btn-default" id="deselect" name="deselect_x" value="1" onclick="' . $backAction . '" title="' . html_attr($Translation['Back']) . '"><i class="glyphicon glyphicon-chevron-left"></i> ' . $Translation['Back'] . '</button>', $templateCode);
+		$templateCode = str_replace('<%%DESELECT_BUTTON%%>', '<button type="submit" class="btn btn-default ltr" id="deselect" name="deselect_x" value="1" onclick="' . $backAction . '" title="' . html_attr($Translation['Back']) . '"><i class="glyphicon glyphicon-chevron-left"></i> ' . $Translation['Back'] . '</button>', $templateCode);
 	} else {
 		$templateCode = str_replace('<%%UPDATE_BUTTON%%>', '', $templateCode);
 		$templateCode = str_replace('<%%DELETE_BUTTON%%>', '', $templateCode);
@@ -399,7 +399,7 @@ function applicants_and_tenants_form($selectedId = '', $allowUpdate = true, $all
 				'<%%DESELECT_BUTTON%%>',
 				'<button
 					type="submit"
-					class="btn btn-default"
+					class="btn btn-default ltr"
 					id="deselect"
 					name="deselect_x"
 					value="1"
@@ -561,6 +561,16 @@ function applicants_and_tenants_form($selectedId = '', $allowUpdate = true, $all
 
 	// process translations
 	$templateCode = parseTemplate($templateCode);
+
+	// populate autoCloseParentTables
+	$lookupFields = getLookupFields()['applicants_and_tenants'] ?? [];
+	$autoCloseParentTables = [];
+	foreach($lookupFields as $field => $info) {
+		if($info['auto-close']) {
+			$autoCloseParentTables[] = $info['parent-table'];
+		}
+	}
+	$templateCode = str_replace('<%%AUTO_CLOSE_PARENT_TABLES%%>', json_encode($autoCloseParentTables), $templateCode);
 
 	// clear scrap
 	$templateCode = str_replace('<%%', '<!-- ', $templateCode);

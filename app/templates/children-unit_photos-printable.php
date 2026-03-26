@@ -80,7 +80,7 @@
 				<thead>
 					<tr>
 						<?php if(is_array($config['display-fields'])) foreach($config['display-fields'] as $fieldIndex => $fieldLabel) { ?>
-							<th 
+							<th
 								<?php if($config['sortable-fields'][$fieldIndex]) { ?>
 									onclick="<?php echo $current_table; ?>GetChildrenRecordsList({
 										Verb: 'sort',
@@ -104,8 +104,8 @@
 				<tbody>
 					<?php if(is_array($records)) foreach($records as $pkValue => $record) { ?>
 					<tr data-id="<?php echo html_attr($pkValue); ?>">
-						<td class="<?php echo "{$parameters['ChildTable']}-{$config['display-field-names'][2]}"; ?>" id="<?php echo "{$parameters['ChildTable']}-{$config['display-field-names'][2]}-" . html_attr($record[$config['child-primary-key-index']]); ?>"><a href="<?php echo getUploadDir('') . urlencode($record[2]); ?>" data-lightbox="unit_photos-photo"><img src="thumbnail.php?i=<?php echo urlencode($record[2]); ?>&t=unit_photos&f=photo&v=tv" class="img-thumbnail"></a></td>
-						<td class="<?php echo "{$parameters['ChildTable']}-{$config['display-field-names'][3]}"; ?>" id="<?php echo "{$parameters['ChildTable']}-{$config['display-field-names'][3]}-" . html_attr($record[$config['child-primary-key-index']]); ?>"><?php echo safe_html($record[3]); ?></td>
+						<td class="<?php echo "{$parameters['ChildTable']}-{$config['display-field-names'][2]}"; ?> rtl-left" id="<?php echo "{$parameters['ChildTable']}-{$config['display-field-names'][2]}-" . html_attr($record[$config['child-primary-key-index']]); ?>"><a href="<?php echo getUploadDir('') . urlencode($record[2]); ?>" data-lightbox="unit_photos-photo"><img src="thumbnail.php?i=<?php echo urlencode($record[2]); ?>&t=unit_photos&f=photo&v=tv" class="img-thumbnail"></a></td>
+						<td class="<?php echo "{$parameters['ChildTable']}-{$config['display-field-names'][3]}"; ?> rtl-left" id="<?php echo "{$parameters['ChildTable']}-{$config['display-field-names'][3]}-" . html_attr($record[$config['child-primary-key-index']]); ?>"><?php echo safe_html($record[3]); ?></td>
 					</tr>
 					<?php } ?>
 				</tbody>
@@ -131,14 +131,14 @@
 			<div class="row hidden-print">
 				<div class="col-xs-12">
 					<button
-						type="button" 
-						class="btn btn-default btn-previous" 
+						type="button"
+						class="btn btn-default btn-previous"
 						<?php echo $parameters['Page'] <= 1 ? 'disabled' : ''; ?>
 						><i class="glyphicon glyphicon-chevron-left"></i>
 					</button>
 					<button
-						type="button" 
-						class="btn btn-default btn-next" 
+						type="button"
+						class="btn btn-default btn-next"
 						<?php echo ($firstRecord + count($records) - 1) == $totalMatches ? 'disabled' : ''; ?>
 						><i class="glyphicon glyphicon-chevron-right"></i>
 					</button>

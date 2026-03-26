@@ -225,6 +225,11 @@
 
 					// harden user's password hash
 					password_harden($username, $password, $hash);
+					
+					// 2FA
+					$rid = TFA::beginFlow();
+					if($rid) redirect('2fa.php?rid=' . $rid);
+
 					break;
 			}
 

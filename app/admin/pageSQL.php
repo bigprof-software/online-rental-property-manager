@@ -16,7 +16,7 @@
 ?>
 
 <div class="page-header"><h1>
-	<i class="glyphicon glyphicon-console text-danger"></i> 
+	<i class="glyphicon glyphicon-console text-danger"></i>
 	<?php echo $Translation['Interactive SQL queries tool']; ?>
 </h1></div>
 
@@ -26,7 +26,7 @@
 	<label for="sql" class="control-label"><?php echo $Translation['Enter SQL query']; ?></label>
 	<div class="row">
 		<div class="col-xs-7 col-sm-6 col-md-9">
-			<textarea class="form-control" id="sql" autofocus></textarea>
+			<textarea class="form-control ltr" id="sql" autofocus></textarea>
 			<div class="hidden text-danger tspacer-sm bspacer-lg" id="sql-begins-not-with-select">
 				<?php printf($Translation['Query must start with select'], '<code>SELECT/SHOW&nbsp;</code>'); ?>
 			</div>
@@ -93,7 +93,7 @@
 </div>
 
 <div class="alert alert-info" id="no-sql-results">
-	<i class="glyphicon glyphicon-info-sign"></i> 
+	<i class="glyphicon glyphicon-info-sign"></i>
 	<?php echo $Translation['Results will be displayed here']; ?>
 </div>
 
@@ -106,7 +106,7 @@
 
 <div class="alert alert-warning hidden" id="csrf-expired">
 	<i class="glyphicon glyphicon-info-sign"></i>
-	<?php 
+	<?php
 		echo str_replace(
 			'pageSettings.php',
 			'pageSQL.php',

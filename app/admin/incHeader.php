@@ -17,16 +17,23 @@
 		<meta name="description" content="">
 		<title><?php echo APP_TITLE . ' | ' . $Translation['admin area'] . (isset($GLOBALS['page_title']) ? html_attr(" | {$GLOBALS['page_title']}") : ''); ?></title>
 
-		<link id="browser_favicon" rel="shortcut icon" href="<?php echo PREPEND_PATH; ?>resources/table_icons/administrator.png">
+		<link id="browser_favicon" rel="shortcut icon" href="<?= PREPEND_PATH ?>resources/table_icons/administrator.png">
 
-		<link rel="stylesheet" href="<?php echo PREPEND_PATH; ?>resources/initializr/css/<?php echo $theme; ?>.css">
-		<?php echo $bootstrap3d; ?>
-		<link rel="stylesheet" href="<?php echo PREPEND_PATH; ?>dynamic.css?<?php echo filemtime( __DIR__ . '/../dynamic.css'); ?>">
+		<link rel="stylesheet" href="<?= PREPEND_PATH ?>resources/initializr/css/<?= $theme ?>.css?<?= APP_VERSION ?>">
+		<?= $bootstrap3d ?>
+		<?php if(rtl()) { ?>
+			<link rel="stylesheet" href="<?= PREPEND_PATH ?>resources/initializr/css/rtl.css?<?= APP_VERSION ?>">
+		<?php } ?>
+		<link rel="stylesheet" href="<?= PREPEND_PATH ?>dynamic.css?<?= filemtime( __DIR__ . '/../dynamic.css') ?>">
 
-		<script src="<?php echo PREPEND_PATH; ?>resources/jquery/js/<?php echo latest_jquery(); ?>"></script>
+		<script src="<?= PREPEND_PATH ?>resources/jquery/js/<?= latest_jquery() ?>"></script>
 		<script>var $j = jQuery.noConflict(); var AppGini = AppGini || {};</script>
+		<?php if(QUEUE_AJAX_REQUESTS) { ?>
+			<script src="<?= PREPEND_PATH ?>resources/jquery/js/jquery.ajax.min.js?v=<?php echo APP_VERSION; ?>"></script>
+		<?php } ?>
 		<script src="toolTips.js"></script>
-		<script src="<?php echo PREPEND_PATH; ?>resources/initializr/js/vendor/bootstrap.min.js"></script>
+		<script src="<?= PREPEND_PATH ?>resources/initializr/js/vendor/bootstrap.min.js"></script>
+		<script src="<?= PREPEND_PATH ?>lang.js.php?<?php echo userLanguage() . userLanguageLastModified(); ?>"></script>
 		<script>
 
 			// VALIDATION FUNCTIONS FOR VARIOUS PAGES
@@ -42,7 +49,7 @@
 			}
 
 			function jsShowWait() {
-				return window.confirm('<?php echo addslashes($Translation['sending mails']); ?>');
+				return window.confirm(<?php echo json_encode($Translation['sending mails']); ?>);
 			}
 
 			function jsValidateAdminSettings() {
@@ -78,21 +85,21 @@
 
 				if(mm && sm!='-1') {
 
-					confirmMessage = '<?php echo addslashes($Translation['sure move member']); ?>';
+					confirmMessage = <?php echo json_encode($Translation['sure move member']); ?>;
 					confirmMessage = confirmMessage.replace(/<MEMBER>/, sm).replace(/<OLDGROUP>/, sg).replace(/<NEWGROUP>/, dg);
 					return window.confirm(confirmMessage);
 
 				}
 				if((dmm || dm) && sm!='-1') {
 
-					confirmMessage = '<?php echo addslashes($Translation['sure move data of member']); ?>';
-					confirmMessage = confirmMessage.replace(/<OLDMEMBER>/, sm).replace(/<OLDGROUP>/, sg).replace(/<NEWMEMBER>/, dm).replace(/<NEWGROUP>/, dg);                 
+					confirmMessage = <?php echo json_encode($Translation['sure move data of member']); ?>;
+					confirmMessage = confirmMessage.replace(/<OLDMEMBER>/, sm).replace(/<OLDGROUP>/, sg).replace(/<NEWMEMBER>/, dm).replace(/<NEWGROUP>/, dg);
 					return window.confirm(confirmMessage);
 				}
 
 				if(mm) {
 
-					confirmMessage = '<?php echo addslashes($Translation['sure move all members']); ?>';
+					confirmMessage = <?php echo json_encode($Translation['sure move all members']); ?>;
 					confirmMessage = confirmMessage.replace(/<OLDGROUP>/, sg).replace(/<NEWGROUP>/, dg);
 					return window.confirm(confirmMessage);
 				}
@@ -100,7 +107,7 @@
 				if(dmm) {
 
 
-					confirmMessage = '<?php echo addslashes($Translation['sure move data of all members']); ?>';
+					confirmMessage = <?php echo json_encode($Translation['sure move data of all members']); ?>;
 					confirmMessage = confirmMessage.replace(/<OLDGROUP>/, sg).replace(/<MEMBER>/, dm).replace(/<NEWGROUP>/, dg);
 					return window.confirm(confirmMessage);
 				}
@@ -134,8 +141,6 @@
 
 		</script>
 
-		<link rel="stylesheet" href="adminStyles.css">
-
 		<style>
 			.dialog-box{
 				background-color: white;
@@ -161,7 +166,7 @@
 		</style>
 	</head>
 	<body>
-	<div class="admin-area container theme-<?php echo $theme; ?> <?php echo getUserThemeCompact(); ?><?php echo BOOTSTRAP_3D_EFFECTS ? ' theme-3d' : ''; ?>">
+	<div class="admin-area container theme-<?= $theme; ?> <?= getUserThemeCompact(); ?><?= BOOTSTRAP_3D_EFFECTS ? ' theme-3d' : '' ?><?= rtl(' theme-rtl') ?>">
 
 		<!-- top navbar -->
 		<nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
@@ -208,7 +213,6 @@
 							<li><a href="pageMail.php?sendToAll=1"><i class="glyphicon menu-item-icon text-info glyphicon-envelope"></i> <?php echo $Translation['mail all users']; ?></a></li>
 							<li><a href="pageServerStatus.php"><i class="glyphicon menu-item-icon text-info glyphicon-hdd"></i> <?php echo $Translation['server status']; ?></a></li>
 							<li><a href="app-documentation.php"><i class="glyphicon menu-item-icon text-info glyphicon-book"></i> <?php echo $Translation['app documentation']; ?></a></li>
-							<li><a href="pageTranslation.php"><i class="glyphicon menu-item-icon text-info glyphicon-globe"></i> <?php echo $Translation['translation tool']; ?></a></li>
 							<li class="divider"></li>
 							<li><a href="pageTransferOwnership.php"><i class="glyphicon menu-item-icon text-info glyphicon-transfer"></i> <?php echo $Translation['ownership batch transfer']; ?></a></li>
 							<li><a href="pageRebuildFields.php"><i class="glyphicon menu-item-icon text-info glyphicon-refresh"></i> <?php echo  $Translation['view or rebuild fields']; ?></a></li>
@@ -224,7 +228,7 @@
 					<?php $plugins = get_plugins(); ?>
 
 					<li class="dropdown">
-						<a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="glyphicon glyphicon-plus"></i> <?php echo $Translation["plugins"] ; ?> <b class="caret"></b></a>
+						<a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="glyphicon glyphicon-plus"></i> <?php echo $Translation['plugins'] ; ?> <b class="caret"></b></a>
 						<ul class="dropdown-menu">
 							<li>
 								<a href="pageInstallPlugin.php">
@@ -255,9 +259,9 @@
 					</li>
 				</ul>
 
-				<div class="navbar-right">
-					<a href="<?php echo PREPEND_PATH; ?>index.php" class="btn btn-success navbar-btn"><?php echo $Translation["user's area"] ; ?></a>
-					<a href="<?php echo PREPEND_PATH; ?>index.php?signOut=1" class="btn btn-warning navbar-btn"><i class="glyphicon glyphicon-log-out"></i> <?php echo $Translation["sign out"] ; ?></a>
+				<div class="navbar-right flip">
+					<a href="<?= PREPEND_PATH ?>index.php" class="btn btn-success navbar-btn"><?php echo $Translation["user's area"] ; ?></a>
+					<a href="<?= PREPEND_PATH ?>index.php?signOut=1" class="btn btn-warning navbar-btn"><i class="glyphicon glyphicon-log-out"></i> <?php echo $Translation['sign out'] ; ?></a>
 				</div>
 			</div>
 		</nav>
@@ -265,9 +269,9 @@
 			/* periodically check if user is still signed in */
 			setInterval(function() {
 				$j.ajax({
-					url: '<?php echo PREPEND_PATH; ?>ajax_check_login.php',
+					url: '<?= PREPEND_PATH ?>ajax_check_login.php',
 					success: function(username) {
-						if(!username.length) window.location = '<?php echo PREPEND_PATH; ?>index.php?signIn=1';
+						if(!username.length) window.location = '<?= PREPEND_PATH ?>index.php?signIn=1';
 					}
 				});
 			}, 60000);
@@ -288,7 +292,7 @@
 		$noSignup = true;
 		?>
 		<div class="alert alert-danger">
-			<p><strong><?php echo $Translation["attention"] ; ?></strong></p>
+			<p><strong><?php echo $Translation['attention'] ; ?></strong></p>
 			<p><?php if($adminConfig['adminUsername'] == 'admin') {
 					echo $Translation['security risk admin'];
 			} else {
