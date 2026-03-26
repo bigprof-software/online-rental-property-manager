@@ -1,3 +1,9 @@
+<script>
+	$j(function() {
+		$j.ajax({ url: 'hooks/ajax-update-dates.php', method: 'POST' });
+	})
+</script>
+
 <?php if(!empty($_REQUEST['Filter_x']) && !intval($_REQUEST['advanced_search_mode'])) { ?>
 	<script>
 		$j(function() {
