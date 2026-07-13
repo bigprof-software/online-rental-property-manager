@@ -111,6 +111,13 @@
 	$x->TableIcon = 'resources/table_icons/cash_stack.png';
 	$x->PrimaryKey = '`employment_and_income_history`.`id`';
 
+	// Filters panel
+	$x->filtersPanel = [
+		['field' => 'tenant', 'type' => 'select2', 'label' => 'Tenant'],
+		['field' => 'employed_from', 'type' => 'date-range', 'label' => 'employed from'],
+		['field' => 'employed_till', 'type' => 'date-range', 'label' => 'Employed till'],
+	];
+
 	$x->ColWidth = [80, 100, 100, 80, 80, 100, 50, ];
 	$x->ColCaption = ['Employer name', 'City', 'Employer phone', 'employed from', 'Employed till', 'Occupation', 'Notes', ];
 	$x->ColFieldName = ['employer_name', 'city', 'employer_phone', 'employed_from', 'employed_till', 'occupation', 'notes', ];

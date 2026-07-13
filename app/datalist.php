@@ -76,7 +76,13 @@ class DataList {
 
 		$ContentType,    // set by DataList to 'tableview', 'detailview', 'tableview+detailview', 'print-tableview', 'print-detailview' or 'filters'
 		$HasCalculatedFields,
-		$HTML;           // generated html after calling Render()
+		$HTML,           // generated html after calling Render()
+
+		/** @var array List of filter definitions for the collapsible filters panel.
+		 *  Each entry is an associative array:
+		 *  ['field' => 'FieldName', 'type' => 'date-range'|'datetime-range'|'numeric-range'|'select2', 'label' => 'Display Label']
+		 *  If empty or unset, no filters panel is rendered. */
+		$filtersPanel = [];
 
 	function __construct() {  // PHP 7 compatibility
 		$this->DataList();
@@ -225,6 +231,10 @@ class DataList {
 			elseif($dvprint_x != '' || $PrintDV != '') $current_view = 'DVP';
 			elseif($Filter_x != '') $current_view = 'Filters';
 		}
+
+		// Populate filters panel - only on table view, only if filters are declared
+		if($current_view === 'TV' && !empty($this->filtersPanel))
+			FiltersPanel::buildFiltersHtml($this->filtersPanel, $this);
 
 		$this->HTML .= '<div class="row' . ($this->HasCalculatedFields ? ' has-calculated-fields' : '') . '"><div class="col-xs-12">';
 		$this->HTML .= '<form ' . (datalist_image_uploads_exist ? 'enctype="multipart/form-data" ' : '') . 'method="post" name="myform" action="' . $this->ScriptFileName . '">';
@@ -1767,7 +1777,7 @@ class DataList {
 
 		ob_start(); ?>
 		<script>
-			console.log(JSON.stringify(<?php echo json_encode($arr); ?>, true, 2));
+			console.log(JSON.stringify(<?php echo json_encode($arr, JSON_INVALID_UTF8_SUBSTITUTE); ?>, true, 2));
 		</script>
 		<?php
 		$html .= ob_get_clean();

@@ -136,6 +136,14 @@
 	$x->TableIcon = 'resources/table_icons/administrator.png';
 	$x->PrimaryKey = '`rental_owners`.`id`';
 
+	// Filters panel
+	$x->filtersPanel = [
+		['field' => 'date_of_birth', 'type' => 'date-range', 'label' => 'Date of birth'],
+		['field' => 'country', 'type' => 'select2', 'label' => 'Country'],
+		['field' => 'state', 'type' => 'select2', 'label' => 'State'],
+		['field' => 'zip', 'type' => 'numeric-range', 'label' => 'Zip'],
+	];
+
 	$x->ColWidth = [150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 100, ];
 	$x->ColCaption = ['First name', 'Last name', 'Company name', 'Primary email', 'Alternate email', 'Phone', 'Country', 'Street', 'City', 'State', 'Zip', 'Comments', 'Properties', ];
 	$x->ColFieldName = ['first_name', 'last_name', 'company_name', 'primary_email', 'alternate_email', 'phone', 'country', 'street', 'city', 'state', 'zip', 'comments', '%properties.owner%', ];

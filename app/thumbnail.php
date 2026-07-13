@@ -45,38 +45,53 @@
 	if(!getImage($thumb))  getImage();
 
 	function getImage($img = '') {
+		$exit = false;
 		if(!$img) { // default image to return
 			$img = './photo.gif';
 			$exit = true;
 		}
 
-		/* force caching */
-		$last_modified = @filemtime($img);
-		if($last_modified) {
-			$last_modified_gmt = gmdate('D, d M Y H:i:s', $last_modified) . ' GMT';
-			$expires_gmt = gmdate('D, d M Y H:i:s', $last_modified + 864000) . ' GMT';
-			$headers = (function_exists('getallheaders') ? getallheaders() : $_SERVER);
-			if(isset($headers['If-Modified-Since']) && (strtotime($headers['If-Modified-Since']) == $last_modified)) {
-				@header("Last-Modified: {$last_modified_gmt}", true, 304);
-				@header("Cache-Control: private, max-age=864000", true);
-				@header("Expires: {$expires_gmt}");
-				exit;
-			}
+		$maxAge = 30 * 86400; // 30 days
+		$lastModified = @filemtime($img);
+		$fileSize = @filesize($img);
+		$etag = ($lastModified && $fileSize !== false) ? md5($img . $lastModified . $fileSize) : '';
+
+		$cacheHeaders = function() use ($lastModified, $etag, $maxAge) {
+			if($lastModified) header('Last-Modified: ' . gmdate('D, d M Y H:i:s', $lastModified) . ' GMT');
+			if($etag !== '') header("ETag: $etag");
+			header("Cache-Control: private, max-age=$maxAge");
+			header('Expires: ' . gmdate('D, d M Y H:i:s', time() + $maxAge) . ' GMT');
+		};
+
+		if(ob_get_level()) ob_end_clean();
+
+		// Use ETag if provided, otherwise fall back to Last-Modified.
+		$ifNoneMatch = isset($_SERVER['HTTP_IF_NONE_MATCH']) ? trim($_SERVER['HTTP_IF_NONE_MATCH']) : '';
+		$ifModifiedSince = isset($_SERVER['HTTP_IF_MODIFIED_SINCE']) ? @strtotime($_SERVER['HTTP_IF_MODIFIED_SINCE']) : false;
+		if(
+			$lastModified &&
+			(
+				($ifNoneMatch !== '' && $ifNoneMatch == $etag) ||
+				($ifNoneMatch === '' && $ifModifiedSince !== false && $ifModifiedSince == $lastModified)
+			)
+		) {
+			header($_SERVER["SERVER_PROTOCOL"] . ' 304 Not Modified');
+			$cacheHeaders();
+			exit;
 		}
 
 		$thumbInfo = @getimagesize($img);
-		$fp = @fopen($img, 'rb');
+		$fp = fopen($img, 'rb');
 		if($thumbInfo && $fp) {
-			$file_size = filesize($img);
-			@header("Last-Modified: {$last_modified_gmt}", true, 200);
-			@header("Cache-Control: private, max-age=864000", true);
-			@header("Content-type: {$thumbInfo['mime']}");
-			@header("Content-Length: {$file_size}");
-			@header("Expires: {$expires_gmt}");
-			ob_end_clean();
-			@fpassthru($fp);
+			header('Content-type: ' . $thumbInfo['mime']);
+			if($fileSize !== false) header("Content-Length: {$fileSize}");
+			$cacheHeaders();
+			fpassthru($fp);
+			fclose($fp);
 			if(!$exit) return true; else exit;
 		}
+
+		if($fp) fclose($fp);
 
 		if(!$exit) return false; else exit;
 	}

@@ -82,7 +82,7 @@
 
 	function return_json($data = [], $error = '') {
 		@header('Content-type: application/json');
-		die(json_encode(['data' => $data, 'error' => $error]));
+		die(json_encode(['data' => $data, 'error' => $error], JSON_INVALID_UTF8_SUBSTITUTE));
 	}
 
 	function cleanup_calc_fields(&$calc) {

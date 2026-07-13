@@ -3151,73 +3151,235 @@
 	}
 	#########################################################
 	function lookupQuery($tn, $lookupField) {
-		/*
-			This is the query accessible from the 'Advanced' window under the 'Lookup field' tab in AppGini.
-			For auto-fill lookups, this is the same as the query of the main lookup field, except the second
-			column is replaced by the caption of the auto-fill lookup field.
-		*/
-		$lookupQuery = [
-			'applicants_and_tenants' => [
-			],
-			'applications_leases' => [
-				'tenants' => 'SELECT `applicants_and_tenants`.`id`, IF(CHAR_LENGTH(`applicants_and_tenants`.`first_name`) || CHAR_LENGTH(`applicants_and_tenants`.`last_name`), CONCAT_WS(\'\', `applicants_and_tenants`.`first_name`, \' \', `applicants_and_tenants`.`last_name`), \'\') FROM `applicants_and_tenants` ORDER BY 2',
-				'property' => 'SELECT `properties`.`id`, `properties`.`property_name` FROM `properties` LEFT JOIN `rental_owners` as rental_owners1 ON `rental_owners1`.`id`=`properties`.`owner` ORDER BY 2',
-				'unit' => 'SELECT `units`.`id`, `units`.`unit_number` FROM `units` LEFT JOIN `properties` as properties1 ON `properties1`.`id`=`units`.`property` ORDER BY 2',
-			],
-			'residence_and_rental_history' => [
-				'tenant' => 'SELECT `applicants_and_tenants`.`id`, IF(CHAR_LENGTH(`applicants_and_tenants`.`first_name`) || CHAR_LENGTH(`applicants_and_tenants`.`last_name`), CONCAT_WS(\'\', `applicants_and_tenants`.`first_name`, \' \', `applicants_and_tenants`.`last_name`), \'\') FROM `applicants_and_tenants` ORDER BY 2',
-			],
-			'employment_and_income_history' => [
-				'tenant' => 'SELECT `applicants_and_tenants`.`id`, IF(CHAR_LENGTH(`applicants_and_tenants`.`first_name`) || CHAR_LENGTH(`applicants_and_tenants`.`last_name`), CONCAT_WS(\'\', `applicants_and_tenants`.`first_name`, \' \', `applicants_and_tenants`.`last_name`), \'\') FROM `applicants_and_tenants` ORDER BY 2',
-			],
-			'references' => [
-				'tenant' => 'SELECT `applicants_and_tenants`.`id`, IF(CHAR_LENGTH(`applicants_and_tenants`.`first_name`) || CHAR_LENGTH(`applicants_and_tenants`.`last_name`), CONCAT_WS(\'\', `applicants_and_tenants`.`first_name`, \' \', `applicants_and_tenants`.`last_name`), \'\') FROM `applicants_and_tenants` ORDER BY 2',
-			],
-			'rental_owners' => [
-			],
-			'properties' => [
-				'owner' => 'SELECT `rental_owners`.`id`, IF(CHAR_LENGTH(`rental_owners`.`first_name`) || CHAR_LENGTH(`rental_owners`.`last_name`), CONCAT_WS(\'\', `rental_owners`.`first_name`, \' \', `rental_owners`.`last_name`), \'\') FROM `rental_owners` ORDER BY 2',
-			],
-			'property_photos' => [
-				'property' => 'SELECT `properties`.`id`, `properties`.`property_name` FROM `properties` LEFT JOIN `rental_owners` as rental_owners1 ON `rental_owners1`.`id`=`properties`.`owner` ORDER BY 2',
-			],
-			'units' => [
-				'property' => 'SELECT `properties`.`id`, `properties`.`property_name` FROM `properties` LEFT JOIN `rental_owners` as rental_owners1 ON `rental_owners1`.`id`=`properties`.`owner` ORDER BY 2',
-				'country' => 'SELECT `properties`.`id`, `properties`.`country` FROM `properties` LEFT JOIN `rental_owners` as rental_owners1 ON `rental_owners1`.`id`=`properties`.`owner` ORDER BY 2',
-				'street' => 'SELECT `properties`.`id`, `properties`.`street` FROM `properties` LEFT JOIN `rental_owners` as rental_owners1 ON `rental_owners1`.`id`=`properties`.`owner` ORDER BY 2',
-				'city' => 'SELECT `properties`.`id`, `properties`.`City` FROM `properties` LEFT JOIN `rental_owners` as rental_owners1 ON `rental_owners1`.`id`=`properties`.`owner` ORDER BY 2',
-				'state' => 'SELECT `properties`.`id`, `properties`.`State` FROM `properties` LEFT JOIN `rental_owners` as rental_owners1 ON `rental_owners1`.`id`=`properties`.`owner` ORDER BY 2',
-				'postal_code' => 'SELECT `properties`.`id`, `properties`.`ZIP` FROM `properties` LEFT JOIN `rental_owners` as rental_owners1 ON `rental_owners1`.`id`=`properties`.`owner` ORDER BY 2',
-			],
-			'unit_photos' => [
-				'unit' => 'SELECT `units`.`id`, IF(CHAR_LENGTH(`units`.`property`) || CHAR_LENGTH(`units`.`unit_number`), CONCAT_WS(\'\', IF(    CHAR_LENGTH(`properties1`.`property_name`), CONCAT_WS(\'\',   `properties1`.`property_name`), \'\'), \' - unit# \', `units`.`unit_number`), \'\') FROM `units` LEFT JOIN `properties` as properties1 ON `properties1`.`id`=`units`.`property` ORDER BY 2',
-			],
-		];
+		$lookupsConfig = get_lookups();
 
-		return $lookupQuery[$tn][$lookupField];
+		if(!isset($lookupsConfig[$tn][$lookupField])) return null;
+
+		$cfg = $lookupsConfig[$tn][$lookupField];
+
+		return "SELECT `{$cfg['parent_table']}`.`{$cfg['parent_pk_field']}`, {$cfg['parent_caption']}"
+			. " FROM {$cfg['parent_from']}"
+			. " ORDER BY 2";
 	}
 
 	#########################################################
+	function get_lookups() {
+		/*
+			Returns the lookup field configurations for all tables.
+			Single source of truth for lookup field definitions
+			(parent table, pk field, caption expression, FROM clause,
+			filterers, list type, etc.).
+		*/
+		static $lookups = null;
+		if($lookups === null) {
+			$lookups = [
+		'applicants_and_tenants' => [
+		],
+		'applications_leases' => [
+			'tenants' => [
+				'parent_table' => 'applicants_and_tenants',
+				'parent_pk_field' => 'id',
+				'parent_caption' => 'IF(CHAR_LENGTH(`applicants_and_tenants`.`first_name`) || CHAR_LENGTH(`applicants_and_tenants`.`last_name`), CONCAT_WS(\'\', `applicants_and_tenants`.`first_name`, \' \', `applicants_and_tenants`.`last_name`), \'\')',
+				'parent_from' => '`applicants_and_tenants` ',
+				'filterers' => [],
+				'custom_query' => '',
+				'inherit_permissions' => false,
+				'list_type' => 0,
+				'not_null' => false,
+			],
+			'property' => [
+				'parent_table' => 'properties',
+				'parent_pk_field' => 'id',
+				'parent_caption' => '`properties`.`property_name`',
+				'parent_from' => '`properties` LEFT JOIN `rental_owners` as rental_owners1 ON `rental_owners1`.`id`=`properties`.`owner` ',
+				'filterers' => [],
+				'custom_query' => '',
+				'inherit_permissions' => false,
+				'list_type' => 0,
+				'not_null' => false,
+			],
+			'unit' => [
+				'parent_table' => 'units',
+				'parent_pk_field' => 'id',
+				'parent_caption' => '`units`.`unit_number`',
+				'parent_from' => '`units` LEFT JOIN `properties` as properties1 ON `properties1`.`id`=`units`.`property` ',
+				'filterers' => ['property' => 'property'],
+				'custom_query' => '',
+				'inherit_permissions' => false,
+				'list_type' => 0,
+				'not_null' => false,
+			],
+		],
+		'residence_and_rental_history' => [
+			'tenant' => [
+				'parent_table' => 'applicants_and_tenants',
+				'parent_pk_field' => 'id',
+				'parent_caption' => 'IF(CHAR_LENGTH(`applicants_and_tenants`.`first_name`) || CHAR_LENGTH(`applicants_and_tenants`.`last_name`), CONCAT_WS(\'\', `applicants_and_tenants`.`first_name`, \' \', `applicants_and_tenants`.`last_name`), \'\')',
+				'parent_from' => '`applicants_and_tenants` ',
+				'filterers' => [],
+				'custom_query' => '',
+				'inherit_permissions' => false,
+				'list_type' => 0,
+				'not_null' => false,
+			],
+		],
+		'employment_and_income_history' => [
+			'tenant' => [
+				'parent_table' => 'applicants_and_tenants',
+				'parent_pk_field' => 'id',
+				'parent_caption' => 'IF(CHAR_LENGTH(`applicants_and_tenants`.`first_name`) || CHAR_LENGTH(`applicants_and_tenants`.`last_name`), CONCAT_WS(\'\', `applicants_and_tenants`.`first_name`, \' \', `applicants_and_tenants`.`last_name`), \'\')',
+				'parent_from' => '`applicants_and_tenants` ',
+				'filterers' => [],
+				'custom_query' => '',
+				'inherit_permissions' => false,
+				'list_type' => 0,
+				'not_null' => false,
+			],
+		],
+		'references' => [
+			'tenant' => [
+				'parent_table' => 'applicants_and_tenants',
+				'parent_pk_field' => 'id',
+				'parent_caption' => 'IF(CHAR_LENGTH(`applicants_and_tenants`.`first_name`) || CHAR_LENGTH(`applicants_and_tenants`.`last_name`), CONCAT_WS(\'\', `applicants_and_tenants`.`first_name`, \' \', `applicants_and_tenants`.`last_name`), \'\')',
+				'parent_from' => '`applicants_and_tenants` ',
+				'filterers' => [],
+				'custom_query' => '',
+				'inherit_permissions' => false,
+				'list_type' => 0,
+				'not_null' => false,
+			],
+		],
+		'rental_owners' => [
+		],
+		'properties' => [
+			'owner' => [
+				'parent_table' => 'rental_owners',
+				'parent_pk_field' => 'id',
+				'parent_caption' => 'IF(CHAR_LENGTH(`rental_owners`.`first_name`) || CHAR_LENGTH(`rental_owners`.`last_name`), CONCAT_WS(\'\', `rental_owners`.`first_name`, \' \', `rental_owners`.`last_name`), \'\')',
+				'parent_from' => '`rental_owners` ',
+				'filterers' => [],
+				'custom_query' => '',
+				'inherit_permissions' => false,
+				'list_type' => 0,
+				'not_null' => false,
+			],
+		],
+		'property_photos' => [
+			'property' => [
+				'parent_table' => 'properties',
+				'parent_pk_field' => 'id',
+				'parent_caption' => '`properties`.`property_name`',
+				'parent_from' => '`properties` LEFT JOIN `rental_owners` as rental_owners1 ON `rental_owners1`.`id`=`properties`.`owner` ',
+				'filterers' => [],
+				'custom_query' => '',
+				'inherit_permissions' => true,
+				'list_type' => 0,
+				'not_null' => false,
+			],
+		],
+		'units' => [
+			'property' => [
+				'parent_table' => 'properties',
+				'parent_pk_field' => 'id',
+				'parent_caption' => '`properties`.`property_name`',
+				'parent_from' => '`properties` LEFT JOIN `rental_owners` as rental_owners1 ON `rental_owners1`.`id`=`properties`.`owner` ',
+				'filterers' => [],
+				'custom_query' => '',
+				'inherit_permissions' => false,
+				'list_type' => 0,
+				'not_null' => false,
+			],
+			'country' => [
+				'parent_table' => 'properties',
+				'parent_pk_field' => 'id',
+				'parent_caption' => '`properties`.`country`',
+				'parent_from' => '`properties` LEFT JOIN `rental_owners` as rental_owners1 ON `rental_owners1`.`id`=`properties`.`owner` ',
+				'filterers' => [],
+				'custom_query' => '',
+				'inherit_permissions' => false,
+				'list_type' => 0,
+				'not_null' => false,
+			],
+			'street' => [
+				'parent_table' => 'properties',
+				'parent_pk_field' => 'id',
+				'parent_caption' => '`properties`.`street`',
+				'parent_from' => '`properties` LEFT JOIN `rental_owners` as rental_owners1 ON `rental_owners1`.`id`=`properties`.`owner` ',
+				'filterers' => [],
+				'custom_query' => '',
+				'inherit_permissions' => false,
+				'list_type' => 0,
+				'not_null' => false,
+			],
+			'city' => [
+				'parent_table' => 'properties',
+				'parent_pk_field' => 'id',
+				'parent_caption' => '`properties`.`City`',
+				'parent_from' => '`properties` LEFT JOIN `rental_owners` as rental_owners1 ON `rental_owners1`.`id`=`properties`.`owner` ',
+				'filterers' => [],
+				'custom_query' => '',
+				'inherit_permissions' => false,
+				'list_type' => 0,
+				'not_null' => false,
+			],
+			'state' => [
+				'parent_table' => 'properties',
+				'parent_pk_field' => 'id',
+				'parent_caption' => '`properties`.`State`',
+				'parent_from' => '`properties` LEFT JOIN `rental_owners` as rental_owners1 ON `rental_owners1`.`id`=`properties`.`owner` ',
+				'filterers' => [],
+				'custom_query' => '',
+				'inherit_permissions' => false,
+				'list_type' => 0,
+				'not_null' => false,
+			],
+			'postal_code' => [
+				'parent_table' => 'properties',
+				'parent_pk_field' => 'id',
+				'parent_caption' => '`properties`.`ZIP`',
+				'parent_from' => '`properties` LEFT JOIN `rental_owners` as rental_owners1 ON `rental_owners1`.`id`=`properties`.`owner` ',
+				'filterers' => [],
+				'custom_query' => '',
+				'inherit_permissions' => false,
+				'list_type' => 0,
+				'not_null' => false,
+			],
+		],
+		'unit_photos' => [
+			'unit' => [
+				'parent_table' => 'units',
+				'parent_pk_field' => 'id',
+				'parent_caption' => 'IF(CHAR_LENGTH(`units`.`property`) || CHAR_LENGTH(`units`.`unit_number`), CONCAT_WS(\'\', IF(    CHAR_LENGTH(`properties1`.`property_name`), CONCAT_WS(\'\',   `properties1`.`property_name`), \'\'), \' - unit# \', `units`.`unit_number`), \'\')',
+				'parent_from' => '`units` LEFT JOIN `properties` as properties1 ON `properties1`.`id`=`units`.`property` ',
+				'filterers' => [],
+				'custom_query' => '',
+				'inherit_permissions' => true,
+				'list_type' => 0,
+				'not_null' => false,
+			],
+		],
+			];
+		}
+		return $lookups;
+	}
 	function pkGivenLookupText($val, $tn, $lookupField, $falseIfNotFound = false) {
 		static $cache = [];
 		if(isset($cache[$tn][$lookupField][$val])) return $cache[$tn][$lookupField][$val];
 
-		if(!$lookupQuery = lookupQuery($tn, $lookupField)) {
+		$lookupsConfig = get_lookups();
+
+		if(!isset($lookupsConfig[$tn][$lookupField])) {
 			$cache[$tn][$lookupField][$val] = false;
 			return false;
 		}
 
-		$m = [];
+		$cfg = $lookupsConfig[$tn][$lookupField];
 
-		// quit if query can't be parsed
-		if(!preg_match('/select\s+(.*?),\s+(.*?)\s+from\s+(.*)/i', $lookupQuery, $m)) {
-			$cache[$tn][$lookupField][$val] = false;
-			return false;
-		}
+		$pkField = "`{$cfg['parent_table']}`.`{$cfg['parent_pk_field']}`";
+		$captionExpr = $cfg['parent_caption'];
+		$from = preg_replace('/\s+order\s+by.*$/i', '', $cfg['parent_from']);
 
-		list($all, $pkField, $lookupField, $from) = $m;
-		$from = preg_replace('/\s+order\s+by.*$/i', '', $from);
-		if(!$lookupField || !$from) {
+		if(!$captionExpr || !$from) {
 			$cache[$tn][$lookupField][$val] = false;
 			return false;
 		}
@@ -3226,7 +3388,7 @@
 		if(!preg_match('/\s+where\s+/i', $from)) $from .= ' WHERE 1=1 AND';
 
 		$safeVal = makeSafe($val);
-		$id = sqlValue("SELECT {$pkField} FROM {$from} {$lookupField}='{$safeVal}'");
+		$id = sqlValue("SELECT {$pkField} FROM {$from} {$captionExpr}='{$safeVal}'");
 		if($id !== false) {
 			$cache[$tn][$lookupField][$val] = $id;
 			return $id;
@@ -3288,6 +3450,44 @@
 		return rtrim($dir, '\\/') . DIRECTORY_SEPARATOR;
 	}
 	#########################################################
+	function getUploadFolderStatus($dir = '') {
+		$uploadDir = getUploadDir($dir);
+		$absolutePathPattern = '~^(?:[A-Za-z]:[\\\\/]|[\\\\/])~';
+		$path = $uploadDir;
+		if(!preg_match($absolutePathPattern, $path)) {
+			$path = __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . str_replace('/', DIRECTORY_SEPARATOR, $path);
+		} else {
+			$path = str_replace('/', DIRECTORY_SEPARATOR, $path);
+		}
+		$path = rtrim($path, '\\/') . DIRECTORY_SEPARATOR;
+		$exists = is_dir($path);
+		$readable = $exists && is_readable($path);
+		$writable = false;
+
+		if($readable) {
+			$tmpFile = $path . uniqid('php_perm_', true) . '.tmp';
+			$writable = (@file_put_contents($tmpFile, 't') !== false);
+			if($writable) @unlink($tmpFile);
+		}
+
+		// if readable and writable, apply realpath
+		if($readable && $writable) {
+			$realPath = realpath($path);
+			if($realPath !== false) {
+				$path = $realPath;
+			}
+		}
+
+		return [
+			'path' => $path,
+			'exists' => $exists,
+			'readable' => $readable,
+			'writable' => $writable,
+			'executable' => $readable,
+			'usable' => $readable && $writable,
+		];
+	}
+	#########################################################
 	function bgStyleToClass($html) {
 		return preg_replace(
 			'/ style="background-color: rgb\((\d+), (\d+), (\d+)\);"/',
@@ -3312,7 +3512,7 @@
 		$data = [];
 
 		$user = makeSafe(getMemberInfo()['username']);
-		if(!$user) return false;
+		if(!$user || Authentication::isGuest()) return false;
 
 		$dataJson = sqlValue("SELECT `data` FROM `membership_users` WHERE `memberID`='$user'");
 		if($dataJson) {
@@ -3331,7 +3531,7 @@
 	#########################################################
 	function getUserData($key) {
 		$user = makeSafe(getMemberInfo()['username']);
-		if(!$user) return null;
+		if(!$user || Authentication::isGuest()) return null;
 
 		$dataJson = sqlValue("SELECT `data` FROM `membership_users` WHERE `memberID`='$user'");
 		if(!$dataJson) return null;

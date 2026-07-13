@@ -8,12 +8,12 @@
 
 		/* data for selected record, or defaults if none is selected */
 		var data = {
-			property: <?php echo json_encode(['id' => $rdata['property'], 'value' => $rdata['property'], 'text' => $jdata['property']]); ?>,
-			country: <?php echo json_encode($jdata['country']); ?>,
-			street: <?php echo json_encode($jdata['street']); ?>,
-			city: <?php echo json_encode($jdata['city']); ?>,
-			state: <?php echo json_encode($jdata['state']); ?>,
-			postal_code: <?php echo json_encode($jdata['postal_code']); ?>
+			property: <?php echo json_encode(['id' => $rdata['property'], 'value' => $rdata['property'], 'text' => $jdata['property']], JSON_INVALID_UTF8_SUBSTITUTE); ?>,
+			country: <?php echo json_encode($jdata['country'], JSON_INVALID_UTF8_SUBSTITUTE); ?>,
+			street: <?php echo json_encode($jdata['street'], JSON_INVALID_UTF8_SUBSTITUTE); ?>,
+			city: <?php echo json_encode($jdata['city'], JSON_INVALID_UTF8_SUBSTITUTE); ?>,
+			state: <?php echo json_encode($jdata['state'], JSON_INVALID_UTF8_SUBSTITUTE); ?>,
+			postal_code: <?php echo json_encode($jdata['postal_code'], JSON_INVALID_UTF8_SUBSTITUTE); ?>
 		};
 
 		/* initialize or continue using AppGini.cache for the current table */

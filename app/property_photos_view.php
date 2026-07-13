@@ -84,6 +84,11 @@
 	$x->TableIcon = 'resources/table_icons/camera_link.png';
 	$x->PrimaryKey = '`property_photos`.`id`';
 
+	// Filters panel
+	$x->filtersPanel = [
+		['field' => 'property', 'type' => 'select2', 'label' => 'Property'],
+	];
+
 	$x->ColWidth = [150, 150, ];
 	$x->ColCaption = ['Photo', 'Description', ];
 	$x->ColFieldName = ['photo', 'description', ];

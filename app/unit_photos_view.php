@@ -84,6 +84,11 @@
 	$x->TableIcon = 'resources/table_icons/camera_link.png';
 	$x->PrimaryKey = '`unit_photos`.`id`';
 
+	// Filters panel
+	$x->filtersPanel = [
+		['field' => 'unit', 'type' => 'select2', 'label' => 'Unit'],
+	];
+
 	$x->ColWidth = [150, 150, ];
 	$x->ColCaption = ['Photo', 'Description', ];
 	$x->ColFieldName = ['photo', 'description', ];

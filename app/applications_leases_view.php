@@ -156,6 +156,20 @@
 	$x->TableIcon = 'resources/table_icons/curriculum_vitae.png';
 	$x->PrimaryKey = '`applications_leases`.`id`';
 
+	// Filters panel
+	$x->filtersPanel = [
+		['field' => 'tenants', 'type' => 'select2', 'label' => 'Applicant/ Tenant'],
+		['field' => 'status', 'type' => 'select2', 'label' => 'Application status'],
+		['field' => 'property', 'type' => 'select2', 'label' => 'Property'],
+		['field' => 'unit', 'type' => 'select2', 'label' => 'Unit applied for'],
+		['field' => 'type', 'type' => 'select2', 'label' => 'Lease type'],
+		['field' => 'start_date', 'type' => 'date-range', 'label' => 'Lease period from'],
+		['field' => 'end_date', 'type' => 'date-range', 'label' => 'to'],
+		['field' => 'recurring_charges_frequency', 'type' => 'select2', 'label' => 'Recurring charges frequency'],
+		['field' => 'next_due_date', 'type' => 'date-range', 'label' => 'Next due date'],
+		['field' => 'rent', 'type' => 'numeric-range', 'label' => 'Rental amount'],
+	];
+
 	$x->ColWidth = [60, 50, 80, 60, 40, 70, 70, 60, 70, 80, 120, 70, ];
 	$x->ColCaption = ['Applicant/ Tenant', 'Application status', 'Property', 'Unit applied for', 'Lease type', 'Total number of occupants', 'Lease period from', 'to', 'Rental amount', 'Security deposit', 'Emergency contact', 'Applicant agrees', ];
 	$x->ColFieldName = ['tenants', 'status', 'property', 'unit', 'type', 'total_number_of_occupants', 'start_date', 'end_date', 'rent', 'security_deposit', 'emergency_contact', 'agreement', ];

@@ -135,6 +135,16 @@
 	$x->TableTitle = 'Applicants and tenants';
 	$x->TableIcon = 'resources/table_icons/account_balances.png';
 	$x->PrimaryKey = '`applicants_and_tenants`.`id`';
+
+	// Filters panel
+	$x->filtersPanel = [
+		['field' => 'birth_date', 'type' => 'date-range', 'label' => 'Birth date'],
+		['field' => 'driver_license_state', 'type' => 'select2', 'label' => 'Driver license state'],
+		['field' => 'monthly_gross_pay', 'type' => 'numeric-range', 'label' => 'Monthly gross pay'],
+		['field' => 'additional_income', 'type' => 'numeric-range', 'label' => 'Additional income'],
+		['field' => 'assets', 'type' => 'numeric-range', 'label' => 'Assets'],
+		['field' => 'status', 'type' => 'select2', 'label' => 'Status'],
+	];
 	$x->DefaultSortField = '2';
 	$x->DefaultSortDirection = 'asc';
 

@@ -1804,6 +1804,25 @@ EOT;
 	 * @param array $FilterValue array of filter values, passed by reference
 	 */
 	function compactFilters(&$FilterAnd, &$FilterField, &$FilterOperator, &$FilterValue) {
+		// Only compact groups 1-20 (filters page domain).
+		// Groups 21-40 (21-30: plugins reserved, 31-40: filters panel) are
+		// preserved at their original indices so they don't get shifted forward
+		// into the filters page range.
+		$compactMaxGroup = 20;
+
+		// -- Preserve groups 21-40 before compaction --------------
+		$preservedAnd = $preservedField = $preservedOperator = $preservedValue = [];
+		$preservedStart = $compactMaxGroup * FILTERS_PER_GROUP + 1; // index 81
+		$preservedEnd   = FILTER_GROUPS      * FILTERS_PER_GROUP;     // index 160
+
+		for($i = $preservedStart; $i <= $preservedEnd; $i++) {
+			if(isset($FilterAnd[$i]))       $preservedAnd[$i]      = $FilterAnd[$i];
+			if(isset($FilterField[$i]))     $preservedField[$i]     = $FilterField[$i];
+			if(isset($FilterOperator[$i]))  $preservedOperator[$i]  = $FilterOperator[$i];
+			if(isset($FilterValue[$i]))     $preservedValue[$i]     = $FilterValue[$i];
+		}
+
+		// -- Compact groups 1-20 only -----------------------------
 
 		$filterConditionIsEmpty = function($i) use ($FilterField, $FilterOperator) {
 			// check if filter is empty
@@ -1822,7 +1841,7 @@ EOT;
 
 		// 'compact' filter conditions by removing gaps inside each group and removing empty groups
 		$compactedGroups = [];
-		for($gi = 1; $gi <= FILTER_GROUPS; $gi++) {
+		for($gi = 1; $gi <= $compactMaxGroup; $gi++) {
 			$compactedGroups[$gi] = [];
 			for($fi = 1; $fi <= FILTERS_PER_GROUP; $fi++) {
 				$filterIndex = (($gi - 1) * FILTERS_PER_GROUP) + $fi;
@@ -1852,10 +1871,14 @@ EOT;
 			}
 		}
 
+		// -- Merge preserved groups 21-40 back --------------------
+		// Using + preserves left-side keys; since compacted indices
+		// are always 1-80 and preserved are 81-160, there's no overlap.
+
 		// update filter variables
-		$FilterAnd = $newFilterAnd;
-		$FilterField = $newFilterField;
-		$FilterOperator = $newFilterOperator;
-		$FilterValue = $newFilterValue;
+		$FilterAnd      = $newFilterAnd      + $preservedAnd;
+		$FilterField    = $newFilterField    + $preservedField;
+		$FilterOperator = $newFilterOperator + $preservedOperator;
+		$FilterValue    = $newFilterValue    + $preservedValue;
 	}
 

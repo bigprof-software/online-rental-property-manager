@@ -135,7 +135,7 @@
 								$j.ajax({
 									url: 'ajax_combo.php',
 									dataType: 'json',
-									data: <?php echo json_encode(['id' => to_utf8($fltrr_val), 't' => $this->TableName, 'f' => $filterer, 'o' => 0]); ?>
+									data: <?php echo json_encode(['id' => to_utf8($fltrr_val), 't' => $this->TableName, 'f' => $filterer, 'o' => 0], JSON_INVALID_UTF8_SUBSTITUTE); ?>
 								}).done(function(resp) {
 									$j('#<?php echo $fltrr_name; ?>_display_value').html(resp.results[0].text);
 								});
@@ -147,7 +147,11 @@
 			}
 		?>
 
-		<?php for($filterGroupIndex = 1; $filterGroupIndex <= FILTER_GROUPS; $filterGroupIndex++) { ?>
+		<?php
+			/* Only render filter groups 1-20 (filters page domain).
+			   Groups 21-30 are reserved for plugins; 31-40 for the filters panel. */
+			$maxFilterGroups = 20;
+			for($filterGroupIndex = 1; $filterGroupIndex <= $maxFilterGroups; $filterGroupIndex++) { ?>
 			<!-- filter group panel -->
 			<div class="panel panel-default filter-group hidden" data-group="<?php echo $filterGroupIndex; ?>">
 				<div class="panel-heading text-center">
@@ -210,6 +214,23 @@
 				<span class="group-or label label-default"><?php echo $Translation['or']; ?></span>
 			</div>
 		<?php } ?>
+
+		<?php
+			// Preserve panel and plugin filter values (indices 81-160) as hidden inputs
+			// so they survive the filters page form submission back to the table view.
+			// Without these, any filters set by the panel (groups 31-40) or plugins
+			// (groups 21-30) would be lost when the user applies filters from this page.
+			for($si = ($maxFilterGroups + 1) * FILTERS_PER_GROUP + 1; $si <= FILTER_GROUPS * FILTERS_PER_GROUP; $si++) {
+				if(!empty($FilterField[$si]) && !empty($FilterOperator[$si])) {
+					?>
+					<input type="hidden" name="FilterAnd[<?php echo $si; ?>]" value="<?php echo html_attr($FilterAnd[$si] ?? ''); ?>">
+					<input type="hidden" name="FilterField[<?php echo $si; ?>]" value="<?php echo html_attr($FilterField[$si]); ?>">
+					<input type="hidden" name="FilterOperator[<?php echo $si; ?>]" value="<?php echo html_attr($FilterOperator[$si]); ?>">
+					<input type="hidden" name="FilterValue[<?php echo $si; ?>]" value="<?php echo html_attr($FilterValue[$si]); ?>">
+					<?php
+				}
+			}
+		?>
 	</div>
 	<div class="col-md-4 side-panel" id="sorting-ownership-section">
 		<hr class="visible-xs visible-sm">
@@ -323,7 +344,7 @@
 	$j(() => {
 		const FILTER_DEBUG = false; // set to true to enable debug mode
 		const filterConditionsPerGroup = <?php echo FILTERS_PER_GROUP; ?>;
-		const filterGroups = <?php echo FILTER_GROUPS; ?>;
+		const filterGroups = <?php echo $maxFilterGroups; ?>;
 
 		const consoleLog = (...args) => FILTER_DEBUG && console.log(...args);
 

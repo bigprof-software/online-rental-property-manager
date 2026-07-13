@@ -153,6 +153,17 @@
 	$x->TableTitle = 'Units';
 	$x->TableIcon = 'resources/table_icons/change_password.png';
 	$x->PrimaryKey = '`units`.`id`';
+
+	// Filters panel
+	$x->filtersPanel = [
+		['field' => 'property', 'type' => 'select2', 'label' => 'Property'],
+		['field' => 'status', 'type' => 'select2', 'label' => 'Status'],
+		['field' => 'bathroom', 'type' => 'numeric-range', 'label' => 'Bathroom'],
+		['field' => 'features', 'type' => 'select2', 'label' => 'Features'],
+		['field' => 'market_rent', 'type' => 'numeric-range', 'label' => 'Market rent'],
+		['field' => 'rental_amount', 'type' => 'numeric-range', 'label' => 'Rental amount'],
+		['field' => 'deposit_amount', 'type' => 'numeric-range', 'label' => 'Deposit amount'],
+	];
 	$x->DefaultSortField = '2';
 	$x->DefaultSortDirection = 'asc';
 

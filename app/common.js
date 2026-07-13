@@ -1,6 +1,6 @@
 var AppGini = AppGini || {};
 
-AppGini.version = 26.13;
+AppGini.version = 26.14;
 
 /* global constants */
 const NO_GEOLOCATION_THOUGH_REQUIRED = -1;
@@ -4397,7 +4397,9 @@ AppGini.handleToggleDV = () => {
 		if(toggle.parent().find('a.btn:visible').length == 0) {
 			toggle.addClass('hidden');
 			$j('.dv-form-top-border').addClass('hidden');
-			clearInterval(linksCheckInterval);
+		} else {
+			toggle.removeClass('hidden');
+			$j('.dv-form-top-border').removeClass('hidden');
 		}
 	}, 100);
 

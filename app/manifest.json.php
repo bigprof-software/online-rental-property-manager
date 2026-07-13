@@ -53,4 +53,4 @@ if(function_exists('pwa_manifest')) {
 	$manifest = call_user_func('pwa_manifest', $manifest);
 }
 
-echo json_encode($manifest, JSON_PARTIAL_OUTPUT_ON_ERROR);
+echo json_encode($manifest, JSON_INVALID_UTF8_SUBSTITUTE);

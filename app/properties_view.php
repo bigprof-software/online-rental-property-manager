@@ -133,6 +133,18 @@
 	$x->TableTitle = 'Properties';
 	$x->TableIcon = 'resources/table_icons/application_home.png';
 	$x->PrimaryKey = '`properties`.`id`';
+
+	// Filters panel
+	$x->filtersPanel = [
+		['field' => 'type', 'type' => 'select2', 'label' => 'Type'],
+		['field' => 'number_of_units', 'type' => 'numeric-range', 'label' => 'Number of units'],
+		['field' => 'owner', 'type' => 'select2', 'label' => 'Owner'],
+		['field' => 'operating_account', 'type' => 'select2', 'label' => 'Operating account'],
+		['field' => 'property_reserve', 'type' => 'numeric-range', 'label' => 'Property reserve'],
+		['field' => 'country', 'type' => 'select2', 'label' => 'Country'],
+		['field' => 'State', 'type' => 'select2', 'label' => 'State'],
+		['field' => 'ZIP', 'type' => 'numeric-range', 'label' => 'ZIP'],
+	];
 	$x->DefaultSortField = '1';
 	$x->DefaultSortDirection = 'desc';
 

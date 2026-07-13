@@ -5,7 +5,7 @@
 	@define('SESSION_NAME', 'Rental_property_manager');
 	@define('APP_TITLE', 'Rental Property Manager');
 	@define('APP_DIR', __DIR__);
-	@define('APP_VERSION', '26.13');
+	@define('APP_VERSION', '26.14');
 	@define('maxSortBy', 4);
 	@define('empty_lookup_value', '{empty_value}');
 	@define('MULTIPLE_SUPER_ADMINS', false);
@@ -16,7 +16,7 @@
 	@define('TIMEZONE', 'America/New_York');
 
 	@define('datalist_db_encoding', 'UTF-8');
-	@define('FILTER_GROUPS', 20); // maximum number of filters groups
+	@define('FILTER_GROUPS', 40); // maximum number of filters groups (40: 1-20 for filters page, 21-30 reserved, 31-40 for panel)
 	@define('datalist_filters_count', FILTER_GROUPS); // for backward compatibility
 	@define('FILTERS_PER_GROUP', 4); // changing this value might lead to unexpected behavior as it has not been tested with other values
 	@define('MAX_FILTER_LINKS_PER_USER', 100); // maximum number of saved filter links per user

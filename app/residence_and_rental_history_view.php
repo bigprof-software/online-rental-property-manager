@@ -116,6 +116,14 @@
 	$x->TableIcon = 'resources/table_icons/document_comment_above.png';
 	$x->PrimaryKey = '`residence_and_rental_history`.`id`';
 
+	// Filters panel
+	$x->filtersPanel = [
+		['field' => 'tenant', 'type' => 'select2', 'label' => 'Tenant'],
+		['field' => 'monthly_rent', 'type' => 'numeric-range', 'label' => 'Monthly rent'],
+		['field' => 'duration_of_residency_from', 'type' => 'date-range', 'label' => 'Duration of residency from'],
+		['field' => 'to', 'type' => 'date-range', 'label' => 'to'],
+	];
+
 	$x->ColWidth = [180, 120, 100, 80, 100, 80, 120, ];
 	$x->ColCaption = ['Address', 'Landlord/manager name', 'Landlord/manager phone', 'Monthly rent', 'Duration of residency from', 'to', 'Reason for leaving', ];
 	$x->ColFieldName = ['address', 'landlord_or_manager_name', 'landlord_or_manager_phone', 'monthly_rent', 'duration_of_residency_from', 'to', 'reason_for_leaving', ];

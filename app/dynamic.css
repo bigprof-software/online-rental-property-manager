@@ -1114,7 +1114,9 @@ body > [unselectable] { color: black; }
 	}
 	.theme-compact.theme-journal .profile-menu-icon > .icon { padding: 6px !important; }
 	.theme-compact.theme-paper .profile-menu-icon > .icon { padding: 6px !important; }
+	.theme-compact.theme-paper .navbar-text { margin-top: 20px !important; }
 	.theme-compact.theme-readable .profile-menu-icon > .icon { padding: 6px !important; }
+	.theme-compact.theme-readable .navbar-text { margin-top: 14px !important; }
 	.theme-compact.theme-sandstone .profile-menu-icon > .icon { padding: 6px !important; }
 }
 
@@ -1249,6 +1251,251 @@ body > [unselectable] { color: black; }
 	}
 }
 
+/* ================================================================
+   Filters panel
+   ================================================================ */
+
+/* Wrapper: flex container that holds the panel + main content */
+.filters-panel-wrapper {
+	display: flex;
+	flex-direction: row;
+	align-items: flex-start;
+}
+
+/* The panel panel itself (desktop: in-flow flex child) */
+.filters-panel {
+	width: 280px;
+	min-width: 280px;
+	flex-shrink: 0;
+	overflow-y: auto;
+	max-height: calc(100vh - 120px);
+	position: sticky;
+	top: 7em;
+	background: inherit;
+	margin-right: 1.5em;
+}
+.filters-panel-header {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
+.filters-panel-body .filter-group {
+	margin-bottom: 1em;
+}
+/* Label row: label on left, quick-date dropdown on right */
+.filters-panel-body .filter-group-label-row {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	margin-bottom: 0.25em;
+}
+.filters-panel-body .filter-group-label-row label {
+	display: inline;
+	font-weight: bold;
+	margin-bottom: 0;
+}
+.filters-panel-body .filter-group-label-row .dropdown {
+	line-height: 1;
+}
+.filters-panel-body .filter-group-label-row .btn-link {
+	padding: 0 2px;
+	color: #999;
+	text-decoration: none;
+}
+.filters-panel-body .filter-group-label-row .btn-link:hover,
+.filters-panel-body .filter-group-label-row .btn-link:focus {
+	color: #666;
+}
+.filters-panel-body .filter-group-label-row .dropdown-menu {
+	font-size: 13px;
+}
+/* Clear filter button inside label row - shares base styles with btn-link above */
+.filters-panel-body .filter-group-label-row .filter-clear-btn {
+	display: none;
+	padding: 0 2px;
+	color: #bbb;
+	text-decoration: none;
+}
+.filters-panel-body .filter-group-label-row .filter-clear-btn:hover,
+.filters-panel-body .filter-group-label-row .filter-clear-btn:focus {
+	color: #d9534f;
+}
+
+/* -- Filter control components ------------------- */
+
+/* Paired range inputs (date-range, datetime-range, numeric-range) */
+.filter-date-range,
+.filter-datetime-range {
+	display: flex;
+	flex-direction: column;
+	gap: 0.35em;
+}
+.filter-numeric-range {
+	display: flex;
+	align-items: center;
+	gap: 0.35em;
+}
+.filters-panel .filter-date-range input.form-control,
+.filters-panel .filter-datetime-range input.form-control {
+	cursor: pointer;
+	padding: 4px 6px;
+}
+.filter-numeric-range input.form-control {
+	flex: 1 1 auto;
+	min-width: 0;
+	padding: 4px 6px;
+}
+.filter-range-sep {
+	flex-shrink: 0;
+	color: #999;
+	font-weight: bold;
+	padding: 0 0.15em;
+}
+/* Hide dash separator in vertically-stacked date/datetime ranges */
+.filter-date-range > .filter-range-sep,
+.filter-datetime-range > .filter-range-sep {
+	display: none;
+}
+
+/* Quick date dropdown: ensure proper sizing regardless of parent width */
+.filter-quick-dates .dropdown-menu {
+	min-width: 160px;
+}
+
+/* Select2 container within the panel - match Bootstrap form-control appearance */
+.filter-select2-container {
+	width: 100%;
+}
+.filter-select2-container .select2-container {
+	width: 100% !important;
+}
+.filter-select2-container .select2-choices {
+	min-height: 34px;
+	padding: 2px 4px;
+}
+
+/* Three-state checkbox for boolean filter fields */
+.filters-panel-body .filter-group-label-row .filter-checkbox-container {
+	display: inline-flex;
+	align-items: flex-end;
+	gap: 0.6em;
+	font-weight: bold;
+	cursor: pointer;
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	user-select: none;
+}
+.filter-checkbox {
+	width: 18px;
+	height: 18px;
+	margin: 0;
+	flex-shrink: 0;
+	vertical-align: middle;
+	pointer-events: none;
+}
+
+/* Apply button */
+.btn-apply-filters-panel {
+	margin-bottom: 1em;
+}
+/* Apply button bottom spacing */
+.btn-apply-filters-panel[data-position="bottom"] {
+	margin-top: 1em;
+	margin-bottom: .35em;
+}
+.btn-save-filters-panel {
+	margin-bottom: 0;
+}
+
+/* Content area (takes remaining space) */
+.filters-panel-content {
+	flex: 1 1 auto;
+	min-width: 0; /* prevent flex blowout */
+}
+
+/* Toggle button */
+.btn-toggle-filters-panel {
+	position: fixed;
+	z-index: 1040;
+	border-top-left-radius: 0;
+	border-bottom-left-radius: 0;
+}
+.btn-toggle-filters-panel .glyphicon {
+	line-height: 4em;
+}
+
+/* Red dot indicator: shows on the toggle button when panel-applied
+   filters (groups 31-40) are active and the panel is closed. */
+.filters-panel-dot {
+	position: absolute;
+	top: 2px;
+	right: 2px;
+	width: 5px;
+	height: 5px;
+	border-radius: 50%;
+	background-color: #d9534f;
+	display: none;
+}
+.btn-toggle-filters-panel.has-filters .filters-panel-dot {
+	display: block;
+}
+
+/* Backdrop (mobile only) */
+.filters-panel-backdrop {
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	background: rgba(0, 0, 0, 0.5);
+	z-index: 1049;
+}
+
+/* Portal for popups that need to escape the panel's overflow clipping.
+   Datepicker widgets and dropdown menus are moved here with position:fixed
+   so they render outside the panel scroll container. */
+.filters-panel-portal {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 0;
+	height: 0;
+	z-index: 1100;
+	pointer-events: none;
+}
+.filters-panel-portal > .bootstrap-datetimepicker-widget,
+.filters-panel-portal > .dropdown-menu {
+	pointer-events: auto;
+}
+
+/* ================================================================
+   Mobile: filter panel becomes a fixed overlay
+   ================================================================ */
+@media (max-width: 767px) {
+	.filters-panel-wrapper {
+		display: block; /* panel is fixed overlay, content is full width */
+	}
+	.filters-panel {
+		position: fixed;
+		top: 0;
+		left: 0;
+		height: 100vh;
+		width: 280px;
+		min-width: auto;
+		z-index: 1050;
+		max-height: none;
+		margin-bottom: 0;
+		margin-right: 0;
+		border-radius: 0;
+		background: inherit;
+		transform: translateX(-100%);
+		transition: transform 0.3s ease;
+	}
+	.btn-toggle-filters-panel {
+		/* Always visible on mobile */
+	}
+}
+
 /* styles for rtl */
 .theme-rtl {
 	direction: rtl;
@@ -1298,13 +1545,39 @@ body > [unselectable] { color: black; }
 		/* rotate 180 degrees for rtl, and translate y as well */
 		transform: rotate(180deg) translateY(50%);
 	}
-	.btn-toggle-vertical-nav {
+	.btn-toggle-vertical-nav, .btn-toggle-filters-panel {
 		border-top-left-radius: inherit;
 		border-bottom-left-radius: inherit;
 		border-top-right-radius: 0;
 		border-bottom-right-radius: 0;
 		width: 2.5em;
+		right: 0;
+		left: auto;
 	}
+
+	/* filters panel rtl */
+	.filters-panel-wrapper {
+		flex-direction: row-reverse;
+	}
+	.filters-panel {
+		margin-right: 0;
+		margin-left: 1.5em;
+	}
+	/* Quick date dropdown: in RTL, extend inward (right into panel)
+	   rather than outward (left into content area). rtl.css globally
+	   sets right:0 on .dropdown-menu, so we override to left:0 here. */
+	.filter-quick-dates .dropdown-menu {
+		left: 0 !important;
+		right: auto !important;
+	}
+	@media (max-width: 767px) {
+		.filters-panel {
+			left: auto;
+			right: 0;
+			transform: translateX(100%);
+		}
+	}
+
 	.btn#Next { margin-left: unset !important; margin-right: auto !important; }
 	pre {
 		direction: ltr !important;
@@ -1424,6 +1697,12 @@ body:has(.theme-superhero) {
 }
 
 .dv-form-toggle.collapsed .glyphicon-chevron-up { transform: rotate(180deg); }
+
+.table-title > img {
+	height: 1em;
+	width: 1em;
+	object-fit: contain;
+}
 
 th.applicants_and_tenants-last_name, td.applicants_and_tenants-last_name {
 	white-space: normal !important;
@@ -1863,4 +2142,16 @@ th.units-description, td.units-description {
 	width: 80px !important;
 	min-width: 80px !important;
 	overflow: hidden;
+}
+@media print {
+	.applicants_and_tenants-notes .col-xs-9 { margin-left: 25%; }
+	.applications_leases-emergency_contact .col-xs-9 { margin-left: 25%; }
+	.applications_leases-co_signer_details .col-xs-9 { margin-left: 25%; }
+	.applications_leases-notes .col-xs-9 { margin-left: 25%; }
+	.residence_and_rental_history-notes .col-xs-9 { margin-left: 25%; }
+	.employment_and_income_history-notes .col-xs-9 { margin-left: 25%; }
+	.rental_owners-comments .col-xs-9 { margin-left: 25%; }
+	.property_photos-description .col-xs-9 { margin-left: 25%; }
+	.units-description .col-xs-9 { margin-left: 25%; }
+	.unit_photos-description .col-xs-9 { margin-left: 25%; }
 }

@@ -16,6 +16,7 @@
 	}
 
 	$panelColClasses = 'col-md-4 same-height';
+	$uploadFolderStatus = getUploadFolderStatus();
 ?>
 
 <?php
@@ -49,6 +50,16 @@
 </style>
 
 <div class="page-header"><h1><?php echo $Translation['membership management homepage']; ?></h1></div>
+
+<?php if(!$uploadFolderStatus['usable']) { ?>
+	<div class="alert alert-warning">
+		<strong><?php echo $Translation['upload folder warning']; ?></strong>
+		<p>
+			<?php echo $Translation['upload folder not accessible']; ?>
+			<?php echo html_attr($uploadFolderStatus['path']); ?>
+		</p>
+	</div>
+<?php } ?>
 
 <?php
 	if(maintenance_mode()) {

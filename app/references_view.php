@@ -86,6 +86,11 @@
 	$x->TableIcon = 'resources/table_icons/application_from_storage.png';
 	$x->PrimaryKey = '`references`.`id`';
 
+	// Filters panel
+	$x->filtersPanel = [
+		['field' => 'tenant', 'type' => 'select2', 'label' => 'Tenant'],
+	];
+
 	$x->ColWidth = [160, 160, ];
 	$x->ColCaption = ['Reference name', 'Reference phone', ];
 	$x->ColFieldName = ['reference_name', 'phone', ];

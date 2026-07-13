@@ -50,7 +50,7 @@
 	// send default link if no id provided, e.g. new record
 	if(!$i) {
 		$path = $p[$t][$f];
-		$defaultLink = $dL[$t][$f];
+		$defaultLink = isset($dL[$t][$f]) ? $dL[$t][$f] : '';
 		if(!$defaultLink) getLink();
 
 		if(preg_match('/^(http|ftp)/i', $defaultLink)) $path = '';
@@ -89,10 +89,45 @@
 			exit;
 		}
 
+		$maxAge = 30 * 24 * 60 * 60; // 30 days in seconds
+		$lastModified = @filemtime($filePath);
+		$fileSize = @filesize($filePath);
+		$etag = md5($filePath . $lastModified . $fileSize);
+		$cacheHeaders = function() use ($lastModified, $etag, $maxAge) {
+			if($lastModified) header("Last-Modified: " . gmdate("D, d M Y H:i:s", $lastModified) . " GMT");
+			header("ETag: $etag");
+			header("Cache-Control: private, max-age=$maxAge");
+			header("Expires: " . gmdate("D, d M Y H:i:s", time() + $maxAge) . " GMT");
+		};
+
+		// clear output buffer
+		if (ob_get_level()) ob_end_clean();
+
+		// check conditional request headers (ETag takes precedence over Last-Modified)
+		$ifNoneMatch = isset($_SERVER['HTTP_IF_NONE_MATCH']) ? trim($_SERVER['HTTP_IF_NONE_MATCH']) : '';
+		$ifModifiedSince = isset($_SERVER['HTTP_IF_MODIFIED_SINCE']) ? @strtotime($_SERVER['HTTP_IF_MODIFIED_SINCE']) : false;
+		if(($ifNoneMatch !== '' && $ifNoneMatch == $etag) || ($ifNoneMatch === '' && $ifModifiedSince !== false && $ifModifiedSince == $lastModified)) {
+			header($_SERVER["SERVER_PROTOCOL"] . " 304 Not Modified");
+			$cacheHeaders();
+			exit;
+		}
+
 		// pass through the file to the browser
 		$mimeType = getMimeType($filePath);
+		$safeFileName = basename((string) $link);
+		$safeFileName = str_replace(["\r", "\n", '"'], ['', '', "'"], $safeFileName);
 		header("Content-Type: $mimeType");
-		header('Content-Disposition: inline; filename="' . $link . '"');
-		readfile($filePath);
+		header('Content-Disposition: inline; filename="' . $safeFileName . '"');
+		header('Content-Length: ' . $fileSize);
+		$cacheHeaders();
+
+		$fp = fopen($filePath, 'rb');
+		if($fp === false) {
+			header($_SERVER["SERVER_PROTOCOL"] . " 404 Not Found");
+			exit;
+		}
+		fpassthru($fp);
+		fclose($fp);
+
 		exit;
 	}
